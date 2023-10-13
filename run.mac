@@ -1,0 +1,21 @@
+##-----------------------------------------##
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+##-----------------------------------------##
+/target/length 30.0 mm
+/target/width 80.0 mm
+/target/height 80.0 mm
+/output/filename ../output/output.root
+/stack/killsecondaries 1
+/beam/deltaP 0.01
+/beam/P 7.0 GeV
+/beam/pName e-
+/beam/PdirX 0.0
+/beam/PdirY 0.0
+/beam/PdirZ 1.0
+
+/run/initialize
+##-----------------------------------------##
+/run/beamOn 10000000
+##-----------------------------------------##

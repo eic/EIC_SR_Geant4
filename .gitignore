@@ -5,7 +5,6 @@
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -30,3 +29,15 @@
 *.exe
 *.out
 *.app
+
+# Build
+build/
+
+# Output
+output/
+
+# MacOS
+.DS_Store
+
+# Git
+!.gitignore
