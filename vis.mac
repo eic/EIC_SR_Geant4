@@ -8,9 +8,9 @@
 /beam/deltaP 0.0
 /beam/P 18.0 GeV
 /beam/pName e-
-/beam/PdirX 0.0
-/beam/PdirY 0.0
-/beam/PdirZ 1.0
+/beam/PdirX -2.48090543441244E-02
+/beam/PdirY  0.00000000000000E+00
+/beam/PdirZ  9.99692208043331E-01
 /testem/phys/analyticSR true
 #/testem/phys/analyticSR false
 

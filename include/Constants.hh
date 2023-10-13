@@ -18,9 +18,9 @@ namespace Constants
     const G4double phantom_0_pos_z  = -400.0*mm;
     const G4double phantom_1_pos_z  =  400.0*mm;
 
-    const G4double beam_pos_x = 0.0*mm;
-    const G4double beam_pos_y = 0.0*mm;
-    const G4double beam_pos_z = -50.0*m;
+    const G4double beam_pos_x =  7.61776450600000E+00*cm;
+    const G4double beam_pos_y =  0.00000000000000E+00*cm;
+    const G4double beam_pos_z = -3.71513783800000E+03*cm;
 }
 
 #endif
