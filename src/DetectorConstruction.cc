@@ -92,7 +92,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4VSolid* D2EF2_solid_1 = new G4IntersectionSolid("D2EF2_solid", beampipeUni_solid, D2EF2_box,
 	D2EF2_rot,G4ThreeVector(startPosX_D2EF2+length_D2EF2*sin(rotY_angle_D2EF2)/2.,0.,startPosZ_D2EF2+length_D2EF2*cos(rotY_angle_D2EF2)/2.));
 	G4LogicalVolume* D2EF2_log = new G4LogicalVolume(D2EF2_solid_1,mat_vac, "D2EF2_log");
-	G4VPhysicalVolume* D2EF2_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),D2EF2_log,"D2EF2",world_log,false,0);
+	G4VPhysicalVolume* D2EF2_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),D2EF2_log,"mag_D2EF2",world_log,false,0);
 	D2EF2_log->SetVisAttributes(G4VisAttributes(G4Color::Blue()));  
 
 	G4double field_D2EF2 = 2.54524403400000E-01*tesla;
@@ -116,7 +116,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4VSolid* D2EF1_solid_1 = new G4IntersectionSolid("D2EF1_solid", beampipeUni_solid, D2EF1_box,
 	D2EF1_rot,G4ThreeVector(startPosX_D2EF1+length_D2EF1*sin(rotY_angle_D2EF1)/2.,0.,startPosZ_D2EF1+length_D2EF1*cos(rotY_angle_D2EF1)/2.));
 	G4LogicalVolume* D2EF1_log = new G4LogicalVolume(D2EF1_solid_1,mat_vac, "D2EF1_log");
-	G4VPhysicalVolume* D2EF1_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),D2EF1_log,"D2EF1",world_log,false,0);
+	G4VPhysicalVolume* D2EF1_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),D2EF1_log,"mag_D2EF1",world_log,false,0);
 	D2EF1_log->SetVisAttributes(G4VisAttributes(G4Color::Blue()));  
 
 	G4double field_D2EF1 = 2.54524403400000E-01*tesla;
@@ -140,7 +140,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4VSolid* D1EF_solid_1 = new G4IntersectionSolid("D1EF_solid", beampipeUni_solid, D1EF_box,
 	D1EF_rot,G4ThreeVector(startPosX_D1EF+length_D1EF*sin(rotY_angle_D1EF)/2.,0.,startPosZ_D1EF+length_D1EF*cos(rotY_angle_D1EF)/2.));
 	G4LogicalVolume* D1EF_log = new G4LogicalVolume(D1EF_solid_1,mat_vac, "D1EF_log");
-	G4VPhysicalVolume* D1EF_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),D1EF_log,"D1EF",world_log,false,0);
+	G4VPhysicalVolume* D1EF_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),D1EF_log,"mag_D1EF",world_log,false,0);
 	D1EF_log->SetVisAttributes(G4VisAttributes(G4Color::Blue()));  
 
 	G4double field_D1EF = 1.00169207900000E-01*tesla;
@@ -165,7 +165,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4VSolid* Q1EF_solid_1 = new G4IntersectionSolid("Q1EF_solid", beampipeUni_solid, Q1EF_box,
 	Q1EF_rot,G4ThreeVector(startPosX_Q1EF+length_Q1EF*sin(rotY_angle_Q1EF)/2.,0.,startPosZ_Q1EF+length_Q1EF*cos(rotY_angle_Q1EF)/2.));
 	G4LogicalVolume* Q1EF_log = new G4LogicalVolume(Q1EF_solid_1,mat_vac, "Q1EF_log");
-	G4VPhysicalVolume* Q1EF_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),Q1EF_log,"Q1EF",world_log,false,0);
+	G4VPhysicalVolume* Q1EF_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),Q1EF_log,"mag_Q1EF",world_log,false,0);
 	Q1EF_log->SetVisAttributes(G4VisAttributes(G4Color::Yellow()));  
 
 	G4double field_Q1EF = 5.957841642*tesla/(1.*meter);
@@ -189,7 +189,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4VSolid* Q0EF_solid_1 = new G4IntersectionSolid("Q0EF_solid", beampipeUni_solid, Q0EF_box,
 	Q0EF_rot,G4ThreeVector(startPosX_Q0EF+length_Q0EF*sin(rotY_angle_Q0EF)/2.,0.,startPosZ_Q0EF+length_Q0EF*cos(rotY_angle_Q0EF)/2.));
 	G4LogicalVolume* Q0EF_log = new G4LogicalVolume(Q0EF_solid_1,mat_vac, "Q0EF_log");
-	G4VPhysicalVolume* Q0EF_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),Q0EF_log,"Q0EF",world_log,false,0);
+	G4VPhysicalVolume* Q0EF_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),Q0EF_log,"mag_Q0EF",world_log,false,0);
 	Q0EF_log->SetVisAttributes(G4VisAttributes(G4Color::Yellow()));  
 
 	G4double field_Q0EF = -12.98838344*tesla/(1.*meter);
@@ -216,7 +216,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	Q0EF_rot,G4ThreeVector(startPosX_Q0EF+length_Q0EF*sin(rotY_angle_Q0EF)/2.,0.,startPosZ_Q0EF+length_Q0EF*cos(rotY_angle_Q0EF)/2.));
 
 	G4LogicalVolume* beampipeVac_log = new G4LogicalVolume(beampipeVac_solid, mat_vac,"beampipeVac");
-	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"beampipeVac",world_log,false,0);
+	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"vac_beampipe",world_log,false,0);
 	beampipeVac_log->SetVisAttributes(G4VisAttributes(G4Color::White()));
 
 	return world_phys;

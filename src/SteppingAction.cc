@@ -11,10 +11,11 @@
 #include "G4Navigator.hh"
 #include "G4Transform3D.hh"
 #include "Constants.hh"
-
 #include "Constants.hh"
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
+#include "G4OpBoundaryProcess.hh"
+#include "G4ProcessManager.hh"
 
 SteppingAction::SteppingAction(RunAction* runAct) : runAction(runAct)
 {}
@@ -24,15 +25,30 @@ SteppingAction::~SteppingAction()
 
 void SteppingAction::UserSteppingAction(const G4Step *step)
 {
-    G4Track* track = step->GetTrack();
+    	G4Track*		track		= step->GetTrack();
+    	G4StepPoint*          	prePoint	= step->GetPreStepPoint();
+    	G4StepPoint*          	postPoint	= step->GetPostStepPoint();
+    	G4VPhysicalVolume*    	prePV		= prePoint->GetPhysicalVolume();
+    	G4VPhysicalVolume*	postPV		= postPoint->GetPhysicalVolume();
 
-    G4StepPoint*          prePoint  = step->GetPreStepPoint();
-    G4VPhysicalVolume*    prePV     = prePoint->GetPhysicalVolume();
+	// check if the next step is outside the world
+	if(!postPV){return;}
 
-    G4ThreeVector coord     = prePoint->GetPosition();
-    G4ThreeVector p         = track->GetMomentum();
-    G4int parentID          = track->GetParentID();
-    G4double Ekin           = track->GetKineticEnergy();
+	// skip everything except for gamma
+	if(track->GetParticleDefinition()->GetPDGEncoding() != 22){return;}
+
+G4cout<<"[DEBUG] UserSteppingAction : prePV = "<<prePV->GetName()<<G4endl;
+G4cout<<"[DEBUG] UserSteppingAction : postPV = "<<postPV->GetName()<<G4endl;
+
+
+	if(	postPV->GetName() == "world" &&
+		(G4StrUtil::contains(prePV->GetName(),"mag_") || G4StrUtil::contains(prePV->GetName(),"vac_")))
+	{
+		G4Track* nonConstTrack = const_cast<G4Track*>(track);
+               	nonConstTrack->SetTrackStatus(fStopAndKill);
+	}
+    
+	
 /*
     if(parentID == 0 && prePoint->GetStepStatus() == fGeomBoundary && prePV->GetName().contains("phantom_0") && runAction->_Det0 == 0)
     {
