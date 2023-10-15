@@ -16,8 +16,10 @@
 
 /run/initialize
 ##-----------------------------------------##
-/vis/open HepRepFile
+#/vis/open DAWNFILE
+#/vis/drawVolume
 
+/vis/open HepRepFile
 /vis/drawVolume
 /vis/viewer/set/viewpointThetaPhi 90. 0.
 /vis/scene/add/trajectories
@@ -31,7 +33,7 @@
 /vis/modeling/trajectories/drawByCharge-0/default/setTimeSliceInterval 0.001 ns
 
 # Axes, scale, etc.
-/vis/scene/add/axes 0 0 0 1 m # Simple axes: x=red, y=green, z=blue.
+/vis/scene/add/axes 0 0 0 2 m # Simple axes: x=red, y=green, z=blue.
 /vis/scene/add/date    # Date stamp
 ##-----------------------------------------##
 /run/beamOn 1

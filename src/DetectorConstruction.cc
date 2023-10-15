@@ -52,6 +52,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                  Constants::world_dim_z/2);
     	G4LogicalVolume* world_log = new G4LogicalVolume(world_box, mat_vac, "world");
     	G4VPhysicalVolume* world_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),world_log,"world",0,false,0);
+	world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
 
     	//- Build beam pipe vacuum
 
@@ -59,8 +60,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	auto mesh = CADMesh::TessellatedMesh::FromOBJ("../geometry/beam_pipe_20231011_Zup.obj");
 	G4VSolid* beampipeOrig_solid = mesh->GetSolid();
 	G4LogicalVolume* beampipeOrig_log = new G4LogicalVolume(beampipeOrig_solid, mat_vac,"beampipeOrig");
-//	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeOrig_log,"beampipeOrig",world_log,false,0);
-	beampipeOrig_log->SetVisAttributes(G4VisAttributes(G4Color::Yellow()));
 
 	//- Extention
 	G4double ext_length = 370*cm;
@@ -68,15 +67,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4double ext_endpos = -3350.0*cm;
 	G4VSolid* beampipeExt_solid = new G4Tubs("beampipeExt_solid", 0, ext_radius, ext_length/2, 0, 2.0 * M_PI);
 	G4LogicalVolume* beampipeExt_log = new G4LogicalVolume(beampipeExt_solid, mat_vac,"beampipeExt");
-//	new G4PVPlacement(0,G4ThreeVector(0,0,ext_endpos-ext_length/2),beampipeExt_log,"beampipeExt",world_log,false,0); 
-	beampipeExt_log->SetVisAttributes(G4VisAttributes(G4Color::Red()));
 
 	//- Union
-	G4VSolid* beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", beampipeOrig_solid, beampipeExt_solid,
-							0, G4ThreeVector(0, 0, ext_endpos-ext_length/2));
+	G4VSolid* beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", beampipeOrig_solid, beampipeExt_solid, 0, G4ThreeVector(0, 0, ext_endpos-ext_length/2));
 	G4LogicalVolume* beampipeUni_log = new G4LogicalVolume(beampipeUni_solid, mat_vac,"beampipeUni");
-//	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeUni_log,"beampipeUni",world_log,false,0);
-	beampipeUni_log->SetVisAttributes(G4VisAttributes(G4Color::White()));
 
 	// D2EF2-box
 	G4double length_D2EF2 = 2.726015431*m;
@@ -217,7 +211,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	G4LogicalVolume* beampipeVac_log = new G4LogicalVolume(beampipeVac_solid, mat_vac,"beampipeVac");
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"vac_beampipe",world_log,false,0);
-	beampipeVac_log->SetVisAttributes(G4VisAttributes(G4Color::White()));
+	beampipeVac_log->SetVisAttributes(G4VisAttributes(G4Color::Grey()));
 
 	return world_phys;
 }
