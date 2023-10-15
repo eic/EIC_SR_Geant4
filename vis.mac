@@ -28,11 +28,11 @@
 /vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 5
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawAuxPts true
 /vis/modeling/trajectories/drawByCharge-0/default/setAuxPtsSize 5
-/vis/modeling/trajectories/drawByCharge-0/default/setTimeSliceInterval 0.1 ns
+/vis/modeling/trajectories/drawByCharge-0/default/setTimeSliceInterval 0.001 ns
 
 # Axes, scale, etc.
-/vis/scene/add/axes 0 0 -60 10 m # Simple axes: x=red, y=green, z=blue.
+/vis/scene/add/axes 0 0 0 1 m # Simple axes: x=red, y=green, z=blue.
 /vis/scene/add/date    # Date stamp
 ##-----------------------------------------##
-/run/beamOn 4
+/run/beamOn 1
 ##-----------------------------------------##

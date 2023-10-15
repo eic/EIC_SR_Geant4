@@ -33,7 +33,7 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
     G4ThreeVector p         = track->GetMomentum();
     G4int parentID          = track->GetParentID();
     G4double Ekin           = track->GetKineticEnergy();
-
+/*
     if(parentID == 0 && prePoint->GetStepStatus() == fGeomBoundary && prePV->GetName().contains("phantom_0") && runAction->_Det0 == 0)
     {
         runAction->_X0         = coord.x()/m;
@@ -56,4 +56,6 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
         runAction->_Ekin1      = Ekin/GeV;
         runAction->_Det1       = 1;
     }
+i*/
+	return;
 }
