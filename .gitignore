@@ -38,6 +38,7 @@ output/
 
 # MacOS
 .DS_Store
+*.swp
 
 # Git
 !.gitignore

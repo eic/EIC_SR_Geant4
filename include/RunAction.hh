@@ -16,6 +16,14 @@
 #include "G4Timer.hh"
 #include "RunMessenger.hh"
 
+#include <string>
+#include <fstream>
+#include <vector>
+#include <utility> // std::pair
+#include <stdexcept> // std::runtime_error
+#include <sstream> // std::stringstream
+#include <stdio.h>
+
 using namespace std;
 
 class G4Run;
@@ -62,11 +70,19 @@ public:
     G4double _targetW;
     G4double _targetH;
 
+	std::vector<std::pair<double, std::vector<double>>> _reflectData;
+	std::vector<double> _grazingAngle;
+	std::vector<double> _photonEnergy;
 private:
     G4Timer* _timer;
     G4String _output_filename;
 
     RunMessenger* fRunMessenger;
+
+	std::vector<std::pair<double, std::vector<double>>> ReadReflectData(std::string filename,
+		std::vector<double> &angle, std::vector<double> &energy);
+	void PrintReflectData(std::vector<std::pair<double, std::vector<double>>> dataset,
+		std::vector<double> angle, std::vector<double> energy);
 };
 
 #endif

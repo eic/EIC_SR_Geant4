@@ -31,21 +31,34 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
     	G4VPhysicalVolume*    	prePV		= prePoint->GetPhysicalVolume();
     	G4VPhysicalVolume*	postPV		= postPoint->GetPhysicalVolume();
 
-	// check if the next step is outside the world
+	// check if the next step is not outside the world
 	if(!postPV){return;}
 
 	// skip everything except for gamma
 	if(track->GetParticleDefinition()->GetPDGEncoding() != 22){return;}
 
-G4cout<<"[DEBUG] UserSteppingAction : prePV = "<<prePV->GetName()<<G4endl;
-G4cout<<"[DEBUG] UserSteppingAction : postPV = "<<postPV->GetName()<<G4endl;
-
-
-	if(	postPV->GetName() == "world" &&
+	// check if the step is at the edge of the vacuum beam pipe
+	if(	prePoint->GetStepStatus() == fGeomBoundary && postPV->GetName() == "world" &&
 		(G4StrUtil::contains(prePV->GetName(),"mag_") || G4StrUtil::contains(prePV->GetName(),"vac_")))
 	{
 		G4Track* nonConstTrack = const_cast<G4Track*>(track);
                	nonConstTrack->SetTrackStatus(fStopAndKill);
+
+/*		
+		//Find the index of the element of xgdat that is nearest-above to x
+auto i = lower_bound(xgdat.begin(), xgdat.end(), x); 
+//If the vector values are in decreasing order use:
+//auto i = lower_bound(xgdat.rbegin(), xgdat.rend(), x);
+k = i - xgdat.begin(); //Nearest index
+if (i == xgdat.end())
+  --k;  // extrapolating above
+else if (*i == x)
+  return gdat[k];
+
+l = k? k - 1: 1; //nearest-below index, except when extrapolating downward
+
+// proceed with linear interpolation/extrapolation using l and k
+*/
 	}
     
 	
