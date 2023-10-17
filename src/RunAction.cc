@@ -103,7 +103,8 @@ std::vector<std::pair<double, std::vector<double>>> RunAction::ReadReflectData(s
     	// make sure the file is open
     	if(!myFile.is_open()) 
 		throw std::runtime_error(
-			Form("\n\n[ERROR] RunAction::ReadCSV ==> Cannot open of find the file: %s\n",filename.c_str()));
+			Form("\n\n[ERROR] RunAction::ReadReflectData ==> Cannot open of find the file: %s\n",
+				filename.c_str()));
 
     	// Helper vars
     	std::string line, colname;

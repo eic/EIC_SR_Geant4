@@ -36,6 +36,7 @@
 #include "G4DecayPhysics.hh"
 
 #include "G4SystemOfUnits.hh"
+#include "GammaReflectionProcess.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -92,6 +93,8 @@ void PhysicsList::ConstructEM()
       pmanager->AddDiscreteProcess(new G4ComptonScattering);
       pmanager->AddDiscreteProcess(new G4GammaConversion);
       pmanager->AddDiscreteProcess(new G4RayleighScattering);
+
+	pmanager->AddDiscreteProcess(new GammaReflectionProcess);
             
     } else if (particleName == "e-") {
       //electron

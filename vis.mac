@@ -16,10 +16,9 @@
 
 /run/initialize
 ##-----------------------------------------##
-#/vis/open DAWNFILE
-#/vis/drawVolume
+#/vis/open DAWNFILE # then: dawn g4_0000.prim; epstopdf g4_0000.eps
+/vis/open HepRepFile # then: heprapp G4Data0.heprep
 
-/vis/open HepRepFile
 /vis/drawVolume
 /vis/viewer/set/viewpointThetaPhi 90. 0.
 /vis/scene/add/trajectories
