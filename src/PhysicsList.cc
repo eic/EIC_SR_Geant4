@@ -1,6 +1,3 @@
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #include "PhysicsList.hh"
 #include "PhysicsListMessenger.hh"
 
@@ -38,113 +35,116 @@
 #include "G4SystemOfUnits.hh"
 #include "GammaReflectionProcess.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-PhysicsList::PhysicsList()
-: G4VUserPhysicsList(),
-  fMess(0)
+PhysicsList::PhysicsList(): G4VUserPhysicsList(),fMess(0)
 {
-  SetDefaultCutValue(1.*km);
+  	SetDefaultCutValue(1.*km);
   
-  fSRType = true; 
-  fMess = new PhysicsListMessenger(this);
-  fDecayPhysics = new G4DecayPhysics();
+  	fSRType = true; 
+  	fMess = new PhysicsListMessenger(this);
+  	fDecayPhysics = new G4DecayPhysics();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PhysicsList::~PhysicsList()
 { 
-  delete fMess;
-  delete fDecayPhysics;
+  	delete fMess;
+  	delete fDecayPhysics;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void PhysicsList::ConstructParticle()
 {
-  fDecayPhysics->ConstructParticle();
+  	fDecayPhysics->ConstructParticle();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void PhysicsList::ConstructProcess()
 {
-  AddTransportation();
-  ConstructEM();
-  fDecayPhysics->ConstructProcess();
+  	AddTransportation();
+  	ConstructEM();
+  	fDecayPhysics->ConstructProcess();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void PhysicsList::ConstructEM()
 {
-  auto particleIterator=GetParticleIterator();
-  particleIterator->reset();
-  G4SynchrotronRadiation* fSync = new G4SynchrotronRadiation();
-  while( (*particleIterator)() ){
-    G4ParticleDefinition* particle = particleIterator->value();
-    G4ProcessManager* pmanager = particle->GetProcessManager();
-    G4String particleName = particle->GetParticleName();
+  	auto particleIterator=GetParticleIterator();
+  	particleIterator->reset();
+  	G4SynchrotronRadiation* fSync = new G4SynchrotronRadiation();
+  	while( (*particleIterator)() )
+	{
+    		G4ParticleDefinition* particle = particleIterator->value();
+    		G4ProcessManager* pmanager = particle->GetProcessManager();
+    		G4String particleName = particle->GetParticleName();
 
-    if (particleName == "gamma") {
-      // gamma
-      pmanager->AddDiscreteProcess(new G4PhotoElectricEffect);
-      pmanager->AddDiscreteProcess(new G4ComptonScattering);
-      pmanager->AddDiscreteProcess(new G4GammaConversion);
-      pmanager->AddDiscreteProcess(new G4RayleighScattering);
-
-	pmanager->AddDiscreteProcess(new GammaReflectionProcess);
+    		if (particleName == "gamma") 
+		{
+      			// gamma
+			
+			// turn off standard gamma processes
+			//pmanager->AddDiscreteProcess(new G4PhotoElectricEffect);
+			//pmanager->AddDiscreteProcess(new G4ComptonScattering);
+			//pmanager->AddDiscreteProcess(new G4GammaConversion);
+			//pmanager->AddDiscreteProcess(new G4RayleighScattering);
+	
+			// turn on the custom gamma process
+			pmanager->AddDiscreteProcess(new GammaReflectionProcess);
             
-    } else if (particleName == "e-") {
-      //electron
-      pmanager->AddProcess(new G4eMultipleScattering,       -1, 1, -1);
-      pmanager->AddProcess(new G4eIonisation,               -1, 2, 1);
-      pmanager->AddProcess(new G4eBremsstrahlung,           -1, 3, 2);
-      if (fSRType) {
-        pmanager->AddProcess(fSync,    -1,-1, 3);
-      } else {
-        pmanager->AddProcess(new G4SynchrotronRadiationInMat,-1,-1, 3); 
-      }
-      pmanager->AddProcess(new G4StepLimiter,               -1,-1, 4);
+    		} 
+		else if (particleName == "e-") 
+		{
+      			//electron
+      			pmanager->AddProcess(new G4eMultipleScattering,       -1, 1, -1);
+      			pmanager->AddProcess(new G4eIonisation,               -1, 2, 1);
+      			pmanager->AddProcess(new G4eBremsstrahlung,           -1, 3, 2);
+      			if (fSRType) 
+			{
+        			pmanager->AddProcess(fSync,    -1,-1, 3);
+      			} 
+			else 
+			{
+        			pmanager->AddProcess(new G4SynchrotronRadiationInMat,-1,-1, 3); 
+      			}
+      			pmanager->AddProcess(new G4StepLimiter,               -1,-1, 4);
      
-    } else if (particleName == "e+") {
-      //positron
-      pmanager->AddProcess(new G4eMultipleScattering,       -1, 1, -1);
-      pmanager->AddProcess(new G4eIonisation,               -1, 2, 1);
-      pmanager->AddProcess(new G4eBremsstrahlung,           -1, 3, 2);
-      pmanager->AddProcess(new G4eplusAnnihilation,          0,-1, 3);
-      if (fSRType) {
-        pmanager->AddProcess(fSync,      -1,-1, 4);
-      } else {
-        pmanager->AddProcess(new G4SynchrotronRadiationInMat, -1,-1, 4);
-      }
-      pmanager->AddProcess(new G4StepLimiter,               -1,-1, 5);
-      
-    } else if( particleName == "mu+" ||
-               particleName == "mu-"    ) {
-      //muon
-      pmanager->AddProcess(new G4MuMultipleScattering, -1, 1, -1);
-      pmanager->AddProcess(new G4MuIonisation,         -1, 2, 1);
-      pmanager->AddProcess(new G4MuBremsstrahlung,     -1, 3, 2);
-      pmanager->AddProcess(new G4MuPairProduction,     -1, 4, 3);
-      pmanager->AddProcess(fSync, -1,-1, 4); 
-      pmanager->AddProcess(new G4StepLimiter,               -1,-1, 5);
-
-    } else if( particleName == "proton") {
-      //proton
-      pmanager->AddProcess(new G4hMultipleScattering, -1, 1, -1);
-      pmanager->AddProcess(new G4hIonisation,         -1, 2, 1);
-      pmanager->AddProcess(new G4hBremsstrahlung,     -1, 3, 2);
-      pmanager->AddProcess(new G4hPairProduction,     -1, 4, 3);
-      pmanager->AddProcess(fSync, -1,-1, 4); 
-      pmanager->AddProcess(new G4StepLimiter,          -1,-1, 5);
-    }
-    else if (particle->GetPDGCharge() != 0.0 && !particle->IsShortLived()) 
-    {
-      pmanager->AddProcess(fSync,-1,-1, 1);  
-    }
-  }
+    		} 
+		else if (particleName == "e+") 
+		{
+      			//positron
+	      		pmanager->AddProcess(new G4eMultipleScattering,       -1, 1, -1);
+	      		pmanager->AddProcess(new G4eIonisation,               -1, 2, 1);
+	      		pmanager->AddProcess(new G4eBremsstrahlung,           -1, 3, 2);
+	      		pmanager->AddProcess(new G4eplusAnnihilation,          0,-1, 3);
+	      		if (fSRType) 
+			{
+				pmanager->AddProcess(fSync,      -1,-1, 4);
+	      		} 
+			else 
+			{
+				pmanager->AddProcess(new G4SynchrotronRadiationInMat, -1,-1, 4);
+	      		}
+	      		pmanager->AddProcess(new G4StepLimiter,               -1,-1, 5);
+	      
+	    	} 
+		else if (particleName == "mu+" || particleName == "mu-") 
+		{
+	      		//muon
+	      		pmanager->AddProcess(new G4MuMultipleScattering, -1, 1, -1);
+	      		pmanager->AddProcess(new G4MuIonisation,         -1, 2, 1);
+	      		pmanager->AddProcess(new G4MuBremsstrahlung,     -1, 3, 2);
+	      		pmanager->AddProcess(new G4MuPairProduction,     -1, 4, 3);
+	      		pmanager->AddProcess(fSync, -1,-1, 4); 
+	      		pmanager->AddProcess(new G4StepLimiter,               -1,-1, 5);
+	    	} 
+		else if (particleName == "proton") 	
+		{
+	      		//proton
+	      		pmanager->AddProcess(new G4hMultipleScattering, -1, 1, -1);
+	      		pmanager->AddProcess(new G4hIonisation,         -1, 2, 1);
+	      		pmanager->AddProcess(new G4hBremsstrahlung,     -1, 3, 2);
+	      		pmanager->AddProcess(new G4hPairProduction,     -1, 4, 3);
+	      		pmanager->AddProcess(fSync, -1,-1, 4); 
+	      		pmanager->AddProcess(new G4StepLimiter,          -1,-1, 5);
+	    	}
+	    	else if (particle->GetPDGCharge() != 0.0 && !particle->IsShortLived()) 
+	    	{
+	      		pmanager->AddProcess(fSync,-1,-1, 1);  
+		}
+	}
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

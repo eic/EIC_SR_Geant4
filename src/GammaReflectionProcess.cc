@@ -1,52 +1,37 @@
 #include "GammaReflectionProcess.hh"
+#include "G4VParticleChange.hh"
+#include "G4VSolid.hh"
 
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
-{
-  G4VProcess::pParticleChange = new G4ParticleChange;
-  if (!G4VProcess::pParticleChange) {
-//    G4Exception("ERROR:GammaReflectionProcess::GammaReflectionProcess new failed to create G4ParticleChange!");
-G4cout<<"[ERROR] GammaReflectionProcess::GammaReflectionProcess "<<G4endl;
-  }
-}
+{}
 
 GammaReflectionProcess::~GammaReflectionProcess()
-{
-  delete pParticleChange;
-}
+{}
 
-G4double GammaReflectionProcess::
-PostStepGetPhysicalInteractionLength(const G4Track&,
-				     G4double,
-				     G4ForceCondition* condition)
+G4double GammaReflectionProcess::PostStepGetPhysicalInteractionLength(const G4Track&,G4double,G4ForceCondition* condition)
 {
-  *condition = Forced;
-  return kInfinity;
+  	*condition = Forced;
+  	return DBL_MAX;
 }
   
 G4VParticleChange * 
 GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 {
-  pParticleChange->Initialize(track);
-
+  	aParticleChange.Initialize(track);
 
     	G4StepPoint*          	preStep		= step.GetPreStepPoint();
     	G4StepPoint*          	postStep	= step.GetPostStepPoint();
     	G4VPhysicalVolume*    	prePV		= preStep->GetPhysicalVolume();
     	G4VPhysicalVolume*	postPV		= postStep->GetPhysicalVolume();
 
-	// check if the next step is not outside the world
-	if(!postPV){return G4VProcess::pParticleChange;}
-
-	// skip everything except for gamma
-	if(track.GetParticleDefinition()->GetPDGEncoding() != 22){return G4VProcess::pParticleChange;}
+	// check if the next step is not outside the world and skip everything except for gamma
+	if(!postPV || track.GetParticleDefinition()->GetPDGEncoding() != 22)
+		return &aParticleChange;
 
 	// get tracks at the edge of the vacuum beam pipe
 	if(	postStep->GetStepStatus() == fGeomBoundary && postPV->GetName() == "world" &&
 		(G4StrUtil::contains(prePV->GetName(),"mag_") || G4StrUtil::contains(prePV->GetName(),"vac_")))
 	{
-
-    		pParticleChange->ProposeTrackStatus(fStopAndKill);
-/*
 		//..............-----------------------------------------
 		//..............|..................Volume...............|
 		//.pre-step.....0....<--.step.status.on.boundary.-->....0.post-step.point
@@ -58,7 +43,7 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		//..............|.........................point.........|
 		//..............-----------------------------------------
 
-		G4double gammaEnergy_eV = track->GetTotalEnergy()/eV; // MeV --> eV
+		G4double gammaEnergy_eV = track.GetTotalEnergy()/CLHEP::eV; // MeV --> eV
 		G4ThreeVector gammaDir_i = postStep->GetMomentum()/postStep->GetMomentum().mag(); 
 		G4ThreeVector stepPos = postStep->GetPosition();
 
@@ -89,14 +74,11 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 
 		G4ThreeVector gammaDir_r = gammaDir_i - 2.0* normGlob.dot(gammaDir_i) *normGlob;
 		// check that the half-angle between reflected and incident angles is equal to the grazing angle
-		if(	abs(grazingAngle - 
-			acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle >
-			1e-9)
-			throw std::runtime_error(
-				"\n\n[ERROR] SteppingAction::UserSteppingAction ==> Wrong reflection direction\n");
+		if(abs(grazingAngle - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle > 1e-9)
+			throw std::runtime_error("\n\n[ERROR] SteppingAction::UserSteppingAction ==> Wrong reflection direction\n");
 
 
-		G4cout<<"trackID = "<<track->GetTrackID()<<G4endl;
+		G4cout<<"trackID = "<<track.GetTrackID()<<G4endl;
 		G4cout<<"name = "<<name<<G4endl;
 		G4cout<<"incidentAngle = "<<incidentAngle<<G4endl;
 		G4cout<<"grazingAngle = "<<grazingAngle<<G4endl;
@@ -108,49 +90,38 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 
 		G4cout<<G4endl;
 		
-		G4Track* nonConstTrack = const_cast<G4Track*>(track);
-		nonConstTrack->SetMomentumDirection(gammaDir_r);
-
 		if(G4UniformRand() > 0.5)
-*/
-
-
-	//	G4Track* nonConstTrack = const_cast<G4Track*>(track);
-	//	nonConstTrack->SetTrackStatus(fStopAndKill);
-
+			aParticleChange.ProposeMomentumDirection(gammaDir_r);
+		else
+    			aParticleChange.ProposeTrackStatus(fStopAndKill);
 	}
 
-
-  return G4VProcess::pParticleChange;
+  	return &aParticleChange;
 }
 
-const G4String &GammaReflectionProcess::GetName() const {
-  return theProcessName;
+const G4String &GammaReflectionProcess::GetName() const 
+{
+	return theProcessName;
 }
 
 
-G4double GammaReflectionProcess::
-AlongStepGetPhysicalInteractionLength(const G4Track&,
-				      G4double  ,
-				      G4double  ,
-				      G4double& ,
-				      G4GPILSelection*) {
-  return -1.0;
+G4double GammaReflectionProcess::AlongStepGetPhysicalInteractionLength(const G4Track&,G4double,G4double,G4double&,G4GPILSelection*) 
+{
+  	return -1.0;
 }
 
-G4double GammaReflectionProcess::
-AtRestGetPhysicalInteractionLength(const G4Track&,
-				   G4ForceCondition*) {
-  return -1.0;
+G4double GammaReflectionProcess::AtRestGetPhysicalInteractionLength(const G4Track&,G4ForceCondition*) 
+{
+  	return -1.0;
 }
 
-G4VParticleChange* GammaReflectionProcess::AtRestDoIt(const G4Track&,
-					       const G4Step&) {
-  return 0;
+G4VParticleChange* GammaReflectionProcess::AtRestDoIt(const G4Track&,const G4Step&) 
+{
+  	return 0;
 }
 
-G4VParticleChange* GammaReflectionProcess::AlongStepDoIt(const G4Track&,
-						  const G4Step&) {
-  return 0;
+G4VParticleChange* GammaReflectionProcess::AlongStepDoIt(const G4Track&,const G4Step&) 
+{
+  	return 0;
 }
 
