@@ -11,36 +11,34 @@ EventAction::~EventAction()
 
 void EventAction::BeginOfEventAction(const G4Event* event)
 {
-    G4int eventID = event->GetEventID();
+    	runAction->_event = event->GetEventID();
 
-    runAction->_Event_ID = eventID;
+	runAction->_gammaPosX.clear();
+	runAction->_gammaPosY.clear();
+	runAction->_gammaPosZ.clear();
+	runAction->_gammaMomX.clear();
+	runAction->_gammaMomY.clear();
+	runAction->_gammaMomZ.clear();
+	runAction->_gammaEnergy.clear();
 
-    runAction->_X0      = -999.0;
-    runAction->_Y0      = -999.0;
-    runAction->_Z0      = -999.0;
-    runAction->_Mom_X0  = -999.0;
-    runAction->_Mom_Y0  = -999.0;
-    runAction->_Mom_Z0  = -999.0;
-    runAction->_Ekin0   = -999.0;
-    runAction->_Det0    = 0;
+    	if((runAction->_event)%100 == 0)
+        	printf("[INFO] EventAction::BeginOfEventAction ==> BeginOfEvent: %12d\n",runAction->_event);
 
-    runAction->_X1      = -999.0;
-    runAction->_Y1      = -999.0;
-    runAction->_Z1      = -999.0;
-    runAction->_Mom_X1  = -999.0;
-    runAction->_Mom_Y1  = -999.0;
-    runAction->_Mom_Z1  = -999.0;
-    runAction->_Ekin1   = -999.0;
-    runAction->_Det1    = 0;
-
-    if(eventID%10000 == 0)
-    {
-        printf("\r--> BeginOfEvent: %12d",eventID);
-        fflush(stdout);
-    }
+	return;
 }
 
 void EventAction::EndOfEventAction(const G4Event*)
 {
-    runAction->_tree->Fill();
+    	runAction->_tree->Fill();
+
+	runAction->_beamPdg = -999;
+	runAction->_beamPosX = -999;
+	runAction->_beamPosY = -999;
+	runAction->_beamPosZ = -999;
+	runAction->_beamMomX = -999;
+	runAction->_beamMomY = -999;
+	runAction->_beamMomZ = -999;
+	runAction->_beamEnergy = -999;
+
+	return;
 }

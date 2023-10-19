@@ -1,9 +1,19 @@
 #include "GammaReflectionProcess.hh"
 #include "G4VParticleChange.hh"
 #include "G4VSolid.hh"
+#include "TROOT.h"
 
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
-{}
+{
+	string fName = "../materials/02-Copper.csv";
+	_reflectData = ReadReflectData(fName,_grazingAngle_mrad,_photonEnergy_eV);
+	PrintReflectData(_reflectData,_grazingAngle_mrad,_photonEnergy_eV);
+
+	// print column names
+	printf("Angl/Ene : ");
+	for(int j = 0; j < _grazingAngle_mrad.size(); ++j){printf("%.2e  ",_grazingAngle_mrad.at(j));}
+	printf("\n");
+}
 
 GammaReflectionProcess::~GammaReflectionProcess()
 {}
@@ -25,10 +35,10 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
     	G4VPhysicalVolume*	postPV		= postStep->GetPhysicalVolume();
 
 	// check if the next step is not outside the world and skip everything except for gamma
-	if(!postPV || track.GetParticleDefinition()->GetPDGEncoding() != 22)
+	if(!postPV || track.GetParticleDefinition()->GetPDGEncoding() != G4Gamma::Gamma()->GetPDGEncoding())
 		return &aParticleChange;
 
-	// get tracks at the edge of the vacuum beam pipe
+	// get tracks at the edge of the vacuum beam pipe and world
 	if(	postStep->GetStepStatus() == fGeomBoundary && postPV->GetName() == "world" &&
 		(G4StrUtil::contains(prePV->GetName(),"mag_") || G4StrUtil::contains(prePV->GetName(),"vac_")))
 	{
@@ -57,8 +67,8 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		// get normal to the surface (gamma is passing outward from the volume of interest to the world)
 		G4ThreeVector norm = solid->SurfaceNormal(posLoc); 
 		G4ThreeVector gammDirLoc = *rotation * gammaDir_i;
-		G4double incidentAngle = acos( norm.dot(gammDirLoc) );
-		G4double grazingAngle = M_PI_2 - incidentAngle; 
+		G4double incidentAngle_rad = acos( norm.dot(gammDirLoc) );
+		G4double grazingAngle_rad = M_PI_2 - incidentAngle_rad; 
 
 		G4ThreeVector normGlob = rotation_inv*norm + translation;
 
@@ -74,26 +84,47 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 
 		G4ThreeVector gammaDir_r = gammaDir_i - 2.0* normGlob.dot(gammaDir_i) *normGlob;
 		// check that the half-angle between reflected and incident angles is equal to the grazing angle
-		if(abs(grazingAngle - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle > 1e-9)
-			throw std::runtime_error("\n\n[ERROR] SteppingAction::UserSteppingAction ==> Wrong reflection direction\n");
+		if(abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad > 1e-4)
+		{
+			G4cout<<"\n\n[DEBUG] GammaReflectionProcess::PostStepDoIt"<<G4endl;
+			G4cout<<"- grazingAngle_rad = "<<grazingAngle_rad<<G4endl;
+			G4cout<<"- acos(gammaDir_i.dot(gammaDir_r))/2. = "<<acos(gammaDir_i.dot(gammaDir_r))/2.<<G4endl;
+			G4cout<<"- abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad = "<<abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad<<G4endl;
+			G4cout<<"- gammaDir_i(x,y,z) = "<<gammaDir_i.x()<<" , "<<gammaDir_i.y()<<" , "<<gammaDir_i.z()<<G4endl;
+			G4cout<<"- gammaDir_r(x,y,z) = "<<gammaDir_r.x()<<" , "<<gammaDir_r.y()<<" , "<<gammaDir_r.z()<<G4endl;
+			G4cout<<"- normGlob (x,y,z) = "<<normGlob.x()<<" , "<<normGlob.y()<<" , "<<normGlob.z()<<G4endl;
+			throw runtime_error("\n\n[ERROR] GammaReflectionProcess::PostStepDoIt ==> Wrong reflection direction\n");
+		}
 
-
+		// get probability
+		G4double prob = FindReflectionProbability(_reflectData,_grazingAngle_mrad,_photonEnergy_eV,grazingAngle_rad/1000.0,gammaEnergy_eV);
+/*
 		G4cout<<"trackID = "<<track.GetTrackID()<<G4endl;
 		G4cout<<"name = "<<name<<G4endl;
-		G4cout<<"incidentAngle = "<<incidentAngle<<G4endl;
-		G4cout<<"grazingAngle = "<<grazingAngle<<G4endl;
+		G4cout<<"gammaEnergy_eV = "<<gammaEnergy_eV<<G4endl;
+		G4cout<<"incidentAngle_rad = "<<incidentAngle_rad<<G4endl;
+		G4cout<<"grazingAngle_rad = "<<grazingAngle_rad<<G4endl;
 		G4cout<<"norm = "<<norm.x()<<";"<<norm.y()<<";"<<norm.z()<<G4endl;
 		G4cout<<"normGlob = "<<normGlob.x()<<";"<<normGlob.y()<<";"<<normGlob.z()<<G4endl;
 		G4cout<<"gammaDir_i = "<<gammaDir_i.x()<<";"<<gammaDir_i.y()<<";"<<gammaDir_i.z()<<G4endl;
 		G4cout<<"gammaDir_r = "<<gammaDir_r.x()<<";"<<gammaDir_r.y()<<";"<<gammaDir_r.z()<<G4endl;
 		G4cout<<"stepPos = "<<stepPos.x()<<";"<<stepPos.y()<<";"<<stepPos.z()<<G4endl;
+		G4cout<<"prob = "<<prob<<G4endl;
 
 		G4cout<<G4endl;
-		
-		if(G4UniformRand() > 0.5)
-			aParticleChange.ProposeMomentumDirection(gammaDir_r);
-		else
+*/		
+
+		if(G4UniformRand() > prob)
     			aParticleChange.ProposeTrackStatus(fStopAndKill);
+		else
+			aParticleChange.ProposeMomentumDirection(gammaDir_r);
+	}
+
+	// get tracks at the edge of the vacuum beam pipe and absorber
+	if(	postStep->GetStepStatus() == fGeomBoundary && G4StrUtil::contains(postPV->GetName(),"abs_") &&
+		(G4StrUtil::contains(prePV->GetName(),"mag_") || G4StrUtil::contains(prePV->GetName(),"vac_")))
+	{
+		aParticleChange.ProposeTrackStatus(fStopAndKill);
 	}
 
   	return &aParticleChange;
@@ -125,3 +156,149 @@ G4VParticleChange* GammaReflectionProcess::AlongStepDoIt(const G4Track&,const G4
   	return 0;
 }
 
+void GammaReflectionProcess::PrintReflectData(vector<pair<double, vector<double>>> dataset,
+		vector<double> angle, vector<double> energy)
+{
+	// print column names
+	printf("Angl/Ene : ");
+	for(int j = 0; j < angle.size(); ++j){printf("%.2e  ",angle.at(j));}
+	printf("\n");
+
+	printf("Angl/Ene : ");
+    	for(int j = 0; j < dataset.size(); ++j)
+    	{
+        	printf("%.2e  ",dataset.at(j).first);
+    	}
+	printf("\n");
+
+	// print data
+    	for(int i = 0; i < dataset.at(0).second.size(); ++i)
+    	{
+		printf("%.2e  : ",energy.at(i));
+        	for(int j = 0; j < dataset.size(); ++j)
+        	{
+           		printf("%.2e  ",dataset.at(j).second.at(i));
+        	}
+		printf("\n");
+    	}
+
+	return;
+}
+
+vector<pair<double, vector<double>>> GammaReflectionProcess::ReadReflectData(string filename,
+	vector<double> &angle, vector<double> &energy)
+{
+	// Reads a CSV file into a vector of <string, vector<double>> pairs where
+	// each pair represents <column name, column values>
+
+	vector<pair<double, vector<double>>> dataset;
+
+	// Create an input filestream
+    	ifstream myFile(filename);
+
+    	// make sure the file is open
+    	if(!myFile.is_open()) 
+		throw runtime_error(
+			Form("\n\n[ERROR] GammaReflectionProcess::ReadReflectData ==> Cannot open of find the file: %s\n",
+				filename.c_str()));
+
+    	// Helper vars
+    	string line, colname;
+    	double val;
+
+    	// Read the column names
+    	if(myFile.good())
+    	{
+        	// Extract the first line in the file
+        	getline(myFile, line);
+
+        	// Create a stringstream from line
+        	stringstream ss(line);
+
+        	// Extract each column name
+		getline(ss, colname, ','); // skip the first column
+        	while(getline(ss, colname, ','))
+		{
+			val = stod(colname);
+			// Initialize and add <colname, double vector> pairs to dataset
+            		dataset.push_back({val, vector<double> {}});
+			angle.push_back(val);
+        	}
+    	}
+
+    	// Read data, line by line
+    	while(getline(myFile, line))
+    	{
+        	// Create a stringstream of the current line
+        	stringstream ss(line);
+        
+        	// Keep track of the current column index
+        	int colIdx = 0;
+        
+        	// Extract each value
+        	while(ss >> val)
+		{
+            		// Add the current integer to the 'colIdx' column's values vector
+            		if(colIdx == 0) energy.push_back(val);
+			else dataset.at(colIdx-1).second.push_back(val);
+            
+            		// If the next token is a comma, ignore it and move on
+            		if(ss.peek() == ',') ss.ignore();
+            
+            		// Increment the column index
+            		colIdx++;
+        	}
+    	}
+
+    	// Close file
+    	myFile.close();
+
+	return dataset;
+}
+
+void GammaReflectionProcess::FindClosestIndexesInVec(vector<double> vec, double val, int &id1, int &id2)
+{
+	id1 = id2 = 0;
+	// find the index of the element of the vecotr that is nearest-above to val
+	auto i = lower_bound(vec.begin(), vec.end(), val); 
+	// if the vector values are in decreasing order use:
+	//auto i = lower_bound(vec.rbegin(), vec.rend(), val);
+	id2 = i - vec.begin(); // nearest index
+
+	if (i == vec.end())
+  	{
+		--id2;  // extrapolating above
+	}
+	else if (*i == val)
+	{
+		id1 = id2;
+  		return;
+	}
+
+	id1 = id2 ? id2 - 1 : id2; //nearest-below index, except when extrapolating downward
+	id1 = (val > vec.at(id2)) ? id2 : id1; //outside the data range
+
+	return;
+}
+
+double GammaReflectionProcess::FindReflectionProbability(vector<pair<double, vector<double>>> dataset,
+								vector<double> angle, vector<double> energy, 
+								double angle_val, double energy_val)
+{
+	int ang_i, ang_j, ene_i, ene_j;
+
+	FindClosestIndexesInVec(angle,angle_val,ang_i,ang_j);
+	FindClosestIndexesInVec(energy,energy_val,ene_i,ene_j);
+
+	double prob_ii = dataset.at(ang_i).second.at(ene_i);
+	double prob_ji = dataset.at(ang_j).second.at(ene_i);
+	double prob_ij = dataset.at(ang_i).second.at(ene_j);
+	double prob_jj = dataset.at(ang_j).second.at(ene_j);
+
+	double prob_ii_ji = (ang_i == ang_j) ? prob_ii : (prob_ji - prob_ii)*(angle_val - angle.at(ang_i))/(angle.at(ang_j) - angle.at(ang_i)) + prob_ii;
+	double prob_ij_jj = (ang_i == ang_j) ? prob_jj : (prob_jj - prob_ij)*(angle_val - angle.at(ang_j))/(angle.at(ang_i) - angle.at(ang_j)) + prob_ij;
+
+	double prob = (ene_i == ene_j) ? prob_ii_ji : (prob_ij_jj - prob_ii_ji)*(energy_val - energy.at(ene_i))/(energy.at(ene_j) - energy.at(ene_i)) + prob_ii_ji;
+
+	return prob;
+}

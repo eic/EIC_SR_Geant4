@@ -213,5 +213,32 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"vac_beampipe",world_log,false,0);
 	beampipeVac_log->SetVisAttributes(G4VisAttributes(G4Color::Grey()));
 
+
+	// absorbers
+	G4Box* abs_box_1 = new G4Box("abs_box_1",30*cm/2,30*cm/2,5*cm/2); 
+	G4Box* abs_box_2 = new G4Box("abs_box_2",10*cm/2,10*cm/2,5*cm/2); 
+	G4Box* abs_box_3 = new G4Box("abs_box_3",10*cm/2,10*cm/2,5*cm/2); 
+	G4Box* abs_box_4 = new G4Box("abs_box_4",50*cm/2,50*cm/2,5*cm/2); 
+
+	G4VSolid* abs_solid_1 = new G4SubtractionSolid("abs_solid_1",abs_box_1,beampipeVac_solid,0,G4ThreeVector(0.,0.,-1527*cm));
+	G4VSolid* abs_solid_2 = new G4SubtractionSolid("abs_solid_2",abs_box_2,beampipeVac_solid,0,G4ThreeVector(12*cm,0.,-475*cm));
+	G4VSolid* abs_solid_3 = new G4SubtractionSolid("abs_solid_3",abs_box_3,beampipeVac_solid,0,G4ThreeVector(-14*cm,0.,550*cm));
+	G4VSolid* abs_solid_4 = new G4SubtractionSolid("abs_solid_4",abs_box_4,beampipeVac_solid,0,G4ThreeVector(0.,0.,3720*cm));
+
+	G4LogicalVolume* abs_log_1 = new G4LogicalVolume(abs_solid_1,mat_vac, "abs_log_1");
+	G4LogicalVolume* abs_log_2 = new G4LogicalVolume(abs_solid_2,mat_vac, "abs_log_2");
+	G4LogicalVolume* abs_log_3 = new G4LogicalVolume(abs_solid_3,mat_vac, "abs_log_3");
+	G4LogicalVolume* abs_log_4 = new G4LogicalVolume(abs_solid_4,mat_vac, "abs_log_4");
+
+	G4VPhysicalVolume* abs_phys_1 = new G4PVPlacement(0, G4ThreeVector(0.,0.,1527*cm),abs_log_1,"abs_1",world_log,false,0);
+	G4VPhysicalVolume* abs_phys_2 = new G4PVPlacement(0, G4ThreeVector(-12*cm,0.,475*cm),abs_log_2,"abs_2",world_log,false,0);
+	G4VPhysicalVolume* abs_phys_3 = new G4PVPlacement(0, G4ThreeVector(14*cm,0.,-550*cm),abs_log_3,"abs_3",world_log,false,0);
+	G4VPhysicalVolume* abs_phys_4 = new G4PVPlacement(0, G4ThreeVector(0.,0.,-3720*cm),abs_log_4,"abs_4",world_log,false,0);
+
+	abs_log_1->SetVisAttributes(G4VisAttributes(G4Color::Magenta()));  
+	abs_log_2->SetVisAttributes(G4VisAttributes(G4Color::Magenta()));  
+	abs_log_3->SetVisAttributes(G4VisAttributes(G4Color::Magenta()));  
+	abs_log_4->SetVisAttributes(G4VisAttributes(G4Color::Magenta()));  
+
 	return world_phys;
 }

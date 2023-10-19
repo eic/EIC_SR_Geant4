@@ -1,5 +1,3 @@
-#include "TMath.h"
-
 #include "SteppingAction.hh"
 #include "DetectorConstruction.hh"
 #include "G4Step.hh"
@@ -24,4 +22,22 @@ SteppingAction::~SteppingAction()
 {}
 
 void SteppingAction::UserSteppingAction(const G4Step *step)
-{}
+{
+
+	const G4Track* track = step->GetTrack();
+
+	// check if the track (=gamma) is killed
+	if(track->GetTrackStatus() == fStopAndKill && 
+		track->GetParticleDefinition()->GetPDGEncoding() == G4Gamma::Gamma()->GetPDGEncoding())
+	{	
+		runAction->_gammaPosX.push_back(step->GetPostStepPoint()->GetPosition().getX()/CLHEP::cm);
+		runAction->_gammaPosY.push_back(step->GetPostStepPoint()->GetPosition().getY()/CLHEP::cm);
+		runAction->_gammaPosZ.push_back(step->GetPostStepPoint()->GetPosition().getZ()/CLHEP::cm);
+		runAction->_gammaMomX.push_back(step->GetPostStepPoint()->GetMomentum().getX()/CLHEP::eV);
+		runAction->_gammaMomY.push_back(step->GetPostStepPoint()->GetMomentum().getY()/CLHEP::eV);
+		runAction->_gammaMomZ.push_back(step->GetPostStepPoint()->GetMomentum().getZ()/CLHEP::eV);
+		runAction->_gammaEnergy.push_back(track->GetTotalEnergy()/CLHEP::eV);
+	}
+
+	return;
+}

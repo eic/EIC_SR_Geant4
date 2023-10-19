@@ -4,8 +4,17 @@
 #include "G4ParticleChange.hh"
 #include "G4VProcess.hh"
 #include "G4VTrackTerminator.hh"
+#include "G4Gamma.hh"
 
-class G4VScorer;
+#include <string>
+#include <fstream>
+#include <vector>
+#include <utility> // pair
+#include <stdexcept> // runtime_error
+#include <sstream> // stringstream
+#include <stdio.h>
+
+using namespace std;
 
 class GammaReflectionProcess : public G4VProcess
 {
@@ -49,6 +58,20 @@ private:
 
   	GammaReflectionProcess(const GammaReflectionProcess &);
   	GammaReflectionProcess &operator=(const GammaReflectionProcess &);
+
+	vector<pair<double, vector<double>>> _reflectData;
+	vector<double> _grazingAngle_mrad;
+	vector<double> _photonEnergy_eV;
+
+	vector<pair<double, vector<double>>> ReadReflectData(string filename,
+		vector<double> &angle, vector<double> &energy);
+	void PrintReflectData(vector<pair<double, vector<double>>> dataset,
+		vector<double> angle, vector<double> energy);
+	void FindClosestIndexesInVec(vector<double> vec, double val, int &id1, int &id2);
+	double FindReflectionProbability(vector<pair<double, vector<double>>> dataset,
+		vector<double> angle, vector<double> energy, 
+		double angle_val, double energy_val);
+
 };
 
 #endif

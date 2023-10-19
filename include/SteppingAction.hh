@@ -5,6 +5,7 @@
 #include "G4ThreeVector.hh"
 #include "globals.hh"
 #include "RunAction.hh"
+#include "G4Gamma.hh"
 
 class G4LogicalVolume;
 class RunAction;

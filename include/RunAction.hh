@@ -19,9 +19,9 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <utility> // std::pair
-#include <stdexcept> // std::runtime_error
-#include <sstream> // std::stringstream
+#include <utility> // pair
+#include <stdexcept> // runtime_error
+#include <sstream> // stringstream
 #include <stdio.h>
 
 using namespace std;
@@ -32,57 +32,40 @@ class RunMessenger;
 class RunAction: public G4UserRunAction
 {
 public:
-    RunAction();
-    ~RunAction();
+	RunAction();
+    	~RunAction();
 
-    void BeginOfRunAction(const G4Run*);
-    void EndOfRunAction(const G4Run*);
+    	void BeginOfRunAction(const G4Run*);
+    	void EndOfRunAction(const G4Run*);
 
-    G4String GetOutputFileName() { return _output_filename;}
-    void SetOutputFilename(G4String name){_output_filename = name;}
+    	G4String GetOutputFileName() { return _output_filename;}
+    	void SetOutputFilename(G4String name){_output_filename = name;}
 
-    TTree* _tree;
+    	TTree* _tree;
 
-    G4int _Event_ID;
-    G4int _PDG;
-    G4double _Q;
-    G4double _Mass;
+    	G4int _event;
+    	G4int _beamPdg;
+	G4float _beamPosX;
+	G4float _beamPosY;
+	G4float _beamPosZ;
+	G4float _beamMomX;
+	G4float _beamMomY;
+	G4float _beamMomZ;
+	G4float _beamEnergy;
 
-    G4int _Det0;
-    G4double _X0;
-    G4double _Y0;
-    G4double _Z0;
-    G4double _Mom_X0;
-    G4double _Mom_Y0;
-    G4double _Mom_Z0;
-    G4double _Ekin0;
+	vector<G4float> _gammaPosX;
+	vector<G4float> _gammaPosY;
+	vector<G4float> _gammaPosZ;
+	vector<G4float> _gammaMomX;
+	vector<G4float> _gammaMomY;
+	vector<G4float> _gammaMomZ;
+	vector<G4float> _gammaEnergy;
 
-    G4int _Det1;
-    G4double _X1;
-    G4double _Y1;
-    G4double _Z1;
-    G4double _Mom_X1;
-    G4double _Mom_Y1;
-    G4double _Mom_Z1;
-    G4double _Ekin1;
-
-    G4double _targetL;
-    G4double _targetW;
-    G4double _targetH;
-
-	std::vector<std::pair<double, std::vector<double>>> _reflectData;
-	std::vector<double> _grazingAngle;
-	std::vector<double> _photonEnergy;
 private:
-    G4Timer* _timer;
-    G4String _output_filename;
+    	G4Timer* _timer;
+    	G4String _output_filename;
 
-    RunMessenger* fRunMessenger;
-
-	std::vector<std::pair<double, std::vector<double>>> ReadReflectData(std::string filename,
-		std::vector<double> &angle, std::vector<double> &energy);
-	void PrintReflectData(std::vector<std::pair<double, std::vector<double>>> dataset,
-		std::vector<double> angle, std::vector<double> energy);
+    	RunMessenger* fRunMessenger;
 };
 
 #endif

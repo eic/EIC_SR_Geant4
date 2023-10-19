@@ -8,7 +8,7 @@ namespace Constants
 {
     const G4double world_dim_x =  10.0*m;
     const G4double world_dim_y =  10.0*m;
-    const G4double world_dim_z = 120.0*m;
+    const G4double world_dim_z =  80.0*m;
 
     const G4double target_pos_x =  0.0*mm;
     const G4double target_pos_y =  0.0*mm;
