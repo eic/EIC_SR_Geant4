@@ -66,8 +66,8 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		G4ThreeVector posLoc = *rotation * (stepPos - translation);
 		// get normal to the surface (gamma is passing outward from the volume of interest to the world)
 		G4ThreeVector norm = solid->SurfaceNormal(posLoc); 
-		G4ThreeVector gammDirLoc = *rotation * gammaDir_i;
-		G4double incidentAngle_rad = acos( norm.dot(gammDirLoc) );
+		G4ThreeVector gammDirLoc_i = *rotation * gammaDir_i;
+		G4double incidentAngle_rad = acos( norm.dot(gammDirLoc_i) );
 		G4double grazingAngle_rad = M_PI_2 - incidentAngle_rad; 
 
 		G4ThreeVector normGlob = rotation_inv*norm + translation;
@@ -98,21 +98,19 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 
 		// get probability
 		G4double prob = FindReflectionProbability(_reflectData,_grazingAngle_mrad,_photonEnergy_eV,grazingAngle_rad/1000.0,gammaEnergy_eV);
-/*
-		G4cout<<"trackID = "<<track.GetTrackID()<<G4endl;
-		G4cout<<"name = "<<name<<G4endl;
-		G4cout<<"gammaEnergy_eV = "<<gammaEnergy_eV<<G4endl;
-		G4cout<<"incidentAngle_rad = "<<incidentAngle_rad<<G4endl;
-		G4cout<<"grazingAngle_rad = "<<grazingAngle_rad<<G4endl;
-		G4cout<<"norm = "<<norm.x()<<";"<<norm.y()<<";"<<norm.z()<<G4endl;
-		G4cout<<"normGlob = "<<normGlob.x()<<";"<<normGlob.y()<<";"<<normGlob.z()<<G4endl;
-		G4cout<<"gammaDir_i = "<<gammaDir_i.x()<<";"<<gammaDir_i.y()<<";"<<gammaDir_i.z()<<G4endl;
-		G4cout<<"gammaDir_r = "<<gammaDir_r.x()<<";"<<gammaDir_r.y()<<";"<<gammaDir_r.z()<<G4endl;
-		G4cout<<"stepPos = "<<stepPos.x()<<";"<<stepPos.y()<<";"<<stepPos.z()<<G4endl;
-		G4cout<<"prob = "<<prob<<G4endl;
 
-		G4cout<<G4endl;
-*/		
+		// roughtness
+		// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), but as surface roughness is taken into account, 
+		// the theta and phi angles (between the reflected direction and the surface normal) are perturbated with a gaussian distributied offset
+		G4double sigmaRatio = 0.005;
+		G4double thetaOffset 	= atan(sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+		G4double phiOffset 	= atan(sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+		// where thetaOffset and phiOffset are the random angles added to the calculated ones (those of mirror reflection), and sigmaRation is the value 
+		// the user inputs in the Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation of the size 
+		// of cavities on the surface, and sigmaH is the st.dev. of the depth of those). Essentially, the larger the "roughness" value (theoretically the ratio 
+		// of RMS roughness and autocorrelation length), the more the reflection direction is perturbated around the perfect mirror direction.
+		gammaDir_r.setTheta(gammaDir_r.getTheta() + thetaOffset);
+		gammaDir_r.setPhi(gammaDir_r.getPhi() + phiOffset);
 
 		if(G4UniformRand() > prob)
     			aParticleChange.ProposeTrackStatus(fStopAndKill);
