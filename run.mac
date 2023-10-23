@@ -5,7 +5,7 @@
 ##-----------------------------------------##
 /output/filename ../output/output.root
 /stack/killsecondaries 0
-/beam/deltaP 0.0
+/beam/deltaP 0.109e-2
 /beam/P 18.0 GeV
 /beam/pName e-
 /beam/PdirX -2.48090543441244E-02

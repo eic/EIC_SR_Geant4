@@ -109,8 +109,8 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		// the user inputs in the Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation of the size 
 		// of cavities on the surface, and sigmaH is the st.dev. of the depth of those). Essentially, the larger the "roughness" value (theoretically the ratio 
 		// of RMS roughness and autocorrelation length), the more the reflection direction is perturbated around the perfect mirror direction.
-		gammaDir_r.setTheta(gammaDir_r.getTheta() + thetaOffset);
-		gammaDir_r.setPhi(gammaDir_r.getPhi() + phiOffset);
+//		gammaDir_r.setTheta(gammaDir_r.getTheta() + thetaOffset);
+//		gammaDir_r.setPhi(gammaDir_r.getPhi() + phiOffset);
 
 		if(G4UniformRand() > prob)
     			aParticleChange.ProposeTrackStatus(fStopAndKill);
