@@ -85,7 +85,6 @@ void PhysicsList::ConstructEM()
 	
 			// turn on the custom gamma process
 			pmanager->AddDiscreteProcess(new GammaReflectionProcess);
-            
     		} 
 		else if (particleName == "e-") 
 		{
@@ -93,6 +92,7 @@ void PhysicsList::ConstructEM()
       			pmanager->AddProcess(new G4eMultipleScattering,       -1, 1, -1);
       			pmanager->AddProcess(new G4eIonisation,               -1, 2, 1);
       			pmanager->AddProcess(new G4eBremsstrahlung,           -1, 3, 2);
+
       			if (fSRType) 
 			{
         			pmanager->AddProcess(fSync,    -1,-1, 3);
@@ -102,7 +102,6 @@ void PhysicsList::ConstructEM()
         			pmanager->AddProcess(new G4SynchrotronRadiationInMat,-1,-1, 3); 
       			}
       			pmanager->AddProcess(new G4StepLimiter,               -1,-1, 4);
-     
     		} 
 		else if (particleName == "e+") 
 		{
@@ -120,7 +119,6 @@ void PhysicsList::ConstructEM()
 				pmanager->AddProcess(new G4SynchrotronRadiationInMat, -1,-1, 4);
 	      		}
 	      		pmanager->AddProcess(new G4StepLimiter,               -1,-1, 5);
-	      
 	    	} 
 		else if (particleName == "mu+" || particleName == "mu-") 
 		{

@@ -27,6 +27,7 @@ G4double GammaReflectionProcess::PostStepGetPhysicalInteractionLength(const G4Tr
 G4VParticleChange * 
 GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 {
+
   	aParticleChange.Initialize(track);
 
     	G4StepPoint*          	preStep		= step.GetPreStepPoint();
@@ -37,6 +38,7 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 	// check if the next step is not outside the world and skip everything except for gamma
 	if(!postPV || track.GetParticleDefinition()->GetPDGEncoding() != G4Gamma::Gamma()->GetPDGEncoding())
 		return &aParticleChange;
+
 
 	// get tracks at the edge of the vacuum beam pipe and world
 	if(	postStep->GetStepStatus() == fGeomBoundary && postPV->GetName() == "world" &&
@@ -64,13 +66,13 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		G4VSolid* solid = touchable->GetSolid();
 		G4String name = touchable->GetVolume()->GetName();
 		G4ThreeVector posLoc = *rotation * (stepPos - translation);
-		// get normal to the surface (gamma is passing outward from the volume of interest to the world)
-		G4ThreeVector norm = solid->SurfaceNormal(posLoc); 
-		G4ThreeVector gammDirLoc_i = *rotation * gammaDir_i;
-		G4double incidentAngle_rad = acos( norm.dot(gammDirLoc_i) );
+		// the norm vector looks from inside to outside of the volume
+		G4ThreeVector normLoc = solid->SurfaceNormal(posLoc); 
+		G4ThreeVector gammaDirLoc_i = *rotation * gammaDir_i;
+		G4double incidentAngle_rad = acos( normLoc.dot(gammaDirLoc_i) );
 		G4double grazingAngle_rad = M_PI_2 - incidentAngle_rad; 
 
-		G4ThreeVector normGlob = rotation_inv*norm + translation;
+		G4ThreeVector norm = rotation_inv*normLoc + translation;
 
 		//- Reflection
 		// https://link.springer.com/chapter/10.1007/978-1-4842-7185-8_8
@@ -82,7 +84,9 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		// incoming ray direction does not have to be normalized, and the outgoing 
 		// direction vector will be computed having the same length as the incoming one.
 
-		G4ThreeVector gammaDir_r = gammaDir_i - 2.0* normGlob.dot(gammaDir_i) *normGlob;
+		G4ThreeVector gammaDirLoc_r = gammaDirLoc_i - 2.0 * normLoc.dot(gammaDirLoc_i) * normLoc;
+		G4ThreeVector gammaDir_r = rotation_inv * gammaDirLoc_r + translation;
+
 		// check that the half-angle between reflected and incident angles is equal to the grazing angle
 		if(abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad > 1e-4)
 		{
@@ -92,14 +96,14 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 			G4cout<<"- abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad = "<<abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad<<G4endl;
 			G4cout<<"- gammaDir_i(x,y,z) = "<<gammaDir_i.x()<<" , "<<gammaDir_i.y()<<" , "<<gammaDir_i.z()<<G4endl;
 			G4cout<<"- gammaDir_r(x,y,z) = "<<gammaDir_r.x()<<" , "<<gammaDir_r.y()<<" , "<<gammaDir_r.z()<<G4endl;
-			G4cout<<"- normGlob (x,y,z) = "<<normGlob.x()<<" , "<<normGlob.y()<<" , "<<normGlob.z()<<G4endl;
+			G4cout<<"- norm (x,y,z) = "<<norm.x()<<" , "<<norm.y()<<" , "<<norm.z()<<G4endl;
 			throw runtime_error("\n\n[ERROR] GammaReflectionProcess::PostStepDoIt ==> Wrong reflection direction\n");
 		}
 
 		// get probability
 		G4double prob = FindReflectionProbability(_reflectData,_grazingAngle_mrad,_photonEnergy_eV,grazingAngle_rad/1000.0,gammaEnergy_eV);
 
-		// roughtness
+		//- Roughtness
 		// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), but as surface roughness is taken into account, 
 		// the theta and phi angles (between the reflected direction and the surface normal) are perturbated with a gaussian distributied offset
 		G4double sigmaRatio = 0.005;
@@ -109,8 +113,21 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		// the user inputs in the Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation of the size 
 		// of cavities on the surface, and sigmaH is the st.dev. of the depth of those). Essentially, the larger the "roughness" value (theoretically the ratio 
 		// of RMS roughness and autocorrelation length), the more the reflection direction is perturbated around the perfect mirror direction.
-//		gammaDir_r.setTheta(gammaDir_r.getTheta() + thetaOffset);
-//		gammaDir_r.setPhi(gammaDir_r.getPhi() + phiOffset);
+
+		G4ThreeVector gammaDir_tmp = gammaDir_r;
+
+		gammaDir_tmp.setTheta(gammaDir_r.getTheta() + thetaOffset);
+		gammaDir_tmp.setPhi(gammaDir_r.getPhi() + phiOffset);
+
+		// the offsetted reflected gamma is within physical ranges; since the norm vector looks from inside to outside of the vacuum volume,
+		// the theta should be (pi/2;pi); see above "SurfaceNormal": SurfaceNormal > 0 --> (pi/2;pi) OR SurfaceNormal < 0 --> (0;pi/2)
+		while(acos(norm.dot(gammaDir_tmp)) < M_PI_2)
+		{
+			thetaOffset = atan(sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+			gammaDir_tmp.setTheta(gammaDir_r.getTheta() + thetaOffset);
+		}
+
+		gammaDir_r = gammaDir_tmp;
 
 		if(G4UniformRand() > prob)
     			aParticleChange.ProposeTrackStatus(fStopAndKill);

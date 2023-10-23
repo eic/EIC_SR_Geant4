@@ -4,13 +4,16 @@
 #include "G4RunManager.hh"
 
 EventAction::EventAction(RunAction* runAct) : runAction(runAct)
-{}
+{
+	_timer = new G4Timer;
+}
 
 EventAction::~EventAction()
 {}
 
 void EventAction::BeginOfEventAction(const G4Event* event)
 {
+	_timer->Start();
     	runAction->_event = event->GetEventID();
 
 	runAction->_gammaPosX.clear();
@@ -39,6 +42,12 @@ void EventAction::EndOfEventAction(const G4Event*)
 	runAction->_beamMomY = -999;
 	runAction->_beamMomZ = -999;
 	runAction->_beamEnergy = -999;
+
+    	_timer->Stop();
+	// 'real' is wall clock time - time from start to finish of the call. This is all elapsed time 
+	// including time slices used by other processes and time the process spends blocked (for example 
+	// if it is waiting for I/O to complete).
+	runAction->_avgEventTime += _timer->GetRealElapsed();
 
 	return;
 }

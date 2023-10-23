@@ -61,6 +61,8 @@ public:
 	vector<G4float> _gammaMomZ;
 	vector<G4float> _gammaEnergy;
 
+	G4double _avgEventTime;
+
 private:
     	G4Timer* _timer;
     	G4String _output_filename;
