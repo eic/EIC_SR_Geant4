@@ -75,6 +75,47 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		beampipeOrig_solid, beampipeExt_solid, 0, G4ThreeVector(0, 0, simPar.GetExtE()-simPar.GetExtL()/2));
 	G4LogicalVolume* beampipeUni_log = new G4LogicalVolume(beampipeUni_solid, mat_vac,"beampipeUni");
 
+
+	for(int iMag = 0; iMag < simPar.GetMagNum(); iMag++)
+	{
+		G4cout<<simPar.GetMagName(iMag)<<G4endl;
+		G4cout<<simPar.GetMagType(iMag)<<G4endl;
+
+		G4double rotY_angle = (simPar.GetMagStartDirZ(iMag) == 0) ? 0.0*rad : 
+			atan(simPar.GetMagStartDirX(iMag)/simPar.GetMagStartDirZ(iMag))*rad;
+		G4RotationMatrix* mag_rot = new G4RotationMatrix();
+		mag_rot->rotateY(-rotY_angle);
+
+set the name to the magnet objects
+
+		G4Box* mag_box = new G4Box("mag_box",2*m/2,2*m/2,simPar.GetMagLength(iMag)/2); 
+		G4VSolid* mag_solid_1 = new G4IntersectionSolid("mag_solid", beampipeUni_solid, mag_box,
+		mag_rot,G4ThreeVector(simPar.GetMagStartPosX(iMag)+simPar.GetMagLength(iMag)*sin(rotY_angle)/2.,
+					simPar.GetMagStartPosY(iMag),
+					simPar.GetMagStartPosZ(iMag)+simPar.GetMagLength(iMag)*cos(rotY_angle)/2.));
+		G4LogicalVolume* mag_log = new G4LogicalVolume(mag_solid_1,mat_vac, "mag_log");
+		G4VPhysicalVolume* mag_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),mag_log,
+										"mag",world_log,false,0);
+		mag_log->SetVisAttributes(G4VisAttributes(G4Color::Blue()));  
+
+		G4MagneticField* mag_mag = new G4UniformMagField(G4ThreeVector(	simPar.GetMagBx(iMag), 
+										simPar.GetMagBy(iMag),
+										simPar.GetMagBz(iMag)));
+		G4FieldManager* localFieldMgr = new G4FieldManager(mag_mag);
+		localFieldMgr->SetDetectorField(mag_mag);
+		localFieldMgr->CreateChordFinder(mag_mag);
+		mag_log->SetFieldManager(localFieldMgr, true);
+	
+	}
+
+
+exit(-1);
+
+
+
+
+
+
 	// D2EF2-box
 	G4double length_D2EF2 = 2.726015431*m;
 	G4double startPosX_D2EF2 = 7.61776450600000E+00*cm;
