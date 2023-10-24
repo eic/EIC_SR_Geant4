@@ -40,7 +40,13 @@ private:
 	vector<G4double> _magBy;
 	vector<G4double> _magBz;
 	vector<G4double> _magK1;
-	
+
+	vector<G4double> _absSizeX;
+	vector<G4double> _absSizeY;
+	vector<G4double> _absSizeZ;
+	vector<G4double> _absPosX;
+	vector<G4double> _absPosY;
+	vector<G4double> _absPosZ;
 
 public:
 	void InitDefault();	
@@ -73,6 +79,13 @@ public:
 	G4double GetMagBz(int i){return _magBz.at(i);}
 	G4double GetMagK1(int i){return _magK1.at(i);}
 	
+	G4int GetAbsNum(){return _absSizeX.size();}
+	G4double GetAbsSizeX(int i){return _absSizeX.at(i);}
+	G4double GetAbsSizeY(int i){return _absSizeY.at(i);}
+	G4double GetAbsSizeZ(int i){return _absSizeZ.at(i);}
+	G4double GetAbsPosX(int i){return _absPosX.at(i);}
+	G4double GetAbsPosY(int i){return _absPosY.at(i);}
+	G4double GetAbsPosZ(int i){return _absPosZ.at(i);}
 };
 
 #endif

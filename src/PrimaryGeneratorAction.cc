@@ -36,6 +36,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
 	SimParameters simPar;
 	simPar.InitDefault();
+	simPar.PrintBeamParameters();
 
     	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
     	G4ParticleDefinition* particleDef;
