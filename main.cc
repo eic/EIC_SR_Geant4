@@ -17,6 +17,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
+#include "SimParameters.hh"
 
 #include <ctime>
 #include <iostream>

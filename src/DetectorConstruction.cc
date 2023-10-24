@@ -12,7 +12,7 @@
 #include "G4PhysicalConstants.hh"
 #include "G4RunManager.hh"
 #include "G4ThreeVector.hh"
-#include "Constants.hh"
+#include "SimParameters.hh"
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
 #include "CADMesh.hh"
@@ -38,6 +38,10 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
+	SimParameters simPar;
+	simPar.InitDefault();
+	simPar.PrintGeoParameters();
+
 	G4NistManager* nistManager = G4NistManager::Instance();
 	//------------------------------------------------------------------------
 	//- Materials
@@ -47,9 +51,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//------------------------------------------------------------------------
     	//- Build world
    	G4Box* world_box = new G4Box("world",
-                                 Constants::world_dim_x/2,
-                                 Constants::world_dim_y/2,
-                                 Constants::world_dim_z/2);
+                                 simPar.GetWorldSizeX()/2,
+                                 simPar.GetWorldSizeY()/2,
+                                 simPar.GetWorldSizeZ()/2);
     	G4LogicalVolume* world_log = new G4LogicalVolume(world_box, mat_vac, "world");
     	G4VPhysicalVolume* world_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),world_log,"world",0,false,0);
 	world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
@@ -62,14 +66,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4LogicalVolume* beampipeOrig_log = new G4LogicalVolume(beampipeOrig_solid, mat_vac,"beampipeOrig");
 
 	//- Extention
-	G4double ext_length = 370*cm;
-	G4double ext_radius = 20.0*cm;
-	G4double ext_endpos = -3350.0*cm;
-	G4VSolid* beampipeExt_solid = new G4Tubs("beampipeExt_solid", 0, ext_radius, ext_length/2, 0, 2.0 * M_PI);
+	G4VSolid* beampipeExt_solid = new G4Tubs("beampipeExt_solid", 0, 
+		simPar.GetExtR(), simPar.GetExtL()/2, 0, 2.0 * M_PI);
 	G4LogicalVolume* beampipeExt_log = new G4LogicalVolume(beampipeExt_solid, mat_vac,"beampipeExt");
 
 	//- Union
-	G4VSolid* beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", beampipeOrig_solid, beampipeExt_solid, 0, G4ThreeVector(0, 0, ext_endpos-ext_length/2));
+	G4VSolid* beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", 
+		beampipeOrig_solid, beampipeExt_solid, 0, G4ThreeVector(0, 0, simPar.GetExtE()-simPar.GetExtL()/2));
 	G4LogicalVolume* beampipeUni_log = new G4LogicalVolume(beampipeUni_solid, mat_vac,"beampipeUni");
 
 	// D2EF2-box

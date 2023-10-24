@@ -16,8 +16,6 @@ GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionPr
 	PrintReflectData(_reflectDataMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
 	cout<<"\n\n[DEBUG] GammaReflectionProcess::GammaReflectionProcess ==> Au"<<endl;
 	PrintReflectData(_reflectDataMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
-
-	exit(-1);
 }
 
 GammaReflectionProcess::~GammaReflectionProcess()

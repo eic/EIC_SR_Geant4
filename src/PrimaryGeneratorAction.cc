@@ -7,7 +7,7 @@
 #include "G4Proton.hh"
 #include "G4PionPlus.hh"
 #include "G4Electron.hh"
-#include "Constants.hh"
+#include "SimParameters.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4RotationMatrix.hh"
 #include "globals.hh"
@@ -34,6 +34,9 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
+	SimParameters simPar;
+	simPar.InitDefault();
+
     	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
     	G4ParticleDefinition* particleDef;
     	particleDef = particleTable->FindParticle(_pName.c_str());
@@ -66,7 +69,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   	rotation.rotateX(atan(_PdirY/_PdirZ)*rad);
   	rotation.rotateY(atan(_PdirX/_PdirZ)*rad);
   	rotation.rotateZ(atan(_PdirY/_PdirX)*rad);
-	G4ThreeVector translation = G4ThreeVector(Constants::beam_pos_x,Constants::beam_pos_y,Constants::beam_pos_z); 
+	G4ThreeVector translation = G4ThreeVector(	simPar.GetBeamPosX(),
+							simPar.GetBeamPosY(),
+							simPar.GetBeamPosZ()); 
 
 	G4ThreeVector posXYZrot = rotation * G4ThreeVector(posX,posY,posZ) + translation;
 
