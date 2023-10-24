@@ -13,6 +13,7 @@
 #include <stdexcept> // runtime_error
 #include <sstream> // stringstream
 #include <stdio.h>
+#include <map>
 
 using namespace std;
 
@@ -59,9 +60,10 @@ private:
   	GammaReflectionProcess(const GammaReflectionProcess &);
   	GammaReflectionProcess &operator=(const GammaReflectionProcess &);
 
-	vector<pair<double, vector<double>>> _reflectData;
-	vector<double> _grazingAngle_mrad;
-	vector<double> _photonEnergy_eV;
+	map<string, string> _reflectFileNameMap;
+	map<string, vector<pair<double, vector<double>>>> _reflectDataMap;
+	map<string, vector<double>> _grazingAngleMap;
+	map<string, vector<double>> _photonEnergyMap;
 
 	vector<pair<double, vector<double>>> ReadReflectData(string filename,
 		vector<double> &angle, vector<double> &energy);

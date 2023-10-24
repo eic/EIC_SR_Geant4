@@ -3,16 +3,21 @@
 #include "G4VSolid.hh"
 #include "TROOT.h"
 
+
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
 {
-	string fName = "../materials/02-Copper.csv";
-	_reflectData = ReadReflectData(fName,_grazingAngle_mrad,_photonEnergy_eV);
-	PrintReflectData(_reflectData,_grazingAngle_mrad,_photonEnergy_eV);
+	_reflectFileNameMap["Cu"] = "../materials/02-Copper.csv";
+	_reflectFileNameMap["Au"] = "../materials/04-Gold.csv";
 
-	// print column names
-	printf("Angl/Ene : ");
-	for(int j = 0; j < _grazingAngle_mrad.size(); ++j){printf("%.2e  ",_grazingAngle_mrad.at(j));}
-	printf("\n");
+	_reflectDataMap["Cu"] = ReadReflectData(_reflectFileNameMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
+	_reflectDataMap["Au"] = ReadReflectData(_reflectFileNameMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
+
+	cout<<"\n\n[DEBUG] GammaReflectionProcess::GammaReflectionProcess ==> Cu"<<endl;
+	PrintReflectData(_reflectDataMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
+	cout<<"\n\n[DEBUG] GammaReflectionProcess::GammaReflectionProcess ==> Au"<<endl;
+	PrintReflectData(_reflectDataMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
+
+	exit(-1);
 }
 
 GammaReflectionProcess::~GammaReflectionProcess()
@@ -101,7 +106,7 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		}
 
 		// get probability
-		G4double prob = FindReflectionProbability(_reflectData,_grazingAngle_mrad,_photonEnergy_eV,grazingAngle_rad/1000.0,gammaEnergy_eV);
+		G4double prob = FindReflectionProbability(_reflectDataMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingAngle_rad/1000.0,gammaEnergy_eV);
 
 		//- Roughtness
 		// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), but as surface roughness is taken into account, 
