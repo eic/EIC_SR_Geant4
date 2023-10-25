@@ -64,7 +64,7 @@ public:
 	G4double _avgEventTime;
 
 private:
-    	G4Timer* _timer;
+    	G4Timer* timer;
     	G4String _output_filename;
 
     	RunMessenger* fRunMessenger;

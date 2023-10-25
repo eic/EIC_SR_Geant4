@@ -12,7 +12,6 @@ public:
 	SimParameters();
 	~SimParameters();
 private:
-	// geometry
     	G4double _world_dim_x;
     	G4double _world_dim_y;
     	G4double _world_dim_z;
@@ -62,11 +61,14 @@ private:
     	G4String _beamName;
 
 	G4bool _SRtype;
+
+	G4double _gammaEcut;
 public:
 	void InitDefault();	
 	void PrintGeoParameters();
 	void PrintBeamParameters();
 	void PrintSRtype();
+	void PrintGammaEcut();
 
 	G4double GetWorldSizeX(){return _world_dim_x;}
 	G4double GetWorldSizeY(){return _world_dim_y;}
@@ -120,6 +122,8 @@ public:
     	G4String GetBeamName(){return _beamName;}
 
 	G4bool GetSRtype(){return _SRtype;}
+
+	G4double GetGammaEcut(){return _gammaEcut;}
 };
 
 #endif

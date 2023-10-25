@@ -3,26 +3,29 @@
 
 #include "G4VUserPhysicsList.hh"
 #include "globals.hh"
+#include "SimParameters.hh"
 
 class G4DecayPhysics;
+class SimParameters;
 
 class PhysicsList: public G4VUserPhysicsList
 {
 public:
-  PhysicsList();
-  virtual ~PhysicsList();
+  	PhysicsList();
+  	virtual ~PhysicsList();
 
-  // Construct particles
-  virtual void ConstructParticle();
+  	// Construct particles
+  	virtual void ConstructParticle();
 
-  // Construct processes and register them
-  virtual void ConstructProcess();
+  	// Construct processes and register them
+  	virtual void ConstructProcess();
 
 private:
 
-  void ConstructEM();
+  	void ConstructEM();
 
-  G4DecayPhysics*         fDecayPhysics;
+  	G4DecayPhysics* fDecayPhysics;
+	SimParameters* simPar;
 };
 
 #endif

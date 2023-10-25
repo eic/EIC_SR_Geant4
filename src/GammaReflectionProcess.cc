@@ -1,8 +1,8 @@
 #include "GammaReflectionProcess.hh"
 #include "G4VParticleChange.hh"
 #include "G4VSolid.hh"
-#include "TROOT.h"
-
+#include "globals.hh"
+#include "G4SystemOfUnits.hh"
 
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
 {
@@ -55,7 +55,7 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		//..............|.........................point.........|
 		//..............-----------------------------------------
 
-		G4double gammaEnergy_eV = track.GetTotalEnergy()/CLHEP::eV; // MeV --> eV
+		G4double gammaEnergy_eV = track.GetTotalEnergy()/eV;
 		G4ThreeVector gammaDir_i = postStep->GetMomentum()/postStep->GetMomentum().mag(); 
 		G4ThreeVector stepPos = postStep->GetPosition();
 
@@ -140,9 +140,8 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 			aParticleChange.ProposeMomentumDirection(gammaDir_r);
 	}
 
-	// get tracks at the edge of the vacuum beam pipe and absorber
-	if(	postStep->GetStepStatus() == fGeomBoundary && G4StrUtil::contains(postPV->GetName(),"abs_") &&
-		(G4StrUtil::contains(prePV->GetName(),"mag_") || G4StrUtil::contains(prePV->GetName(),"vac_")))
+	// get tracks at the edge of the absorber
+	if(postStep->GetStepStatus() == fGeomBoundary && G4StrUtil::contains(postPV->GetName(),"abs_"))
 	{
 		aParticleChange.ProposeTrackStatus(fStopAndKill);
 	}
@@ -222,9 +221,13 @@ vector<pair<double, vector<double>>> GammaReflectionProcess::ReadReflectData(str
 
     	// make sure the file is open
     	if(!myFile.is_open()) 
-		throw runtime_error(
-			Form("\n\n[ERROR] GammaReflectionProcess::ReadReflectData ==> Cannot open of find the file: %s\n",
-				filename.c_str()));
+	{
+		G4cout<<"\n\n=================================================================="<<G4endl;
+		G4cout<<"[INFO] GammaReflectionProcess::ReadReflectData"<<G4endl;
+		G4cout<<"material reflection data file name = "<<filename<<G4endl;
+		G4cout<<"==================================================================\n\n"<<G4endl;
+		throw runtime_error("[ERROR] GammaReflectionProcess::ReadReflectData ==> Cannot open or find the file\n");
+	}
 
     	// Helper vars
     	string line, colname;

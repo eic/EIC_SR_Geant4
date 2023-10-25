@@ -9,25 +9,26 @@
 StackingMessenger::StackingMessenger(StackingAction * StackAct):G4UImessenger(),
     fStackingAction(StackAct), _directory(0), _kill_secondaries_Cmd(0)
 {
-    _directory = new G4UIdirectory("/stack/");
-    _directory->SetGuidance("Track stacking");
+    	_directory = new G4UIdirectory("/stack/");
+    	_directory->SetGuidance("Track stacking");
 
-    _kill_secondaries_Cmd = new G4UIcmdWithAnInteger("/stack/killsecondaries",this);
-    _kill_secondaries_Cmd->SetGuidance("Set kill secondaries");
-    _kill_secondaries_Cmd->SetParameterName("kill_secondaries",false);
-    _kill_secondaries_Cmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+    	_kill_secondaries_Cmd = new G4UIcmdWithAnInteger("/stack/killsecondaries",this);
+    	_kill_secondaries_Cmd->SetGuidance("Set kill secondaries");
+    	_kill_secondaries_Cmd->SetParameterName("kill_secondaries",false);
+    	_kill_secondaries_Cmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 }
 
 StackingMessenger::~StackingMessenger()
 {
-    delete _directory;
-    delete _kill_secondaries_Cmd;
+    	delete _directory;
+    	delete _kill_secondaries_Cmd;
 }
 
 void StackingMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
-    if( command == _kill_secondaries_Cmd )
-    {
-        fStackingAction->SetKillStatus((G4int)_kill_secondaries_Cmd->GetNewIntValue(newValue));
-    }
+    	if( command == _kill_secondaries_Cmd )
+    	{
+        	fStackingAction->SetKillStatus((G4int)_kill_secondaries_Cmd->GetNewIntValue(newValue));
+    	}
+	return;
 }

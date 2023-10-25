@@ -33,17 +33,21 @@
 
 #include "G4SystemOfUnits.hh"
 #include "GammaReflectionProcess.hh"
-#include "SimParameters.hh"
 
 PhysicsList::PhysicsList(): G4VUserPhysicsList()
 {
   	SetDefaultCutValue(1.*km);
   	fDecayPhysics = new G4DecayPhysics();
+
+	simPar = new SimParameters();
+	simPar->InitDefault();
+	simPar->PrintSRtype();
 }
 
 PhysicsList::~PhysicsList()
 { 
   	delete fDecayPhysics;
+	delete simPar;
 }
 
 void PhysicsList::ConstructParticle()
@@ -60,10 +64,6 @@ void PhysicsList::ConstructProcess()
 
 void PhysicsList::ConstructEM()
 {
-	SimParameters simPar;
-	simPar.InitDefault();
-	simPar.PrintSRtype();
-
   	auto particleIterator=GetParticleIterator();
   	particleIterator->reset();
   	G4SynchrotronRadiation* fSync = new G4SynchrotronRadiation();
@@ -93,7 +93,7 @@ void PhysicsList::ConstructEM()
       			pmanager->AddProcess(new G4eIonisation,               -1, 2, 1);
       			pmanager->AddProcess(new G4eBremsstrahlung,           -1, 3, 2);
 
-      			if (simPar.GetSRtype()) 
+      			if (simPar->GetSRtype()) 
 			{
         			pmanager->AddProcess(fSync,    -1,-1, 3);
       			} 
@@ -110,7 +110,7 @@ void PhysicsList::ConstructEM()
 	      		pmanager->AddProcess(new G4eIonisation,               -1, 2, 1);
 	      		pmanager->AddProcess(new G4eBremsstrahlung,           -1, 3, 2);
 	      		pmanager->AddProcess(new G4eplusAnnihilation,          0,-1, 3);
-	      		if (simPar.GetSRtype()) 
+	      		if (simPar->GetSRtype()) 
 			{
 				pmanager->AddProcess(fSync,      -1,-1, 4);
 	      		} 

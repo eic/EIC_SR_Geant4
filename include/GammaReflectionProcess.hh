@@ -1,5 +1,5 @@
 #ifndef GammaReflectionProcess_hh 
-#define GammaReflectionProcess_hh
+#define GammaReflectionProcess_hh 1
 
 #include "G4ParticleChange.hh"
 #include "G4VProcess.hh"

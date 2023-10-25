@@ -58,6 +58,8 @@ void SimParameters::InitDefault()
 
 	_SRtype = true;
 
+	_gammaEcut = 5*keV;
+
 	return;
 }
 
@@ -100,6 +102,15 @@ void SimParameters::PrintSRtype()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintSRtype ==> "<<GetSRtype()<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
+void SimParameters::PrintGammaEcut()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintGammaEcut ==> Ecut = "<<GetGammaEcut()/eV<<" [eV]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

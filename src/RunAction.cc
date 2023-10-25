@@ -6,13 +6,13 @@ RunAction::RunAction()
 	// default value
    	_output_filename = "output.root";
 
-    	_timer = new G4Timer;
+    	timer = new G4Timer;
     	fRunMessenger = new RunMessenger(this);
 }
 
 RunAction::~RunAction()
 {
-    	delete _timer;
+    	delete timer;
     	delete fRunMessenger;
 }
 
@@ -22,7 +22,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
 	cout<<"[INFO] RunAction::BeginOfRunAction ==> Output file name: "<<_output_filename<<endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
-    	_timer->Start();
+    	timer->Start();
 
     	_tree = new TTree("tree", "Collected Data");
     	_tree->Branch("event",		&_event);
@@ -57,12 +57,13 @@ void RunAction::EndOfRunAction(const G4Run* run)
 
     	delete _hfile;
 
-    	_timer->Stop();
+    	timer->Stop();
 
 	G4cout<<"\n\n=================================================================="<<G4endl;
-    	G4cout<<"[INFO] RunAction::EndOfRunAction ==> Output file name: "<<_output_filename<<G4endl;
-    	G4cout<<"[INFO] RunAction::EndOfRunAction ==> Run time: "<<*_timer<<G4endl;
-	G4cout<<"[INFO] RunAction::EndOfRunAction ==> Avg. event time: "<<_avgEventTime/run->GetNumberOfEvent()<<" [sec]"<<G4endl;
+    	G4cout<<"[INFO] RunAction::EndOfRunAction"<<G4endl;
+	G4cout<<"Output file name: "<<_output_filename<<G4endl;
+    	G4cout<<"Run time: "<<*timer<<G4endl;
+	G4cout<<"Avg. event time: "<<_avgEventTime/run->GetNumberOfEvent()<<" [sec]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

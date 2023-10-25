@@ -15,17 +15,17 @@ class StackingMessenger: public G4UImessenger
 {
 public:
   
-    StackingMessenger(StackingAction*);
-   ~StackingMessenger();
+    	StackingMessenger(StackingAction*);
+   	~StackingMessenger();
     
-    void SetNewValue(G4UIcommand*, G4String);
+    	void SetNewValue(G4UIcommand*, G4String);
     
 private:
   
-    StackingAction*       fStackingAction;
+    	StackingAction* fStackingAction;
 
-    G4UIdirectory*              _directory;
-    G4UIcmdWithAnInteger*  _kill_secondaries_Cmd;
+    	G4UIdirectory* _directory;
+    	G4UIcmdWithAnInteger* _kill_secondaries_Cmd;
 };
 
 #endif

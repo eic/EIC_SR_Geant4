@@ -15,17 +15,17 @@ class RunMessenger: public G4UImessenger
 {
 public:
   
-    RunMessenger(RunAction*);
-   ~RunMessenger();
+    	RunMessenger(RunAction*);
+   	~RunMessenger();
     
-    void SetNewValue(G4UIcommand*, G4String);
+    	void SetNewValue(G4UIcommand*, G4String);
     
 private:
   
-    RunAction*       fRunAction;
+    	RunAction* fRunAction;
 
-    G4UIdirectory*              _directory;
-    G4UIcmdWithAString*  _output_filename_Cmd;
+    	G4UIdirectory* _directory;
+    	G4UIcmdWithAString* _output_filename_Cmd;
 };
 
 #endif

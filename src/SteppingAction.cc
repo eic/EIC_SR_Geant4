@@ -8,7 +8,6 @@
 #include "G4TransportationManager.hh"
 #include "G4Navigator.hh"
 #include "G4Transform3D.hh"
-#include "SimParameters.hh"
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
 #include "G4OpBoundaryProcess.hh"
@@ -29,6 +28,9 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	if(track->GetTrackStatus() == fStopAndKill && 
 		track->GetParticleDefinition()->GetPDGEncoding() == G4Gamma::Gamma()->GetPDGEncoding())
 	{	
+		// do not store in absorbers
+		if(G4StrUtil::contains(step->GetPostStepPoint()->GetPhysicalVolume()->GetName(),"abs_")){return;}
+
 		runAction->_gammaPosX.push_back(step->GetPostStepPoint()->GetPosition().getX()/CLHEP::cm);
 		runAction->_gammaPosY.push_back(step->GetPostStepPoint()->GetPosition().getY()/CLHEP::cm);
 		runAction->_gammaPosZ.push_back(step->GetPostStepPoint()->GetPosition().getZ()/CLHEP::cm);
