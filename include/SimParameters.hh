@@ -69,6 +69,7 @@ public:
 	void InitDefault();	
 	void PrintGeoParameters();
 	void PrintBeamParameters();
+	void PrintMagParameters();
 	void PrintSRtype();
 	void PrintGammaEcut();
 	void ReadXML(G4String fName);
@@ -138,6 +139,10 @@ public:
 	void SetExtR(G4double val){_ext_radius = val; return;}
 	void SetExtE(G4double val){_ext_endpos = val; return;}
 
+	void SetMagParameters(G4String magName, G4String magType, G4double magLength, 
+	G4double magStartPosX, G4double magStartPosY, G4double magStartPosZ,
+	G4double magStartDirX, G4double magStartDirY, G4double magStartDirZ,
+	G4double magBx, G4double magBy, G4double magBz, G4double magK1);
 };
 
 #endif

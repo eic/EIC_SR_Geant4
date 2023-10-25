@@ -9,5 +9,15 @@
 		<sec desc="beam pipe extension radius" name="r" unit="cm">20.0</sec>
 		<sec desc="beam pipe extension endpoint position z" name="e" unit="cm">-3350.0</sec>
 	</extension>
+	<magnets>
+		<magnet>
+			<sec desc="magnet name" name="name">D2EF2</sec>
+			<sec desc="magnet type" name="type">D-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">2.726015431</sec>
+			<sec desc="start position X" name="posx" unit="cm">7.61776450600000E+00</sec>
+			<sec desc="start position Y" name="posy" unit="cm">0</sec>
+			<sec desc="start position Z" name="posz" unit="cm">-3.71513783800000E+03</sec>
+		</magnet>
+	</magnets>
 
 </xml>

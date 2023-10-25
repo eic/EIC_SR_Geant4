@@ -59,9 +59,34 @@ void SimParameters::ReadXML(G4String fName)
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
     	}
 
+
+for magnets --> clean up magVectors
+
 	return;
 }
 
+void SimParameters::SetMagParameters(G4String magName, G4String magType, G4double magLength, 
+	G4double magStartPosX, G4double magStartPosY, G4double magStartPosZ,
+	G4double magStartDirX, G4double magStartDirY, G4double magStartDirZ,
+	G4double magBx, G4double magBy, G4double magBz, G4double magK1)
+{
+
+	_magName.push_back(magName);
+	_magType.push_back(magType);
+	_magLength.push_back(magLength);
+	_magStartPosX.push_back(magStartPosX);
+	_magStartPosY.push_back(magStartPosY);
+	_magStartPosZ.push_back(magStartPosZ);
+	_magStartDirX.push_back(magStartDirX);
+	_magStartDirY.push_back(magStartDirY);
+	_magStartDirZ.push_back(magStartDirZ);
+	_magBx.push_back(magBx);
+	_magBy.push_back(magBy);
+	_magBz.push_back(magBz);
+	_magK1.push_back(magK1);
+
+	return;
+}
 
 void SimParameters::InitDefault()
 {
@@ -85,7 +110,7 @@ void SimParameters::InitDefault()
 	_magBx = {0,0,0,0,0};
 	_magBy = {2.54524403400000E-01*tesla,2.54524403400000E-01*tesla,1.00169207900000E-01*tesla,0,0};
 	_magBz = {0,0,0,0,0};
-	_magK1 = {0,0,0,5.957841642*tesla/(1.*meter),-12.98838344*tesla/(1.*meter)};
+	_magK1 = {0,0,0,5.957841642*tesla/m,-12.98838344*tesla/m};
 
 	
 	_absSizeX = {30*cm,10*cm,10*cm,50*cm};
@@ -150,6 +175,32 @@ void SimParameters::PrintBeamParameters()
 	G4cout<<"Dispersion Y = "<<GetBeamEtaY()/m<<" [m]"<<G4endl;
 	G4cout<<"Dispersion PX = "<<GetBeamEtaPrimeX()/m<<" []"<<G4endl;
 	G4cout<<"Dispersion PY = "<<GetBeamEtaPrimeY()/m<<" []"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
+void SimParameters::PrintMagParameters()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintMagParameters ==> Magnet parameters"<<G4endl;
+	for(G4int iMag = 0; iMag < GetMagNum(); iMag++)
+	{
+		G4cout<<"ID = "<<iMag<<G4endl;
+		G4cout<<"  Name = "<<GetMagName(iMag)<<G4endl;
+		G4cout<<"  Type = "<<GetMagType(iMag)<<G4endl;
+		G4cout<<"  Length = "<<GetMagLength(iMag)/m<<" [m]"<<G4endl;
+		G4cout<<"  Start position X = "<<GetMagStartPosX(iMag)/cm<<" [cm]"<<G4endl;
+		G4cout<<"  Start position Y = "<<GetMagStartPosY(iMag)/cm<<" [cm]"<<G4endl;
+		G4cout<<"  Start position Z = "<<GetMagStartPosZ(iMag)/cm<<" [cm]"<<G4endl;
+		G4cout<<"  Start direction X = "<<GetMagStartDirX(iMag)<<G4endl;
+		G4cout<<"  Start direction Y = "<<GetMagStartDirY(iMag)<<G4endl;
+		G4cout<<"  Start direction Z = "<<GetMagStartDirZ(iMag)<<G4endl;
+		G4cout<<"  Field Bx = "<<GetMagBx(iMag)/tesla<<" [T]"<<G4endl;
+		G4cout<<"  Field By = "<<GetMagBy(iMag)/tesla<<" [T]"<<G4endl;
+		G4cout<<"  Field Bz = "<<GetMagBz(iMag)/tesla<<" [T]"<<G4endl;
+		G4cout<<"  Field K1 = "<<GetMagK1(iMag)/(tesla/m)<<" [T/m)]"<<G4endl;
+	}
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

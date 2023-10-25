@@ -31,6 +31,7 @@ DetectorConstruction::DetectorConstruction(RunAction* runAct) : G4VUserDetectorC
 	simPar->PrintGeoParameters();
 	simPar->ReadXML(runAction->GetXmlFileName());
 	simPar->PrintGeoParameters();
+	simPar->PrintMagParameters();
 	exit(-1);
 }
 
