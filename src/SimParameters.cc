@@ -1,10 +1,67 @@
 #include "SimParameters.hh"  
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/foreach.hpp>
+
+using namespace boost::property_tree;
 
 SimParameters::SimParameters()
 {}    	
 
 SimParameters::~SimParameters()
 {}
+
+void SimParameters::ReadXML(G4String fName)
+{
+    	// Create empty property tree object
+    	ptree tree;
+
+    	// Parse the XML into the property tree.
+    	read_xml(fName, tree);
+
+    	// Use get_child to find the node containing the a specific data, and iterate over
+    	// its children. If the path cannot be resolved, get_child throws.
+    	// A C++11 for-range loop would also work.
+	// world
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.world"))
+	{
+        	// The data function is used to access the data stored in a node.
+		if(child_node.first == "sec" && child_node.second.get<string>("<xmlattr>.unit") == "m")
+		{
+			if(child_node.second.get<string>("<xmlattr>.name") == "x")
+				SetWorldSizeX(stod(child_node.second.data())*m);
+			else if(child_node.second.get<string>("<xmlattr>.name") == "y")
+				SetWorldSizeY(stod(child_node.second.data())*m);
+			else if(child_node.second.get<string>("<xmlattr>.name") == "z")
+				SetWorldSizeZ(stod(child_node.second.data())*m);
+			else
+				throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
+		}
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+    	}
+	// extension
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.extension"))
+	{
+        	// The data function is used to access the data stored in a node.
+		if(child_node.first == "sec" && child_node.second.get<string>("<xmlattr>.unit") == "cm")
+		{
+			if(child_node.second.get<string>("<xmlattr>.name") == "l")
+				SetExtL(stod(child_node.second.data())*cm);
+			else if(child_node.second.get<string>("<xmlattr>.name") == "r")
+				SetExtR(stod(child_node.second.data())*cm);
+			else if(child_node.second.get<string>("<xmlattr>.name") == "e")
+				SetExtE(stod(child_node.second.data())*cm);
+			else
+				throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
+		}
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+    	}
+
+	return;
+}
+
 
 void SimParameters::InitDefault()
 {

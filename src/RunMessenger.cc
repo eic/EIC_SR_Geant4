@@ -27,7 +27,7 @@ RunMessenger::~RunMessenger()
 void RunMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
     	if( command == _output_filename_Cmd )
-    	{
         	fRunAction->SetOutputFilename(newValue);
-    	}
+
+	return;
 }

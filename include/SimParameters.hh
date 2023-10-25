@@ -63,13 +63,17 @@ private:
 	G4bool _SRtype;
 
 	G4double _gammaEcut;
+
 public:
+	// print functions
 	void InitDefault();	
 	void PrintGeoParameters();
 	void PrintBeamParameters();
 	void PrintSRtype();
 	void PrintGammaEcut();
+	void ReadXML(G4String fName);
 
+	// get functions
 	G4double GetWorldSizeX(){return _world_dim_x;}
 	G4double GetWorldSizeY(){return _world_dim_y;}
 	G4double GetWorldSizeZ(){return _world_dim_z;}
@@ -124,6 +128,16 @@ public:
 	G4bool GetSRtype(){return _SRtype;}
 
 	G4double GetGammaEcut(){return _gammaEcut;}
+
+	// set functions
+	void SetWorldSizeX(G4double val){_world_dim_x = val; return;}
+	void SetWorldSizeY(G4double val){_world_dim_y = val; return;}
+	void SetWorldSizeZ(G4double val){_world_dim_z = val; return;}
+
+	void SetExtL(G4double val){_ext_length = val; return;}
+	void SetExtR(G4double val){_ext_radius = val; return;}
+	void SetExtE(G4double val){_ext_endpos = val; return;}
+
 };
 
 #endif

@@ -1,10 +1,11 @@
 #include "RunAction.hh"
 #include "G4Run.hh"
 
-RunAction::RunAction()
+RunAction::RunAction(G4String xmlFileName)
 {
 	// default value
    	_output_filename = "output.root";
+	_xml_filename = xmlFileName;
 
     	timer = new G4Timer;
     	fRunMessenger = new RunMessenger(this);
@@ -19,7 +20,9 @@ RunAction::~RunAction()
 void RunAction::BeginOfRunAction(const G4Run* run)
 {	
 	G4cout<<"\n\n=================================================================="<<G4endl;
-	cout<<"[INFO] RunAction::BeginOfRunAction ==> Output file name: "<<_output_filename<<endl;
+	G4cout<<"[INFO] RunAction::BeginOfRunAction"<<G4endl;
+	G4cout<<"Output ROOT file name: "<<_output_filename<<G4endl;
+	G4cout<<"Input XML file name: "<<_xml_filename<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
     	timer->Start();
@@ -61,7 +64,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
 
 	G4cout<<"\n\n=================================================================="<<G4endl;
     	G4cout<<"[INFO] RunAction::EndOfRunAction"<<G4endl;
-	G4cout<<"Output file name: "<<_output_filename<<G4endl;
+	G4cout<<"Output ROOT file name: "<<_output_filename<<G4endl;
     	G4cout<<"Run time: "<<*timer<<G4endl;
 	G4cout<<"Avg. event time: "<<_avgEventTime/run->GetNumberOfEvent()<<" [sec]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;

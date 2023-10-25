@@ -24,11 +24,14 @@
 #include "G4SubtractionSolid.hh"
 #include "G4IntersectionSolid.hh"
 
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction()
+DetectorConstruction::DetectorConstruction(RunAction* runAct) : G4VUserDetectorConstruction(), runAction(runAct)
 {
 	simPar = new SimParameters();
 	simPar->InitDefault();
 	simPar->PrintGeoParameters();
+	simPar->ReadXML(runAction->GetXmlFileName());
+	simPar->PrintGeoParameters();
+	exit(-1);
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -73,6 +76,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	G4VSolid* beampipeVac_solid = beampipeUni_solid;
 
+	// loop over all magnets
 	for(int iMag = 0; iMag < simPar->GetMagNum(); iMag++)
 	{
 		G4double rotY_angle = (simPar->GetMagStartDirZ(iMag) == 0) ? 0.0*rad : 

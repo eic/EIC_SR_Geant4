@@ -30,15 +30,31 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    	// Detect interactive mode (if no arguments) and define UI session
-    	//
-    	G4UIExecutive* ui = 0;
-    	if ( argc == 1 )
-    	{
-        	ui = new G4UIExecutive(argc, argv);
-    	}
+	G4String macFileName;
+	G4String xmlFileName;
 
+	// check input parameters
+	if( argc == 3)
+	{
+       		macFileName = argv[1];
+		xmlFileName = argv[2];
 
+		
+		G4cout<<"\n\n=================================================================="<<G4endl;
+		G4cout<<"[INFO] main ==> Input parameters"<<G4endl;
+		G4cout<<"argv[1] = "<<macFileName<<G4endl;
+		G4cout<<"argv[2] = "<<xmlFileName<<G4endl;
+		G4cout<<"==================================================================\n"<<G4endl;
+	}
+	else
+	{
+		G4cout<<"\n\n=================================================================="<<G4endl;
+		G4cout<<"[ERROR] main ==> Wrong number of input parameters: argc = "<<argc<<G4endl;
+		G4cout<<"Usage: ./exe run.mac ../geometry/simParameters.xml"<<G4endl;
+		G4cout<<"==================================================================\n"<<G4endl;
+
+		return -1;
+	}
     	// Construct the default run manager
     	//
 
@@ -52,8 +68,8 @@ int main(int argc, char** argv)
     	// G4String physName = "FTFP_BERT_HP";
     	// G4VModularPhysicsList* phys = factory.GetReferencePhysList(physName);
     	runManager->SetUserInitialization(phys);
-    	RunAction* runAction = new RunAction();
-    	DetectorConstruction* detConstr = new DetectorConstruction();
+    	RunAction* runAction = new RunAction(xmlFileName);
+    	DetectorConstruction* detConstr = new DetectorConstruction(runAction);
     	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(runAction);
     	EventAction* eventAction = new EventAction(runAction);
     	SteppingAction* stepAction = new SteppingAction(runAction);
@@ -76,22 +92,9 @@ int main(int argc, char** argv)
     	// Get the pointer to the User Interface manager
     	G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-    	// Process macro or start UI session
-    	//
-    	if ( ! ui )
-    	{
-        	// batch mode
-        	G4String command = "/control/execute ";
-        	G4String fileName = argv[1];
-        	UImanager->ApplyCommand(command+fileName);
-    	}
-    	else
-    	{
-        	// interactive mode
-        	UImanager->ApplyCommand("/control/execute vis.mac");
-        	ui->SessionStart();
-        	delete ui;
-    	}
+    	// Process macro
+       	// batch mode
+       	UImanager->ApplyCommand("/control/execute " + macFileName);
 
     	// Job termination
     	// Free the store: user actions, physics_list and detector_description are

@@ -32,14 +32,17 @@ class RunMessenger;
 class RunAction: public G4UserRunAction
 {
 public:
-	RunAction();
+	RunAction(G4String xmlFileName);
     	~RunAction();
 
     	void BeginOfRunAction(const G4Run*);
     	void EndOfRunAction(const G4Run*);
 
     	G4String GetOutputFileName() { return _output_filename;}
+    	G4String GetXmlFileName() { return _xml_filename;}
+
     	void SetOutputFilename(G4String name){_output_filename = name;}
+    	void SetXmlFilename(G4String name){_xml_filename = name;}
 
     	TTree* _tree;
 
@@ -66,6 +69,7 @@ public:
 private:
     	G4Timer* timer;
     	G4String _output_filename;
+    	G4String _xml_filename;
 
     	RunMessenger* fRunMessenger;
 };

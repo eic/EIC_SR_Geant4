@@ -1,0 +1,13 @@
+<xml>
+	<world>
+		<sec desc="world size X" name="x" unit="m">10.0</sec>
+		<sec desc="world size Y" name="y" unit="m">10.0</sec>
+		<sec desc="world size Z" name="z" unit="m">80.0</sec>
+	</world>
+	<extension>
+		<sec desc="beam pipe extension length" name="l" unit="cm">370.0</sec>
+		<sec desc="beam pipe extension radius" name="r" unit="cm">20.0</sec>
+		<sec desc="beam pipe extension endpoint position z" name="e" unit="cm">-3350.0</sec>
+	</extension>
+
+</xml>
