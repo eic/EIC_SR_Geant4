@@ -67,7 +67,7 @@ private:
 
 	vector<pair<double, vector<double>>> ReadReflectData(string filename,
 		vector<double> &angle, vector<double> &energy);
-	void PrintReflectData(vector<pair<double, vector<double>>> dataset,
+	void PrintReflectData(string name, vector<pair<double, vector<double>>> dataset,
 		vector<double> angle, vector<double> energy);
 	void FindClosestIndexesInVec(vector<double> vec, double val, int &id1, int &id2);
 	double FindReflectionProbability(vector<pair<double, vector<double>>> dataset,

@@ -38,31 +38,69 @@ void SimParameters::InitDefault()
 	_absPosY = {0*cm,0*cm,0*cm,0*cm};
 	_absPosZ = {1527*cm,475*cm,-550*cm,-3720*cm};
 	
-    	_beam_pos_x =  7.61776450600000E+00*cm;
-    	_beam_pos_y =  0.00000000000000E+00*cm;
-    	_beam_pos_z = -3.71513783800000E+03*cm;
-
+    	_beamPosX =  7.61776450600000E+00*cm;
+    	_beamPosY =  0.00000000000000E+00*cm;
+    	_beamPosZ = -3.71513783800000E+03*cm;
 	_beamEmitX = 24.0*nm;
 	_beamEmitY =  2.0*nm;
 	_beamBetaX = 202.4452538*m;
 	_beamBetaY = 128.4636335*m;
-	G4double beamEtaX = -0.02443133971*m;
-	G4double beamEtaY = 0.0*m;
-	G4double beamEtaPrimeX = 0.01315593225;
-	G4double beamEtaPrimeY = 0.0;
+	_beamEtaX = -0.02443133971*m;
+	_beamEtaY = 0.0*m;
+	_beamEtaPrimeX = 0.01315593225;
+	_beamEtaPrimeY = 0.0;
+	_beamMomSpread = 0.109e-2;
+	_beamMom = 18*GeV;
+	_beamDirX = -2.48090543441244E-02;
+	_beamDirY = 0.00000000000000E+00;
+	_beamDirZ = 9.99692208043331E-01;
+	_beamName = "e-";
+
+	_SRtype = true;
 
 	return;
 }
 
 void SimParameters::PrintGeoParameters()
 {
-	G4cout<<"world_dim_x = "<<_world_dim_x/m<<" [m]"<<G4endl;
-	G4cout<<"world_dim_y = "<<_world_dim_y/m<<" [m]"<<G4endl;
-	G4cout<<"world_dim_z = "<<_world_dim_z/m<<" [m]"<<G4endl;
-	
-	G4cout<<"ext_length = "<<_ext_length/cm<<" [cm]"<<G4endl;
-	G4cout<<"ext_radius = "<<_ext_radius/cm<<" [cm]"<<G4endl;
-	G4cout<<"ext_endpos = "<<_ext_endpos/cm<<" [cm]"<<G4endl;
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintGeoParameters ==> Geometry parameters"<<G4endl;
+	G4cout<<"World size X = "<<GetWorldSizeX()/m<<" [m]"<<G4endl;
+	G4cout<<"World size Y = "<<GetWorldSizeY()/m<<" [m]"<<G4endl;
+	G4cout<<"World size Z = "<<GetWorldSizeZ()/m<<" [m]"<<G4endl;
+	G4cout<<"Extension length = "<<GetExtL()/cm<<" [cm]"<<G4endl;
+	G4cout<<"Extension radius = "<<GetExtR()/cm<<" [cm]"<<G4endl;
+	G4cout<<"Extension end position = "<<GetExtE()/cm<<" [cm]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
+void SimParameters::PrintBeamParameters()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintBeamParameters ==> Beam parameters"<<G4endl;
+	G4cout<<"Position X = "<<GetBeamPosX()/cm<<" [cm]"<<G4endl;
+	G4cout<<"Position Y = "<<GetBeamPosY()/cm<<" [cm]"<<G4endl;
+	G4cout<<"Position Z = "<<GetBeamPosZ()/cm<<" [cm]"<<G4endl;
+	G4cout<<"Emittance X = "<<GetBeamEmitX()/nm<<" [nm]"<<G4endl;
+	G4cout<<"Emittance Y = "<<GetBeamEmitY()/nm<<" [nm]"<<G4endl;
+	G4cout<<"Beta X = "<<GetBeamBetaX()/m<<" [m]"<<G4endl;
+	G4cout<<"Beta Y = "<<GetBeamBetaY()/m<<" [m]"<<G4endl;
+	G4cout<<"Dispersion X = "<<GetBeamEtaX()/m<<" [m]"<<G4endl;
+	G4cout<<"Dispersion Y = "<<GetBeamEtaY()/m<<" [m]"<<G4endl;
+	G4cout<<"Dispersion PX = "<<GetBeamEtaPrimeX()/m<<" []"<<G4endl;
+	G4cout<<"Dispersion PY = "<<GetBeamEtaPrimeY()/m<<" []"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
+void SimParameters::PrintSRtype()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintSRtype ==> "<<GetSRtype()<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
 }

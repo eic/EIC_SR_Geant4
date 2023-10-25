@@ -12,7 +12,6 @@
 #include "G4PhysicalConstants.hh"
 #include "G4RunManager.hh"
 #include "G4ThreeVector.hh"
-#include "SimParameters.hh"
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
 #include "CADMesh.hh"
@@ -25,16 +24,13 @@
 #include "G4UnionSolid.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4IntersectionSolid.hh"
+#include "SimParameters.hh"
 
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDetectorMessenger(0)
-{
-	fDetectorMessenger = new DetectorMessenger(this);
-}
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction()
+{}
 
 DetectorConstruction::~DetectorConstruction()
-{
-    	delete fDetectorMessenger;
-}
+{}
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
@@ -109,7 +105,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		}
 		else
 		{
-			// Error
+			throw runtime_error("[ERROR] DetectorConstruction::Construct ==> Wrong magnet type\n");
 		}
 
 		G4FieldManager* localFieldMgr = new G4FieldManager(mag_field);

@@ -17,14 +17,15 @@ RunAction::~RunAction()
 }
 
 void RunAction::BeginOfRunAction(const G4Run* run)
-{
-    	G4cout<<"\n\n[INFO] RunAction::BeginOfRunAction ==>  Output file name: "<<_output_filename<<"\n"<<G4endl;
+{	
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	cout<<"[INFO] RunAction::BeginOfRunAction ==> Output file name: "<<_output_filename<<endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
     	_timer->Start();
 
     	_tree = new TTree("tree", "Collected Data");
-
     	_tree->Branch("event",		&_event);
-
     	_tree->Branch("beamPdg",	&_beamPdg);
     	_tree->Branch("beamPosX",	&_beamPosX);
     	_tree->Branch("beamPosY",	&_beamPosY);
@@ -33,7 +34,6 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("beamMomY",	&_beamMomY);
     	_tree->Branch("beamMomZ",	&_beamMomZ);
     	_tree->Branch("beamEnergy",	&_beamEnergy);
-
     	_tree->Branch("gammaPosX",	&_gammaPosX);
     	_tree->Branch("gammaPosY",	&_gammaPosY);
     	_tree->Branch("gammaPosZ",	&_gammaPosZ);
@@ -58,9 +58,12 @@ void RunAction::EndOfRunAction(const G4Run* run)
     	delete _hfile;
 
     	_timer->Stop();
-    	G4cout<<"\n\n[INFO] RunAction::EndOfRunAction ==> Output file name: "<<_output_filename<<G4endl;
+
+	G4cout<<"\n\n=================================================================="<<G4endl;
+    	G4cout<<"[INFO] RunAction::EndOfRunAction ==> Output file name: "<<_output_filename<<G4endl;
     	G4cout<<"[INFO] RunAction::EndOfRunAction ==> Run time: "<<*_timer<<G4endl;
 	G4cout<<"[INFO] RunAction::EndOfRunAction ==> Avg. event time: "<<_avgEventTime/run->GetNumberOfEvent()<<" [sec]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
 }

@@ -4,8 +4,6 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "string"
-
 using namespace std;
 
 class SimParameters
@@ -19,16 +17,12 @@ private:
     	G4double _world_dim_y;
     	G4double _world_dim_z;
 
-    	G4double _beam_pos_x;
-    	G4double _beam_pos_y;
-    	G4double _beam_pos_z;
-
 	G4double _ext_length;
 	G4double _ext_radius;
 	G4double _ext_endpos;	
 
-	vector<string> _magName;
-	vector<string> _magType;
+	vector<G4String> _magName;
+	vector<G4String> _magType;
 	vector<G4double> _magLength;
 	vector<G4double> _magStartPosX;
 	vector<G4double> _magStartPosY;
@@ -48,44 +42,84 @@ private:
 	vector<G4double> _absPosY;
 	vector<G4double> _absPosZ;
 
+    	G4double _beamPosX;
+    	G4double _beamPosY;
+    	G4double _beamPosZ;
+	G4double _beamEmitX;
+	G4double _beamEmitY;
+	G4double _beamBetaX;
+	G4double _beamBetaY;
+	G4double _beamEtaX;
+	G4double _beamEtaY;
+	G4double _beamEtaPrimeX;
+	G4double _beamEtaPrimeY;
+
+	G4double _beamMomSpread; // _deltaP
+    	G4double _beamMom;;
+    	G4double _beamDirX;
+    	G4double _beamDirY;
+    	G4double _beamDirZ;
+    	G4String _beamName;
+
+	G4bool _SRtype;
 public:
 	void InitDefault();	
 	void PrintGeoParameters();
+	void PrintBeamParameters();
+	void PrintSRtype();
 
 	G4double GetWorldSizeX(){return _world_dim_x;}
 	G4double GetWorldSizeY(){return _world_dim_y;}
 	G4double GetWorldSizeZ(){return _world_dim_z;}
 
-	G4double GetBeamPosX(){return _beam_pos_x;}
-	G4double GetBeamPosY(){return _beam_pos_y;}
-	G4double GetBeamPosZ(){return _beam_pos_z;}
-
 	G4double GetExtL(){return _ext_length;}
 	G4double GetExtR(){return _ext_radius;}
 	G4double GetExtE(){return _ext_endpos;}
 
-	string GetMagName(int i){return _magName.at(i);}
-	string GetMagType(int i){return _magType.at(i);}
+	G4String GetMagName(G4int i){return _magName.at(i);}
+	G4String GetMagType(G4int i){return _magType.at(i);}
 	G4int GetMagNum(){return _magName.size();}
-	G4double GetMagLength(int i){return _magLength.at(i);}
-	G4double GetMagStartPosX(int i){return _magStartPosX.at(i);}
-	G4double GetMagStartPosY(int i){return _magStartPosY.at(i);}
-	G4double GetMagStartPosZ(int i){return _magStartPosZ.at(i);}
-	G4double GetMagStartDirX(int i){return _magStartDirX.at(i);}
-	G4double GetMagStartDirY(int i){return _magStartDirY.at(i);}
-	G4double GetMagStartDirZ(int i){return _magStartDirZ.at(i);}
-	G4double GetMagBx(int i){return _magBx.at(i);}
-	G4double GetMagBy(int i){return _magBy.at(i);}
-	G4double GetMagBz(int i){return _magBz.at(i);}
-	G4double GetMagK1(int i){return _magK1.at(i);}
+	G4double GetMagLength(G4int i){return _magLength.at(i);}
+	G4double GetMagStartPosX(G4int i){return _magStartPosX.at(i);}
+	G4double GetMagStartPosY(G4int i){return _magStartPosY.at(i);}
+	G4double GetMagStartPosZ(G4int i){return _magStartPosZ.at(i);}
+	G4double GetMagStartDirX(G4int i){return _magStartDirX.at(i);}
+	G4double GetMagStartDirY(G4int i){return _magStartDirY.at(i);}
+	G4double GetMagStartDirZ(G4int i){return _magStartDirZ.at(i);}
+	G4double GetMagBx(G4int i){return _magBx.at(i);}
+	G4double GetMagBy(G4int i){return _magBy.at(i);}
+	G4double GetMagBz(G4int i){return _magBz.at(i);}
+	G4double GetMagK1(G4int i){return _magK1.at(i);}
 	
 	G4int GetAbsNum(){return _absSizeX.size();}
-	G4double GetAbsSizeX(int i){return _absSizeX.at(i);}
-	G4double GetAbsSizeY(int i){return _absSizeY.at(i);}
-	G4double GetAbsSizeZ(int i){return _absSizeZ.at(i);}
-	G4double GetAbsPosX(int i){return _absPosX.at(i);}
-	G4double GetAbsPosY(int i){return _absPosY.at(i);}
-	G4double GetAbsPosZ(int i){return _absPosZ.at(i);}
+	G4double GetAbsSizeX(G4int i){return _absSizeX.at(i);}
+	G4double GetAbsSizeY(G4int i){return _absSizeY.at(i);}
+	G4double GetAbsSizeZ(G4int i){return _absSizeZ.at(i);}
+	G4double GetAbsPosX(G4int i){return _absPosX.at(i);}
+	G4double GetAbsPosY(G4int i){return _absPosY.at(i);}
+	G4double GetAbsPosZ(G4int i){return _absPosZ.at(i);}
+
+	G4double GetBeamPosX(){return _beamPosX;}
+	G4double GetBeamPosY(){return _beamPosY;}
+	G4double GetBeamPosZ(){return _beamPosZ;}
+
+	G4double GetBeamEmitX(){return _beamEmitX;}
+	G4double GetBeamEmitY(){return _beamEmitY;}
+	G4double GetBeamBetaX(){return _beamBetaX;}
+	G4double GetBeamBetaY(){return _beamBetaY;}
+	G4double GetBeamEtaX(){return _beamEtaX;}
+	G4double GetBeamEtaY(){return _beamEtaY;}
+	G4double GetBeamEtaPrimeX(){return _beamEtaPrimeX;}
+	G4double GetBeamEtaPrimeY(){return _beamEtaPrimeY;}
+
+	G4double GetBeamMomSpread(){return _beamMomSpread;}
+    	G4double GetBeamMom(){return _beamMom;}
+    	G4double GetBeamDirX(){return _beamDirX;}
+    	G4double GetBeamDirY(){return _beamDirY;}
+    	G4double GetBeamDirZ(){return _beamDirZ;}
+    	G4String GetBeamName(){return _beamName;}
+
+	G4bool GetSRtype(){return _SRtype;}
 };
 
 #endif

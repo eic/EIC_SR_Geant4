@@ -12,10 +12,8 @@ GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionPr
 	_reflectDataMap["Cu"] = ReadReflectData(_reflectFileNameMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
 	_reflectDataMap["Au"] = ReadReflectData(_reflectFileNameMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
 
-	cout<<"\n\n[DEBUG] GammaReflectionProcess::GammaReflectionProcess ==> Cu"<<endl;
-	PrintReflectData(_reflectDataMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
-	cout<<"\n\n[DEBUG] GammaReflectionProcess::GammaReflectionProcess ==> Au"<<endl;
-	PrintReflectData(_reflectDataMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
+	PrintReflectData("Cu",_reflectDataMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
+	PrintReflectData("Au",_reflectDataMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
 }
 
 GammaReflectionProcess::~GammaReflectionProcess()
@@ -30,7 +28,6 @@ G4double GammaReflectionProcess::PostStepGetPhysicalInteractionLength(const G4Tr
 G4VParticleChange * 
 GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 {
-
   	aParticleChange.Initialize(track);
 
     	G4StepPoint*          	preStep		= step.GetPreStepPoint();
@@ -93,14 +90,19 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		// check that the half-angle between reflected and incident angles is equal to the grazing angle
 		if(abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad > 1e-4)
 		{
-			G4cout<<"\n\n[DEBUG] GammaReflectionProcess::PostStepDoIt"<<G4endl;
-			G4cout<<"- grazingAngle_rad = "<<grazingAngle_rad<<G4endl;
-			G4cout<<"- acos(gammaDir_i.dot(gammaDir_r))/2. = "<<acos(gammaDir_i.dot(gammaDir_r))/2.<<G4endl;
-			G4cout<<"- abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad = "<<abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad<<G4endl;
-			G4cout<<"- gammaDir_i(x,y,z) = "<<gammaDir_i.x()<<" , "<<gammaDir_i.y()<<" , "<<gammaDir_i.z()<<G4endl;
-			G4cout<<"- gammaDir_r(x,y,z) = "<<gammaDir_r.x()<<" , "<<gammaDir_r.y()<<" , "<<gammaDir_r.z()<<G4endl;
-			G4cout<<"- norm (x,y,z) = "<<norm.x()<<" , "<<norm.y()<<" , "<<norm.z()<<G4endl;
-			throw runtime_error("\n\n[ERROR] GammaReflectionProcess::PostStepDoIt ==> Wrong reflection direction\n");
+			G4cout<<"\n\n=================================================================="<<G4endl;
+			G4cout<<"[INFO] GammaReflectionProcess::PostStepDoIt ==> Reflection info"<<G4endl;
+			G4cout<<"grazingAngle_rad = "<<grazingAngle_rad<<G4endl;
+			G4cout<<"acos(gammaDir_i.dot(gammaDir_r))/2. = "<<acos(gammaDir_i.dot(gammaDir_r))/2.<<G4endl;
+			G4cout<<"abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad = "
+				<<abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad<<G4endl;
+			G4cout<<"gammaDir_i(x,y,z) = "
+				<<gammaDir_i.x()<<" , "<<gammaDir_i.y()<<" , "<<gammaDir_i.z()<<G4endl;
+			G4cout<<"gammaDir_r(x,y,z) = "
+				<<gammaDir_r.x()<<" , "<<gammaDir_r.y()<<" , "<<gammaDir_r.z()<<G4endl;
+			G4cout<<"norm (x,y,z) = "<<norm.x()<<" , "<<norm.y()<<" , "<<norm.z()<<G4endl;
+			G4cout<<"==================================================================\n"<<G4endl;
+			throw runtime_error("[ERROR] GammaReflectionProcess::PostStepDoIt ==> Wrong reflection direction\n");
 		}
 
 		// get probability
@@ -174,9 +176,12 @@ G4VParticleChange* GammaReflectionProcess::AlongStepDoIt(const G4Track&,const G4
   	return 0;
 }
 
-void GammaReflectionProcess::PrintReflectData(vector<pair<double, vector<double>>> dataset,
+void GammaReflectionProcess::PrintReflectData(string name, vector<pair<double, vector<double>>> dataset,
 		vector<double> angle, vector<double> energy)
 {
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	cout<<"[INFO] GammaReflectionProcess::GammaReflectionProcess ==> "<<name<<" data"<<endl;
+
 	// print column names
 	printf("Angl/Ene : ");
 	for(int j = 0; j < angle.size(); ++j){printf("%.2e  ",angle.at(j));}
@@ -199,6 +204,7 @@ void GammaReflectionProcess::PrintReflectData(vector<pair<double, vector<double>
         	}
 		printf("\n");
     	}
+	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
 }
