@@ -63,17 +63,17 @@ int main(int argc, char** argv)
     	G4Random::setTheSeed(time(NULL));
 
     	G4RunManager* runManager = new G4RunManager;
-	PhysicsList* phys = new PhysicsList();
+	PhysicsList* phys = new PhysicsList(xmlFileName);
     	// G4PhysListFactory factory;
     	// G4String physName = "FTFP_BERT_HP";
     	// G4VModularPhysicsList* phys = factory.GetReferencePhysList(physName);
     	runManager->SetUserInitialization(phys);
     	RunAction* runAction = new RunAction(xmlFileName);
-    	DetectorConstruction* detConstr = new DetectorConstruction(runAction);
-    	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(runAction);
+    	DetectorConstruction* detConstr = new DetectorConstruction(xmlFileName);
+    	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(runAction,xmlFileName);
     	EventAction* eventAction = new EventAction(runAction);
     	SteppingAction* stepAction = new SteppingAction(runAction);
-    	StackingAction* stackAction = new StackingAction();
+    	StackingAction* stackAction = new StackingAction(xmlFileName);
 
     	runManager->SetUserInitialization(detConstr);
     	runManager->SetUserAction(runAction);

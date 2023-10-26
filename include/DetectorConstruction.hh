@@ -3,22 +3,19 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "SimParameters.hh"
-#include "RunAction.hh"
 
 class SimParameters;
-class RunAction; 
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
-    	DetectorConstruction(RunAction*);
+    	DetectorConstruction(G4String);
     	~DetectorConstruction();
 
     	G4VPhysicalVolume* Construct();
-	SimParameters* simPar;
 
 private:
-	RunAction* runAction;
+	SimParameters* simPar;
 };
 
 #endif

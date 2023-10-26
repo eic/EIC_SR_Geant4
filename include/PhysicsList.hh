@@ -11,7 +11,7 @@ class SimParameters;
 class PhysicsList: public G4VUserPhysicsList
 {
 public:
-  	PhysicsList();
+  	PhysicsList(G4String);
   	virtual ~PhysicsList();
 
   	// Construct particles

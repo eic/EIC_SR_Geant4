@@ -20,7 +20,6 @@ public:
 
 private:
     	RunAction* runAction;
-
 	G4Timer* _timer;
 };
 

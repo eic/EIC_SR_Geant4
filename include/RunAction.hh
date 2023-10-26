@@ -18,6 +18,7 @@
 
 #include <string>
 #include <fstream>
+#include <iostream>
 #include <vector>
 #include <utility> // pair
 #include <stdexcept> // runtime_error
@@ -32,19 +33,18 @@ class RunMessenger;
 class RunAction: public G4UserRunAction
 {
 public:
-	RunAction(G4String xmlFileName);
+	RunAction(G4String);
     	~RunAction();
 
     	void BeginOfRunAction(const G4Run*);
     	void EndOfRunAction(const G4Run*);
 
     	G4String GetOutputFileName() { return _output_filename;}
-    	G4String GetXmlFileName() { return _xml_filename;}
 
-    	void SetOutputFilename(G4String name){_output_filename = name;}
-    	void SetXmlFilename(G4String name){_xml_filename = name;}
+    	void SetOutputFileName(G4String name){_output_filename = name;}
 
     	TTree* _tree;
+    	TTree* _xml;
 
     	G4int _event;
     	G4int _beamPdg;
@@ -63,15 +63,18 @@ public:
 	vector<G4float> _gammaMomY;
 	vector<G4float> _gammaMomZ;
 	vector<G4float> _gammaEnergy;
+	vector<G4float> _gammaTime;
 
 	G4double _avgEventTime;
+
+	string _settings;
 
 private:
     	G4Timer* timer;
     	G4String _output_filename;
-    	G4String _xml_filename;
-
+	G4String _xml_filename;
     	RunMessenger* fRunMessenger;
+	void DumpXmlFile();
 };
 
 #endif

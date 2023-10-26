@@ -60,7 +60,7 @@ private:
     	G4double _beamDirZ;
     	G4String _beamName;
 
-	G4bool _SRtype;
+	G4int _SRtype;
 
 	G4double _gammaEcut;
 
@@ -70,6 +70,9 @@ public:
 	void PrintGeoParameters();
 	void PrintBeamParameters();
 	void PrintMagParameters();
+	void CleanMagParameters();
+	void PrintAbsParameters();
+	void CleanAbsParameters();
 	void PrintSRtype();
 	void PrintGammaEcut();
 	void ReadXML(G4String fName);
@@ -106,27 +109,25 @@ public:
 	G4double GetAbsPosY(G4int i){return _absPosY.at(i);}
 	G4double GetAbsPosZ(G4int i){return _absPosZ.at(i);}
 
+    	G4String GetBeamName(){return _beamName;}
 	G4double GetBeamPosX(){return _beamPosX;}
 	G4double GetBeamPosY(){return _beamPosY;}
 	G4double GetBeamPosZ(){return _beamPosZ;}
-
-	G4double GetBeamEmitX(){return _beamEmitX;}
-	G4double GetBeamEmitY(){return _beamEmitY;}
+    	G4double GetBeamDirX(){return _beamDirX;}
+    	G4double GetBeamDirY(){return _beamDirY;}
+    	G4double GetBeamDirZ(){return _beamDirZ;}
+    	G4double GetBeamMom(){return _beamMom;}
+	G4double GetBeamMomSpread(){return _beamMomSpread;}
 	G4double GetBeamBetaX(){return _beamBetaX;}
 	G4double GetBeamBetaY(){return _beamBetaY;}
 	G4double GetBeamEtaX(){return _beamEtaX;}
 	G4double GetBeamEtaY(){return _beamEtaY;}
 	G4double GetBeamEtaPrimeX(){return _beamEtaPrimeX;}
 	G4double GetBeamEtaPrimeY(){return _beamEtaPrimeY;}
+	G4double GetBeamEmitX(){return _beamEmitX;}
+	G4double GetBeamEmitY(){return _beamEmitY;}
 
-	G4double GetBeamMomSpread(){return _beamMomSpread;}
-    	G4double GetBeamMom(){return _beamMom;}
-    	G4double GetBeamDirX(){return _beamDirX;}
-    	G4double GetBeamDirY(){return _beamDirY;}
-    	G4double GetBeamDirZ(){return _beamDirZ;}
-    	G4String GetBeamName(){return _beamName;}
-
-	G4bool GetSRtype(){return _SRtype;}
+	G4int GetSRtype(){return _SRtype;}
 
 	G4double GetGammaEcut(){return _gammaEcut;}
 
@@ -143,6 +144,31 @@ public:
 	G4double magStartPosX, G4double magStartPosY, G4double magStartPosZ,
 	G4double magStartDirX, G4double magStartDirY, G4double magStartDirZ,
 	G4double magBx, G4double magBy, G4double magBz, G4double magK1);
+
+	void SetAbsParameters(G4double absSizeX, G4double absSizeY, G4double absSizeZ,
+	G4double absPosX, G4double absPosY, G4double absPosZ);
+
+    	void SetBeamName(G4String val){_beamName = val; return;}
+	void SetBeamPosX(G4double val){_beamPosX = val; return;}
+	void SetBeamPosY(G4double val){_beamPosY = val; return;}
+	void SetBeamPosZ(G4double val){_beamPosZ = val; return;}
+    	void SetBeamDirX(G4double val){_beamDirX = val; return;}
+    	void SetBeamDirY(G4double val){_beamDirY = val; return;}
+    	void SetBeamDirZ(G4double val){_beamDirZ = val; return;}
+    	void SetBeamMom(G4double val){_beamMom = val; return;}
+	void SetBeamMomSpread(G4double val){_beamMomSpread = val; return;}
+	void SetBeamBetaX(G4double val){_beamBetaX = val; return;}
+	void SetBeamBetaY(G4double val){_beamBetaY = val; return;}
+	void SetBeamEtaX(G4double val){_beamEtaX = val; return;}
+	void SetBeamEtaY(G4double val){_beamEtaY = val; return;}
+	void SetBeamEtaPrimeX(G4double val){_beamEtaPrimeX = val; return;}
+	void SetBeamEtaPrimeY(G4double val){_beamEtaPrimeY = val; return;}
+	void SetBeamEmitX(G4double val){_beamEmitX = val; return;}
+	void SetBeamEmitY(G4double val){_beamEmitY = val; return;}
+
+	void SetSRtype(G4int val){_SRtype = val; return;}
+
+	void SetGammaEcut(G4double val){_gammaEcut = val; return;}
 };
 
 #endif

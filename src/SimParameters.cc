@@ -22,46 +22,221 @@ void SimParameters::ReadXML(G4String fName)
     	// Use get_child to find the node containing the a specific data, and iterate over
     	// its children. If the path cannot be resolved, get_child throws.
     	// A C++11 for-range loop would also work.
+
 	// world
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.world"))
 	{
         	// The data function is used to access the data stored in a node.
-		if(child_node.first == "sec" && child_node.second.get<string>("<xmlattr>.unit") == "m")
-		{
-			if(child_node.second.get<string>("<xmlattr>.name") == "x")
-				SetWorldSizeX(stod(child_node.second.data())*m);
-			else if(child_node.second.get<string>("<xmlattr>.name") == "y")
-				SetWorldSizeY(stod(child_node.second.data())*m);
-			else if(child_node.second.get<string>("<xmlattr>.name") == "z")
-				SetWorldSizeZ(stod(child_node.second.data())*m);
-			else
-				throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
-		}
+		if(child_node.second.get<string>("<xmlattr>.name") == "x" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetWorldSizeX(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "y" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetWorldSizeY(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "z" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetWorldSizeZ(stod(child_node.second.data())*m);
 		else
-			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
     	}
+
 	// extension
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.extension"))
 	{
         	// The data function is used to access the data stored in a node.
-		if(child_node.first == "sec" && child_node.second.get<string>("<xmlattr>.unit") == "cm")
+		if(child_node.second.get<string>("<xmlattr>.name") == "l" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetExtL(stod(child_node.second.data())*cm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "r" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetExtR(stod(child_node.second.data())*cm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "e" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetExtE(stod(child_node.second.data())*cm);
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
+    	}
+
+	// SR model
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.srmodel"))
+	{
+		// The data function is used to access the data stored in a node.
+		if(child_node.second.get<string>("<xmlattr>.name") == "model")
+			SetSRtype(stoi(child_node.second.data()));
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+
+	// gamma energy cut
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.genecut"))
+	{
+		// The data function is used to access the data stored in a node.
+		if(child_node.second.get<string>("<xmlattr>.name") == "ecut" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "eV")
+			SetGammaEcut(stod(child_node.second.data())*eV);
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+
+	// beam
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.beam"))
+	{
+        	// The data function is used to access the data stored in a node.
+		if(child_node.second.get<string>("<xmlattr>.name") == "part" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamName(child_node.second.data());
+		else if(child_node.second.get<string>("<xmlattr>.name") == "posx" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetBeamPosX(stod(child_node.second.data())*cm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "posy" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetBeamPosY(stod(child_node.second.data())*cm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "posz" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetBeamPosZ(stod(child_node.second.data())*cm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "dirx" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamDirX(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "diry" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamDirY(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "dirz" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamDirZ(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "mom" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "GeV")
+			SetBeamMom(stod(child_node.second.data())*GeV);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "spread" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamMomSpread(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "betax" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamBetaX(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "betay" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamBetaY(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "etax" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamEtaX(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "etay" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamEtaY(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "etapx" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamEtaPrimeX(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "etapy" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamEtaPrimeY(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "emitx" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "nm")
+			SetBeamEmitX(stod(child_node.second.data())*nm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "emity" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "nm")
+			SetBeamEmitY(stod(child_node.second.data())*nm);
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
+    	}
+
+	// absorbers
+	// clean vectors
+	CleanAbsParameters();
+	G4double absSizeX, absSizeY, absSizeZ, absPosX, absPosY, absPosZ;
+	
+	BOOST_FOREACH(ptree::value_type &child_tree, tree.get_child("xml.absorbers"))
+	{
+		if (child_tree.first == "absorber")
 		{
-			if(child_node.second.get<string>("<xmlattr>.name") == "l")
-				SetExtL(stod(child_node.second.data())*cm);
-			else if(child_node.second.get<string>("<xmlattr>.name") == "r")
-				SetExtR(stod(child_node.second.data())*cm);
-			else if(child_node.second.get<string>("<xmlattr>.name") == "e")
-				SetExtE(stod(child_node.second.data())*cm);
-			else
-				throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
+			BOOST_FOREACH(ptree::value_type &child_node, child_tree.second)
+			{
+				if(child_node.second.get<string>("<xmlattr>.name") == "x" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					absSizeX = stod(child_node.second.data())*cm; 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "y" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					absSizeY = stod(child_node.second.data())*cm; 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "z" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					absSizeZ = stod(child_node.second.data())*cm; 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posx" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					absPosX = stod(child_node.second.data())*cm; 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posy" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					absPosY = stod(child_node.second.data())*cm; 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posz" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					absPosZ = stod(child_node.second.data())*cm; 
+				else
+					throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+			}
+			// fill vectors with the new numbers
+			SetAbsParameters(absSizeX,absSizeY,absSizeZ,absPosX,absPosY,absPosZ);
 		}
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
-    	}
+	}
 
+	// magnets
+	// clean vectors
+	CleanMagParameters();
+	G4String magName, magType;
+	G4double magLength, magStartPosX, magStartPosY, magStartPosZ, magStartDirX, magStartDirY, magStartDirZ;
+	G4double magBx, magBy, magBz, magK1;
 
-for magnets --> clean up magVectors
-
+	BOOST_FOREACH(ptree::value_type &child_tree, tree.get_child("xml.magnets"))
+	{
+		if (child_tree.first == "magnet")
+		{
+			BOOST_FOREACH(ptree::value_type &child_node, child_tree.second)
+			{
+				if(child_node.second.get<string>("<xmlattr>.name") == "name")
+					magName = child_node.second.data();
+				else if(child_node.second.get<string>("<xmlattr>.name") == "type")
+					magType = child_node.second.data();
+				else if(child_node.second.get<string>("<xmlattr>.name") == "length" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					magLength = stod(child_node.second.data())*m; 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posx" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					magStartPosX = stod(child_node.second.data())*cm; 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posy" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					magStartPosY = stod(child_node.second.data())*cm;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posz" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					magStartPosZ = stod(child_node.second.data())*cm;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "dirx" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "")
+					magStartDirX = stod(child_node.second.data());
+				else if(child_node.second.get<string>("<xmlattr>.name") == "diry" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "")
+					magStartDirY = stod(child_node.second.data());
+				else if(child_node.second.get<string>("<xmlattr>.name") == "dirz" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "")
+					magStartDirZ = stod(child_node.second.data());
+				else if(child_node.second.get<string>("<xmlattr>.name") == "bx" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "tesla")
+					magBx = stod(child_node.second.data())*tesla;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "by" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "tesla")
+					magBy = stod(child_node.second.data())*tesla;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "bz" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "tesla")
+					magBz = stod(child_node.second.data())*tesla;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "k1" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "tesla/m")
+					magK1 = stod(child_node.second.data())*tesla/m;
+				else
+					throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+			}
+			// fill vectors with the new numbers
+			SetMagParameters(magName,magType,magLength,magStartPosX,magStartPosY,magStartPosZ,
+				magStartDirX,magStartDirY,magStartDirZ,magBx,magBy,magBz,magK1);
+		}
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+	
 	return;
 }
 
@@ -70,7 +245,6 @@ void SimParameters::SetMagParameters(G4String magName, G4String magType, G4doubl
 	G4double magStartDirX, G4double magStartDirY, G4double magStartDirZ,
 	G4double magBx, G4double magBy, G4double magBz, G4double magK1)
 {
-
 	_magName.push_back(magName);
 	_magType.push_back(magType);
 	_magLength.push_back(magLength);
@@ -84,6 +258,50 @@ void SimParameters::SetMagParameters(G4String magName, G4String magType, G4doubl
 	_magBy.push_back(magBy);
 	_magBz.push_back(magBz);
 	_magK1.push_back(magK1);
+
+	return;
+}
+
+void SimParameters::CleanMagParameters()
+{
+	_magName.clear();
+	_magType.clear();
+	_magLength.clear();
+	_magStartPosX.clear();
+	_magStartPosY.clear();
+	_magStartPosZ.clear();
+	_magStartDirX.clear();
+	_magStartDirY.clear();
+	_magStartDirZ.clear();
+	_magBx.clear();
+	_magBy.clear();
+	_magBz.clear();
+	_magK1.clear();
+
+	return;
+}
+
+void SimParameters::SetAbsParameters(G4double absSizeX, G4double absSizeY, G4double absSizeZ,
+	G4double absPosX, G4double absPosY, G4double absPosZ)
+{
+	_absSizeX.push_back(absSizeX);
+	_absSizeY.push_back(absSizeY);
+	_absSizeZ.push_back(absSizeZ);
+	_absPosX.push_back(absPosX);
+	_absPosY.push_back(absPosY);
+	_absPosZ.push_back(absPosZ);
+
+	return;
+}
+
+void SimParameters::CleanAbsParameters()  
+{
+	_absSizeX.clear();
+	_absSizeY.clear();
+	_absSizeZ.clear();
+	_absPosX.clear();
+	_absPosY.clear();
+	_absPosZ.clear();
 
 	return;
 }
@@ -138,9 +356,9 @@ void SimParameters::InitDefault()
 	_beamDirZ = 9.99692208043331E-01;
 	_beamName = "e-";
 
-	_SRtype = true;
+	_SRtype = 1;
 
-	_gammaEcut = 5*keV;
+	_gammaEcut = -1*keV;
 
 	return;
 }
@@ -164,17 +382,23 @@ void SimParameters::PrintBeamParameters()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintBeamParameters ==> Beam parameters"<<G4endl;
+	G4cout<<"Beam particles = "<<GetBeamName()<<G4endl;
 	G4cout<<"Position X = "<<GetBeamPosX()/cm<<" [cm]"<<G4endl;
 	G4cout<<"Position Y = "<<GetBeamPosY()/cm<<" [cm]"<<G4endl;
 	G4cout<<"Position Z = "<<GetBeamPosZ()/cm<<" [cm]"<<G4endl;
-	G4cout<<"Emittance X = "<<GetBeamEmitX()/nm<<" [nm]"<<G4endl;
-	G4cout<<"Emittance Y = "<<GetBeamEmitY()/nm<<" [nm]"<<G4endl;
+	G4cout<<"Direction X = "<<GetBeamDirX()<<" []"<<G4endl;
+	G4cout<<"Direction Y = "<<GetBeamDirY()<<" []"<<G4endl;
+	G4cout<<"Direction Z = "<<GetBeamDirZ()<<" []"<<G4endl;
+	G4cout<<"Momentum = "<<GetBeamMom()/GeV<<" [GeV]"<<G4endl;
+	G4cout<<"Momentum spread = "<<GetBeamMomSpread()<<" []"<<G4endl;
 	G4cout<<"Beta X = "<<GetBeamBetaX()/m<<" [m]"<<G4endl;
 	G4cout<<"Beta Y = "<<GetBeamBetaY()/m<<" [m]"<<G4endl;
 	G4cout<<"Dispersion X = "<<GetBeamEtaX()/m<<" [m]"<<G4endl;
 	G4cout<<"Dispersion Y = "<<GetBeamEtaY()/m<<" [m]"<<G4endl;
 	G4cout<<"Dispersion PX = "<<GetBeamEtaPrimeX()/m<<" []"<<G4endl;
 	G4cout<<"Dispersion PY = "<<GetBeamEtaPrimeY()/m<<" []"<<G4endl;
+	G4cout<<"Emittance X = "<<GetBeamEmitX()/nm<<" [nm]"<<G4endl;
+	G4cout<<"Emittance Y = "<<GetBeamEmitY()/nm<<" [nm]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
@@ -206,10 +430,31 @@ void SimParameters::PrintMagParameters()
 	return;
 }
 
+void SimParameters::PrintAbsParameters()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintAbsParameters ==> Absorber parameters"<<G4endl;
+	for(G4int iAbs = 0; iAbs < GetAbsNum(); iAbs++)
+	{
+		G4cout<<"ID = "<<iAbs<<G4endl;
+		G4cout<<"  Size X = "<<GetAbsSizeX(iAbs)/cm<<" [cm]"<<G4endl; 
+		G4cout<<"  Size Y = "<<GetAbsSizeY(iAbs)/cm<<" [cm]"<<G4endl; 
+		G4cout<<"  Size Z = "<<GetAbsSizeZ(iAbs)/cm<<" [cm]"<<G4endl; 
+		G4cout<<"  Position X = "<<GetAbsPosX(iAbs)/cm<<" [cm]"<<G4endl; 
+		G4cout<<"  Position Y = "<<GetAbsPosY(iAbs)/cm<<" [cm]"<<G4endl; 
+		G4cout<<"  Position Z = "<<GetAbsPosZ(iAbs)/cm<<" [cm]"<<G4endl; 
+	}
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
 void SimParameters::PrintSRtype()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintSRtype ==> "<<GetSRtype()<<G4endl;
+	G4cout<<" 1 - G4SynchrotronRadiation"<<G4endl;
+	G4cout<<" 2 - G4SynchrotronRadiationInMat"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

@@ -21,7 +21,6 @@ SteppingAction::~SteppingAction()
 
 void SteppingAction::UserSteppingAction(const G4Step *step)
 {
-
 	const G4Track* track = step->GetTrack();
 
 	// check if the track (=gamma) is killed
@@ -31,13 +30,14 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		// do not store in absorbers
 		if(G4StrUtil::contains(step->GetPostStepPoint()->GetPhysicalVolume()->GetName(),"abs_")){return;}
 
-		runAction->_gammaPosX.push_back(step->GetPostStepPoint()->GetPosition().getX()/CLHEP::cm);
-		runAction->_gammaPosY.push_back(step->GetPostStepPoint()->GetPosition().getY()/CLHEP::cm);
-		runAction->_gammaPosZ.push_back(step->GetPostStepPoint()->GetPosition().getZ()/CLHEP::cm);
-		runAction->_gammaMomX.push_back(step->GetPostStepPoint()->GetMomentum().getX()/CLHEP::eV);
-		runAction->_gammaMomY.push_back(step->GetPostStepPoint()->GetMomentum().getY()/CLHEP::eV);
-		runAction->_gammaMomZ.push_back(step->GetPostStepPoint()->GetMomentum().getZ()/CLHEP::eV);
-		runAction->_gammaEnergy.push_back(track->GetTotalEnergy()/CLHEP::eV);
+		runAction->_gammaPosX.push_back(step->GetPostStepPoint()->GetPosition().getX()/cm);
+		runAction->_gammaPosY.push_back(step->GetPostStepPoint()->GetPosition().getY()/cm);
+		runAction->_gammaPosZ.push_back(step->GetPostStepPoint()->GetPosition().getZ()/cm);
+		runAction->_gammaMomX.push_back(step->GetPostStepPoint()->GetMomentum().getX()/eV);
+		runAction->_gammaMomY.push_back(step->GetPostStepPoint()->GetMomentum().getY()/eV);
+		runAction->_gammaMomZ.push_back(step->GetPostStepPoint()->GetMomentum().getZ()/eV);
+		runAction->_gammaEnergy.push_back(track->GetTotalEnergy()/eV);
+		runAction->_gammaTime.push_back(track->GetGlobalTime()/ms); // time from the start of the event
 	}
 
 	return;

@@ -1,10 +1,11 @@
 #include "PrimaryGeneratorAction.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(RunAction* runAct) : runAction(runAct)
+PrimaryGeneratorAction::PrimaryGeneratorAction(RunAction* runAct, G4String xmlFileName) : runAction(runAct)
 {
     	fParticleGun = new G4ParticleGun(1);
 	simPar = new SimParameters();
 	simPar->InitDefault();
+	simPar->ReadXML(xmlFileName);
 	simPar->PrintBeamParameters();
 }
 
@@ -53,13 +54,13 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 					G4RandGauss::shoot(simPar->GetBeamDirY(),sigmaYprime),
 					simPar->GetBeamDirZ()};
 
-	runAction->_beamPosX = posXYZrot.x();
-	runAction->_beamPosY = posXYZrot.y();
-	runAction->_beamPosZ = posXYZrot.z();
-	runAction->_beamMomX = Mom*dirXYZ.x();
-	runAction->_beamMomY = Mom*dirXYZ.y();
-	runAction->_beamMomZ = Mom*dirXYZ.z();
-	runAction->_beamEnergy = std::sqrt(Mom*Mom + mass*mass);
+	runAction->_beamPosX = posXYZrot.x()/cm;
+	runAction->_beamPosY = posXYZrot.y()/cm;
+	runAction->_beamPosZ = posXYZrot.z()/cm;
+	runAction->_beamMomX = Mom*dirXYZ.x()/eV;
+	runAction->_beamMomY = Mom*dirXYZ.y()/eV;
+	runAction->_beamMomZ = Mom*dirXYZ.z()/eV;
+	runAction->_beamEnergy = std::sqrt(Mom*Mom + mass*mass)/eV;
 
     	fParticleGun->SetParticleDefinition(particleDef);
     	fParticleGun->SetParticleEnergy(Ekin);

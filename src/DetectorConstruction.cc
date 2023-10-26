@@ -24,15 +24,14 @@
 #include "G4SubtractionSolid.hh"
 #include "G4IntersectionSolid.hh"
 
-DetectorConstruction::DetectorConstruction(RunAction* runAct) : G4VUserDetectorConstruction(), runAction(runAct)
+DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetectorConstruction()
 {
 	simPar = new SimParameters();
 	simPar->InitDefault();
-	simPar->PrintGeoParameters();
-	simPar->ReadXML(runAction->GetXmlFileName());
+	simPar->ReadXML(xmlFileName);
 	simPar->PrintGeoParameters();
 	simPar->PrintMagParameters();
-	exit(-1);
+	simPar->PrintAbsParameters();
 }
 
 DetectorConstruction::~DetectorConstruction()

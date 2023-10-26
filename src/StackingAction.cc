@@ -1,12 +1,13 @@
 #include "StackingAction.hh"
 #include "G4Track.hh"
 
-StackingAction::StackingAction()
+StackingAction::StackingAction(G4String xmlFileName)
 {
     	_kill_secondaries  = 0;
     	fStackingMessenger = new StackingMessenger(this);
         simPar = new SimParameters();
         simPar->InitDefault();
+	simPar->ReadXML(xmlFileName);
         simPar->PrintGammaEcut();
 }
 

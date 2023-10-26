@@ -23,6 +23,7 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 	runAction->_gammaMomY.clear();
 	runAction->_gammaMomZ.clear();
 	runAction->_gammaEnergy.clear();
+	runAction->_gammaTime.clear();
 
     	if((runAction->_event)%100 == 0)
         	printf("[INFO] EventAction::BeginOfEventAction ==> BeginOfEvent: %12d\n",runAction->_event);

@@ -28,15 +28,15 @@ class SimParameters;
 class PrimaryGeneratorAction: public G4VUserPrimaryGeneratorAction
 {
 public:
-    	PrimaryGeneratorAction(RunAction*);
+    	PrimaryGeneratorAction(RunAction*,G4String);
     	virtual ~PrimaryGeneratorAction();
 
     	void GeneratePrimaries(G4Event* anEvent);
 
 private:
     	G4ParticleGun* fParticleGun;
-    	RunAction* runAction;
 	SimParameters* simPar;
+	RunAction* runAction;
 };
 
 #endif

@@ -14,7 +14,7 @@ class StackingAction : public G4UserStackingAction
 {
 public:
 
-  	StackingAction();
+  	StackingAction(G4String xmlFileName);
   	virtual ~StackingAction();
 
   	G4int GetKillStatus() { return _kill_secondaries;}
