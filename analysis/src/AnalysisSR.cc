@@ -1,7 +1,4 @@
-#ifndef AnalysisSR_cxx
-#define AnalysisSR_cxx
-
-#include "AnalysisSR.h"
+#include "AnalysisSR.hh"
 
 AnalysisSR::AnalysisSR() : _fChain(0) 
 {}
@@ -31,7 +28,7 @@ void AnalysisSR::Init(TString treeName = "tree")
    	gammaTime_ms = 0;
    
 	// Set branch addresses and branch pointers
-/*
+
    	_fChain->SetBranchAddress("event", &event, &b_event);
    	_fChain->SetBranchAddress("beamPdg", &beamPdg, &b_beamPdg);
    	_fChain->SetBranchAddress("beamPosX_cm", &beamPosX_cm, &b_beamPosX_cm);
@@ -49,23 +46,30 @@ void AnalysisSR::Init(TString treeName = "tree")
    	_fChain->SetBranchAddress("gammaMomZ_eV", &gammaMomZ_eV, &b_gammaMomZ_eV);
    	_fChain->SetBranchAddress("gammaEnergy_eV", &gammaEnergy_eV, &b_gammaEnergy_eV);
    	_fChain->SetBranchAddress("gammaTime_ms", &gammaTime_ms, &b_gammaTime_ms);
-*/
+
 	return;
 }
 
 void AnalysisSR::Loop()
 {
-  	if(_fChain == 0){return;}
+  	if(!_fChain){return;}
 
-   	Long64_t nentries = _fChain->GetEntriesFast();
-	cout<<"[INFO] AnalysisSR::Loop ==> nentries = "<<nentries<<endl;
+   	Long64_t nEntries = _fChain->GetEntries();
+	cout<<"[INFO] AnalysisSR::Loop ==> nEntries = "<<nEntries<<endl;
 
-   	for(Long64_t jentry = 0; jentry < nentries; jentry++) 
+	Long64_t jentry = 0;
+   	while(jentry < nEntries) 
 	{
 		_fChain->GetEntry(jentry);
+		
+		if(jentry%1000 == 0)
+        	{
+           	 	printf("\r[INFO] Progress: %.3f [%%]",100.0*jentry/nEntries);
+            		fflush(stdout);
+        	}
+		jentry++;
    	}
+ 	printf("\r[INFO] Progress: %.3f [%%]\n",100.0*jentry/nEntries);
 
 	return;
 }
-
-#endif

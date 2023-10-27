@@ -1,4 +1,14 @@
-#include "src/AnalysisClass.hh"
+#include "src/AnalysisSR.hh"
+
+#include <ctime>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+#include <time.h>
+
+using namespace std;
 
 int main()
 {
@@ -9,12 +19,12 @@ int main()
     	//______________________________________________________________________________________________________//
     	TString mainInDir   = "../output";
     	TString mainOutDir  = "./output";
-    	TString inputFileName = "output_*.root";
+    	TString inputFileName = "output_1.root";
     	TString outputFileName = "output_ana.root";
 	TString treeName = "tree";
     	//______________________________________________________________________________________________________//
 
-    	AnalysisClass* ana = new AnalysisClass();
+    	AnalysisSR* ana = new AnalysisSR();
 
     	ana->SetInputFileName(mainInDir+"/"+inputFileName);
     	ana->SetOutputFileName(mainOutDir+"/"+outputFileName);
@@ -24,7 +34,7 @@ int main()
     	cout<<"[INFO] Output file name: "<<ana->GetOutputFileName()<<endl;
 
     	ana->Loop();
-    	ana->~AnalysisClass();
+    	ana->~AnalysisSR();
 
     	stop_time = time(NULL);
     	cout<<"[INFO] Running time is : "<<stop_time - start_time<<" [sec]"<<endl;

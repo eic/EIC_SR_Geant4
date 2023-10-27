@@ -27,10 +27,10 @@ OUTLIB	      = ./obj/
 
 all: ana
 
-ana: ana.cc obj/AnalysisSR
+ana: ana.cc obj/AnalysisSR.o
 	$(CXX) $(CXXFLAGS) -o ana $(OUTLIB)/*.o $(GLIBS) $<
 
-obj/AnalysisSR.o: src/AnalysisSR.C src/AnalysisSR.h 
+obj/AnalysisSR.o: src/AnalysisSR.cc src/AnalysisSR.hh 
 	$(CXX) $(CXXFLAGS) -c -I. -o $(OUTLIB)AnalysisSR.o $<
 
 clean:

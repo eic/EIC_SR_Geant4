@@ -1,5 +1,5 @@
-#ifndef AnalysisSR_h
-#define AnalysisSR_h
+#ifndef AnalysisSR_hh
+#define AnalysisSR_hh
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -21,6 +21,8 @@ using namespace std;
 
 class AnalysisSR {
 public :
+  	AnalysisSR();
+	virtual ~AnalysisSR();
 
    	// Declaration of leaf types
 	Int_t           event;
@@ -60,9 +62,7 @@ public :
 	TBranch        *b_gammaEnergy_eV;   //!
 	TBranch        *b_gammaTime_ms;   //!
 
-   	AnalysisSR();
-	~AnalysisSR();
-	void Init(TString);
+ 	void Init(TString);
 	void Loop();
 	void SetInputFileName(TString val){_inputFileName = val; return;}
 	TString GetInputFileName(){return _inputFileName;}
@@ -73,6 +73,6 @@ private:
 	TString _inputFileName;
 	TString _outputFileName;
    	TChain* _fChain;
-};
 
+};
 #endif
