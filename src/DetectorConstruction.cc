@@ -13,7 +13,7 @@
 #include "G4ThreeVector.hh"
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
-#include "CADMesh.hh"
+#include "CADMesh.hh" // https://github.com/christopherpoole/CADMesh
 #include "G4MagneticField.hh"
 #include "G4FieldManager.hh"
 #include "G4UniformMagField.hh"
@@ -29,6 +29,7 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	simPar = new SimParameters();
 	simPar->InitDefault();
 	simPar->ReadXML(xmlFileName);
+	simPar->PrintBeampipeFileName();
 	simPar->PrintGeoParameters();
 	simPar->PrintMagParameters();
 	simPar->PrintAbsParameters();
@@ -60,7 +61,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     	//- Build beam pipe vacuum
 
 	//- Original
-	auto mesh = CADMesh::TessellatedMesh::FromOBJ("../geometry/beam_pipe_20231011_Zup.obj");
+	auto mesh = CADMesh::TessellatedMesh::FromOBJ(simPar->GetBeampipeFileName().c_str());
 	G4VSolid* beampipeOrig_solid = mesh->GetSolid();
 	G4LogicalVolume* beampipeOrig_log = new G4LogicalVolume(beampipeOrig_solid, mat_vac,"beampipeOrig");
 
@@ -76,7 +77,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	G4VSolid* beampipeVac_solid = beampipeUni_solid;
 
-	// loop over all magnets
+	//- Magnets
 	for(int iMag = 0; iMag < simPar->GetMagNum(); iMag++)
 	{
 		G4double rotY_angle = (simPar->GetMagStartDirZ(iMag) == 0) ? 0.0*rad : 
@@ -128,7 +129,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"vac_beampipe",world_log,false,0,true);
 	beampipeVac_log->SetVisAttributes(G4VisAttributes(G4Color::Grey()));
 
-	// absorbers
+	//- Absorbers
 	for(int iAbs = 0; iAbs < simPar->GetAbsNum(); iAbs++)
 	{
 		G4Box* abs_box = new G4Box("abs_box_"+to_string(iAbs),

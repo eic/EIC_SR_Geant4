@@ -42,6 +42,16 @@ void SimParameters::ReadXML(G4String fName)
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
     	}
 
+	// beam pipe
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.beampipe"))
+	{
+		// The data function is used to access the data stored in a node.
+		if(child_node.second.get<string>("<xmlattr>.name") == "filename")
+			SetBeampipeFileName(child_node.second.data());
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+
 	// extension
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.extension"))
 	{
@@ -314,6 +324,8 @@ void SimParameters::InitDefault()
     	_world_dim_y =  10.0*m;
     	_world_dim_z =  80.0*m;
 
+	_beampipeFileName = "../geometry/beam_pipe_20231011_Zup.obj";
+
 	_ext_length = 370*cm;
 	_ext_radius = 20.0*cm;
 	_ext_endpos = -3350.0*cm;	
@@ -466,6 +478,15 @@ void SimParameters::PrintGammaEcut()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintGammaEcut ==> Ecut = "<<GetGammaEcut()/eV<<" [eV]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
+void SimParameters::PrintBeampipeFileName()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintBeampipeFileName() ==> "<<GetBeampipeFileName()<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

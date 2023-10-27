@@ -6,6 +6,11 @@
 		<sec desc="size Z" name="z" unit="m">80.0</sec>
 	</world>
 
+	<!-- beam pipe vacuum -->
+	<beampipe>
+		<sec desc="beam pipe file" name="filename">../geometry/beam_pipe_20231011_Zup.obj</sec>
+	</beampipe>
+
 	<!-- beam pipe extension -->
 	<extension>
 		<sec desc="length" name="l" unit="cm">370.0</sec>

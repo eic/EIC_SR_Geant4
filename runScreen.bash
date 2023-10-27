@@ -7,7 +7,7 @@ date;
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile='../geometry/simParameters.xml'
-nParticles=10000 # on personal macbook with 6 cores (x2 threads): 0.33 sec/event for 10 jobs
+nParticles=10000 # personal macbook with 6 cores (x2 threads): 0.33 sec/event for 10 jobs
 nJobs=10
 
 echo "\n[INFO] Input parameters"

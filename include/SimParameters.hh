@@ -16,6 +16,8 @@ private:
     	G4double _world_dim_y;
     	G4double _world_dim_z;
 
+	G4String _beampipeFileName;
+
 	G4double _ext_length;
 	G4double _ext_radius;
 	G4double _ext_endpos;	
@@ -68,6 +70,7 @@ public:
 	// print functions
 	void InitDefault();	
 	void PrintGeoParameters();
+	void PrintBeampipeFileName();
 	void PrintBeamParameters();
 	void PrintMagParameters();
 	void CleanMagParameters();
@@ -81,6 +84,8 @@ public:
 	G4double GetWorldSizeX(){return _world_dim_x;}
 	G4double GetWorldSizeY(){return _world_dim_y;}
 	G4double GetWorldSizeZ(){return _world_dim_z;}
+
+	G4String GetBeampipeFileName(){return _beampipeFileName;}
 
 	G4double GetExtL(){return _ext_length;}
 	G4double GetExtR(){return _ext_radius;}
@@ -136,6 +141,8 @@ private:
 	void SetWorldSizeX(G4double val){_world_dim_x = val; return;}
 	void SetWorldSizeY(G4double val){_world_dim_y = val; return;}
 	void SetWorldSizeZ(G4double val){_world_dim_z = val; return;}
+
+	void SetBeampipeFileName(G4String val){_beampipeFileName = val; return;}
 
 	void SetExtL(G4double val){_ext_length = val; return;}
 	void SetExtR(G4double val){_ext_radius = val; return;}
