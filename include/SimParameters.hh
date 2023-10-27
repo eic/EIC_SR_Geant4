@@ -131,6 +131,7 @@ public:
 
 	G4double GetGammaEcut(){return _gammaEcut;}
 
+private:
 	// set functions
 	void SetWorldSizeX(G4double val){_world_dim_x = val; return;}
 	void SetWorldSizeY(G4double val){_world_dim_y = val; return;}
@@ -169,6 +170,8 @@ public:
 	void SetSRtype(G4int val){_SRtype = val; return;}
 
 	void SetGammaEcut(G4double val){_gammaEcut = val; return;}
+
+	G4bool FileExists(const G4String& fName);
 };
 
 #endif

@@ -2,6 +2,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
+#include <sys/stat.h>
 
 using namespace boost::property_tree;
 
@@ -17,6 +18,7 @@ void SimParameters::ReadXML(G4String fName)
     	ptree tree;
 
     	// Parse the XML into the property tree.
+	if(!FileExists(fName)){return;}
     	read_xml(fName, tree);
 
     	// Use get_child to find the node containing the a specific data, and iterate over
@@ -467,4 +469,10 @@ void SimParameters::PrintGammaEcut()
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
+}
+
+G4bool SimParameters::FileExists(const G4String& fName) 
+{
+  	struct stat buffer;   
+  	return (stat (fName.c_str(), &buffer) == 0); 
 }

@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 	G4String xmlFileName;
 
 	// check input parameters
-	if( argc == 3)
+	if( argc == 3 )
 	{
        		macFileName = argv[1];
 		xmlFileName = argv[2];
@@ -45,6 +45,24 @@ int main(int argc, char** argv)
 		G4cout<<"argv[1] = "<<macFileName<<G4endl;
 		G4cout<<"argv[2] = "<<xmlFileName<<G4endl;
 		G4cout<<"==================================================================\n"<<G4endl;
+	}
+	else if( argc == 2 )
+	{
+		macFileName = argv[1];
+		xmlFileName = "";
+
+		G4cout<<"\n\n=================================================================="<<G4endl;
+		G4cout<<"[INFO] main ==> Input parameters"<<G4endl;
+		G4cout<<"argv[1] = "<<macFileName<<G4endl;
+		G4cout<<"==================================================================\n"<<G4endl;
+
+		G4cout<<"\n\n      =================================================================================="<<G4endl;
+		G4cout<<"      =================================================================================="<<G4endl;
+		G4cout<<"      || [WARNING] main ==> The XML file with simulation parameters was not provided. ||"<<G4endl;
+		G4cout<<"      || Default simulation parameters will be used instead. Please note that this    ||"<<G4endl;
+		G4cout<<"      || may lead to unexpected simulation results or reproducibility issues.         ||"<<G4endl;
+		G4cout<<"      =================================================================================="<<G4endl;
+		G4cout<<"      ==================================================================================\n"<<G4endl;
 	}
 	else
 	{
