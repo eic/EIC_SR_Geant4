@@ -91,18 +91,17 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		if(abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad > 1e-4)
 		{
 			G4cout<<"\n\n=================================================================="<<G4endl;
-			G4cout<<"[INFO] GammaReflectionProcess::PostStepDoIt ==> Reflection info"<<G4endl;
+			G4cout<<"[WARNING] GammaReflectionProcess::PostStepDoIt ==> Not accurate reflection calculation"<<G4endl;
+			G4cout<<"abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad = "
+				<<abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad<<" > 1e-4"<<G4endl;
 			G4cout<<"grazingAngle_rad = "<<grazingAngle_rad<<G4endl;
 			G4cout<<"acos(gammaDir_i.dot(gammaDir_r))/2. = "<<acos(gammaDir_i.dot(gammaDir_r))/2.<<G4endl;
-			G4cout<<"abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad = "
-				<<abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad<<G4endl;
 			G4cout<<"gammaDir_i(x,y,z) = "
 				<<gammaDir_i.x()<<" , "<<gammaDir_i.y()<<" , "<<gammaDir_i.z()<<G4endl;
 			G4cout<<"gammaDir_r(x,y,z) = "
 				<<gammaDir_r.x()<<" , "<<gammaDir_r.y()<<" , "<<gammaDir_r.z()<<G4endl;
 			G4cout<<"norm (x,y,z) = "<<norm.x()<<" , "<<norm.y()<<" , "<<norm.z()<<G4endl;
 			G4cout<<"==================================================================\n"<<G4endl;
-			throw runtime_error("[ERROR] GammaReflectionProcess::PostStepDoIt ==> Wrong reflection direction\n");
 		}
 
 		// get probability

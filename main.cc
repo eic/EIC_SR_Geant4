@@ -32,73 +32,69 @@ int main(int argc, char** argv)
 {
 	G4String macFileName;
 	G4String xmlFileName;
+	G4int randomSeed;
 
 	// check input parameters
-	if( argc == 3 )
+	if( argc == 4 )
 	{
        		macFileName = argv[1];
 		xmlFileName = argv[2];
+		randomSeed = atoi(argv[3]);
 
 		
 		G4cout<<"\n\n=================================================================="<<G4endl;
 		G4cout<<"[INFO] main ==> Input parameters"<<G4endl;
 		G4cout<<"argv[1] = "<<macFileName<<G4endl;
 		G4cout<<"argv[2] = "<<xmlFileName<<G4endl;
+		G4cout<<"argv[3] = "<<randomSeed<<G4endl;
 		G4cout<<"==================================================================\n"<<G4endl;
-	}
-	else if( argc == 2 )
-	{
-		macFileName = argv[1];
-		xmlFileName = "";
-
-		G4cout<<"\n\n=================================================================="<<G4endl;
-		G4cout<<"[INFO] main ==> Input parameters"<<G4endl;
-		G4cout<<"argv[1] = "<<macFileName<<G4endl;
-		G4cout<<"==================================================================\n"<<G4endl;
-
-		G4cout<<"\n\n      =================================================================================="<<G4endl;
-		G4cout<<"      =================================================================================="<<G4endl;
-		G4cout<<"      || [WARNING] main ==> The XML file with simulation parameters was not provided. ||"<<G4endl;
-		G4cout<<"      || Default simulation parameters will be used instead. Please note that this    ||"<<G4endl;
-		G4cout<<"      || may lead to unexpected simulation results or reproducibility issues.         ||"<<G4endl;
-		G4cout<<"      =================================================================================="<<G4endl;
-		G4cout<<"      ==================================================================================\n"<<G4endl;
 	}
 	else
 	{
 		G4cout<<"\n\n=================================================================="<<G4endl;
 		G4cout<<"[ERROR] main ==> Wrong number of input parameters: argc = "<<argc<<G4endl;
-		G4cout<<"Usage: ./exe run.mac ../geometry/simParameters.xml"<<G4endl;
+		G4cout<<"Usage: ./exe run.mac ../geometry/simParameters.xml 21011993"<<G4endl;
 		G4cout<<"==================================================================\n"<<G4endl;
 
 		return -1;
 	}
+
+	// Choose the Random engine
+	//
+	G4Random::setTheEngine(new CLHEP::RanecuEngine);
+	G4Random::setTheSeed(time(NULL)+randomSeed);
+	G4Random::showEngineStatus();
+
     	// Construct the default run manager
     	//
-
-    	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
-    	CLHEP::HepRandom::setTheSeed(time(NULL));
-    	G4Random::setTheSeed(time(NULL));
-
     	G4RunManager* runManager = new G4RunManager;
-	PhysicsList* phys = new PhysicsList(xmlFileName);
-    	// G4PhysListFactory factory;
-    	// G4String physName = "FTFP_BERT_HP";
-    	// G4VModularPhysicsList* phys = factory.GetReferencePhysList(physName);
-    	runManager->SetUserInitialization(phys);
-    	RunAction* runAction = new RunAction(xmlFileName);
-    	DetectorConstruction* detConstr = new DetectorConstruction(xmlFileName);
-    	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(runAction,xmlFileName);
-    	EventAction* eventAction = new EventAction(runAction);
-    	SteppingAction* stepAction = new SteppingAction(runAction);
-    	StackingAction* stackAction = new StackingAction(xmlFileName);
 
+	// Set initialization classes
+	//
+	PhysicsList* phys = new PhysicsList(xmlFileName);
+    	runManager->SetUserInitialization(phys);
+
+    	DetectorConstruction* detConstr = new DetectorConstruction(xmlFileName);
     	runManager->SetUserInitialization(detConstr);
+
+    	RunAction* runAction = new RunAction(xmlFileName);
     	runManager->SetUserAction(runAction);
+
+    	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(runAction,xmlFileName);
     	runManager->SetUserAction(primary);
+
+    	EventAction* eventAction = new EventAction(runAction);
     	runManager->SetUserAction(eventAction);
+
+    	SteppingAction* stepAction = new SteppingAction(runAction);
     	runManager->SetUserAction(stepAction);
+
+    	StackingAction* stackAction = new StackingAction(xmlFileName);
     	runManager->SetUserAction(stackAction);
+
+	// Initialize G4 kernel
+	//
+	runManager->Initialize();
 
     	// Initialize visualization
     	//

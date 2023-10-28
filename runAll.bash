@@ -4,6 +4,7 @@
 jobID=$1
 nParticles=$2
 xmlFile=$3
+seed=$4
 
 # create a log directory if it was not done before 
 mkdir -pv logFiles
@@ -37,4 +38,4 @@ echo "##-----------------------------------------##"		>> ./macFiles/run_${jobID}
 cat ./macFiles/run_${jobID}.mac >> ./logFiles/log_${jobID}.txt
 
 # run the simulation
-./exe ./macFiles/run_${jobID}.mac ${xmlFile} | tee ./logFiles/log_${jobID}.txt
+./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} | tee ./logFiles/log_${jobID}.txt

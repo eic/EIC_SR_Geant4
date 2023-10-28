@@ -7,7 +7,7 @@ date;
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile='../geometry/simParameters.xml'
-nParticles=10000 # personal macbook with 6 cores (x2 threads): 0.33 sec/event for 10 jobs
+nParticles=100 # personal macbook with 6 cores (x2 threads): 0.35 sec/event for 10 jobs
 nJobs=10
 
 echo "\n[INFO] Input parameters"
@@ -36,7 +36,7 @@ for jobID in $(seq 1 1 ${nJobs})
 do
         echo "[INFO] GNU Screen session name: jobID_$jobID";
 
-        screen -S jobID_$jobID -d -m ./runAll.bash $jobID $nParticles $xmlFile
+        screen -S jobID_$jobID -d -m ./runAll.bash $jobID $nParticles $xmlFile $RANDOM
 done
 screen -ls
 
