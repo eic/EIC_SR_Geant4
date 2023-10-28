@@ -4,6 +4,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TH1.h>
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -74,5 +75,7 @@ private:
 	TString _outputFileName;
    	TChain* _fChain;
 
+	TH1F* _h1;
+	TH2F* _h2;
 };
 #endif

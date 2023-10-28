@@ -35,6 +35,7 @@ obj/AnalysisSR.o: src/AnalysisSR.cc src/AnalysisSR.hh
 
 clean:
 	rm -f *~
+	rm -f *.png
 	rm -f ana
 	rm -f $(OUTLIB)*.o
 	rm -rf *.dSYM

@@ -15,7 +15,8 @@ void AnalysisSR::Init(TString treeName = "tree")
    	if(!_fChain){return;};
 	_fChain->Add(_inputFileName.Data());
 
-	//_fChain->GetListOfFiles()
+	cout<<"[INFO] AnalysisSR::Init ==> Added files:"<<endl;
+	_fChain->ls();
 
    	// Set object pointer
    	gammaPosX_cm = 0;
@@ -47,6 +48,10 @@ void AnalysisSR::Init(TString treeName = "tree")
    	_fChain->SetBranchAddress("gammaEnergy_eV", &gammaEnergy_eV, &b_gammaEnergy_eV);
    	_fChain->SetBranchAddress("gammaTime_ms", &gammaTime_ms, &b_gammaTime_ms);
 
+	// histograms
+	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",10100,-1000,100000);
+	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",600,-4000,2000,300,-30,30);
+
 	return;
 }
 
@@ -68,8 +73,21 @@ void AnalysisSR::Loop()
             		fflush(stdout);
         	}
 		jentry++;
+
+		for(Int_t i = 0; i < gammaEnergy_eV->size(); i++)
+		{
+			_h1->Fill(gammaEnergy_eV->at(i));
+			_h2->Fill(gammaPosZ_cm->at(i),gammaPosX_cm->at(i));
+		}
    	}
  	printf("\r[INFO] Progress: %.3f [%%]\n",100.0*jentry/nEntries);
+
+	TFile* f = new TFile(GetOutputFileName().Data(),"recreate");
+	f->cd();
+	_h1->Write();
+	_h2->Write();
+	f->Close();
+	cout<<"[INFO] AnalysisSR::Loop ==> Output file name = "<<GetOutputFileName()<<endl;	
 
 	return;
 }

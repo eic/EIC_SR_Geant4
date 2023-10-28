@@ -19,7 +19,7 @@ int main()
     	//______________________________________________________________________________________________________//
     	TString mainInDir   = "../output";
     	TString mainOutDir  = "./output";
-    	TString inputFileName = "output_1.root";
+    	TString inputFileName = "output_*.root";
     	TString outputFileName = "output_ana.root";
 	TString treeName = "tree";
     	//______________________________________________________________________________________________________//
