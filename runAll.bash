@@ -38,4 +38,4 @@ echo "##-----------------------------------------##"		>> ./macFiles/run_${jobID}
 cat ./macFiles/run_${jobID}.mac >> ./logFiles/log_${jobID}.txt
 
 # run the simulation
-./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} | tee ./logFiles/log_${jobID}.txt
+./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} >> ./logFiles/log_${jobID}.txt

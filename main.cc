@@ -32,14 +32,14 @@ int main(int argc, char** argv)
 {
 	G4String macFileName;
 	G4String xmlFileName;
-	G4int randomSeed;
+	G4long randomSeed;
 
 	// check input parameters
 	if( argc == 4 )
 	{
        		macFileName = argv[1];
 		xmlFileName = argv[2];
-		randomSeed = atoi(argv[3]);
+		randomSeed = time(NULL)+atoi(argv[3]);
 
 		
 		G4cout<<"\n\n=================================================================="<<G4endl;
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 	// Choose the Random engine
 	//
 	G4Random::setTheEngine(new CLHEP::RanecuEngine);
-	G4Random::setTheSeed(time(NULL)+randomSeed);
+	G4Random::setTheSeed(randomSeed);
 	G4Random::showEngineStatus();
 
     	// Construct the default run manager
@@ -77,7 +77,7 @@ int main(int argc, char** argv)
     	DetectorConstruction* detConstr = new DetectorConstruction(xmlFileName);
     	runManager->SetUserInitialization(detConstr);
 
-    	RunAction* runAction = new RunAction(xmlFileName);
+    	RunAction* runAction = new RunAction(xmlFileName,randomSeed);
     	runManager->SetUserAction(runAction);
 
     	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(runAction,xmlFileName);

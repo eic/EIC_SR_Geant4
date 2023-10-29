@@ -1,7 +1,7 @@
 #include "RunAction.hh"
 #include "G4Run.hh"
 
-RunAction::RunAction(G4String xmlFileName) : _xml_filename(xmlFileName)
+RunAction::RunAction(G4String xmlFileName, G4long seed) : _xml_filename(xmlFileName), _seed(seed)
 {
 	// default value
    	_output_filename = "output.root";
@@ -49,7 +49,8 @@ void RunAction::BeginOfRunAction(const G4Run* run)
 	_avgEventTime = 0;
 
 	_xml = new TTree("xml", "Simulation settings from the XML file");
-	_xml->Branch("settings",          &_settings); 
+	_xml->Branch("settings",	&_settings); 
+    	_xml->Branch("seed",		&_seed);
 
 	DumpXmlFile();
 

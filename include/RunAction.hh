@@ -33,7 +33,7 @@ class RunMessenger;
 class RunAction: public G4UserRunAction
 {
 public:
-	RunAction(G4String);
+	RunAction(G4String,G4long);
     	~RunAction();
 
     	void BeginOfRunAction(const G4Run*);
@@ -47,6 +47,7 @@ public:
     	TTree* _xml;
 
     	G4int _event;
+	G4long _seed;
     	G4int _beamPdg;
 	G4float _beamPosX;
 	G4float _beamPosY;
