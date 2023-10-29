@@ -17,10 +17,13 @@ int main()
 
     	//----------------------------------------------- SETTINGS ---------------------------------------------//
     	//______________________________________________________________________________________________________//
-    	TString mainInDir   = "../output";
+    	TString mainInDir   = "../output_noEcut";
+    	TString outputFileName = "output_noEcut.root";
+    	// TString mainInDir   = "../output_5keVcut";
+    	// TString outputFileName = "output_5keVcut.root";
+
     	TString mainOutDir  = "./output";
     	TString inputFileName = "output_*.root";
-    	TString outputFileName = "output_ana.root";
 	TString treeName = "tree";
     	//______________________________________________________________________________________________________//
 

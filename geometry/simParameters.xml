@@ -25,7 +25,7 @@
 
 	<!-- tracked gamma energy cut -->
 	<genecut>
-		<sec desc="gamma energy cut" name="ecut" unit="eV">-1</sec>
+		<sec desc="gamma energy cut" name="ecut" unit="eV">5000</sec>
 	</genecut>
 
 	<!-- beam parameters -->

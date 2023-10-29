@@ -25,10 +25,10 @@ OUTLIB	      = ./obj/
 
 #----------------------------------------------------#
 
-all: ana
+all: exe
 
-ana: ana.cc obj/AnalysisSR.o
-	$(CXX) $(CXXFLAGS) -o ana $(OUTLIB)/*.o $(GLIBS) $<
+exe: ana.cc obj/AnalysisSR.o
+	$(CXX) $(CXXFLAGS) -o exe $(OUTLIB)/*.o $(GLIBS) $<
 
 obj/AnalysisSR.o: src/AnalysisSR.cc src/AnalysisSR.hh 
 	$(CXX) $(CXXFLAGS) -c -I. -o $(OUTLIB)AnalysisSR.o $<
@@ -36,6 +36,6 @@ obj/AnalysisSR.o: src/AnalysisSR.cc src/AnalysisSR.hh
 clean:
 	rm -f *~
 	rm -f *.png
-	rm -f ana
+	rm -f exe
 	rm -f $(OUTLIB)*.o
 	rm -rf *.dSYM

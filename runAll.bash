@@ -6,9 +6,7 @@ nParticles=$2
 xmlFile=$3
 seed=$4
 
-# create a log directory if it was not done before 
-mkdir -pv logFiles
-date > ./logFiles/log_${jobID}.txt
+date > ../output/log_${jobID}.txt
 
 # create mac file directory if it was not done before
 mkdir -pv macFiles
@@ -35,7 +33,7 @@ echo "##-----------------------------------------##"		>> ./macFiles/run_${jobID}
 . /usr/local/bin/thisroot.sh
 
 # dump the mac file content to the log file
-cat ./macFiles/run_${jobID}.mac >> ./logFiles/log_${jobID}.txt
+cat ./macFiles/run_${jobID}.mac >> ../output/log_${jobID}.txt
 
 # run the simulation
-./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} >> ./logFiles/log_${jobID}.txt
+./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} >> ../output/log_${jobID}.txt
