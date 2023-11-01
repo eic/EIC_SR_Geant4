@@ -30,6 +30,7 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	simPar->InitDefault();
 	simPar->ReadXML(xmlFileName);
 	simPar->PrintBeampipeFileName();
+	simPar->PrintIpBeampipeParameters();
 	simPar->PrintGeoParameters();
 	simPar->PrintMagParameters();
 	simPar->PrintAbsParameters();
@@ -60,7 +61,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     	//- Build beam pipe vacuum
 
-	//- Original
+	//- Original (beam pipe)
 	auto mesh = CADMesh::TessellatedMesh::FromOBJ(simPar->GetBeampipeFileName().c_str());
 	G4VSolid* beampipeOrig_solid = mesh->GetSolid();
 	G4LogicalVolume* beampipeOrig_log = new G4LogicalVolume(beampipeOrig_solid, mat_vac,"beampipeOrig");
@@ -70,14 +71,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		simPar->GetExtR(), simPar->GetExtL()/2, 0, 2.0 * M_PI);
 	G4LogicalVolume* beampipeExt_log = new G4LogicalVolume(beampipeExt_solid, mat_vac,"beampipeExt");
 
-	//- Union
+	//- Union (beam pipe with an extention)
 	G4VSolid* beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", 
 		beampipeOrig_solid, beampipeExt_solid, 0, G4ThreeVector(0, 0, simPar->GetExtE()-simPar->GetExtL()/2));
 	G4LogicalVolume* beampipeUni_log = new G4LogicalVolume(beampipeUni_solid, mat_vac,"beampipeUni");
 
 	G4VSolid* beampipeVac_solid = beampipeUni_solid;
 
-	//- Magnets
+	//- Magnets (fill the beam pipe volume with the magnetic field)
 	for(int iMag = 0; iMag < simPar->GetMagNum(); iMag++)
 	{
 		G4double rotY_angle = (simPar->GetMagStartDirZ(iMag) == 0) ? 0.0*rad : 
@@ -118,13 +119,26 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		localFieldMgr->CreateChordFinder(mag_field);
 		mag_log->SetFieldManager(localFieldMgr, true);
 
-		//- Vacuum
+		//- Vacuum (subtract the magnet volume from the beam pipe volume)
 		beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",beampipeVac_solid,
 		mag_box,mag_rot,G4ThreeVector(simPar->GetMagStartPosX(iMag)+simPar->GetMagLength(iMag)*sin(rotY_angle)/2.,
 		simPar->GetMagStartPosY(iMag),
 		simPar->GetMagStartPosZ(iMag)+simPar->GetMagLength(iMag)*cos(rotY_angle)/2.));
 	}
 
+	//- IP beam pipe
+	G4Box* ip_box = new G4Box("ip_box",1*m/2,1*m/2,(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2); 
+	G4VSolid* ip_solid = new G4IntersectionSolid("ip_solid", beampipeUni_solid, ip_box,0,
+	G4ThreeVector(0,0,simPar->GetIpBeampipeZmin()+(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2));
+	G4LogicalVolume* ip_log = new G4LogicalVolume(ip_solid,mat_vac,"ip_log");
+	G4VPhysicalVolume* ip_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),ip_log,"vac_ip",world_log,false,0,true);
+	ip_log->SetVisAttributes(G4VisAttributes(G4Color::Cyan()));
+
+	//- Vacuum (subtract the ip beam pipe volume from the beam pipe volume)
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",beampipeVac_solid,ip_box,
+	0,G4ThreeVector(0.,0.,simPar->GetIpBeampipeZmin()+(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2));
+
+	//- Vacuum (place the beam pipe without magnet and IP volumes) 
 	G4LogicalVolume* beampipeVac_log = new G4LogicalVolume(beampipeVac_solid, mat_vac,"beampipeVac");
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"vac_beampipe",world_log,false,0,true);
 	beampipeVac_log->SetVisAttributes(G4VisAttributes(G4Color::Grey()));

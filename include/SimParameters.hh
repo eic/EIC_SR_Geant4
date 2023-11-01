@@ -66,6 +66,9 @@ private:
 
 	G4double _gammaEcut;
 
+	G4double _ipBeampipeZmin;
+	G4double _ipBeampipeZmax;
+
 public:
 	// print functions
 	void InitDefault();	
@@ -75,6 +78,7 @@ public:
 	void PrintMagParameters();
 	void CleanMagParameters();
 	void PrintAbsParameters();
+	void PrintIpBeampipeParameters();
 	void CleanAbsParameters();
 	void PrintSRtype();
 	void PrintGammaEcut();
@@ -90,6 +94,9 @@ public:
 	G4double GetExtL(){return _ext_length;}
 	G4double GetExtR(){return _ext_radius;}
 	G4double GetExtE(){return _ext_endpos;}
+
+	G4double GetIpBeampipeZmin(){return _ipBeampipeZmin;}
+	G4double GetIpBeampipeZmax(){return _ipBeampipeZmax;}
 
 	G4String GetMagName(G4int i){return _magName.at(i);}
 	G4String GetMagType(G4int i){return _magType.at(i);}
@@ -147,6 +154,9 @@ private:
 	void SetExtL(G4double val){_ext_length = val; return;}
 	void SetExtR(G4double val){_ext_radius = val; return;}
 	void SetExtE(G4double val){_ext_endpos = val; return;}
+
+	void SetIpBeampipeZmin(G4double val){_ipBeampipeZmin = val; return;}
+	void SetIpBeampipeZmax(G4double val){_ipBeampipeZmax = val; return;}
 
 	void SetMagParameters(G4String magName, G4String magType, G4double magLength, 
 	G4double magStartPosX, G4double magStartPosY, G4double magStartPosZ,

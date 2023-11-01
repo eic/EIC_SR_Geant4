@@ -105,7 +105,17 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		}
 
 		// get probability
-		G4double prob = FindReflectionProbability(_reflectDataMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingAngle_rad/1000.0,gammaEnergy_eV);
+		G4double prob = 0;
+		if(prePV->GetName() == "vac_ip") // ip beam pipe
+		{
+			prob = FindReflectionProbability(_reflectDataMap["Au"],
+			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingAngle_rad/1000.0,gammaEnergy_eV);
+		}
+		else // beam pipe
+		{
+			prob = FindReflectionProbability(_reflectDataMap["Cu"],
+				_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingAngle_rad/1000.0,gammaEnergy_eV);
+		}
 
 		//- Roughtness
 		// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), but as surface roughness is taken into account, 

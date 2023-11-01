@@ -52,6 +52,20 @@ void SimParameters::ReadXML(G4String fName)
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
 
+	// ip beam pipe
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.ipbeampipe"))
+	{
+		// The data function is used to access the data stored in a node.
+		if(child_node.second.get<string>("<xmlattr>.name") == "zmin" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetIpBeampipeZmin(stod(child_node.second.data())*cm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "zmax" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetIpBeampipeZmax(stod(child_node.second.data())*cm);
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+
 	// extension
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.extension"))
 	{
@@ -496,4 +510,15 @@ G4bool SimParameters::FileExists(const G4String& fName)
 {
   	struct stat buffer;   
   	return (stat (fName.c_str(), &buffer) == 0); 
+}
+
+void SimParameters::PrintIpBeampipeParameters()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintIpBeampipeParameters ==> IP beam pipe parameters"<<G4endl;
+	G4cout<<"FWD Z (zmin) = "<<GetIpBeampipeZmin()/m<<" [m]"<<G4endl;
+	G4cout<<"BWD Z (zmax) = "<<GetIpBeampipeZmax()/m<<" [m]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
 }

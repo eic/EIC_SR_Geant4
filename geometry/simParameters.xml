@@ -18,6 +18,12 @@
 		<sec desc="endpoint position Z" name="e" unit="cm">-3350.0</sec>
 	</extension>
 
+	<!-- ip beam pipe - gold -->
+	<ipbeampipe>
+		<sec desc="fwd Z" name="zmin" unit="cm">-67</sec>
+		<sec desc="bwd Z" name="zmax" unit="cm">68.69231</sec>
+	</ipbeampipe>
+
 	<!-- synrad model -->
 	<srmodel>
 		<sec desc="1 - G4SynchrotronRadiation; 2 - G4SynchrotronRadiationInMat" name="model">1</sec>
