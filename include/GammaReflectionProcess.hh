@@ -61,6 +61,7 @@ private:
   	GammaReflectionProcess &operator=(const GammaReflectionProcess &);
 
 	map<string, string> _reflectFileNameMap;
+	G4double _sigmaRatio;
 	map<string, vector<pair<double, vector<double>>>> _reflectDataMap;
 	map<string, vector<double>> _grazingAngleMap;
 	map<string, vector<double>> _photonEnergyMap;

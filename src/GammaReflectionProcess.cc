@@ -6,8 +6,11 @@
 
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
 {
+	//------------------- material properties -------------------//
 	_reflectFileNameMap["Cu"] = "../materials/02-Copper.csv";
 	_reflectFileNameMap["Au"] = "../materials/04-Gold.csv";
+	_sigmaRatio = 0.005;
+	//-----------------------------------------------------------//
 
 	_reflectDataMap["Cu"] = ReadReflectData(_reflectFileNameMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
 	_reflectDataMap["Au"] = ReadReflectData(_reflectFileNameMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
@@ -120,10 +123,9 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		//- Roughtness
 		// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), but as surface roughness is taken into account, 
 		// the theta and phi angles (between the reflected direction and the surface normal) are perturbated with a gaussian distributied offset
-		G4double sigmaRatio = 0.005;
-		G4double thetaOffset 	= atan(sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-		G4double phiOffset 	= atan(sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-		// where thetaOffset and phiOffset are the random angles added to the calculated ones (those of mirror reflection), and sigmaRation is the value 
+		G4double thetaOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+		G4double phiOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+		// where thetaOffset and phiOffset are the random angles added to the calculated ones (those of mirror reflection), and _sigmaRatio is the value 
 		// the user inputs in the Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation of the size 
 		// of cavities on the surface, and sigmaH is the st.dev. of the depth of those). Essentially, the larger the "roughness" value (theoretically the ratio 
 		// of RMS roughness and autocorrelation length), the more the reflection direction is perturbated around the perfect mirror direction.
@@ -137,7 +139,7 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		// the theta should be (pi/2;pi); see above "SurfaceNormal": SurfaceNormal > 0 --> (pi/2;pi) OR SurfaceNormal < 0 --> (0;pi/2)
 		while(acos(norm.dot(gammaDir_tmp)) < M_PI_2)
 		{
-			thetaOffset = atan(sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+			thetaOffset = atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
 			gammaDir_tmp.setTheta(gammaDir_r.getTheta() + thetaOffset);
 		}
 
@@ -331,6 +333,7 @@ double GammaReflectionProcess::FindReflectionProbability(vector<pair<double, vec
 	double prob_ij = dataset.at(ang_i).second.at(ene_j);
 	double prob_jj = dataset.at(ang_j).second.at(ene_j);
 
+	// linear interpolation between two points
 	double prob_ii_ji = (ang_i == ang_j) ? prob_ii : (prob_ji - prob_ii)*(angle_val - angle.at(ang_i))/(angle.at(ang_j) - angle.at(ang_i)) + prob_ii;
 	double prob_ij_jj = (ang_i == ang_j) ? prob_jj : (prob_jj - prob_ij)*(angle_val - angle.at(ang_j))/(angle.at(ang_i) - angle.at(ang_j)) + prob_ij;
 
