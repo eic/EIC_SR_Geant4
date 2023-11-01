@@ -2,7 +2,7 @@
 Geant4 stand-alone simulation of synchrotron radiation in the EIC interaction region (IR6)
 
 
-pre-requirements
+# pre-requirements
 
 Geant4.11
 ROOT6
