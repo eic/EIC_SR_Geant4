@@ -1,13 +1,5 @@
 #include "AnalysisSR.hh"
 
-#include "HepMC3/GenEvent.h"
-#include "HepMC3/GenVertex.h"
-#include "HepMC3/GenParticle.h"
-#include "HepMC3/Print.h"
-#include "HepMC3/Selector.h"
-
-using namespace HepMC3;
-
 AnalysisSR::AnalysisSR() : _fChain(0) 
 {}
 
@@ -82,7 +74,7 @@ void AnalysisSR::Loop()
         	}
 		jentry++;
 
-//		GenEvent evt(HepMC3::Units::GEV,HepMC3::Units::MM);
+		GenEvent evt(HepMC3::Units::GEV,HepMC3::Units::MM);
 		
 		for(Int_t i = 0; i < gammaEnergy_eV->size(); i++)
 		{
@@ -91,9 +83,9 @@ void AnalysisSR::Loop()
 
 		    	// particles going into the vertex: 
 			// (px,py,pz,e),pdgid,status [https://arxiv.org/pdf/1912.08005.pdf]
-//			GenParticlePtr pin = std::make_shared<GenParticle>( 
-//					HepMC3::FourVector( 0.0,    0.0,   7000.0,  7000.0  ),2212,  4 );	
-/*
+			GenParticlePtr pin = std::make_shared<GenParticle>( 
+					FourVector( 0.0,    0.0,   7000.0,  7000.0  ),2212,  4 );	
+
 		    	// particles coming out of the vertex
 			GenParticlePtr pout = std::make_shared<GenParticle>( 
 					FourVector(-3.813,  0.113, -1.833, 4.233),  22, 1 );	
@@ -101,7 +93,7 @@ void AnalysisSR::Loop()
 			// generate the vertex
 			GenVertexPtr v1 = std::make_shared<GenVertex>(
 					FourVector(0,0,0,0));
-*/
+
 			exit(-1);
 
 		}

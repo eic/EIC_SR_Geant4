@@ -20,6 +20,14 @@
 
 using namespace std;
 
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/GenVertex.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/Print.h"
+#include "HepMC3/Selector.h"
+
+using namespace HepMC3;
+
 class AnalysisSR {
 public :
   	AnalysisSR();
