@@ -75,7 +75,7 @@ void AnalysisSR::Loop()
 	// main bookkeeping type that holds meta-information about the generated events: list of used tools, 
 	// names of used event weights and arbitrary attributes (see https://arxiv.org/pdf/1912.08005.pdf)
 	shared_ptr<GenRunInfo> run = make_shared<GenRunInfo>();
-	vector<string> weight_names = {"noWeights"};
+	vector<string> weight_names = {"NormFactor"};
 	run->set_weight_names(weight_names);
 	_fHepmc->set_run_info(run);
 	_fHepmc->write_run_info();
@@ -130,14 +130,19 @@ void AnalysisSR::Loop()
 			// (px,py,pz,e),pdgid,status [https://arxiv.org/pdf/1912.08005.pdf]
 			GenParticlePtr pin = make_shared<GenParticle>( 
 					FourVector(pinx,piny,pinz,energy),pdg,4);	
+			pin->set_generated_mass(0.);
+			event.add_particle(pin);
 
 		    	// particles coming out of the vertex
 			GenParticlePtr pout = make_shared<GenParticle>( 
 					FourVector(px,py,pz,energy),pdg,1);	
+			pout->set_generated_mass(0.);
+			event.add_particle(pout);
+			
 
 			// generate the vertex
 			GenVertexPtr vertex = make_shared<GenVertex>(FourVector(x,y,z,0.));
-			vertex->add_particle_in (pin);
+			vertex->add_particle_in(pin);
     			vertex->add_particle_out(pout);
 
 			// add the vertex to the event
