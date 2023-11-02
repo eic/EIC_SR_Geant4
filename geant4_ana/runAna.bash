@@ -7,6 +7,9 @@ mkdir -pv output
 mkdir -pv build
 cd build
 
+# clean
+make clean
+
 # config
 cmake ../
 

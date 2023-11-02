@@ -72,6 +72,14 @@ void AnalysisSR::Loop()
 	Float_t x, y, z, pinx, piny, pinz, px, py, pz, energy;
 	Int_t pdg;
 
+	// main bookkeeping type that holds meta-information about the generated events: list of used tools, 
+	// names of used event weights and arbitrary attributes (see https://arxiv.org/pdf/1912.08005.pdf)
+	shared_ptr<GenRunInfo> run = make_shared<GenRunInfo>();
+	vector<string> weight_names = {"noWeights"};
+	run->set_weight_names(weight_names);
+	_fHepmc->set_run_info(run);
+	_fHepmc->write_run_info();
+
    	while(jentry < nEntries) 
 	{
 		// load the entry
@@ -83,8 +91,13 @@ void AnalysisSR::Loop()
             		fflush(stdout);
         	}
 		jentry++;
-
+		
+		// data type that holds the position of the primary inter- action, and lists of vertices, 
+		// particles and attributes
 		GenEvent event(HepMC3::Units::GEV,HepMC3::Units::MM);
+		event.set_run_info(run);
+		vector<double> weights = {1};
+		event.weights() = weights;
 		
 		// loop over SR photons
 		for(Int_t i = 0; i < gammaEnergy_eV->size(); i++)
@@ -129,7 +142,6 @@ void AnalysisSR::Loop()
 
 			// add the vertex to the event
 			event.add_vertex(vertex);
-			event.weights().push_back(1);
 		}
 
 		// write the event
