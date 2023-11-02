@@ -30,8 +30,14 @@ mkdir -pv ./output
 mkdir -pv ./build
 cd ./build/
 
-g4conf
-g4cmake
+# load geant4 from spack
+. /usr/local/Cellar/spack/0.20.1/share/spack/setup-env.sh
+spack load geant4
+
+# config
+cmake ../
+
+# compile
 make -j4
 
 echo -ne "[INFO] Total number of threads on the machine is: ";
