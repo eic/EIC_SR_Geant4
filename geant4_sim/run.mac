@@ -1,0 +1,13 @@
+##-----------------------------------------##
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+##-----------------------------------------##
+/output/filename ../output/output.root
+
+/stack/killsecondaries 0
+
+/run/initialize
+##-----------------------------------------##
+/run/beamOn 1000
+##-----------------------------------------##

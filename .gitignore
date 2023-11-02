@@ -30,19 +30,28 @@
 *.out
 *.app
 
-# Build
-build/
-
-# Output
-output*/
+# ROOT
+*.root
+*.hepmc
 
 # MacOS
 .DS_Store
 *.dSYM
 *.swp
 
-# Ana
-ana
+# g4 sim
+geant4_sim/build
+geant4_sim/output*
+
+# g4 ana
+geant4_ana/build
+geant4_ana/output*
+
+# eic sim
+eic_sim/analysis         
+eic_sim/calibrations     
+eic_sim/fieldmaps        
+eic_sim/output           
 
 # Git
 !.gitignore
