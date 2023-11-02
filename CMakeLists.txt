@@ -1,9 +1,7 @@
-# $Id: CMakeLists.txt 68058 2013-03-13 14:47:43Z gcosmo $
-
 #----------------------------------------------------------------------------
 # Setup the project
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(SKB)
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+project(EIC)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -34,7 +32,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROOT_CXX_FLAGS}")
 #----------------------------------------------------------------------------
 # Find ROOT (optional package)
 #
-find_package(ROOT)
+find_package(ROOT REQUIRED)
 if(ROOT_FOUND)
   add_definitions(-DG4ANALYSIS_USE_ROOT)
 endif()
@@ -77,12 +75,6 @@ foreach(_script ${exe_SCRIPTS})
     COPYONLY
     )
 endforeach()
-
-#----------------------------------------------------------------------------
-# For internal Geant4 use - but has no effect if you build this
-# example standalone
-#
-#add_custom_target(xxx DEPENDS lhcBrich)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX

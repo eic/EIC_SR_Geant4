@@ -17,12 +17,12 @@ int main()
 
     	//----------------------------------------------- SETTINGS ---------------------------------------------//
     	//______________________________________________________________________________________________________//
-    	TString mainInDir   = "../output_noEcut";
+    	TString mainInDir   = "/Users/andrii/geant4_workdir/EIC_SR_Geant4/output_noEcut";
     	TString outputFileName = "output_noEcut.root";
     	// TString mainInDir   = "../output_5keVcut";
     	// TString outputFileName = "output_5keVcut.root";
 
-    	TString mainOutDir  = "./output";
+    	TString mainOutDir  = "../output";
     	TString inputFileName = "output_*.root";
 	TString treeName = "tree";
     	//______________________________________________________________________________________________________//
