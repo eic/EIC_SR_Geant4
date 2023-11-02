@@ -6,8 +6,7 @@
 #include <TFile.h>
 #include <TH1.h>
 #include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
+#include <TMath.h>
 
 #include "vector"
 #include <ctime>
@@ -23,8 +22,7 @@ using namespace std;
 #include "HepMC3/GenEvent.h"
 #include "HepMC3/GenVertex.h"
 #include "HepMC3/GenParticle.h"
-#include "HepMC3/Print.h"
-#include "HepMC3/Selector.h"
+#include "HepMC3/WriterAscii.h"
 
 using namespace HepMC3;
 
@@ -75,13 +73,17 @@ public :
 	void Loop();
 	void SetInputFileName(TString val){_inputFileName = val; return;}
 	TString GetInputFileName(){return _inputFileName;}
-	void SetOutputFileName(TString val){_outputFileName = val; return;}
-	TString GetOutputFileName(){return _outputFileName;}
+	void SetOutputFileNameRoot(TString val){_outputFileName_root = val; return;}
+	TString GetOutputFileNameRoot(){return _outputFileName_root;}
+	void SetOutputFileNameHepmc(TString val){_outputFileName_hepmc = val; return;}
+	TString GetOutputFileNameHepmc(){return _outputFileName_hepmc;}
 
 private:
 	TString _inputFileName;
-	TString _outputFileName;
+	TString _outputFileName_root;
+	TString _outputFileName_hepmc;
    	TChain* _fChain;
+	WriterAscii* _fHepmc;
 
 	TH1F* _h1;
 	TH2F* _h2;
