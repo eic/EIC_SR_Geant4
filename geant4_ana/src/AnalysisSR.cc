@@ -149,8 +149,9 @@ void AnalysisSR::Loop()
 			event.add_vertex(vertex);
 		}
 
-		// write the event
-		_fHepmc->write_event(event);
+		// write a non-empty event
+		if(gammaEnergy_eV->size() > 0)
+			_fHepmc->write_event(event);
    	}
  	printf("\r[INFO] Progress: %.3f [%%]\n",100.0*jentry/nEntries);
 

@@ -30,6 +30,13 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		// do not store in absorbers
 		if(G4StrUtil::contains(step->GetPostStepPoint()->GetPhysicalVolume()->GetName(),"abs_")){return;}
 
+		runAction->_gammaVtxPosX.push_back(track->GetVertexPosition().getX()/cm);
+		runAction->_gammaVtxPosY.push_back(track->GetVertexPosition().getY()/cm);
+		runAction->_gammaVtxPosZ.push_back(track->GetVertexPosition().getZ()/cm);
+		runAction->_gammaVtxDirX.push_back(track->GetVertexMomentumDirection().getX());
+		runAction->_gammaVtxDirY.push_back(track->GetVertexMomentumDirection().getY());
+		runAction->_gammaVtxDirZ.push_back(track->GetVertexMomentumDirection().getZ());
+
 		runAction->_gammaPosX.push_back(step->GetPostStepPoint()->GetPosition().getX()/cm);
 		runAction->_gammaPosY.push_back(step->GetPostStepPoint()->GetPosition().getY()/cm);
 		runAction->_gammaPosZ.push_back(step->GetPostStepPoint()->GetPosition().getZ()/cm);

@@ -16,6 +16,13 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 	_timer->Start();
     	runAction->_event = event->GetEventID();
 
+	runAction->_gammaVtxPosX.clear();
+	runAction->_gammaVtxPosY.clear();
+	runAction->_gammaVtxPosZ.clear();
+	runAction->_gammaVtxDirX.clear();
+	runAction->_gammaVtxDirY.clear();
+	runAction->_gammaVtxDirZ.clear();
+
 	runAction->_gammaPosX.clear();
 	runAction->_gammaPosY.clear();
 	runAction->_gammaPosZ.clear();

@@ -57,6 +57,13 @@ public:
 	G4float _beamMomZ;
 	G4float _beamEnergy;
 
+	vector<G4float> _gammaVtxPosX;
+	vector<G4float> _gammaVtxPosY;
+	vector<G4float> _gammaVtxPosZ;
+	vector<G4float> _gammaVtxDirX;
+	vector<G4float> _gammaVtxDirY;
+	vector<G4float> _gammaVtxDirZ;
+
 	vector<G4float> _gammaPosX;
 	vector<G4float> _gammaPosY;
 	vector<G4float> _gammaPosZ;
