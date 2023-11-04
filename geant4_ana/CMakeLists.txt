@@ -3,7 +3,7 @@ project (EIC_ANA C CXX)
 
 #----------------------------------------------------------------------------
 # Find ROOT and HEPMC3
-find_package(ROOT 6.28 REQUIRED)
+find_package(ROOT 6.24 REQUIRED)
 find_package(HepMC3 3.2 REQUIRED)
 
 #----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ set(CMAKE_EXE_LINKER_FLAGS ${ROOT_LD_FLAGS})
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project (see https://cmake.org/cmake/help/latest/command/include_directories.html)
 include_directories(${PROJECT_SOURCE_DIR}/src 
-                    ${ROOT_INCLUDE_DIR})
+                    ${ROOT_INCLUDE_DIR} ${HEPMC3_INCLUDE_DIR})
                     
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/src/*.hh)

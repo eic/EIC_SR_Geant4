@@ -7,9 +7,9 @@ date;
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="${PWD}/geometry/simParameters.xml" # simulation geometry settings
-nParticles=100 # number of primary particles per job
+nParticles=1000000 # number of primary particles per job
 outputDir='/group/belle2/TMP/anatochi/eic/output_noEcut'
-nJobs=10 # number of jobs
+nJobs=1000 # number of jobs
 queue='l'
 #--------------------------------------------------#
 #--------------------------------------------------#
