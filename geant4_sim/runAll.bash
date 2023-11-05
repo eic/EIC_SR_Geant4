@@ -9,7 +9,7 @@ outputDir=$5
 
 mkdir -pv ${outputDir}
 
-date > ${outputDir}/log_${jobID}.txt
+date > ${outputDir}/logExe_${jobID}.txt
 
 # create mac file directory if it was not done before
 mkdir -pv macFiles
@@ -30,7 +30,7 @@ echo "/run/beamOn ${nParticles}"				>> ./macFiles/run_${jobID}.mac
 echo "##-----------------------------------------##"		>> ./macFiles/run_${jobID}.mac 
 
 # dump the mac file content to the log file
-cat ./macFiles/run_${jobID}.mac >> ${outputDir}/log_${jobID}.txt
+cat ./macFiles/run_${jobID}.mac >> ${outputDir}/logExe_${jobID}.txt
 
 # run the simulation
-./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} >> ${outputDir}/log_${jobID}.txt
+./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} >> ${outputDir}/logExe_${jobID}.txt

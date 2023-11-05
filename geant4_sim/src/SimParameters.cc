@@ -400,6 +400,9 @@ void SimParameters::InitDefault()
 	_gammaEcut = -1*keV;
 	_trackTcut =  1*s;
 
+	_ipBeampipeZmin = -0.67*m; 
+	_ipBeampipeZmax = 0.686923*m;
+
 	return;
 }
 

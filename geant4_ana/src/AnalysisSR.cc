@@ -23,15 +23,21 @@ void AnalysisSR::Init(TString treeName = "tree")
 	cout<<"\n"<<endl;
 
    	// set object pointer
-   	gammaPosX_cm = 0;
-   	gammaPosY_cm = 0;
-   	gammaPosZ_cm = 0;
-   	gammaMomX_eV = 0;
-   	gammaMomY_eV = 0;
-   	gammaMomZ_eV = 0;
-   	gammaEnergy_eV = 0;
-   	gammaTime_ms = 0;
-   
+	gammaVtxPosX_cm = nullptr;
+	gammaVtxPosY_cm = nullptr;
+	gammaVtxPosZ_cm = nullptr;
+	gammaVtxDirX = nullptr;
+	gammaVtxDirY = nullptr;
+	gammaVtxDirZ = nullptr;
+	gammaPosX_cm = nullptr;
+	gammaPosY_cm = nullptr;
+	gammaPosZ_cm = nullptr;
+	gammaMomX_eV = nullptr;
+	gammaMomY_eV = nullptr;
+	gammaMomZ_eV = nullptr;
+	gammaEnergy_eV = nullptr;
+	gammaTime_ms = nullptr;
+
 	// set branch addresses and branch pointers
    	_fChain->SetBranchAddress("event", &event, &b_event);
    	_fChain->SetBranchAddress("beamPdg", &beamPdg, &b_beamPdg);
@@ -42,18 +48,28 @@ void AnalysisSR::Init(TString treeName = "tree")
    	_fChain->SetBranchAddress("beamMomY_eV", &beamMomY_eV, &b_beamMomY_eV);
    	_fChain->SetBranchAddress("beamMomZ_eV", &beamMomZ_eV, &b_beamMomZ_eV);
    	_fChain->SetBranchAddress("beamEnergy_eV", &beamEnergy_eV, &b_beamEnergy_eV);
+
+   	_fChain->SetBranchAddress("gammaVtxPosX_cm", &gammaVtxPosX_cm, &b_gammaVtxPosX_cm);
+   	_fChain->SetBranchAddress("gammaVtxPosY_cm", &gammaVtxPosY_cm, &b_gammaVtxPosY_cm);
+   	_fChain->SetBranchAddress("gammaVtxPosZ_cm", &gammaVtxPosZ_cm, &b_gammaVtxPosZ_cm);
+   	_fChain->SetBranchAddress("gammaVtxDirX", &gammaVtxDirX, &b_gammaVtxDirX);
+   	_fChain->SetBranchAddress("gammaVtxDirY", &gammaVtxDirY, &b_gammaVtxDirY);
+   	_fChain->SetBranchAddress("gammaVtxDirZ", &gammaVtxDirZ, &b_gammaVtxDirZ);
+
    	_fChain->SetBranchAddress("gammaPosX_cm", &gammaPosX_cm, &b_gammaPosX_cm);
    	_fChain->SetBranchAddress("gammaPosY_cm", &gammaPosY_cm, &b_gammaPosY_cm);
    	_fChain->SetBranchAddress("gammaPosZ_cm", &gammaPosZ_cm, &b_gammaPosZ_cm);
    	_fChain->SetBranchAddress("gammaMomX_eV", &gammaMomX_eV, &b_gammaMomX_eV);
    	_fChain->SetBranchAddress("gammaMomY_eV", &gammaMomY_eV, &b_gammaMomY_eV);
    	_fChain->SetBranchAddress("gammaMomZ_eV", &gammaMomZ_eV, &b_gammaMomZ_eV);
+
    	_fChain->SetBranchAddress("gammaEnergy_eV", &gammaEnergy_eV, &b_gammaEnergy_eV);
    	_fChain->SetBranchAddress("gammaTime_ms", &gammaTime_ms, &b_gammaTime_ms);
 
 	// histograms
 	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",10100,-1000,100000);
 	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",600,-4000,2000,300,-30,30);
+	_h3 = new TH2F("h3","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",600,-4000,2000,300,-30,30);
 
 	// ascii file to store generated events
 	_fHepmc = new WriterAscii(GetOutputFileNameHepmc().Data());
@@ -68,7 +84,6 @@ void AnalysisSR::Loop()
    	Long64_t nEntries = _fChain->GetEntries();
 	cout<<"[INFO] AnalysisSR::Loop ==> nEntries = "<<nEntries<<endl;
 
-	Long64_t jentry = 0;
 	Float_t x, y, z, pinx, piny, pinz, px, py, pz, energy;
 	Int_t pdg;
 
@@ -80,6 +95,7 @@ void AnalysisSR::Loop()
 	_fHepmc->set_run_info(run);
 	_fHepmc->write_run_info();
 
+	Long64_t jentry = 0;
    	while(jentry < nEntries) 
 	{
 		// load the entry
@@ -107,6 +123,7 @@ void AnalysisSR::Loop()
 
 			_h1->Fill(gammaEnergy_eV->at(i));
 			_h2->Fill(gammaPosZ_cm->at(i),gammaPosX_cm->at(i));
+			_h3->Fill(gammaVtxPosZ_cm->at(i),gammaVtxPosX_cm->at(i));
 
 			//---------------------------------------------------------------------------
 			// generate a HEPMC event
@@ -159,6 +176,7 @@ void AnalysisSR::Loop()
 	f->cd();
 	_h1->Write();
 	_h2->Write();
+	_h3->Write();
 	f->Close();
 
 	return;

@@ -1,14 +1,23 @@
 #!/bin/bash
 
+#--------------------------------------------------#
+#---------------- INPUT PARAMETERS ----------------#
+mainInDir='/group/belle2/TMP/anatochi/eic/output' # input directory
+inputFileName='output_*.root'
+treeName='tree'
+outputDir='/group/belle2/TMP/anatochi/eic/output_ana' # output directory
+outputFileName='output'
+buildDir='./build' # build directory
+queue='s'
+#--------------------------------------------------#
+#--------------------------------------------------#
+
 # output directory
-mkdir -pv output
+mkdir -pv ${outputDir}
 
 # build directory
-mkdir -pv build
-cd build
-
-# clean
-make clean
+mkdir -pv ${buildDir}
+cd ${buildDir}
 
 # config
 cmake ../
@@ -16,18 +25,6 @@ cmake ../
 # compile
 make -j4
 
-for sample in 'noEcut' '5keVcut'
-do
-	mainInDir="/group/belle2/TMP/anatochi/eic/output_${sample}"
-	outputFileName="output_${sample}"
-
-	inputFileName="output_*.root"
-	mainOutDir="/group/belle2/TMP/anatochi/eic/output_ana"
-	treeName="tree"
-
-	mkdir -pv ${mainOutDir}
-
-	com="./exe ${mainInDir} ${inputFileName} ${mainOutDir} ${outputFileName} ${treeName} &> ${mainOutDir}/log_${sample}.txt"
-	echo -ne "[INFO] ${com} => "
-	bsub -q $queue -o /dev/null "${com}"
-done
+com="./exe ${mainInDir} ${inputFileName} ${outputDir} ${outputFileName} ${treeName} &> ${outputDir}/logExe_ana.txt"
+echo -ne "[INFO] ${com} => "
+bsub -q $queue -o ${outputDir}/logJob_ana.txt "${com}"

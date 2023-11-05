@@ -41,12 +41,21 @@ public :
 	Float_t         beamMomY_eV;
 	Float_t         beamMomZ_eV;
 	Float_t         beamEnergy_eV;
+
+	vector<float>   *gammaVtxPosX_cm;
+	vector<float>   *gammaVtxPosY_cm;
+	vector<float>   *gammaVtxPosZ_cm;
+	vector<float>   *gammaVtxDirX;
+	vector<float>   *gammaVtxDirY;
+	vector<float>   *gammaVtxDirZ;
+
 	vector<float>   *gammaPosX_cm;
 	vector<float>   *gammaPosY_cm;
 	vector<float>   *gammaPosZ_cm;
 	vector<float>   *gammaMomX_eV;
 	vector<float>   *gammaMomY_eV;
 	vector<float>   *gammaMomZ_eV;
+
 	vector<float>   *gammaEnergy_eV;
 	vector<float>   *gammaTime_ms;
 
@@ -60,12 +69,21 @@ public :
 	TBranch        *b_beamMomY_eV;   //!
 	TBranch        *b_beamMomZ_eV;   //!
 	TBranch        *b_beamEnergy_eV;   //!
+
+	TBranch        *b_gammaVtxPosX_cm;   //!
+	TBranch        *b_gammaVtxPosY_cm;   //!
+	TBranch        *b_gammaVtxPosZ_cm;   //!
+	TBranch        *b_gammaVtxDirX;   //!
+	TBranch        *b_gammaVtxDirY;   //!
+	TBranch        *b_gammaVtxDirZ;   //!
+
 	TBranch        *b_gammaPosX_cm;   //!
 	TBranch        *b_gammaPosY_cm;   //!
 	TBranch        *b_gammaPosZ_cm;   //!
 	TBranch        *b_gammaMomX_eV;   //!
 	TBranch        *b_gammaMomY_eV;   //!
 	TBranch        *b_gammaMomZ_eV;   //!
+
 	TBranch        *b_gammaEnergy_eV;   //!
 	TBranch        *b_gammaTime_ms;   //!
 
@@ -87,5 +105,6 @@ private:
 
 	TH1F* _h1;
 	TH2F* _h2;
+	TH2F* _h3;
 };
 #endif
