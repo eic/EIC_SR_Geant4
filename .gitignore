@@ -52,6 +52,7 @@ eic_sim/analysis
 eic_sim/calibrations     
 eic_sim/fieldmaps        
 eic_sim/output           
+eic_sim/data
 
 # Git
 !.gitignore
