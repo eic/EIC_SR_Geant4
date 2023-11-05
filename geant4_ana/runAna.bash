@@ -16,15 +16,18 @@ cmake ../
 # compile
 make -j4
 
-# run
-#mainInDir="../../geant4_sim/output_5keVcut"
-#outputFileName="output_5keVcut"
+for sample in 'noEcut' '5keVcut'
+do
+	mainInDir="/group/belle2/TMP/anatochi/eic/output_${sample}"
+	outputFileName="output_${sample}"
 
-mainInDir="../../geant4_sim/output_noEcut"
-outputFileName="output_noEcut"
+	inputFileName="output_*.root"
+	mainOutDir="/group/belle2/TMP/anatochi/eic/output_ana"
+	treeName="tree"
 
-inputFileName="output_*.root"
-mainOutDir="../output"
-treeName="tree"
+	mkdir -pv ${mainOutDir}
 
-./exe ${mainInDir} ${inputFileName} ${mainOutDir} ${outputFileName} ${treeName} 
+	com="./exe ${mainInDir} ${inputFileName} ${mainOutDir} ${outputFileName} ${treeName} &> ${mainOutDir}/log_${sample}.txt"
+	echo -ne "[INFO] ${com} => "
+	bsub -q $queue -o /dev/null "${com}"
+done

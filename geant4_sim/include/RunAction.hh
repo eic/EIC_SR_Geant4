@@ -43,6 +43,7 @@ public:
 
     	void SetOutputFileName(G4String name){_output_filename = name;}
 
+	TFile* _hfile;
     	TTree* _tree;
     	TTree* _xml;
 

@@ -6,10 +6,11 @@ date;
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-xmlFile="${PWD}/geometry/simParameters.xml" # simulation geometry settings
+xmlFile="${PWD}/geometry/simParameters_noEcut.xml" # simulation geometry settings
 nParticles=1000000 # number of primary particles per job
-outputDir='/group/belle2/TMP/anatochi/eic/output_noEcut'
-nJobs=1000 # number of jobs
+outputDir='/group/belle2/TMP/anatochi/eic/output_noEcut' # output directory
+buildDir='./build_noEcut' # build directory
+nJobs=500 # number of jobs
 queue='l'
 #--------------------------------------------------#
 #--------------------------------------------------#
@@ -32,8 +33,8 @@ fi
 mkdir -pv ${outputDir}
 
 # build directory
-mkdir -pv ./build
-cd ./build/
+mkdir -pv ${buildDir}
+cd ${buildDir}
 
 # config
 cmake ../
