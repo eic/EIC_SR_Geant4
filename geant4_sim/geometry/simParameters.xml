@@ -34,6 +34,11 @@
 		<sec desc="gamma energy cut" name="ecut" unit="eV">-1</sec>
 	</genecut>
 
+	<!-- tracking time cut -->
+	<timecut>
+		<sec desc="simulation time cut" name="tcut" unit="s">10e-6</sec>
+	</timecut>
+
 	<!-- beam parameters -->
 	<beam>
 		<sec desc="particle" name="part" unit="">e-</sec>

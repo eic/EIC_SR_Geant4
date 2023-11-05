@@ -40,13 +40,12 @@ int main(int argc, char** argv)
        		macFileName = argv[1];
 		xmlFileName = argv[2];
 		randomSeed = time(NULL)+atoi(argv[3]);
-
 		
 		G4cout<<"\n\n=================================================================="<<G4endl;
 		G4cout<<"[INFO] main ==> Input parameters"<<G4endl;
-		G4cout<<"argv[1] = "<<macFileName<<G4endl;
-		G4cout<<"argv[2] = "<<xmlFileName<<G4endl;
-		G4cout<<"argv[3] = "<<randomSeed<<G4endl;
+		G4cout<<"argv[1] macFileName = "<<macFileName<<G4endl;
+		G4cout<<"argv[2] xmlFileName = "<<xmlFileName<<G4endl;
+		G4cout<<"argv[3] randomSeed = "<<randomSeed<<G4endl;
 		G4cout<<"==================================================================\n"<<G4endl;
 	}
 	else
@@ -86,7 +85,7 @@ int main(int argc, char** argv)
     	EventAction* eventAction = new EventAction(runAction);
     	runManager->SetUserAction(eventAction);
 
-    	SteppingAction* stepAction = new SteppingAction(runAction);
+    	SteppingAction* stepAction = new SteppingAction(runAction,xmlFileName);
     	runManager->SetUserAction(stepAction);
 
     	StackingAction* stackAction = new StackingAction(xmlFileName);

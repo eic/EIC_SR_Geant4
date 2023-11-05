@@ -65,6 +65,7 @@ private:
 	G4int _SRtype;
 
 	G4double _gammaEcut;
+	G4double _trackTcut;
 
 	G4double _ipBeampipeZmin;
 	G4double _ipBeampipeZmax;
@@ -82,6 +83,7 @@ public:
 	void CleanAbsParameters();
 	void PrintSRtype();
 	void PrintGammaEcut();
+	void PrintTrackTcut();
 	void ReadXML(G4String fName);
 
 	// get functions
@@ -143,6 +145,8 @@ public:
 
 	G4double GetGammaEcut(){return _gammaEcut;}
 
+	G4double GetTrackTcut(){return _trackTcut;}
+
 private:
 	// set functions
 	void SetWorldSizeX(G4double val){_world_dim_x = val; return;}
@@ -187,6 +191,8 @@ private:
 	void SetSRtype(G4int val){_SRtype = val; return;}
 
 	void SetGammaEcut(G4double val){_gammaEcut = val; return;}
+
+	void SetTrackTcut(G4double val){_trackTcut = val; return;}
 
 	G4bool FileExists(const G4String& fName);
 };

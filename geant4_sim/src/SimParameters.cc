@@ -104,6 +104,17 @@ void SimParameters::ReadXML(G4String fName)
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
 
+	// tracking time cut
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.timecut"))
+	{
+		// The data function is used to access the data stored in a node.
+		if(child_node.second.get<string>("<xmlattr>.name") == "tcut" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "s")
+			SetTrackTcut(stod(child_node.second.data())*s);
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+
 	// beam
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.beam"))
 	{
@@ -387,6 +398,7 @@ void SimParameters::InitDefault()
 	_SRtype = 1;
 
 	_gammaEcut = -1*keV;
+	_trackTcut =  1*s;
 
 	return;
 }
@@ -492,6 +504,15 @@ void SimParameters::PrintGammaEcut()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintGammaEcut ==> Ecut = "<<GetGammaEcut()/eV<<" [eV]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
+void SimParameters::PrintTrackTcut()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintTrackTcut ==> Tcut = "<<GetTrackTcut()/s<<" [s]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

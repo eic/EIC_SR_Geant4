@@ -13,8 +13,13 @@
 #include "G4OpBoundaryProcess.hh"
 #include "G4ProcessManager.hh"
 
-SteppingAction::SteppingAction(RunAction* runAct) : runAction(runAct)
-{}
+SteppingAction::SteppingAction(RunAction* runAct, G4String xmlFileName) : runAction(runAct)
+{
+	simPar = new SimParameters();
+	simPar->InitDefault();
+	simPar->ReadXML(xmlFileName);
+	simPar->PrintTrackTcut();
+}
 
 SteppingAction::~SteppingAction()
 {}
@@ -22,6 +27,13 @@ SteppingAction::~SteppingAction()
 void SteppingAction::UserSteppingAction(const G4Step *step)
 {
 	const G4Track* track = step->GetTrack();
+
+	// kill long living tracks
+	if(track->GetGlobalTime() > simPar->GetTrackTcut())
+	{
+		G4Track* aNonConstTrack = const_cast<G4Track*>(track);
+		aNonConstTrack->SetTrackStatus(fStopAndKill);
+	}
 
 	// check if the track (=gamma) is killed
 	if(track->GetTrackStatus() == fStopAndKill && 
