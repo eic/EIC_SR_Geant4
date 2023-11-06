@@ -54,5 +54,9 @@ eic_sim/fieldmaps
 eic_sim/output           
 eic_sim/data
 
+# eic reco
+eic_reco/analysisPlugin/build/
+eic_reco/build/
+
 # Git
 !.gitignore

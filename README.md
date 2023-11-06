@@ -53,6 +53,7 @@ Geant4 stand-alone simulation of synchrotron radiation in the EIC interaction re
 # npsim --steeringFile --compactFile $DETECTOR_PATH/$DETECTOR_CONFIG.xml -numberOfEvents 10 --outputFile npsim_pythia8NCDIS_10x100.edm4hep.root
 #
 #-- To build EICreco
+# in eic-shell
 # git clone https://github.com/eic/EICrecon
 # (or git clone git@github.com:eic/EICrecon)
 # cd EICrecon
