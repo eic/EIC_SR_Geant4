@@ -1,0 +1,820 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineSystem.cmake:204 (message)"
+      - "CMakeLists.txt:14 (project)"
+    message: |
+      The system is: Linux - 3.10.0-1160.92.1.el7.x86_64 - x86_64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:14 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /usr/bin/cc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/3.26.3/CompilerIdC/a.out
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:14 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /usr/bin/c++ 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is GNU, found in:
+        /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/3.26.3/CompilerIdCXX/a.out
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:14 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-qLwgPr"
+      binary: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-qLwgPr"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-qLwgPr
+        
+        Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_dd1fa/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_dd1fa.dir/build.make CMakeFiles/cmTC_dd1fa.dir/build
+        gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-qLwgPr'
+        Building C object CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o
+        /usr/bin/cc   -v -o CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o -c /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/cc
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 12.2.0 (Debian 12.2.0-14) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_dd1fa.dir/'
+         /usr/lib/gcc/x86_64-linux-gnu/12/cc1 -quiet -v -imultiarch x86_64-linux-gnu /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_dd1fa.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -o /tmp/ccbsvbM9.s
+        GNU C17 (Debian 12.2.0-14) version 12.2.0 (x86_64-linux-gnu)
+        	compiled by GNU C version 12.2.0, GMP version 6.2.1, MPFR version 4.1.1-p1, MPC version 1.3.1, isl version isl-0.25-GMP
+        
+        warning: MPFR header version 4.1.1-p1 differs from library version 4.2.0.
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/12/include-fixed"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/12/../../../../x86_64-linux-gnu/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/local/include/eigen3
+         /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/include
+         /usr/lib/gcc/x86_64-linux-gnu/12/include
+         /usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include
+         /usr/include/x86_64-linux-gnu
+         /usr/include
+        End of search list.
+        GNU C17 (Debian 12.2.0-14) version 12.2.0 (x86_64-linux-gnu)
+        	compiled by GNU C version 12.2.0, GMP version 6.2.1, MPFR version 4.1.1-p1, MPC version 1.3.1, isl version isl-0.25-GMP
+        
+        warning: MPFR header version 4.1.1-p1 differs from library version 4.2.0.
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        Compiler executable checksum: cc72d2b9b5048fedc2be9051c917b40b
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_dd1fa.dir/'
+         as -v --64 -o CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o /tmp/ccbsvbM9.s
+        GNU assembler version 2.40 (x86_64-linux-gnu) using BFD version (GNU Binutils for Debian) 2.40
+        COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/
+        LIBRARY_PATH=/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.'
+        Linking C executable cmTC_dd1fa
+        /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dd1fa.dir/link.txt --verbose=1
+        /usr/bin/cc  -v CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o -o cmTC_dd1fa 
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/cc
+        COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 12.2.0 (Debian 12.2.0-14) 
+        COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/
+        LIBRARY_PATH=/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_dd1fa' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_dd1fa.'
+         /usr/lib/gcc/x86_64-linux-gnu/12/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/12/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper -plugin-opt=-fresolution=/tmp/ccm3rUtr.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_dd1fa /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/12 -L/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib -L/usr/lib/gcc/x86_64-linux-gnu/12/../../.. CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_dd1fa' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_dd1fa.'
+        gmake[1]: Leaving directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-qLwgPr'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:14 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/local/include/eigen3]
+          add: [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/include]
+          add: [/usr/lib/gcc/x86_64-linux-gnu/12/include]
+          add: [/usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include]
+          add: [/usr/include/x86_64-linux-gnu]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/usr/local/include/eigen3] ==> [/usr/local/include/eigen3]
+        collapse include dir [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/include] ==> [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/include]
+        collapse include dir [/usr/lib/gcc/x86_64-linux-gnu/12/include] ==> [/usr/lib/gcc/x86_64-linux-gnu/12/include]
+        collapse include dir [/usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include] ==> [/usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include]
+        collapse include dir [/usr/include/x86_64-linux-gnu] ==> [/usr/include/x86_64-linux-gnu]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/usr/local/include/eigen3;/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/include;/usr/lib/gcc/x86_64-linux-gnu/12/include;/usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include;/usr/include/x86_64-linux-gnu;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerABI.cmake:152 (message)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:14 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-qLwgPr]
+        ignore line: []
+        ignore line: [Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_dd1fa/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_dd1fa.dir/build.make CMakeFiles/cmTC_dd1fa.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-qLwgPr']
+        ignore line: [Building C object CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o]
+        ignore line: [/usr/bin/cc   -v -o CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o -c /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeCCompilerABI.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 12.2.0 (Debian 12.2.0-14) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_dd1fa.dir/']
+        ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/12/cc1 -quiet -v -imultiarch x86_64-linux-gnu /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_dd1fa.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -o /tmp/ccbsvbM9.s]
+        ignore line: [GNU C17 (Debian 12.2.0-14) version 12.2.0 (x86_64-linux-gnu)]
+        ignore line: [	compiled by GNU C version 12.2.0  GMP version 6.2.1  MPFR version 4.1.1-p1  MPC version 1.3.1  isl version isl-0.25-GMP]
+        ignore line: []
+        ignore line: [warning: MPFR header version 4.1.1-p1 differs from library version 4.2.0.]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/12/include-fixed"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/12/../../../../x86_64-linux-gnu/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/local/include/eigen3]
+        ignore line: [ /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/include]
+        ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/12/include]
+        ignore line: [ /usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include]
+        ignore line: [ /usr/include/x86_64-linux-gnu]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [GNU C17 (Debian 12.2.0-14) version 12.2.0 (x86_64-linux-gnu)]
+        ignore line: [	compiled by GNU C version 12.2.0  GMP version 6.2.1  MPFR version 4.1.1-p1  MPC version 1.3.1  isl version isl-0.25-GMP]
+        ignore line: []
+        ignore line: [warning: MPFR header version 4.1.1-p1 differs from library version 4.2.0.]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [Compiler executable checksum: cc72d2b9b5048fedc2be9051c917b40b]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_dd1fa.dir/']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o /tmp/ccbsvbM9.s]
+        ignore line: [GNU assembler version 2.40 (x86_64-linux-gnu) using BFD version (GNU Binutils for Debian) 2.40]
+        ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.']
+        ignore line: [Linking C executable cmTC_dd1fa]
+        ignore line: [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dd1fa.dir/link.txt --verbose=1]
+        ignore line: [/usr/bin/cc  -v CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o -o cmTC_dd1fa ]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 12.2.0 (Debian 12.2.0-14) ]
+        ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_dd1fa' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_dd1fa.']
+        link line: [ /usr/lib/gcc/x86_64-linux-gnu/12/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/12/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper -plugin-opt=-fresolution=/tmp/ccm3rUtr.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_dd1fa /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/12 -L/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib -L/usr/lib/gcc/x86_64-linux-gnu/12/../../.. CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccm3rUtr.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [--hash-style=gnu] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-pie] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_dd1fa] ==> ignore
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o]
+          arg [-L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib] ==> dir [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/12] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/12]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib]
+          arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
+          arg [-L/lib/../lib] ==> dir [/lib/../lib]
+          arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+          arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+          arg [-L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib] ==> dir [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/12/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../..]
+          arg [CMakeFiles/cmTC_dd1fa.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [-lc] ==> lib [c]
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o] ==> [/usr/lib/x86_64-linux-gnu/Scrt1.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o] ==> [/usr/lib/x86_64-linux-gnu/crti.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o] ==> [/usr/lib/x86_64-linux-gnu/crtn.o]
+        collapse library dir [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib] ==> [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/12] ==> [/usr/lib/gcc/x86_64-linux-gnu/12]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib] ==> [/usr/lib]
+        collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
+        collapse library dir [/lib/../lib] ==> [/lib]
+        collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+        collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+        collapse library dir [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib] ==> [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../..] ==> [/usr/lib]
+        implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+        implicit objs: [/usr/lib/x86_64-linux-gnu/Scrt1.o;/usr/lib/x86_64-linux-gnu/crti.o;/usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o;/usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o;/usr/lib/x86_64-linux-gnu/crtn.o]
+        implicit dirs: [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib;/usr/lib/gcc/x86_64-linux-gnu/12;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:14 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-Lm4JCk"
+      binary: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-Lm4JCk"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-Lm4JCk
+        
+        Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_40862/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_40862.dir/build.make CMakeFiles/cmTC_40862.dir/build
+        gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-Lm4JCk'
+        Building CXX object CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o
+        /usr/bin/c++   -v -o CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o -c /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 12.2.0 (Debian 12.2.0-14) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_40862.dir/'
+         /usr/lib/gcc/x86_64-linux-gnu/12/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_40862.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -o /tmp/ccIxrats.s
+        GNU C++17 (Debian 12.2.0-14) version 12.2.0 (x86_64-linux-gnu)
+        	compiled by GNU C version 12.2.0, GMP version 6.2.1, MPFR version 4.1.1-p1, MPC version 1.3.1, isl version isl-0.25-GMP
+        
+        warning: MPFR header version 4.1.1-p1 differs from library version 4.2.0.
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring duplicate directory "/usr/include/x86_64-linux-gnu/c++/12"
+        ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/12/include-fixed"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/12/../../../../x86_64-linux-gnu/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/local/include/eigen3
+         /usr/include/c++/12
+         /usr/include/x86_64-linux-gnu/c++/12
+         /usr/include/c++/12/backward
+         /usr/lib/gcc/x86_64-linux-gnu/12/include
+         /usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include
+         /usr/include/x86_64-linux-gnu
+         /usr/include
+        End of search list.
+        GNU C++17 (Debian 12.2.0-14) version 12.2.0 (x86_64-linux-gnu)
+        	compiled by GNU C version 12.2.0, GMP version 6.2.1, MPFR version 4.1.1-p1, MPC version 1.3.1, isl version isl-0.25-GMP
+        
+        warning: MPFR header version 4.1.1-p1 differs from library version 4.2.0.
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        Compiler executable checksum: 62b090dbbefa50644117a3c13d47369a
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_40862.dir/'
+         as -v --64 -o CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccIxrats.s
+        GNU assembler version 2.40 (x86_64-linux-gnu) using BFD version (GNU Binutils for Debian) 2.40
+        COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/
+        LIBRARY_PATH=/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_40862
+        /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_40862.dir/link.txt --verbose=1
+        /usr/bin/c++  -v CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_40862 
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 12.2.0 (Debian 12.2.0-14) 
+        COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/
+        LIBRARY_PATH=/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_40862' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_40862.'
+         /usr/lib/gcc/x86_64-linux-gnu/12/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/12/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper -plugin-opt=-fresolution=/tmp/cc6q0riQ.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_40862 /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/12 -L/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib -L/usr/lib/gcc/x86_64-linux-gnu/12/../../.. CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_40862' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_40862.'
+        gmake[1]: Leaving directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-Lm4JCk'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:14 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/local/include/eigen3]
+          add: [/usr/include/c++/12]
+          add: [/usr/include/x86_64-linux-gnu/c++/12]
+          add: [/usr/include/c++/12/backward]
+          add: [/usr/lib/gcc/x86_64-linux-gnu/12/include]
+          add: [/usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include]
+          add: [/usr/include/x86_64-linux-gnu]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/usr/local/include/eigen3] ==> [/usr/local/include/eigen3]
+        collapse include dir [/usr/include/c++/12] ==> [/usr/include/c++/12]
+        collapse include dir [/usr/include/x86_64-linux-gnu/c++/12] ==> [/usr/include/x86_64-linux-gnu/c++/12]
+        collapse include dir [/usr/include/c++/12/backward] ==> [/usr/include/c++/12/backward]
+        collapse include dir [/usr/lib/gcc/x86_64-linux-gnu/12/include] ==> [/usr/lib/gcc/x86_64-linux-gnu/12/include]
+        collapse include dir [/usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include] ==> [/usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include]
+        collapse include dir [/usr/include/x86_64-linux-gnu] ==> [/usr/include/x86_64-linux-gnu]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/usr/local/include/eigen3;/usr/include/c++/12;/usr/include/x86_64-linux-gnu/c++/12;/usr/include/c++/12/backward;/usr/lib/gcc/x86_64-linux-gnu/12/include;/usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include;/usr/include/x86_64-linux-gnu;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeDetermineCompilerABI.cmake:152 (message)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:14 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-Lm4JCk]
+        ignore line: []
+        ignore line: [Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_40862/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_40862.dir/build.make CMakeFiles/cmTC_40862.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-Lm4JCk']
+        ignore line: [Building CXX object CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o -c /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 12.2.0 (Debian 12.2.0-14) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_40862.dir/']
+        ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/12/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_40862.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -o /tmp/ccIxrats.s]
+        ignore line: [GNU C++17 (Debian 12.2.0-14) version 12.2.0 (x86_64-linux-gnu)]
+        ignore line: [	compiled by GNU C version 12.2.0  GMP version 6.2.1  MPFR version 4.1.1-p1  MPC version 1.3.1  isl version isl-0.25-GMP]
+        ignore line: []
+        ignore line: [warning: MPFR header version 4.1.1-p1 differs from library version 4.2.0.]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring duplicate directory "/usr/include/x86_64-linux-gnu/c++/12"]
+        ignore line: [ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/12/include-fixed"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/12/../../../../x86_64-linux-gnu/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/local/include/eigen3]
+        ignore line: [ /usr/include/c++/12]
+        ignore line: [ /usr/include/x86_64-linux-gnu/c++/12]
+        ignore line: [ /usr/include/c++/12/backward]
+        ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/12/include]
+        ignore line: [ /usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/include]
+        ignore line: [ /usr/include/x86_64-linux-gnu]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [GNU C++17 (Debian 12.2.0-14) version 12.2.0 (x86_64-linux-gnu)]
+        ignore line: [	compiled by GNU C version 12.2.0  GMP version 6.2.1  MPFR version 4.1.1-p1  MPC version 1.3.1  isl version isl-0.25-GMP]
+        ignore line: []
+        ignore line: [warning: MPFR header version 4.1.1-p1 differs from library version 4.2.0.]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [Compiler executable checksum: 62b090dbbefa50644117a3c13d47369a]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_40862.dir/']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccIxrats.s]
+        ignore line: [GNU assembler version 2.40 (x86_64-linux-gnu) using BFD version (GNU Binutils for Debian) 2.40]
+        ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_40862]
+        ignore line: [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_40862.dir/link.txt --verbose=1]
+        ignore line: [/usr/bin/c++  -v CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_40862 ]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 12.2.0 (Debian 12.2.0-14) ]
+        ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/12/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/:/usr/lib/gcc/x86_64-linux-gnu/12/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_40862' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_40862.']
+        link line: [ /usr/lib/gcc/x86_64-linux-gnu/12/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/12/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper -plugin-opt=-fresolution=/tmp/cc6q0riQ.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_40862 /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/12 -L/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib -L/usr/lib/gcc/x86_64-linux-gnu/12/../../.. CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/cc6q0riQ.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [--hash-style=gnu] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-pie] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_40862] ==> ignore
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o]
+          arg [-L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib] ==> dir [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/12] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/12]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib]
+          arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
+          arg [-L/lib/../lib] ==> dir [/lib/../lib]
+          arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+          arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+          arg [-L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib] ==> dir [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib]
+          arg [-L/usr/lib/gcc/x86_64-linux-gnu/12/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../..]
+          arg [CMakeFiles/cmTC_40862.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lm] ==> lib [m]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o]
+          arg [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/Scrt1.o] ==> [/usr/lib/x86_64-linux-gnu/Scrt1.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o] ==> [/usr/lib/x86_64-linux-gnu/crti.o]
+        collapse obj [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o] ==> [/usr/lib/x86_64-linux-gnu/crtn.o]
+        collapse library dir [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib/../lib] ==> [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/12] ==> [/usr/lib/gcc/x86_64-linux-gnu/12]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../../../lib] ==> [/usr/lib]
+        collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
+        collapse library dir [/lib/../lib] ==> [/lib]
+        collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+        collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+        collapse library dir [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib] ==> [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib]
+        collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/12/../../..] ==> [/usr/lib]
+        implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+        implicit objs: [/usr/lib/x86_64-linux-gnu/Scrt1.o;/usr/lib/x86_64-linux-gnu/crti.o;/usr/lib/gcc/x86_64-linux-gnu/12/crtbeginS.o;/usr/lib/gcc/x86_64-linux-gnu/12/crtendS.o;/usr/lib/x86_64-linux-gnu/crtn.o]
+        implicit dirs: [/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libzmq-4.3.4-xcbq5b4e4zywpw3flghxsqrpkjnyrzqc/lib;/usr/lib/gcc/x86_64-linux-gnu/12;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CheckCSourceCompiles.cmake:76 (cmake_check_source_compiles)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/FindThreads.cmake:97 (CHECK_C_SOURCE_COMPILES)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "/usr/._local/7opty5563ozdhubuhru7wi6wqmmztp7s/lib/cmake/JANA/JANAConfig.cmake:27 (find_package)"
+      - "/home/belle2/anatochi/eic/EICrecon/lib/cmake/EICrecon/EICreconConfig.cmake:35 (find_package)"
+      - "CMakeLists.txt:16 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-ibLnip"
+      binary: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-ibLnip"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-ibLnip
+        
+        Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_40a39/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_40a39.dir/build.make CMakeFiles/cmTC_40a39.dir/build
+        gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-ibLnip'
+        Building C object CMakeFiles/cmTC_40a39.dir/src.c.o
+        /usr/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_40a39.dir/src.c.o -c /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-ibLnip/src.c
+        Linking C executable cmTC_40a39
+        /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_40a39.dir/link.txt --verbose=1
+        /usr/bin/cc CMakeFiles/cmTC_40a39.dir/src.c.o -o cmTC_40a39 
+        gmake[1]: Leaving directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-ibLnip'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CheckLibraryExists.cmake:71 (try_compile)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/FindX11.cmake:498 (check_library_exists)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/lib/cmake/Geant4/Geant4Config.cmake:400 (find_dependency)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/cmake/DD4hepConfig.cmake:57 (find_dependency)"
+      - "/home/belle2/anatochi/eic/EICrecon/lib/cmake/EICrecon/EICreconConfig.cmake:38 (find_package)"
+      - "CMakeLists.txt:16 (find_package)"
+    checks:
+      - "Looking for XOpenDisplay in /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libx11-1.8.4-34djc4xm7yfdvzqrnf3twzon5bolon5k/lib/libX11.so;/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libxext-1.3.3-3ogdhs3x4krwvukcbcrepxmncw2qzbpu/lib/libXext.so"
+    directories:
+      source: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-vfS7be"
+      binary: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-vfS7be"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/local/lib/cmake/Geant4/Modules;/usr/local/cmake;/usr/local/cmake"
+    buildResult:
+      variable: "X11_LIB_X11_SOLO"
+      cached: true
+      stdout: |
+        Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-vfS7be
+        
+        Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_871cf/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_871cf.dir/build.make CMakeFiles/cmTC_871cf.dir/build
+        gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-vfS7be'
+        Building C object CMakeFiles/cmTC_871cf.dir/CheckFunctionExists.c.o
+        /usr/bin/cc   -DCHECK_FUNCTION_EXISTS=XOpenDisplay -o CMakeFiles/cmTC_871cf.dir/CheckFunctionExists.c.o -c /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-vfS7be/CheckFunctionExists.c
+        Linking C executable cmTC_871cf
+        /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_871cf.dir/link.txt --verbose=1
+        /usr/bin/cc  -DCHECK_FUNCTION_EXISTS=XOpenDisplay CMakeFiles/cmTC_871cf.dir/CheckFunctionExists.c.o -o cmTC_871cf   -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libx11-1.8.4-34djc4xm7yfdvzqrnf3twzon5bolon5k/lib  -Wl,-rpath,/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libx11-1.8.4-34djc4xm7yfdvzqrnf3twzon5bolon5k/lib:/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libxext-1.3.3-3ogdhs3x4krwvukcbcrepxmncw2qzbpu/lib /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libx11-1.8.4-34djc4xm7yfdvzqrnf3twzon5bolon5k/lib/libX11.so /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libxext-1.3.3-3ogdhs3x4krwvukcbcrepxmncw2qzbpu/lib/libXext.so 
+        gmake[1]: Leaving directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-vfS7be'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CheckFunctionExists.cmake:91 (try_compile)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/FindX11.cmake:513 (check_function_exists)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/lib/cmake/Geant4/Geant4Config.cmake:400 (find_dependency)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/cmake/DD4hepConfig.cmake:57 (find_dependency)"
+      - "/home/belle2/anatochi/eic/EICrecon/lib/cmake/EICrecon/EICreconConfig.cmake:38 (find_package)"
+      - "CMakeLists.txt:16 (find_package)"
+    checks:
+      - "Looking for gethostbyname"
+    directories:
+      source: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-4sah9T"
+      binary: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-4sah9T"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/local/lib/cmake/Geant4/Modules;/usr/local/cmake;/usr/local/cmake"
+    buildResult:
+      variable: "CMAKE_HAVE_GETHOSTBYNAME"
+      cached: true
+      stdout: |
+        Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-4sah9T
+        
+        Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_0c644/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_0c644.dir/build.make CMakeFiles/cmTC_0c644.dir/build
+        gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-4sah9T'
+        Building C object CMakeFiles/cmTC_0c644.dir/CheckFunctionExists.c.o
+        /usr/bin/cc   -DCHECK_FUNCTION_EXISTS=gethostbyname -o CMakeFiles/cmTC_0c644.dir/CheckFunctionExists.c.o -c /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-4sah9T/CheckFunctionExists.c
+        Linking C executable cmTC_0c644
+        /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0c644.dir/link.txt --verbose=1
+        /usr/bin/cc  -DCHECK_FUNCTION_EXISTS=gethostbyname CMakeFiles/cmTC_0c644.dir/CheckFunctionExists.c.o -o cmTC_0c644 
+        gmake[1]: Leaving directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-4sah9T'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CheckFunctionExists.cmake:91 (try_compile)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/FindX11.cmake:527 (check_function_exists)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/lib/cmake/Geant4/Geant4Config.cmake:400 (find_dependency)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/cmake/DD4hepConfig.cmake:57 (find_dependency)"
+      - "/home/belle2/anatochi/eic/EICrecon/lib/cmake/EICrecon/EICreconConfig.cmake:38 (find_package)"
+      - "CMakeLists.txt:16 (find_package)"
+    checks:
+      - "Looking for connect"
+    directories:
+      source: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-xsdWvx"
+      binary: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-xsdWvx"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/local/lib/cmake/Geant4/Modules;/usr/local/cmake;/usr/local/cmake"
+    buildResult:
+      variable: "CMAKE_HAVE_CONNECT"
+      cached: true
+      stdout: |
+        Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-xsdWvx
+        
+        Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_9d7e7/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_9d7e7.dir/build.make CMakeFiles/cmTC_9d7e7.dir/build
+        gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-xsdWvx'
+        Building C object CMakeFiles/cmTC_9d7e7.dir/CheckFunctionExists.c.o
+        /usr/bin/cc   -DCHECK_FUNCTION_EXISTS=connect -o CMakeFiles/cmTC_9d7e7.dir/CheckFunctionExists.c.o -c /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-xsdWvx/CheckFunctionExists.c
+        Linking C executable cmTC_9d7e7
+        /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9d7e7.dir/link.txt --verbose=1
+        /usr/bin/cc  -DCHECK_FUNCTION_EXISTS=connect CMakeFiles/cmTC_9d7e7.dir/CheckFunctionExists.c.o -o cmTC_9d7e7 
+        gmake[1]: Leaving directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-xsdWvx'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CheckFunctionExists.cmake:91 (try_compile)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/FindX11.cmake:536 (check_function_exists)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/lib/cmake/Geant4/Geant4Config.cmake:400 (find_dependency)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/cmake/DD4hepConfig.cmake:57 (find_dependency)"
+      - "/home/belle2/anatochi/eic/EICrecon/lib/cmake/EICrecon/EICreconConfig.cmake:38 (find_package)"
+      - "CMakeLists.txt:16 (find_package)"
+    checks:
+      - "Looking for remove"
+    directories:
+      source: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-uKETI6"
+      binary: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-uKETI6"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/local/lib/cmake/Geant4/Modules;/usr/local/cmake;/usr/local/cmake"
+    buildResult:
+      variable: "CMAKE_HAVE_REMOVE"
+      cached: true
+      stdout: |
+        Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-uKETI6
+        
+        Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_4bd5f/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_4bd5f.dir/build.make CMakeFiles/cmTC_4bd5f.dir/build
+        gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-uKETI6'
+        Building C object CMakeFiles/cmTC_4bd5f.dir/CheckFunctionExists.c.o
+        /usr/bin/cc   -DCHECK_FUNCTION_EXISTS=remove -o CMakeFiles/cmTC_4bd5f.dir/CheckFunctionExists.c.o -c /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-uKETI6/CheckFunctionExists.c
+        Linking C executable cmTC_4bd5f
+        /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4bd5f.dir/link.txt --verbose=1
+        /usr/bin/cc  -DCHECK_FUNCTION_EXISTS=remove CMakeFiles/cmTC_4bd5f.dir/CheckFunctionExists.c.o -o cmTC_4bd5f 
+        gmake[1]: Leaving directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-uKETI6'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CheckFunctionExists.cmake:91 (try_compile)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/FindX11.cmake:545 (check_function_exists)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/lib/cmake/Geant4/Geant4Config.cmake:400 (find_dependency)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/cmake/DD4hepConfig.cmake:57 (find_dependency)"
+      - "/home/belle2/anatochi/eic/EICrecon/lib/cmake/EICrecon/EICreconConfig.cmake:38 (find_package)"
+      - "CMakeLists.txt:16 (find_package)"
+    checks:
+      - "Looking for shmat"
+    directories:
+      source: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-sul971"
+      binary: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-sul971"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/local/lib/cmake/Geant4/Modules;/usr/local/cmake;/usr/local/cmake"
+    buildResult:
+      variable: "CMAKE_HAVE_SHMAT"
+      cached: true
+      stdout: |
+        Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-sul971
+        
+        Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_bfada/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_bfada.dir/build.make CMakeFiles/cmTC_bfada.dir/build
+        gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-sul971'
+        Building C object CMakeFiles/cmTC_bfada.dir/CheckFunctionExists.c.o
+        /usr/bin/cc   -DCHECK_FUNCTION_EXISTS=shmat -o CMakeFiles/cmTC_bfada.dir/CheckFunctionExists.c.o -c /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-sul971/CheckFunctionExists.c
+        Linking C executable cmTC_bfada
+        /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bfada.dir/link.txt --verbose=1
+        /usr/bin/cc  -DCHECK_FUNCTION_EXISTS=shmat CMakeFiles/cmTC_bfada.dir/CheckFunctionExists.c.o -o cmTC_bfada 
+        gmake[1]: Leaving directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-sul971'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CheckLibraryExists.cmake:71 (try_compile)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/FindX11.cmake:555 (check_library_exists)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/lib/cmake/Geant4/Geant4Config.cmake:400 (find_dependency)"
+      - "/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/usr/local/cmake/DD4hepConfig.cmake:57 (find_dependency)"
+      - "/home/belle2/anatochi/eic/EICrecon/lib/cmake/EICrecon/EICreconConfig.cmake:38 (find_package)"
+      - "CMakeLists.txt:16 (find_package)"
+    checks:
+      - "Looking for IceConnectionNumber in ICE"
+    directories:
+      source: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-VArM7Q"
+      binary: "/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-VArM7Q"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/local/lib/cmake/Geant4/Modules;/usr/local/cmake;/usr/local/cmake"
+    buildResult:
+      variable: "CMAKE_LIB_ICE_HAS_ICECONNECTIONNUMBER"
+      cached: true
+      stdout: |
+        Change Dir: /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-VArM7Q
+        
+        Run Build Command(s):/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_97384/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_97384.dir/build.make CMakeFiles/cmTC_97384.dir/build
+        gmake[1]: Entering directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-VArM7Q'
+        Building C object CMakeFiles/cmTC_97384.dir/CheckFunctionExists.c.o
+        /usr/bin/cc   -DCHECK_FUNCTION_EXISTS=IceConnectionNumber -o CMakeFiles/cmTC_97384.dir/CheckFunctionExists.c.o -c /home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-VArM7Q/CheckFunctionExists.c
+        Linking C executable cmTC_97384
+        /opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/cmake-3.26.3-ujcvy3gekodmtvv6wfuskp7t62u6pso2/bin/cmake -E cmake_link_script CMakeFiles/cmTC_97384.dir/link.txt --verbose=1
+        /usr/bin/cc  -DCHECK_FUNCTION_EXISTS=IceConnectionNumber CMakeFiles/cmTC_97384.dir/CheckFunctionExists.c.o -o cmTC_97384   -L/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libx11-1.8.4-34djc4xm7yfdvzqrnf3twzon5bolon5k/lib  -Wl,-rpath,/opt/software/linux-debian12-x86_64_v2/gcc-12.2.0/libx11-1.8.4-34djc4xm7yfdvzqrnf3twzon5bolon5k/lib -lICE 
+        gmake[1]: Leaving directory '/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/analysisPlugin/build/CMakeFiles/CMakeScratch/TryCompile-VArM7Q'
+        
+      exitCode: 0
+...

@@ -48,11 +48,9 @@ geant4_ana/build
 geant4_ana/output*
 
 # eic sim
-eic_sim/analysis         
-eic_sim/calibrations     
-eic_sim/fieldmaps        
 eic_sim/output           
 eic_sim/data
+eic_sim/build
 
 # eic reco
 eic_reco/analysisPlugin/build/
