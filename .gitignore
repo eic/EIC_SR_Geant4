@@ -53,8 +53,8 @@ eic_sim/data
 eic_sim/build
 
 # eic reco
-eic_reco/analysisPlugin/build/
-eic_reco/build/
+eic_recon/analysisPlugin/build/
+eic_recon/build/
 
 # Git
 !.gitignore

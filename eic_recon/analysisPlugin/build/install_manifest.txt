@@ -1,1 +1,0 @@
-/home/belle2/anatochi/geant4/geant4-workdir/EIC_SR_Geant4/eic_reco/EICrecon_MY/plugins/analysisPlugin.so

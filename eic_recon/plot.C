@@ -1,6 +1,6 @@
 void plot()
 {
-	TString fName = "build/eicrecon.root";
+	TString fName = "eicrecon_all.root";
 	TFile* file = TFile::Open(fName.Data());
 	TDirectory* dir = file->GetDirectory("analysisPlugin");
 	dir->ls();
