@@ -46,9 +46,12 @@ private:
 	vector<G4double> _absPosY;
 	vector<G4double> _absPosZ;
 
-    	G4double _beamPosX;
-    	G4double _beamPosY;
-    	G4double _beamPosZ;
+    	G4double _beamStartPosX;
+    	G4double _beamStartPosY;
+    	G4double _beamStartPosZ;
+    	G4double _beamEndPosX;
+    	G4double _beamEndPosY;
+    	G4double _beamEndPosZ;
 	G4double _beamEmitX;
 	G4double _beamEmitY;
 	G4double _beamBetaX;
@@ -60,9 +63,6 @@ private:
 
 	G4double _beamMomSpread;
     	G4double _beamGamma;
-    	G4double _beamDirX;
-    	G4double _beamDirY;
-    	G4double _beamDirZ;
     	G4String _beamName;
 
 	G4int _SRtype;
@@ -130,12 +130,12 @@ public:
 	G4double GetAbsPosZ(G4int i){return _absPosZ.at(i);}
 
     	G4String GetBeamName(){return _beamName;}
-	G4double GetBeamPosX(){return _beamPosX;}
-	G4double GetBeamPosY(){return _beamPosY;}
-	G4double GetBeamPosZ(){return _beamPosZ;}
-    	G4double GetBeamDirX(){return _beamDirX;}
-    	G4double GetBeamDirY(){return _beamDirY;}
-    	G4double GetBeamDirZ(){return _beamDirZ;}
+	G4double GetBeamStartPosX(){return _beamStartPosX;}
+	G4double GetBeamStartPosY(){return _beamStartPosY;}
+	G4double GetBeamStartPosZ(){return _beamStartPosZ;}
+	G4double GetBeamEndPosX(){return _beamEndPosX;}
+	G4double GetBeamEndPosY(){return _beamEndPosY;}
+	G4double GetBeamEndPosZ(){return _beamEndPosZ;}
     	G4double GetBeamGamma(){return _beamGamma;}
 	G4double GetBeamMomSpread(){return _beamMomSpread;}
 	G4double GetBeamBetaX(){return _beamBetaX;}
@@ -182,12 +182,12 @@ private:
 	G4double absPosX, G4double absPosY, G4double absPosZ);
 
     	void SetBeamName(G4String val){_beamName = val; return;}
-	void SetBeamPosX(G4double val){_beamPosX = val; return;}
-	void SetBeamPosY(G4double val){_beamPosY = val; return;}
-	void SetBeamPosZ(G4double val){_beamPosZ = val; return;}
-    	void SetBeamDirX(G4double val){_beamDirX = val; return;}
-    	void SetBeamDirY(G4double val){_beamDirY = val; return;}
-    	void SetBeamDirZ(G4double val){_beamDirZ = val; return;}
+	void SetBeamStartPosX(G4double val){_beamStartPosX = val; return;}
+	void SetBeamStartPosY(G4double val){_beamStartPosY = val; return;}
+	void SetBeamStartPosZ(G4double val){_beamStartPosZ = val; return;}
+	void SetBeamEndPosX(G4double val){_beamEndPosX = val; return;}
+	void SetBeamEndPosY(G4double val){_beamEndPosY = val; return;}
+	void SetBeamEndPosZ(G4double val){_beamEndPosZ = val; return;}
     	void SetBeamGamma(G4double val){_beamGamma = val; return;}
 	void SetBeamMomSpread(G4double val){_beamMomSpread = val; return;}
 	void SetBeamBetaX(G4double val){_beamBetaX = val; return;}

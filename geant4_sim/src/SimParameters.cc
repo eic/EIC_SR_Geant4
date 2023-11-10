@@ -122,24 +122,24 @@ void SimParameters::ReadXML(G4String fName)
 		if(child_node.second.get<string>("<xmlattr>.name") == "part" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
 			SetBeamName(child_node.second.data());
-		else if(child_node.second.get<string>("<xmlattr>.name") == "posx" &&
-			child_node.second.get<string>("<xmlattr>.unit") == "cm")
-			SetBeamPosX(stod(child_node.second.data())*cm);
-		else if(child_node.second.get<string>("<xmlattr>.name") == "posy" &&
-			child_node.second.get<string>("<xmlattr>.unit") == "cm")
-			SetBeamPosY(stod(child_node.second.data())*cm);
-		else if(child_node.second.get<string>("<xmlattr>.name") == "posz" &&
-			child_node.second.get<string>("<xmlattr>.unit") == "cm")
-			SetBeamPosZ(stod(child_node.second.data())*cm);
-		else if(child_node.second.get<string>("<xmlattr>.name") == "dirx" &&
-			child_node.second.get<string>("<xmlattr>.unit") == "")
-			SetBeamDirX(stod(child_node.second.data()));
-		else if(child_node.second.get<string>("<xmlattr>.name") == "diry" &&
-			child_node.second.get<string>("<xmlattr>.unit") == "")
-			SetBeamDirY(stod(child_node.second.data()));
-		else if(child_node.second.get<string>("<xmlattr>.name") == "dirz" &&
-			child_node.second.get<string>("<xmlattr>.unit") == "")
-			SetBeamDirZ(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "posx1" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamStartPosX(stod(child_node.second.data())*m); 
+		else if(child_node.second.get<string>("<xmlattr>.name") == "posy1" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamStartPosY(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "posz1" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamStartPosZ(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "posx2" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamEndPosX(stod(child_node.second.data())*m); 
+		else if(child_node.second.get<string>("<xmlattr>.name") == "posy2" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamEndPosY(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "posz2" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetBeamEndPosZ(stod(child_node.second.data())*m);
 		else if(child_node.second.get<string>("<xmlattr>.name") == "gamma" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
 			SetBeamGamma(stod(child_node.second.data()));
@@ -420,9 +420,12 @@ void SimParameters::InitDefault()
 	_absPosY = {0*cm,0*cm,0*cm,0*cm};
 	_absPosZ = {1527*cm,475*cm,-550*cm,-3720*cm};
 	
-    	_beamPosX =  7.61776450600000E+00*cm;
-    	_beamPosY =  0.00000000000000E+00*cm;
-    	_beamPosZ = -3.71513783800000E+03*cm;
+    	_beamStartPosX = -589.55313475589*m;
+    	_beamStartPosY = 0*m;
+    	_beamStartPosZ = 37.300282625907*m;
+    	_beamEndPosX = -589.55061312277*m;
+    	_beamEndPosY = 0*m;
+    	_beamEndPosZ = 37.15030382285*m;
 	_beamEmitX = 24.0*nm;
 	_beamEmitY =  2.0*nm;
 	_beamBetaX = 202.4452538*m;
@@ -433,9 +436,6 @@ void SimParameters::InitDefault()
 	_beamEtaPrimeY = 0.0;
 	_beamMomSpread = 0.109e-2;
 	_beamGamma = 34924.26476;
-	_beamDirX = -2.48090543441244E-02;
-	_beamDirY = 0.00000000000000E+00;
-	_beamDirZ = 9.99692208043331E-01;
 	_beamName = "e-";
 
 	_SRtype = 1;
@@ -466,12 +466,12 @@ void SimParameters::PrintBeamParameters()
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintBeamParameters ==> Beam parameters"<<G4endl;
 	G4cout<<"Beam particles = "<<GetBeamName()<<G4endl;
-	G4cout<<"Position X = "<<GetBeamPosX()/cm<<" [cm]"<<G4endl;
-	G4cout<<"Position Y = "<<GetBeamPosY()/cm<<" [cm]"<<G4endl;
-	G4cout<<"Position Z = "<<GetBeamPosZ()/cm<<" [cm]"<<G4endl;
-	G4cout<<"Direction X = "<<GetBeamDirX()<<" []"<<G4endl;
-	G4cout<<"Direction Y = "<<GetBeamDirY()<<" []"<<G4endl;
-	G4cout<<"Direction Z = "<<GetBeamDirZ()<<" []"<<G4endl;
+	G4cout<<"Start position X = "<<GetBeamStartPosX()/m<<" [m]"<<G4endl;
+	G4cout<<"Start position Y = "<<GetBeamStartPosY()/m<<" [m]"<<G4endl;
+	G4cout<<"Start position Z = "<<GetBeamStartPosZ()/m<<" [m]"<<G4endl;
+	G4cout<<"End position X = "<<GetBeamEndPosX()/m<<" [m]"<<G4endl;
+	G4cout<<"End position Y = "<<GetBeamEndPosY()/m<<" [m]"<<G4endl;
+	G4cout<<"End position Z = "<<GetBeamEndPosZ()/m<<" [m]"<<G4endl;
 	G4cout<<"Gamma = "<<GetBeamGamma()<<" []"<<G4endl;
 	G4cout<<"Momentum spread = "<<GetBeamMomSpread()<<" []"<<G4endl;
 	G4cout<<"Beta X = "<<GetBeamBetaX()/m<<" [m]"<<G4endl;

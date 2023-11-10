@@ -41,20 +41,35 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	G4ThreeVector posXYZ = {	G4RandGauss::shoot(0.0,sigmaX),
 					G4RandGauss::shoot(0.0,sigmaY),
 					0.0};
-  	// create a rotation matrix
+
+	// vector of start coordinates in the global ref. system shifted w.r.t. the ip
+	G4ThreeVector magVector1(	simPar->GetBeamStartPosX() - simPar->GetIpPosX(),
+					simPar->GetBeamStartPosY() - simPar->GetIpPosY(),
+					simPar->GetBeamStartPosZ() - simPar->GetIpPosZ());
+	// vector of end coordinates in the global ref. system shifted w.r.t. the ip
+	G4ThreeVector magVector2(	simPar->GetBeamEndPosX() - simPar->GetIpPosX(),
+					simPar->GetBeamEndPosY() - simPar->GetIpPosY(),
+					simPar->GetBeamEndPosZ() - simPar->GetIpPosZ());
+	// rotate coordinate vectors from global to local/ip system
+	magVector1.rotateY(-simPar->GetIpTheta());
+	magVector2.rotateY(-simPar->GetIpTheta());
+	// orientation angle of the incoming beam
+	G4double angle = atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z()))*rad;
+	// initial beam direction
+	G4ThreeVector beamDirection(0,0,1);
+	// rotate the direction vector
+	beamDirection.rotateY(angle);
+
+  	// create rotation matrix and translation vector
   	G4RotationMatrix rotation = G4RotationMatrix();
-  	rotation.rotateX(atan(simPar->GetBeamDirY()/simPar->GetBeamDirZ())*rad);
-  	rotation.rotateY(atan(simPar->GetBeamDirX()/simPar->GetBeamDirZ())*rad);
-  	rotation.rotateZ(atan(simPar->GetBeamDirY()/simPar->GetBeamDirX())*rad);
-	G4ThreeVector translation = G4ThreeVector(	simPar->GetBeamPosX(),
-							simPar->GetBeamPosY(),
-							simPar->GetBeamPosZ()); 
-
+  	rotation.rotateY(angle);
+	G4ThreeVector translation = magVector2; 
+	// move initial coordinates to the new position
 	G4ThreeVector posXYZrot = rotation * posXYZ + translation;
-
-	G4ThreeVector dirXYZ = {	G4RandGauss::shoot(simPar->GetBeamDirX(),sigmaXprime),
-					G4RandGauss::shoot(simPar->GetBeamDirY(),sigmaYprime),
-					simPar->GetBeamDirZ()};
+	// spread the direction
+	G4ThreeVector dirXYZ = {	G4RandGauss::shoot(beamDirection.x(),sigmaXprime),
+					G4RandGauss::shoot(beamDirection.y(),sigmaYprime),
+					beamDirection.z()};
 
 	runAction->_beamPosX = posXYZrot.x()/cm;
 	runAction->_beamPosY = posXYZrot.y()/cm;
@@ -62,7 +77,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	runAction->_beamMomX = Mom*dirXYZ.x()/eV;
 	runAction->_beamMomY = Mom*dirXYZ.y()/eV;
 	runAction->_beamMomZ = Mom*dirXYZ.z()/eV;
-	runAction->_beamEnergy = std::sqrt(Mom*Mom + mass*mass)/eV;
+	runAction->_beamEnergy = (Ekin + mass)/eV;
 
     	fParticleGun->SetParticleDefinition(particleDef);
     	fParticleGun->SetParticleEnergy(Ekin);
