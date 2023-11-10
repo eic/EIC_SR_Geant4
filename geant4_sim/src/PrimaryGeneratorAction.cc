@@ -23,8 +23,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     	runAction->_beamPdg = particleDef->GetPDGEncoding();
 	G4double mass = particleDef->GetPDGMass();
-    	G4double Mom = G4RandGauss::shoot(simPar->GetBeamMom(),simPar->GetBeamMomSpread()*simPar->GetBeamMom());
-    	G4double Ekin = std::sqrt(Mom*Mom + mass*mass) - mass;
+	G4double gamma = simPar->GetBeamGamma();
+	G4double Mom = sqrt(pow(gamma,2) - 1.0)*mass;
+	Mom = G4RandGauss::shoot(Mom,simPar->GetBeamMomSpread()*Mom);
+	G4double Ekin = sqrt(pow(Mom,2) + pow(mass,2)) - mass;
 
 	G4double sigmaX = sqrt(simPar->GetBeamEmitX()*simPar->GetBeamBetaX() + 
 				pow(simPar->GetBeamEtaX()*simPar->GetBeamMomSpread(),2));

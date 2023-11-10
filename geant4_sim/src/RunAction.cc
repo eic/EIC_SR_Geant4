@@ -53,6 +53,13 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("gammaEnergy_eV",	&_gammaEnergy);
     	_tree->Branch("gammaTime_ms",	&_gammaTime);
 
+    	_tree->Branch("monPosX_cm",	&_monPosX);
+    	_tree->Branch("monPosY_cm",	&_monPosY);
+    	_tree->Branch("monPosZ_cm",	&_monPosZ);
+    	_tree->Branch("monMomX_eV",	&_monMomX);
+    	_tree->Branch("monMomY_eV",	&_monMomY);
+    	_tree->Branch("monMomZ_eV",	&_monMomZ);
+
 	_avgEventTime = 0;
 
 	_xml = new TTree("xml", "Simulation settings from the XML file");

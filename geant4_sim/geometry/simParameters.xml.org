@@ -1,0 +1,177 @@
+<xml>
+	<!-- world sizes -->
+	<world>
+		<sec desc="size X" name="x" unit="m">10.0</sec>
+		<sec desc="size Y" name="y" unit="m">10.0</sec>
+		<sec desc="size Z" name="z" unit="m">80.0</sec>
+	</world>
+
+	<!-- beam pipe vacuum -->
+	<beampipe>
+		<sec desc="beam pipe file" name="filename">../geometry/beam_pipe_20231011_Zup.obj</sec>
+	</beampipe>
+
+	<!-- beam pipe extension -->
+	<extension>
+		<sec desc="length" name="l" unit="cm">370.0</sec>
+		<sec desc="radius" name="r" unit="cm">20.0</sec>
+		<sec desc="endpoint position Z" name="e" unit="cm">-3350.0</sec>
+	</extension>
+
+	<!-- ip beam pipe - gold -->
+	<ipbeampipe>
+		<sec desc="fwd Z" name="zmin" unit="cm">-67</sec>
+		<sec desc="bwd Z" name="zmax" unit="cm">68.69231</sec>
+	</ipbeampipe>
+
+	<!-- synrad model -->
+	<srmodel>
+		<sec desc="1 - G4SynchrotronRadiation; 2 - G4SynchrotronRadiationInMat" name="model">1</sec>
+	</srmodel>
+
+	<!-- tracked gamma energy cut -->
+	<genecut>
+		<sec desc="gamma energy cut" name="ecut" unit="eV">-1</sec>
+	</genecut>
+
+	<!-- tracking time cut -->
+	<timecut>
+		<sec desc="simulation time cut" name="tcut" unit="s">10e-6</sec>
+	</timecut>
+
+	<!-- beam parameters -->
+	<beam>
+		<sec desc="particle" name="part" unit="">e-</sec>
+		<sec desc="position X" name="posx" unit="cm">7.61776450600000E+00</sec>
+		<sec desc="position Y" name="posy" unit="cm">0.00000000000000E+00</sec>
+		<sec desc="position Z" name="posz" unit="cm">-3.71513783800000E+03</sec>
+		<sec desc="direction X" name="dirx" unit="">-2.48090543441244E-02</sec>
+		<sec desc="direction Y" name="diry" unit="">0.00000000000000E+00</sec>
+		<sec desc="direction Z" name="dirz" unit="">9.99692208043331E-01</sec>
+		<sec desc="energy" name="ene" unit="GeV">18</sec>
+		<sec desc="momentum spread" name="spread" unit="">0.109e-2</sec>
+		<sec desc="beta X" name="betax" unit="m">202.4452538</sec>
+		<sec desc="beta Y" name="betay" unit="m">128.4636335</sec>
+		<sec desc="dispersion X" name="etax" unit="m">-0.02443133971</sec>
+		<sec desc="dispersion Y" name="etay" unit="m">0</sec>
+		<sec desc="dispersion PX" name="etapx" unit="">0.01315593225</sec>
+		<sec desc="dispersion PY" name="etapy" unit="">0</sec>
+		<sec desc="emittance X" name="emitx" unit="nm">24</sec>
+		<sec desc="emittance Y" name="emity" unit="nm">2</sec>
+	</beam>
+
+	<!-- gamma absorbers attached to the vacuum beam pipe ends -->
+	<absorbers>
+		<absorber>
+			<sec desc="size X" name="x" unit="cm">30</sec>
+			<sec desc="size Y" name="y" unit="cm">30</sec>
+			<sec desc="size Z" name="z" unit="cm">5</sec>
+			<sec desc="position X" name="posx" unit="cm">0</sec>
+			<sec desc="position Y" name="posy" unit="cm">0</sec>
+			<sec desc="position Z" name="posz" unit="cm">1527</sec>
+		</absorber>
+		<absorber>
+			<sec desc="size X" name="x" unit="cm">10</sec>
+			<sec desc="size Y" name="y" unit="cm">10</sec>
+			<sec desc="size Z" name="z" unit="cm">5</sec>
+			<sec desc="position X" name="posx" unit="cm">-12</sec>
+			<sec desc="position Y" name="posy" unit="cm">0</sec>
+			<sec desc="position Z" name="posz" unit="cm">475</sec>
+		</absorber>
+		<absorber>
+			<sec desc="size X" name="x" unit="cm">10</sec>
+			<sec desc="size Y" name="y" unit="cm">10</sec>
+			<sec desc="size Z" name="z" unit="cm">5</sec>
+			<sec desc="position X" name="posx" unit="cm">14</sec>
+			<sec desc="position Y" name="posy" unit="cm">0</sec>
+			<sec desc="position Z" name="posz" unit="cm">-550</sec>
+		</absorber>
+		<absorber>
+			<sec desc="size X" name="x" unit="cm">50</sec>
+			<sec desc="size Y" name="y" unit="cm">50</sec>
+			<sec desc="size Z" name="z" unit="cm">5</sec>
+			<sec desc="position X" name="posx" unit="cm">0</sec>
+			<sec desc="position Y" name="posy" unit="cm">0</sec>
+			<sec desc="position Z" name="posz" unit="cm">-3720</sec>
+		</absorber>
+	</absorbers>
+
+	<!-- magnet parameters -->
+	<magnets>
+		<magnet>
+			<sec desc="magnet name" name="name">D2EF2</sec>
+			<sec desc="magnet type" name="type">D-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">2.726015431</sec>
+			<sec desc="start position X" name="posx" unit="cm">7.61776450600000E+00</sec>
+			<sec desc="start position Y" name="posy" unit="cm">0</sec>
+			<sec desc="start position Z" name="posz" unit="cm">-3.71513783800000E+03</sec>
+			<sec desc="start direction X" name="dirx" unit="">-2.48090543441244E-02</sec>
+			<sec desc="start direction Y" name="diry" unit="">0</sec>
+			<sec desc="start direction Z" name="dirz" unit="">9.99692208043331E-01</sec>
+			<sec desc="magnetic d-field Bx" name="bx" unit="tesla">0</sec>
+			<sec desc="magnetic d-field By" name="by" unit="tesla">2.54524403400000E-01</sec>
+			<sec desc="magnetic d-field Bz" name="bz" unit="tesla">0</sec>
+			<sec desc="magnetic q-field K1" name="k1" unit="tesla/m">0</sec>
+		</magnet>
+		<magnet>
+			<sec desc="magnet name" name="name">D2EF1</sec>
+			<sec desc="magnet type" name="type">D-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">2.726015431</sec>
+			<sec desc="start position X" name="posx" unit="cm">2.10318264100000E+00</sec>
+			<sec desc="start position Y" name="posy" unit="cm">0</sec>
+			<sec desc="start position Z" name="posz" unit="cm">-3.41670739300000E+03</sec>
+			<sec desc="start direction X" name="dirx" unit="">-1.31554205131084E-02</sec>
+			<sec desc="start direction Y" name="diry" unit="">0</sec>
+			<sec desc="start direction Z" name="dirz" unit="">9.99913463711297E-01</sec>
+			<sec desc="magnetic d-field Bx" name="bx" unit="tesla">0</sec>
+			<sec desc="magnetic d-field By" name="by" unit="tesla">2.54524403400000E-01</sec>
+			<sec desc="magnetic d-field Bz" name="bz" unit="tesla">0</sec>
+			<sec desc="magnetic q-field K1" name="k1" unit="tesla/m">0</sec>
+		</magnet>
+		<magnet>
+			<sec desc="magnet name" name="name">D1EF</sec>
+			<sec desc="magnet type" name="type">D-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">0.8914000836</sec>
+			<sec desc="start position X" name="posx" unit="cm">6.68549937300000E-02</sec>
+			<sec desc="start position Y" name="posy" unit="cm">0</sec>
+			<sec desc="start position Z" name="posz" unit="cm">-3.11826997500000E+03</sec>
+			<sec desc="start direction X" name="dirx" unit="">-1.49999943750006E-03</sec>
+			<sec desc="start direction Y" name="diry" unit="">0</sec>
+			<sec desc="start direction Z" name="dirz" unit="">9.99998875000211E-01</sec>
+			<sec desc="magnetic d-field Bx" name="bx" unit="tesla">0</sec>
+			<sec desc="magnetic d-field By" name="by" unit="tesla">1.00169207900000E-01</sec>
+			<sec desc="magnetic d-field Bz" name="bz" unit="tesla">0</sec>
+			<sec desc="magnetic q-field K1" name="k1" unit="tesla/m">0</sec>
+		</magnet>
+		<magnet>
+			<sec desc="magnet name" name="name">Q1EF</sec>
+			<sec desc="magnet type" name="type">Q-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">1.61</sec>
+			<sec desc="start position X" name="posx" unit="cm">0</sec>
+			<sec desc="start position Y" name="posy" unit="cm">0</sec>
+			<sec desc="start position Z" name="posz" unit="cm">-1.23700000000000E+03</sec>
+			<sec desc="start direction X" name="dirx" unit="">0</sec>
+			<sec desc="start direction Y" name="diry" unit="">0</sec>
+			<sec desc="start direction Z" name="dirz" unit="">0</sec>
+			<sec desc="magnetic d-field Bx" name="bx" unit="tesla">0</sec>
+			<sec desc="magnetic d-field By" name="by" unit="tesla">0</sec>
+			<sec desc="magnetic d-field Bz" name="bz" unit="tesla">0</sec>
+			<sec desc="magnetic q-field K1" name="k1" unit="tesla/m">5.957841642</sec>
+		</magnet>
+		<magnet>
+			<sec desc="magnet name" name="name">Q0EF</sec>
+			<sec desc="magnet type" name="type">Q-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">1.20</sec>
+			<sec desc="start position X" name="posx" unit="cm">0</sec>
+			<sec desc="start position Y" name="posy" unit="cm">0</sec>
+			<sec desc="start position Z" name="posz" unit="cm">-7.00000000000000E+02</sec>
+			<sec desc="start direction X" name="dirx" unit="">0</sec>
+			<sec desc="start direction Y" name="diry" unit="">0</sec>
+			<sec desc="start direction Z" name="dirz" unit="">0</sec>
+			<sec desc="magnetic d-field Bx" name="bx" unit="tesla">0</sec>
+			<sec desc="magnetic d-field By" name="by" unit="tesla">0</sec>
+			<sec desc="magnetic d-field Bz" name="bz" unit="tesla">0</sec>
+			<sec desc="magnetic q-field K1" name="k1" unit="tesla/m">-12.98838344</sec>
+		</magnet>
+	</magnets>
+</xml>

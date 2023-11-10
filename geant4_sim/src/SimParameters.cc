@@ -140,9 +140,9 @@ void SimParameters::ReadXML(G4String fName)
 		else if(child_node.second.get<string>("<xmlattr>.name") == "dirz" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
 			SetBeamDirZ(stod(child_node.second.data()));
-		else if(child_node.second.get<string>("<xmlattr>.name") == "mom" &&
-			child_node.second.get<string>("<xmlattr>.unit") == "GeV")
-			SetBeamMom(stod(child_node.second.data())*GeV);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "gamma" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamGamma(stod(child_node.second.data()));
 		else if(child_node.second.get<string>("<xmlattr>.name") == "spread" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
 			SetBeamMomSpread(stod(child_node.second.data()));
@@ -217,8 +217,8 @@ void SimParameters::ReadXML(G4String fName)
 	// clean vectors
 	CleanMagParameters();
 	G4String magName, magType;
-	G4double magLength, magStartPosX, magStartPosY, magStartPosZ, magStartDirX, magStartDirY, magStartDirZ;
-	G4double magBx, magBy, magBz, magK1;
+	G4double magLength, magStartPosX, magStartPosY, magStartPosZ, magEndPosX, magEndPosY, magEndPosZ;
+	G4double magAngle, magK1L;
 
 	BOOST_FOREACH(ptree::value_type &child_tree, tree.get_child("xml.magnets"))
 	{
@@ -233,42 +233,56 @@ void SimParameters::ReadXML(G4String fName)
 				else if(child_node.second.get<string>("<xmlattr>.name") == "length" &&
 					child_node.second.get<string>("<xmlattr>.unit") == "m")
 					magLength = stod(child_node.second.data())*m; 
-				else if(child_node.second.get<string>("<xmlattr>.name") == "posx" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "cm")
-					magStartPosX = stod(child_node.second.data())*cm; 
-				else if(child_node.second.get<string>("<xmlattr>.name") == "posy" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "cm")
-					magStartPosY = stod(child_node.second.data())*cm;
-				else if(child_node.second.get<string>("<xmlattr>.name") == "posz" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "cm")
-					magStartPosZ = stod(child_node.second.data())*cm;
-				else if(child_node.second.get<string>("<xmlattr>.name") == "dirx" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "")
-					magStartDirX = stod(child_node.second.data());
-				else if(child_node.second.get<string>("<xmlattr>.name") == "diry" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "")
-					magStartDirY = stod(child_node.second.data());
-				else if(child_node.second.get<string>("<xmlattr>.name") == "dirz" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "")
-					magStartDirZ = stod(child_node.second.data());
-				else if(child_node.second.get<string>("<xmlattr>.name") == "bx" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "tesla")
-					magBx = stod(child_node.second.data())*tesla;
-				else if(child_node.second.get<string>("<xmlattr>.name") == "by" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "tesla")
-					magBy = stod(child_node.second.data())*tesla;
-				else if(child_node.second.get<string>("<xmlattr>.name") == "bz" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "tesla")
-					magBz = stod(child_node.second.data())*tesla;
-				else if(child_node.second.get<string>("<xmlattr>.name") == "k1" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "tesla/m")
-					magK1 = stod(child_node.second.data())*tesla/m;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posx1" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					magStartPosX = stod(child_node.second.data())*m; 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posy1" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					magStartPosY = stod(child_node.second.data())*m;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posz1" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					magStartPosZ = stod(child_node.second.data())*m;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posx2" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					magEndPosX = stod(child_node.second.data())*m; 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posy2" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					magEndPosY = stod(child_node.second.data())*m;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posz2" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					magEndPosZ = stod(child_node.second.data())*m;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "angle" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "rad")
+					magAngle = stod(child_node.second.data())*rad;
+				else if(child_node.second.get<string>("<xmlattr>.name") == "k1l" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "1/m")
+					magK1L = stod(child_node.second.data())*1/m;
 				else
 					throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 			}
 			// fill vectors with the new numbers
 			SetMagParameters(magName,magType,magLength,magStartPosX,magStartPosY,magStartPosZ,
-				magStartDirX,magStartDirY,magStartDirZ,magBx,magBy,magBz,magK1);
+				magEndPosX,magEndPosY,magEndPosZ,magAngle,magK1L);
+		}
+		else if (child_tree.first == "ip")
+		{
+			BOOST_FOREACH(ptree::value_type &child_node, child_tree.second)
+			{
+				if(child_node.second.get<string>("<xmlattr>.name") == "posx" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					SetIpPosX(stod(child_node.second.data())*m); 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posy" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					SetIpPosY(stod(child_node.second.data())*m); 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "posz" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					SetIpPosZ(stod(child_node.second.data())*m); 
+				else if(child_node.second.get<string>("<xmlattr>.name") == "theta" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "rad")
+					SetIpTheta(stod(child_node.second.data())*rad); 
+				else
+					throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+			}
 		}
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
@@ -279,8 +293,8 @@ void SimParameters::ReadXML(G4String fName)
 
 void SimParameters::SetMagParameters(G4String magName, G4String magType, G4double magLength, 
 	G4double magStartPosX, G4double magStartPosY, G4double magStartPosZ,
-	G4double magStartDirX, G4double magStartDirY, G4double magStartDirZ,
-	G4double magBx, G4double magBy, G4double magBz, G4double magK1)
+	G4double magEndPosX, G4double magEndPosY, G4double magEndPosZ,
+	G4double magAngle, G4double magK1L)
 {
 	_magName.push_back(magName);
 	_magType.push_back(magType);
@@ -288,13 +302,11 @@ void SimParameters::SetMagParameters(G4String magName, G4String magType, G4doubl
 	_magStartPosX.push_back(magStartPosX);
 	_magStartPosY.push_back(magStartPosY);
 	_magStartPosZ.push_back(magStartPosZ);
-	_magStartDirX.push_back(magStartDirX);
-	_magStartDirY.push_back(magStartDirY);
-	_magStartDirZ.push_back(magStartDirZ);
-	_magBx.push_back(magBx);
-	_magBy.push_back(magBy);
-	_magBz.push_back(magBz);
-	_magK1.push_back(magK1);
+	_magEndPosX.push_back(magEndPosX);
+	_magEndPosY.push_back(magEndPosY);
+	_magEndPosZ.push_back(magEndPosZ);
+	_magAngle.push_back(magAngle);
+	_magK1L.push_back(magK1L);
 
 	return;
 }
@@ -307,13 +319,11 @@ void SimParameters::CleanMagParameters()
 	_magStartPosX.clear();
 	_magStartPosY.clear();
 	_magStartPosZ.clear();
-	_magStartDirX.clear();
-	_magStartDirY.clear();
-	_magStartDirZ.clear();
-	_magBx.clear();
-	_magBy.clear();
-	_magBz.clear();
-	_magK1.clear();
+	_magEndPosX.clear();
+	_magEndPosY.clear();
+	_magEndPosZ.clear();
+	_magAngle.clear();
+	_magK1L.clear();
 
 	return;
 }
@@ -355,20 +365,53 @@ void SimParameters::InitDefault()
 	_ext_radius = 20.0*cm;
 	_ext_endpos = -3350.0*cm;	
 
+	_ipBeampipeZmin = -0.67*m; 
+	_ipBeampipeZmax = 0.686923*m;
+
+	_ipPosX = -589.77164158437*m;
+	_ipPosY = 0*m;
+	_ipPosZ = 5.6843418860808e-14*m;
+	_ipTheta = -3.1335926535898*rad;
+
 	_magName = {"D2EF2","D2EF1","D1EF","Q1EF","Q0EF"};
 	_magType = {"D-pole","D-pole","D-pole","Q-pole","Q-pole"};
-	_magLength = {2.726015431*m,2.726015431*m,0.8914000836*m,1.61*m,1.20*m};
-	_magStartPosX = {7.61776450600000E+00*cm,2.10318264100000E+00*cm,6.68549937300000E-02*cm,0.0*cm,0.0*cm};
-	_magStartPosY = {0,0,0,0,0};
-	_magStartPosZ = {-3.71513783800000E+03*cm,-3.41670739300000E+03*cm,-3.11826997500000E+03*cm,-1.23700000000000E+03*cm,-7.00000000000000E+02*cm};
-	_magStartDirX = {-2.48090543441244E-02,-1.31554205131084E-02,-1.49999943750006E-03*cm,0,0};
-	_magStartDirY = {0,0,0,0,0};
-	_magStartDirZ = {9.99692208043331E-01,9.99913463711297E-01,9.99998875000211E-01*cm,0,0};
-	_magBx = {0,0,0,0,0};
-	_magBy = {2.54524403400000E-01*tesla,2.54524403400000E-01*tesla,1.00169207900000E-01*tesla,0,0};
-	_magBz = {0,0,0,0,0};
-	_magK1 = {0,0,0,5.957841642*tesla/m,-12.98838344*tesla/m};
-
+	_magLength = {	2.7260154313337*m,
+			2.7260154313337*m,
+			0.89140008356876*m,
+			1.61*m,
+			1.2*m};
+	_magStartPosX = {	-589.55061312277*m,
+				-589.51933973323*m,
+				-589.52285141176*m,
+				-589.67268263994*m,
+				-589.7156421817*m};
+	_magStartPosY = {0*m,0*m,0*m,0*m,0*m};
+	_magStartPosZ = {	37.15030382285*m,
+				34.166071692045*m,
+				31.181677766382*m,
+				12.369604162111*m,
+				6.9997760011947*m};
+	_magEndPosX = {	-589.5206719963*m,
+			-589.52117182359*m,
+			-589.52931400515*m,
+			-589.68556250255*m,
+			-589.7252420793*m};
+	_magEndPosY = {0*m,0*m,0*m,0*m,0*m};
+	_magEndPosZ = {	34.42446825757*m,
+			31.440072307701*m,
+			30.290301193385*m,
+			10.759655681836*m,
+			5.7998144009899*m};
+	_magAngle = {	0.011655839693698*rad,
+			0.011655839693698*rad,
+			0.0015*rad,
+			0*rad,
+			0*rad};
+	_magK1L = {	0*1/m,
+			0*1/m,
+			0*1/m,
+			0.1611384495*1/m,
+			-0.261830778*1/m};
 	
 	_absSizeX = {30*cm,10*cm,10*cm,50*cm};
 	_absSizeY = {30*cm,10*cm,10*cm,50*cm};
@@ -389,7 +432,7 @@ void SimParameters::InitDefault()
 	_beamEtaPrimeX = 0.01315593225;
 	_beamEtaPrimeY = 0.0;
 	_beamMomSpread = 0.109e-2;
-	_beamMom = 18*GeV;
+	_beamGamma = 34924.26476;
 	_beamDirX = -2.48090543441244E-02;
 	_beamDirY = 0.00000000000000E+00;
 	_beamDirZ = 9.99692208043331E-01;
@@ -399,9 +442,6 @@ void SimParameters::InitDefault()
 
 	_gammaEcut = -1*keV;
 	_trackTcut =  1*s;
-
-	_ipBeampipeZmin = -0.67*m; 
-	_ipBeampipeZmax = 0.686923*m;
 
 	return;
 }
@@ -432,7 +472,7 @@ void SimParameters::PrintBeamParameters()
 	G4cout<<"Direction X = "<<GetBeamDirX()<<" []"<<G4endl;
 	G4cout<<"Direction Y = "<<GetBeamDirY()<<" []"<<G4endl;
 	G4cout<<"Direction Z = "<<GetBeamDirZ()<<" []"<<G4endl;
-	G4cout<<"Momentum = "<<GetBeamMom()/GeV<<" [GeV]"<<G4endl;
+	G4cout<<"Gamma = "<<GetBeamGamma()<<" []"<<G4endl;
 	G4cout<<"Momentum spread = "<<GetBeamMomSpread()<<" []"<<G4endl;
 	G4cout<<"Beta X = "<<GetBeamBetaX()/m<<" [m]"<<G4endl;
 	G4cout<<"Beta Y = "<<GetBeamBetaY()/m<<" [m]"<<G4endl;
@@ -451,22 +491,25 @@ void SimParameters::PrintMagParameters()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintMagParameters ==> Magnet parameters"<<G4endl;
+	G4cout<<"IP position X = "<<GetIpPosX()/m<<" [m]"<<G4endl;
+	G4cout<<"IP position Y = "<<GetIpPosY()/m<<" [m]"<<G4endl;
+	G4cout<<"IP position Z = "<<GetIpPosZ()/m<<" [m]"<<G4endl;
+	G4cout<<"IP orientation angle = "<<GetIpTheta()/rad<<" [rad]"<<G4endl;
+	G4cout<<G4endl;
 	for(G4int iMag = 0; iMag < GetMagNum(); iMag++)
 	{
 		G4cout<<"ID = "<<iMag<<G4endl;
 		G4cout<<"  Name = "<<GetMagName(iMag)<<G4endl;
 		G4cout<<"  Type = "<<GetMagType(iMag)<<G4endl;
 		G4cout<<"  Length = "<<GetMagLength(iMag)/m<<" [m]"<<G4endl;
-		G4cout<<"  Start position X = "<<GetMagStartPosX(iMag)/cm<<" [cm]"<<G4endl;
-		G4cout<<"  Start position Y = "<<GetMagStartPosY(iMag)/cm<<" [cm]"<<G4endl;
-		G4cout<<"  Start position Z = "<<GetMagStartPosZ(iMag)/cm<<" [cm]"<<G4endl;
-		G4cout<<"  Start direction X = "<<GetMagStartDirX(iMag)<<G4endl;
-		G4cout<<"  Start direction Y = "<<GetMagStartDirY(iMag)<<G4endl;
-		G4cout<<"  Start direction Z = "<<GetMagStartDirZ(iMag)<<G4endl;
-		G4cout<<"  Field Bx = "<<GetMagBx(iMag)/tesla<<" [T]"<<G4endl;
-		G4cout<<"  Field By = "<<GetMagBy(iMag)/tesla<<" [T]"<<G4endl;
-		G4cout<<"  Field Bz = "<<GetMagBz(iMag)/tesla<<" [T]"<<G4endl;
-		G4cout<<"  Field K1 = "<<GetMagK1(iMag)/(tesla/m)<<" [T/m)]"<<G4endl;
+		G4cout<<"  Start position X = "<<GetMagStartPosX(iMag)/m<<" [m]"<<G4endl;
+		G4cout<<"  Start position Y = "<<GetMagStartPosY(iMag)/m<<" [m]"<<G4endl;
+		G4cout<<"  Start position Z = "<<GetMagStartPosZ(iMag)/m<<" [m]"<<G4endl;
+		G4cout<<"  End position X = "<<GetMagEndPosX(iMag)/m<<" [m]"<<G4endl;
+		G4cout<<"  End position Y = "<<GetMagEndPosY(iMag)/m<<" [m]"<<G4endl;
+		G4cout<<"  End position Z = "<<GetMagEndPosZ(iMag)/m<<" [m]"<<G4endl;
+		G4cout<<"  Dipole angle = "<<GetMagAngle(iMag)/rad<<" [rad]"<<G4endl;
+		G4cout<<"  Quadrupole strength K1L = "<<GetMagK1L(iMag)/(1/m)<<" [1/m)]"<<G4endl;
 	}
 	G4cout<<"==================================================================\n\n"<<G4endl;
 

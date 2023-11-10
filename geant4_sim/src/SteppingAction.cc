@@ -28,6 +28,32 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 {
 	const G4Track* track = step->GetTrack();
 
+	//--------------------------------------------------------------------------//
+	G4StepPoint*            preStep         = step->GetPreStepPoint();
+	G4StepPoint*            postStep        = step->GetPostStepPoint();
+	G4VPhysicalVolume*      prePV           = preStep->GetPhysicalVolume();
+	G4VPhysicalVolume*      postPV          = postStep->GetPhysicalVolume();
+
+	if(     postStep->GetStepStatus() == fGeomBoundary && 
+		G4StrUtil::contains(prePV->GetName(),"vac_") &&
+		postPV->GetName() == "mag_Q1EF")
+	{
+		runAction->_monPosX = postStep->GetPosition().getX()/cm;
+		runAction->_monPosY = postStep->GetPosition().getY()/cm;
+		runAction->_monPosZ = postStep->GetPosition().getZ()/cm;
+		runAction->_monMomX = postStep->GetMomentum().getX()/eV;
+		runAction->_monMomY = postStep->GetMomentum().getY()/eV;
+		runAction->_monMomZ = postStep->GetMomentum().getZ()/eV;
+
+		G4cout<<"x [cm] = "<<postStep->GetPosition().getX()/cm<<G4endl;
+		G4cout<<"y [cm] = "<<postStep->GetPosition().getY()/cm<<G4endl;
+		G4cout<<"z [cm] = "<<postStep->GetPosition().getZ()/cm<<G4endl;
+
+		G4Track* aNonConstTrack = const_cast<G4Track*>(track);
+		aNonConstTrack->SetTrackStatus(fStopAndKill);
+	}
+	//--------------------------------------------------------------------------//
+
 	// kill long living tracks
 	if(track->GetGlobalTime() > simPar->GetTrackTcut())
 	{

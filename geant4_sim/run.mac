@@ -5,9 +5,9 @@
 ##-----------------------------------------##
 /output/filename ../output/output.root
 
-/stack/killsecondaries 0
+/stack/killsecondaries 1
 
 /run/initialize
 ##-----------------------------------------##
-/run/beamOn 1000
+/run/beamOn 10000
 ##-----------------------------------------##

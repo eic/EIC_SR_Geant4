@@ -22,19 +22,22 @@ private:
 	G4double _ext_radius;
 	G4double _ext_endpos;	
 
+	G4double _ipPosX;
+	G4double _ipPosY;
+	G4double _ipPosZ;
+	G4double _ipTheta;
+
 	vector<G4String> _magName;
 	vector<G4String> _magType;
 	vector<G4double> _magLength;
 	vector<G4double> _magStartPosX;
 	vector<G4double> _magStartPosY;
 	vector<G4double> _magStartPosZ;
-	vector<G4double> _magStartDirX;
-	vector<G4double> _magStartDirY;
-	vector<G4double> _magStartDirZ;
-	vector<G4double> _magBx;
-	vector<G4double> _magBy;
-	vector<G4double> _magBz;
-	vector<G4double> _magK1;
+	vector<G4double> _magEndPosX;
+	vector<G4double> _magEndPosY;
+	vector<G4double> _magEndPosZ;
+	vector<G4double> _magAngle;
+	vector<G4double> _magK1L;
 
 	vector<G4double> _absSizeX;
 	vector<G4double> _absSizeY;
@@ -55,8 +58,8 @@ private:
 	G4double _beamEtaPrimeX;
 	G4double _beamEtaPrimeY;
 
-	G4double _beamMomSpread; // _deltaP
-    	G4double _beamMom;;
+	G4double _beamMomSpread;
+    	G4double _beamGamma;
     	G4double _beamDirX;
     	G4double _beamDirY;
     	G4double _beamDirZ;
@@ -100,6 +103,11 @@ public:
 	G4double GetIpBeampipeZmin(){return _ipBeampipeZmin;}
 	G4double GetIpBeampipeZmax(){return _ipBeampipeZmax;}
 
+	G4double GetIpPosX(){return _ipPosX;}
+	G4double GetIpPosY(){return _ipPosY;}
+	G4double GetIpPosZ(){return _ipPosZ;}
+	G4double GetIpTheta(){return _ipTheta;}
+
 	G4String GetMagName(G4int i){return _magName.at(i);}
 	G4String GetMagType(G4int i){return _magType.at(i);}
 	G4int GetMagNum(){return _magName.size();}
@@ -107,13 +115,11 @@ public:
 	G4double GetMagStartPosX(G4int i){return _magStartPosX.at(i);}
 	G4double GetMagStartPosY(G4int i){return _magStartPosY.at(i);}
 	G4double GetMagStartPosZ(G4int i){return _magStartPosZ.at(i);}
-	G4double GetMagStartDirX(G4int i){return _magStartDirX.at(i);}
-	G4double GetMagStartDirY(G4int i){return _magStartDirY.at(i);}
-	G4double GetMagStartDirZ(G4int i){return _magStartDirZ.at(i);}
-	G4double GetMagBx(G4int i){return _magBx.at(i);}
-	G4double GetMagBy(G4int i){return _magBy.at(i);}
-	G4double GetMagBz(G4int i){return _magBz.at(i);}
-	G4double GetMagK1(G4int i){return _magK1.at(i);}
+	G4double GetMagEndPosX(G4int i){return _magEndPosX.at(i);}
+	G4double GetMagEndPosY(G4int i){return _magEndPosY.at(i);}
+	G4double GetMagEndPosZ(G4int i){return _magEndPosZ.at(i);}
+	G4double GetMagAngle(G4int i){return _magAngle.at(i);}
+	G4double GetMagK1L(G4int i){return _magK1L.at(i);}
 	
 	G4int GetAbsNum(){return _absSizeX.size();}
 	G4double GetAbsSizeX(G4int i){return _absSizeX.at(i);}
@@ -130,7 +136,7 @@ public:
     	G4double GetBeamDirX(){return _beamDirX;}
     	G4double GetBeamDirY(){return _beamDirY;}
     	G4double GetBeamDirZ(){return _beamDirZ;}
-    	G4double GetBeamMom(){return _beamMom;}
+    	G4double GetBeamGamma(){return _beamGamma;}
 	G4double GetBeamMomSpread(){return _beamMomSpread;}
 	G4double GetBeamBetaX(){return _beamBetaX;}
 	G4double GetBeamBetaY(){return _beamBetaY;}
@@ -162,10 +168,15 @@ private:
 	void SetIpBeampipeZmin(G4double val){_ipBeampipeZmin = val; return;}
 	void SetIpBeampipeZmax(G4double val){_ipBeampipeZmax = val; return;}
 
+	void SetIpPosX(G4double val){_ipPosX = val; return;}
+	void SetIpPosY(G4double val){_ipPosY = val; return;}
+	void SetIpPosZ(G4double val){_ipPosZ = val; return;}
+	void SetIpTheta(G4double val){_ipTheta = val; return;}
+
 	void SetMagParameters(G4String magName, G4String magType, G4double magLength, 
-	G4double magStartPosX, G4double magStartPosY, G4double magStartPosZ,
-	G4double magStartDirX, G4double magStartDirY, G4double magStartDirZ,
-	G4double magBx, G4double magBy, G4double magBz, G4double magK1);
+		G4double magStartPosX, G4double magStartPosY, G4double magStartPosZ,
+		G4double magEndPosX, G4double magEndPosY, G4double magEndPosZ,
+		G4double magAngle, G4double magK1L);
 
 	void SetAbsParameters(G4double absSizeX, G4double absSizeY, G4double absSizeZ,
 	G4double absPosX, G4double absPosY, G4double absPosZ);
@@ -177,7 +188,7 @@ private:
     	void SetBeamDirX(G4double val){_beamDirX = val; return;}
     	void SetBeamDirY(G4double val){_beamDirY = val; return;}
     	void SetBeamDirZ(G4double val){_beamDirZ = val; return;}
-    	void SetBeamMom(G4double val){_beamMom = val; return;}
+    	void SetBeamGamma(G4double val){_beamGamma = val; return;}
 	void SetBeamMomSpread(G4double val){_beamMomSpread = val; return;}
 	void SetBeamBetaX(G4double val){_beamBetaX = val; return;}
 	void SetBeamBetaY(G4double val){_beamBetaY = val; return;}
