@@ -29,28 +29,24 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	const G4Track* track = step->GetTrack();
 
 	//--------------------------------------------------------------------------//
+	//- Beam monitor at the last magnet
 	G4StepPoint*            preStep         = step->GetPreStepPoint();
 	G4StepPoint*            postStep        = step->GetPostStepPoint();
 	G4VPhysicalVolume*      prePV           = preStep->GetPhysicalVolume();
 	G4VPhysicalVolume*      postPV          = postStep->GetPhysicalVolume();
 
-	if(     postStep->GetStepStatus() == fGeomBoundary && 
-		G4StrUtil::contains(prePV->GetName(),"vac_") &&
-		postPV->GetName() == "mag_Q1EF")
+	if(     track->GetTrackID() == 1 && // primary particle 
+		postStep->GetStepStatus() == fGeomBoundary && // at boundary
+		G4StrUtil::contains(postPV->GetName(),"vac_") && // entering vacuum
+		prePV->GetName() == "mag_"+simPar->GetMagName(-1)) // leaving the last magnet
 	{
-		runAction->_monPosX = postStep->GetPosition().getX()/cm;
-		runAction->_monPosY = postStep->GetPosition().getY()/cm;
-		runAction->_monPosZ = postStep->GetPosition().getZ()/cm;
-		runAction->_monMomX = postStep->GetMomentum().getX()/eV;
-		runAction->_monMomY = postStep->GetMomentum().getY()/eV;
-		runAction->_monMomZ = postStep->GetMomentum().getZ()/eV;
-
-		G4cout<<"x [cm] = "<<postStep->GetPosition().getX()/cm<<G4endl;
-		G4cout<<"y [cm] = "<<postStep->GetPosition().getY()/cm<<G4endl;
-		G4cout<<"z [cm] = "<<postStep->GetPosition().getZ()/cm<<G4endl;
-
-		G4Track* aNonConstTrack = const_cast<G4Track*>(track);
-		aNonConstTrack->SetTrackStatus(fStopAndKill);
+		runAction->_monName = prePV->GetName();
+		runAction->_monPosX = preStep->GetPosition().getX()/cm;
+		runAction->_monPosY = preStep->GetPosition().getY()/cm;
+		runAction->_monPosZ = preStep->GetPosition().getZ()/cm;
+		runAction->_monMomX = preStep->GetMomentum().getX()/eV;
+		runAction->_monMomY = preStep->GetMomentum().getY()/eV;
+		runAction->_monMomZ = preStep->GetMomentum().getZ()/eV;
 	}
 	//--------------------------------------------------------------------------//
 

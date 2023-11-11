@@ -108,7 +108,11 @@ public:
 	G4double GetIpPosZ(){return _ipPosZ;}
 	G4double GetIpTheta(){return _ipTheta;}
 
-	G4String GetMagName(G4int i){return _magName.at(i);}
+	G4String GetMagName(G4int i)
+	{
+		if(i < 0)	{return _magName.back();}
+		else 		{return _magName.at(i);}
+	}
 	G4String GetMagType(G4int i){return _magType.at(i);}
 	G4int GetMagNum(){return _magName.size();}
 	G4double GetMagLength(G4int i){return _magLength.at(i);}

@@ -53,6 +53,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("gammaEnergy_eV",	&_gammaEnergy);
     	_tree->Branch("gammaTime_ms",	&_gammaTime);
 
+	_tree->Branch("monName",	&_monName);
     	_tree->Branch("monPosX_cm",	&_monPosX);
     	_tree->Branch("monPosY_cm",	&_monPosY);
     	_tree->Branch("monPosZ_cm",	&_monPosZ);

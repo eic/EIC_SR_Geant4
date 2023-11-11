@@ -74,6 +74,7 @@ public:
 	vector<G4float> _gammaEnergy;
 	vector<G4float> _gammaTime;
 
+	string _monName;
 	G4float _monPosX;
 	G4float _monPosY;
 	G4float _monPosZ;
