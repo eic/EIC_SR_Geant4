@@ -23,6 +23,7 @@ void AnalysisSR::Init(TString treeName = "tree")
 	cout<<"\n"<<endl;
 
    	// set object pointer
+	monName = new string();
 	gammaVtxPosX_cm = nullptr;
 	gammaVtxPosY_cm = nullptr;
 	gammaVtxPosZ_cm = nullptr;
@@ -66,10 +67,23 @@ void AnalysisSR::Init(TString treeName = "tree")
    	_fChain->SetBranchAddress("gammaEnergy_eV", &gammaEnergy_eV, &b_gammaEnergy_eV);
    	_fChain->SetBranchAddress("gammaTime_ms", &gammaTime_ms, &b_gammaTime_ms);
 
+   	_fChain->SetBranchAddress("monName", &monName, &b_monName);
+   	_fChain->SetBranchAddress("monPosX_cm", &monPosX_cm, &b_monPosX_cm);
+   	_fChain->SetBranchAddress("monPosY_cm", &monPosY_cm, &b_monPosY_cm);
+   	_fChain->SetBranchAddress("monPosZ_cm", &monPosZ_cm, &b_monPosZ_cm);
+   	_fChain->SetBranchAddress("monMomX_eV", &monMomX_eV, &b_monMomX_eV);
+   	_fChain->SetBranchAddress("monMomY_eV", &monMomY_eV, &b_monMomY_eV);
+   	_fChain->SetBranchAddress("monMomZ_eV", &monMomZ_eV, &b_monMomZ_eV);
+
 	// histograms
 	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",10100,-1000,100000);
 	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",600,-4000,2000,300,-30,30);
 	_h3 = new TH2F("h3","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",600,-4000,2000,300,-30,30);
+
+	_fChain->GetEntry(0);
+	_h4 = new TH2F("h4",Form("Monitor [%s]: Px vs X;X [cm];X'",monName->c_str()),1000,-4,4,1000,-1e-3,1e-3);
+	_h5 = new TH2F("h5",Form("Monitor [%s]: Py vs Y;Y [cm];Y'",monName->c_str()),1000,-4,4,1000,-1e-4,1e-4);
+	_h6 = new TH1F("h6",Form("Monitor [%s]: Momentum;P [GeV]",monName->c_str()),20000,0,20);
 
 	// ascii file to store generated events
 	_fHepmc = new WriterAscii(GetOutputFileNameHepmc().Data());
@@ -169,6 +183,14 @@ void AnalysisSR::Loop()
 		// write a non-empty event
 		if(gammaEnergy_eV->size() > 0)
 			_fHepmc->write_event(event);
+
+		// monitor data
+		Float_t monMom_eV = TMath::Sqrt(TMath::Power(monMomX_eV,2) + 
+						TMath::Power(monMomY_eV,2) + 
+						TMath::Power(monMomZ_eV,2));
+		_h4->Fill(monPosX_cm,monMomX_eV/monMom_eV);
+		_h5->Fill(monPosY_cm,monMomY_eV/monMom_eV);
+		_h6->Fill(monMom_eV/1e9); // eV --> GeV
    	}
  	printf("\r[INFO] Progress: %.3f [%%]\n",100.0*jentry/nEntries);
 
@@ -177,6 +199,9 @@ void AnalysisSR::Loop()
 	_h1->Write();
 	_h2->Write();
 	_h3->Write();
+	_h4->Write();
+	_h5->Write();
+	_h6->Write();
 	f->Close();
 
 	return;

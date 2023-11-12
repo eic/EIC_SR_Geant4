@@ -59,6 +59,14 @@ public :
 	vector<float>   *gammaEnergy_eV;
 	vector<float>   *gammaTime_ms;
 
+	string 		*monName;
+	Float_t         monPosX_cm;
+	Float_t         monPosY_cm;
+	Float_t         monPosZ_cm;
+	Float_t         monMomX_eV;
+	Float_t         monMomY_eV;
+	Float_t         monMomZ_eV;
+
    	// List of branches
 	TBranch        *b_event;   //!
 	TBranch        *b_beamPdg;   //!
@@ -87,6 +95,15 @@ public :
 	TBranch        *b_gammaEnergy_eV;   //!
 	TBranch        *b_gammaTime_ms;   //!
 
+	TBranch        *b_monName;   //!
+	TBranch        *b_monPosX_cm;   //!
+	TBranch        *b_monPosY_cm;   //!
+	TBranch        *b_monPosZ_cm;   //!
+	TBranch        *b_monMomX_eV;   //!
+	TBranch        *b_monMomY_eV;   //!
+	TBranch        *b_monMomZ_eV;   //!
+
+
  	void Init(TString);
 	void Loop();
 	void SetInputFileName(TString val){_inputFileName = val; return;}
@@ -106,5 +123,8 @@ private:
 	TH1F* _h1;
 	TH2F* _h2;
 	TH2F* _h3;
+	TH2F* _h4;
+	TH2F* _h5;
+	TH1F* _h6;
 };
 #endif

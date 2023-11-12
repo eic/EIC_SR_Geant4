@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 	{
 		cout<<"\n\n=================================================================="<<endl;
 		cout<<"[ERROR] main ==> Wrong number of input parameters: argc = "<<argc<<endl;
-		cout<<"Usage: ./exe ../../output1_5keVcut output_*.root ../output1 output_5keVcut tree"<<endl;
+		cout<<"Usage: ./exe ../../geant4_sim/output output_*.root ../output output tree"<<endl;
 		cout<<"==================================================================\n"<<endl;
 
 		return -1;
