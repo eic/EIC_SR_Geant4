@@ -46,6 +46,7 @@ geant4_sim/output*
 # g4 ana
 geant4_ana/build
 geant4_ana/output*
+geant4_ana/pics
 
 # eic sim
 eic_sim/output           

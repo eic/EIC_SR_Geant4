@@ -57,8 +57,8 @@ void DrawData(	TString name, TH2F* hX,
 	TPad* pad2 = new TPad("pad2", "pad2",0.7,0.0,1.0,0.7);
     	pad2->SetBottomMargin(0.14);
     	pad2->SetTopMargin(0.10);
-    	pad2->SetRightMargin(0.10);
-    	pad2->SetLeftMargin(0.10);
+    	pad2->SetRightMargin(0.08);
+    	pad2->SetLeftMargin(0.12);
 	pad2->Draw();
 
 	// top pad
@@ -77,31 +77,47 @@ void DrawData(	TString name, TH2F* hX,
 
 	pad1->cd();
 	gStyle->SetPalette(1);
-	hX->Draw("col");
+	hX->Draw("colz");
+	gPad->SetGrid();
 
-	DrawEllipse(emit,alpha,beta,eta,etaPrime,delta,1e2 /* m -> cm */, 10, kBlack);
+	DrawEllipse(emit,alpha,beta,eta,etaPrime,delta,1e2 /*[m->cm]*/, 3, kBlack);
 
 	pad2->cd();
-	projh2Xp->SetFillColor(kBlue-2);
+	projh2Xp->SetFillColorAlpha(kBlue,0.4);
 	projh2Xp->Draw("hbar");
+	projh2Xp->SetTitle("");
+	gPad->SetGrid();
 
 	pad3->cd();
-	projh2X->SetFillColor(kBlue+1);
+	projh2X->SetFillColorAlpha(kBlue,0.4);
 	projh2X->Draw("bar");
+	projh2X->SetTitle("");
+	gPad->SetGrid();
 
 	c1->cd();
    	TLatex t;
    	t.SetTextFont(42);
    	t.SetTextSize(0.02);
-   	t.DrawLatex(0.7,0.90,Form("",));
-   	t.DrawLatex(0.7,0.85,"Text2");
+
+	t.DrawLatex(0.7,0.98,"#font[22]{#Rightarrow Coordinates (X or Y) #Leftarrow}");
+	t.DrawLatex(0.7,0.95,Form("#color[4]{#mu(SIM) = %.1e #pm %.1e [cm]}",projh2X->GetMean(),projh2X->GetMeanError()));
+	t.DrawLatex(0.7,0.92,Form("#color[2]{#mu(TWI) = %.1e [cm]}",0.0));
+   	t.DrawLatex(0.7,0.89,Form("#color[4]{#sigma(SIM) = %.2e #pm %.2e [cm]}",projh2X->GetStdDev(),projh2X->GetStdDevError()));
+	t.DrawLatex(0.7,0.86,Form("#color[2]{#sigma(TWI) = %.2e [cm]}",TMath::Sqrt(emit*beta + TMath::Power(eta*delta,2))*1e2 /*[m->cm]*/));
+
+	t.DrawLatex(0.7,0.83,"#font[22]{#Rightarrow Divergence (X' or Y') #Leftarrow}");
+	t.DrawLatex(0.7,0.80,Form("#color[4]{#mu(SIM) = %.1e #pm %.1e [cm]}",projh2Xp->GetMean(),projh2Xp->GetMeanError()));
+	t.DrawLatex(0.7,0.77,Form("#color[2]{#mu(TWI) = %.1e [cm]}",0.0));
+   	t.DrawLatex(0.7,0.74,Form("#color[4]{#sigma(SIM) = %.2e #pm %.2e [cm]}",projh2Xp->GetStdDev(),projh2Xp->GetStdDevError()));
+	t.DrawLatex(0.7,0.71,Form("#color[2]{#sigma(TWI) = %.2e [cm]}",TMath::Sqrt(emit*(1. + alpha*alpha)/beta + TMath::Power(etaPrime*delta,2))));
+
+	c1->SaveAs(Form("./pics/c1_%s.png",name.Data()));
 
 	return;
 }
 
 void DrawEllipse(Double_t emit, Double_t alpha, Double_t beta, Double_t eta, Double_t etaPrime, Double_t delta, Double_t scale, Int_t nSigma, Color_t color)
 {
-	emit *= TMath::Sqrt(nSigma);
 	Double_t gamma = (1. + alpha*alpha)/beta;
 	
 	TGraph* ellipse = new TGraph();
@@ -110,28 +126,35 @@ void DrawEllipse(Double_t emit, Double_t alpha, Double_t beta, Double_t eta, Dou
 	for(Double_t XX = -TMath::Sqrt(emit); XX <= TMath::Sqrt(emit); XX += TMath::Sqrt(emit)/100.0)
 	{
 		GetEllipseValue(alpha,beta,emit,XX,+1,x,xp);
-		ellipse->SetPoint(ellipse->GetN(),x*scale,xp);
+		ellipse->SetPoint(ellipse->GetN(),x*scale*nSigma,xp*nSigma);
 	}
 	for(Double_t XX = TMath::Sqrt(emit); XX >= -TMath::Sqrt(emit); XX -= TMath::Sqrt(emit)/100.0)
 	{
 		GetEllipseValue(alpha,beta,emit,XX,-1,x,xp);
-		ellipse->SetPoint(ellipse->GetN(),x*scale,xp);
+		ellipse->SetPoint(ellipse->GetN(),x*scale*nSigma,xp*nSigma);
 	}
 
 	ellipse->SetLineColor(color);
-	ellipse->SetLineWidth(3);
+	ellipse->SetLineStyle(1);
+	ellipse->SetLineWidth(1);
 	ellipse->Draw("SAME & C");
 
 	// beam size/divergence limits
-	TBox* limits = new TBox(-TMath::Sqrt(emit*beta + TMath::Power(eta*delta,2))*scale,
-				-TMath::Sqrt(emit*gamma + TMath::Power(etaPrime*delta,2)),
-				+TMath::Sqrt(emit*beta + TMath::Power(eta*delta,2))*scale,
-				+TMath::Sqrt(emit*gamma + TMath::Power(etaPrime*delta,2)));
+	TBox* limits = new TBox(-nSigma*TMath::Sqrt(emit*beta + TMath::Power(eta*delta,2))*scale,
+				-nSigma*TMath::Sqrt(emit*gamma + TMath::Power(etaPrime*delta,2)),
+				+nSigma*TMath::Sqrt(emit*beta + TMath::Power(eta*delta,2))*scale,
+				+nSigma*TMath::Sqrt(emit*gamma + TMath::Power(etaPrime*delta,2)));
 	limits->SetFillStyle(0);
 	limits->SetLineColor(kBlack);
 	limits->SetLineWidth(1);
-	limits->SetLineStyle(9);
+	limits->SetLineStyle(1);
 	limits->Draw("SAME & L");
+
+	TText *t = new TText(	-nSigma*TMath::Sqrt(emit*beta + TMath::Power(eta*delta,2))*scale,
+				+nSigma*TMath::Sqrt(emit*gamma + TMath::Power(etaPrime*delta,2))*1.05,Form("n = %d",nSigma));
+	t->SetTextFont(42);
+	t->SetTextSize(0.03);
+	t->Draw();
 
 	return;
 }
