@@ -87,13 +87,13 @@ void AnalysisSR::Init(TString treeName = "tree")
 
 	_h4 = new TH2F("h4",Form("Monitor [%s]: Px vs X;X [cm];X'",monName->c_str()),1000,-4,4,1000,-1e-3,1e-3);
 	_h5 = new TH2F("h5",Form("Monitor [%s]: Py vs Y;Y [cm];Y'",monName->c_str()),1000,-4,4,1000,-1e-4,1e-4);
-	_h6 = new TH1F("h6",Form("Monitor [%s]: Momentum;P [GeV]",monName->c_str()),20000,0,20);
+	_h6 = new TH1F("h6",Form("Monitor [%s]: Momentum;P [GeV/c]",monName->c_str()),20000,0,20);
 
 	_h7 = new TH2F("h7",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Px vs X;X [cm];X'",
 		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,1000,-1e-3,1e-3);
 	_h8 = new TH2F("h8",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Py vs Y;Y [cm];Y'",
 		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,1000,-1e-4,1e-4);
-	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV]",
+	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV/c]",
 		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),20000,0,20);
 
 	// ascii file to store generated events
