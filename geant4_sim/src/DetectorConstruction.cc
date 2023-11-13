@@ -149,7 +149,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 			G4double grad = (0.2998*(simPar->GetMagK1L(iMag)/(1/m))/(simPar->GetMagLength(iMag)/m)/
 				((mass/GeV)*sqrt(pow(gamma,2)-1.0)))*tesla/m;
 			// set field
-			mag_field = new G4QuadrupoleMagField(grad);
+			//mag_field = new G4QuadrupoleMagField(grad);
+
+			G4RotationMatrix *rot = new G4RotationMatrix(G4ThreeVector(0, 0, 1), M_PI_2);
+			mag_field = new G4QuadrupoleMagField(grad, G4ThreeVector(0, 0, 0), rot);
+
 			// set color
 			mag_log->SetVisAttributes(G4VisAttributes(G4Color::Yellow()));  
 		}
@@ -183,7 +187,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//- Vacuum (place the beam pipe without magnet and IP volumes) 
 	G4LogicalVolume* beampipeVac_log = new G4LogicalVolume(beampipeVac_solid, mat_vac,"beampipeVac");
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"vac_beampipe",world_log,false,0,true);
-	beampipeVac_log->SetVisAttributes(G4VisAttributes(G4Color::Grey()));
+	G4VisAttributes* beampipeVac_vis = new G4VisAttributes(G4Color::Grey());
+	beampipeVac_vis->SetVisibility(false);
+	beampipeVac_log->SetVisAttributes(beampipeVac_vis);
 
 	//- Absorbers
 	for(int iAbs = 0; iAbs < simPar->GetAbsNum(); iAbs++)

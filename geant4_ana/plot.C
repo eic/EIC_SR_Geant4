@@ -1,3 +1,143 @@
+Double_t _minX = -1.5, _maxX = 1.5; // [cm]
+Double_t _minXp = -0.2e-3, _maxXp = 0.2e-3; // []
+
+using namespace std;
+
+void plot()
+{
+	gStyle->SetOptStat(0);
+	gStyle->SetLegendFont(42);
+	gStyle->SetLegendTextSize(0.035);
+
+	TFile *file = TFile::Open("output/output.root");
+
+	TH1F* h1 = (TH1F*)file->Get("h1");
+	TH2F* h2 = (TH2F*)file->Get("h2");
+	TH2F* h3 = (TH2F*)file->Get("h3");
+	TH2F* h4 = (TH2F*)file->Get("h4");
+	TH2F* h5 = (TH2F*)file->Get("h5");
+	TH1F* h6 = (TH1F*)file->Get("h6");
+
+	// horizontal
+	TCanvas* c1 = new TCanvas("c1","c1",900,900);
+	c1->cd();   
+
+	// central pad
+	TPad* pad1_hor = new TPad("pad1_hor", "center_pad",0.0,0.0,0.7,0.7);
+    	pad1_hor->SetBottomMargin(0.14);
+    	pad1_hor->SetTopMargin(0.10);
+    	pad1_hor->SetRightMargin(0.10);
+    	pad1_hor->SetLeftMargin(0.14);
+   	pad1_hor->Draw();
+	
+	// right pad
+	TPad* pad2_hor = new TPad("pad2_hor", "pad2_hor",0.7,0.0,1.0,0.7);
+    	pad2_hor->SetBottomMargin(0.14);
+    	pad2_hor->SetTopMargin(0.10);
+    	pad2_hor->SetRightMargin(0.10);
+    	pad2_hor->SetLeftMargin(0.10);
+	pad2_hor->Draw();
+
+	// top pad
+	TPad* pad3_hor = new TPad("pad3_hor", "pad3_hor",0.0,0.7,0.7,1.0);
+    	pad3_hor->SetBottomMargin(0.10);
+    	pad3_hor->SetTopMargin(0.10);
+    	pad3_hor->SetRightMargin(0.10);
+    	pad3_hor->SetLeftMargin(0.14);
+	pad3_hor->Draw();
+
+//	h4->GetXaxis()->SetRangeUser(_minX,_maxX);
+//	h4->GetYaxis()->SetRangeUser(_minXp,_maxXp);
+
+	TH1D* projh2X = h4->ProjectionX();
+	TH1D* projh2Xp = h4->ProjectionY();
+
+	pad1_hor->cd();
+	gStyle->SetPalette(1);
+	h4->Draw("col");
+
+	pad2_hor->cd();
+	projh2Xp->SetFillColor(kBlue-2);
+	projh2Xp->Draw("hbar");
+
+	pad3_hor->cd();
+	projh2X->SetFillColor(kBlue+1);
+	projh2X->Draw("bar");
+
+	c1->cd();
+   	TLatex t_hor;
+   	t_hor.SetTextFont(42);
+   	t_hor.SetTextSize(0.02);
+   	t_hor.DrawLatex(0.7,0.90,"Text1");
+   	t_hor.DrawLatex(0.7,0.85,"Text2");
+
+
+	// vertical
+	TCanvas* c2 = new TCanvas("c2","c2",900,900);
+	c2->cd();   
+
+	// central pad
+	TPad* pad1_ver = new TPad("pad1_ver", "center_pad",0.0,0.0,0.7,0.7);
+    	pad1_ver->SetBottomMargin(0.14);
+    	pad1_ver->SetTopMargin(0.10);
+    	pad1_ver->SetRightMargin(0.10);
+    	pad1_ver->SetLeftMargin(0.14);
+   	pad1_ver->Draw();
+	
+	// right pad
+	TPad* pad2_ver = new TPad("pad2_ver", "pad2_ver",0.7,0.0,1.0,0.7);
+    	pad2_ver->SetBottomMargin(0.14);
+    	pad2_ver->SetTopMargin(0.10);
+    	pad2_ver->SetRightMargin(0.10);
+    	pad2_ver->SetLeftMargin(0.10);
+	pad2_ver->Draw();
+
+	// top pad
+	TPad* pad3_ver = new TPad("pad3_ver", "pad3_ver",0.0,0.7,0.7,1.0);
+    	pad3_ver->SetBottomMargin(0.10);
+    	pad3_ver->SetTopMargin(0.10);
+    	pad3_ver->SetRightMargin(0.10);
+    	pad3_ver->SetLeftMargin(0.14);
+	pad3_ver->Draw();
+
+//	h5->GetXaxis()->SetRangeUser(_minX,_maxX);
+//	h5->GetYaxis()->SetRangeUser(_minXp,_maxXp);
+
+	TH1D* projh2Y = h5->ProjectionX();
+	TH1D* projh2Yp = h5->ProjectionY();
+
+	pad1_ver->cd();
+	gStyle->SetPalette(1);
+	h5->Draw("col");
+
+	pad2_ver->cd();
+	projh2Yp->SetFillColor(kBlue-2);
+	projh2Yp->Draw("hbar");
+
+	pad3_ver->cd();
+	projh2Y->SetFillColor(kBlue+1);
+	projh2Y->Draw("bar");
+
+	c2->cd();
+   	TLatex t_ver;
+   	t_ver.SetTextFont(42);
+   	t_ver.SetTextSize(0.02);
+   	t_ver.DrawLatex(0.7,0.90,"Text1");
+   	t_ver.DrawLatex(0.7,0.85,"Text2");
+
+
+	return;
+}
+
+
+
+
+//==================================================================================================================================================================================//
+//==================================================================================================================================================================================//
+//==================================================================================================================================================================================//
+//==================================================================================================================================================================================//
+//==================================================================================================================================================================================//
+
 Double_t GetEllipseValue(Double_t x, Int_t sign);
 void CalculateEllipseCoord(Double_t alpha, Double_t beta, Double_t gamma, Double_t emit);
 void CalculateEllipseCooef(Double_t x1, Double_t x2, Double_t x3, Double_t y1, Double_t y2, Double_t y3);
@@ -5,9 +145,7 @@ void GetEllipseValue1(Double_t alpha, Double_t beta, Double_t emit, Double_t XX,
 
 Double_t _A, _B, _C, _orient;
 
-using namespace std;
-
-void plot()
+void DrawEllipse()
 {
 	Double_t emit_hor = 24.0e-9; // [m]
 	Double_t alpha_hor = 9.830508475; // []
@@ -90,7 +228,6 @@ void plot()
 	return;
 }
 
-
 void GetEllipseValue1(Double_t alpha, Double_t beta, Double_t emit, Double_t XX, Int_t sign, Double_t &x, Double_t &xp)
 {
 	// inverse matrix: norm coord to real coord
@@ -151,6 +288,12 @@ void CalculateEllipseCooef(Double_t x1, Double_t x2, Double_t x3, Double_t y1, D
 
 	return;
 }
+
+//==================================================================================================================================================================================//
+//==================================================================================================================================================================================//
+//==================================================================================================================================================================================//
+//==================================================================================================================================================================================//
+//==================================================================================================================================================================================//
 
 
 

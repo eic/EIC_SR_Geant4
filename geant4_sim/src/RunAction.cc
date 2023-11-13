@@ -36,6 +36,10 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("beamMomY_eV",	&_beamMomY);
     	_tree->Branch("beamMomZ_eV",	&_beamMomZ);
     	_tree->Branch("beamEnergy_eV",	&_beamEnergy);
+    	_tree->Branch("beamIniPosX_cm",	&_beamIniPosX);
+    	_tree->Branch("beamIniPosY_cm",	&_beamIniPosY);
+    	_tree->Branch("beamIniPosZ_cm",	&_beamIniPosZ);
+    	_tree->Branch("beamIniAngle_rad",	&_beamIniAngle);
 
     	_tree->Branch("gammaVtxPosX_cm",	&_gammaVtxPosX);
     	_tree->Branch("gammaVtxPosY_cm",	&_gammaVtxPosY);

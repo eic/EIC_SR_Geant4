@@ -7,6 +7,7 @@
 #include <TH1.h>
 #include <TH2.h>
 #include <TMath.h>
+#include <TVector3.h>
 
 #include "vector"
 #include <ctime>
@@ -41,6 +42,10 @@ public :
 	Float_t         beamMomY_eV;
 	Float_t         beamMomZ_eV;
 	Float_t         beamEnergy_eV;
+	Float_t 	beamIniPosX_cm;
+	Float_t 	beamIniPosY_cm;
+	Float_t 	beamIniPosZ_cm;
+	Float_t 	beamIniAngle_rad;
 
 	vector<float>   *gammaVtxPosX_cm;
 	vector<float>   *gammaVtxPosY_cm;
@@ -77,6 +82,10 @@ public :
 	TBranch        *b_beamMomY_eV;   //!
 	TBranch        *b_beamMomZ_eV;   //!
 	TBranch        *b_beamEnergy_eV;   //!
+	TBranch        *b_beamIniPosX_cm;   //!
+	TBranch        *b_beamIniPosY_cm;   //!
+	TBranch        *b_beamIniPosZ_cm;   //!
+	TBranch        *b_beamIniAngle_rad;   //!
 
 	TBranch        *b_gammaVtxPosX_cm;   //!
 	TBranch        *b_gammaVtxPosY_cm;   //!
@@ -126,5 +135,9 @@ private:
 	TH2F* _h4;
 	TH2F* _h5;
 	TH1F* _h6;
+	TH2F* _h7;
+	TH2F* _h8;
+	TH1F* _h9;
+
 };
 #endif

@@ -41,26 +41,28 @@
 
 	<!-- beam parameters: from survey_ir_6m.tfs and ir6forward.18GeV.twi (Sep. 2023) -->
 	<!-- for the start position of the beam use the end position for the previous element in the lattice -->
-	<!-- here, 'start position' means at the beginning of the previous element, -->
-	<!-- while 'end position' means at the beginning of the current element/drift (same for optics functions) -->
+	<!-- here, 'start position' means at the beginning of the previous element (SQ2EF_6), -->
+	<!-- while 'end position' means at the beginning of the current element (OWW_SH, same for optics functions) -->
 	<beam>
 		<sec desc="particle" name="part" unit="">e-</sec>
 		<sec desc="start position X in a global ref. system" name="posx1" unit="m">-589.55313475589</sec>
-		<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0</sec>
+		<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0.0</sec>
 		<sec desc="start position Z in a global ref. system" name="posz1" unit="m">37.300282625907</sec>
 		<sec desc="end position X in a global ref. system" name="posx2" unit="m">-589.55061312277</sec>
-		<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
+		<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0.0</sec>
 		<sec desc="end position Z in a global ref. system" name="posz2" unit="m">37.15030382285</sec>
 		<sec desc="gamma = E/mc^2" name="gamma" unit="">34924.26476</sec>
 		<sec desc="momentum spread" name="spread" unit="">0.109e-2</sec>
-		<sec desc="beta X" name="betax" unit="m">202.4452538</sec>
-		<sec desc="beta Y" name="betay" unit="m">128.4636335</sec>
-		<sec desc="dispersion X" name="etax" unit="m">-0.02443133971</sec>
-		<sec desc="dispersion Y" name="etay" unit="m">0</sec>
-		<sec desc="dispersion PX" name="etapx" unit="">0.01315593225</sec>
-		<sec desc="dispersion PY" name="etapy" unit="">0</sec>
-		<sec desc="emittance X" name="emitx" unit="nm">24</sec>
-		<sec desc="emittance Y" name="emity" unit="nm">2</sec>
+		<sec desc="alpha X" name="alphax" unit="">-7.031713181</sec>
+		<sec desc="alpha Y" name="alphay" unit="">-1.226925635</sec>
+		<sec desc="beta X" name="betax" unit="m">161.7921567</sec>
+		<sec desc="beta Y" name="betay" unit="m">121.6383193</sec>
+		<sec desc="dispersion X" name="etax" unit="m">-0.07618056746</sec>
+		<sec desc="dispersion Y" name="etay" unit="m">0.0</sec>
+		<sec desc="dispersion PX" name="etapx" unit="">0.02481186422</sec>
+		<sec desc="dispersion PY" name="etapy" unit="">0.0</sec>
+		<sec desc="emittance X" name="emitx" unit="nm">24.0</sec>
+		<sec desc="emittance Y" name="emity" unit="nm">2.0</sec>
 	</beam>
 
 	<!-- gamma absorbers attached to the vacuum beam pipe ends -->

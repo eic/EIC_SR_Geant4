@@ -57,6 +57,11 @@ public:
 	G4float _beamMomY;
 	G4float _beamMomZ;
 	G4float _beamEnergy;
+	
+	G4float _beamIniPosX;
+	G4float _beamIniPosY;
+	G4float _beamIniPosZ;
+	G4float _beamIniAngle;	
 
 	vector<G4float> _gammaVtxPosX;
 	vector<G4float> _gammaVtxPosY;

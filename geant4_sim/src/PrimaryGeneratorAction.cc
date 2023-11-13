@@ -27,20 +27,35 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	G4double Mom = sqrt(pow(gamma,2) - 1.0)*mass;
 	Mom = G4RandGauss::shoot(Mom,simPar->GetBeamMomSpread()*Mom);
 	G4double Ekin = sqrt(pow(Mom,2) + pow(mass,2)) - mass;
+	
+	//- Normalized coordinates [see S.Y.Lee "Accelerator Physics" 4th edition, (Floquet Transformation) page 49]
+	// X
+	G4double EtaX_norm = (1./sqrt(simPar->GetBeamBetaX()))*simPar->GetBeamEtaX();
+	G4double EtaPrimeX_norm = (simPar->GetBeamAlphaX()/sqrt(simPar->GetBeamBetaX()))*simPar->GetBeamEtaX() +
+		sqrt(simPar->GetBeamBetaX())*simPar->GetBeamEtaPrimeX();
+	G4double sigmaX_norm = sqrt(simPar->GetBeamEmitX() + pow(EtaX_norm*simPar->GetBeamMomSpread(),2));
+	G4double sigmaPrimeX_norm = sqrt(simPar->GetBeamEmitX() + pow(EtaPrimeX_norm*simPar->GetBeamMomSpread(),2));
+	// Y
+	G4double EtaY_norm = (1./sqrt(simPar->GetBeamBetaY()))*simPar->GetBeamEtaY();
+	G4double EtaPrimeY_norm = (simPar->GetBeamAlphaY()/sqrt(simPar->GetBeamBetaY()))*simPar->GetBeamEtaY() +
+		sqrt(simPar->GetBeamBetaY())*simPar->GetBeamEtaPrimeY();
+	G4double sigmaY_norm = sqrt(simPar->GetBeamEmitY() + pow(EtaY_norm*simPar->GetBeamMomSpread(),2));
+	G4double sigmaPrimeY_norm = sqrt(simPar->GetBeamEmitY() + pow(EtaPrimeY_norm*simPar->GetBeamMomSpread(),2));
+	// Initial normalized coordinates
+	// XY
+	G4double X_norm = G4RandGauss::shoot(0.0,sigmaX_norm);
+	G4double Y_norm = G4RandGauss::shoot(0.0,sigmaY_norm);
+	// X'Y'
+	G4double Xprime_norm = G4RandGauss::shoot(0.0,sigmaPrimeX_norm);
+	G4double Yprime_norm = G4RandGauss::shoot(0.0,sigmaPrimeY_norm);
 
-	G4double sigmaX = sqrt(simPar->GetBeamEmitX()*simPar->GetBeamBetaX() + 
-				pow(simPar->GetBeamEtaX()*simPar->GetBeamMomSpread(),2));
-	G4double sigmaY = sqrt(simPar->GetBeamEmitY()*simPar->GetBeamBetaY() + 
-				pow(simPar->GetBeamEtaY()*simPar->GetBeamMomSpread(),2));
-	G4double sigmaXprime = sqrt(simPar->GetBeamEmitX()/simPar->GetBeamBetaX() + 
-				pow(simPar->GetBeamEtaPrimeX()*simPar->GetBeamMomSpread(),2));
-	G4double sigmaYprime = sqrt(simPar->GetBeamEmitY()/simPar->GetBeamBetaY() + 
-				pow(simPar->GetBeamEtaPrimeY()*simPar->GetBeamMomSpread(),2));
-
-	// generate primary particles at the IP
-	G4ThreeVector posXYZ = {	G4RandGauss::shoot(0.0,sigmaX),
-					G4RandGauss::shoot(0.0,sigmaY),
-					0.0};
+	//- Real coordinates [see S.Y.Lee "Accelerator Physics" 4th edition, (Floquet Transformation) page 49]
+	G4double X_real = X_norm*sqrt(simPar->GetBeamBetaX());
+	G4double Xprime_real = (-simPar->GetBeamAlphaX()/sqrt(simPar->GetBeamBetaX()))*X_norm +
+		(1./sqrt(simPar->GetBeamBetaX()))*Xprime_norm;
+	G4double Y_real = Y_norm*sqrt(simPar->GetBeamBetaY());
+	G4double Yprime_real = (-simPar->GetBeamAlphaY()/sqrt(simPar->GetBeamBetaY()))*Y_norm +
+		(1./sqrt(simPar->GetBeamBetaY()))*Yprime_norm;
 
 	// vector of start coordinates in the global ref. system shifted w.r.t. the ip
 	G4ThreeVector magVector1(	simPar->GetBeamStartPosX() - simPar->GetIpPosX(),
@@ -55,33 +70,31 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	magVector2.rotateY(-simPar->GetIpTheta());
 	// orientation angle of the incoming beam
 	G4double angle = atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z()))*rad;
-	// initial beam direction
-	G4ThreeVector beamDirection(0,0,1);
-	// rotate the direction vector
-	beamDirection.rotateY(angle);
 
   	// create rotation matrix and translation vector
   	G4RotationMatrix rotation = G4RotationMatrix();
   	rotation.rotateY(angle);
 	G4ThreeVector translation = magVector2; 
 	// move initial coordinates to the new position
-	G4ThreeVector posXYZrot = rotation * posXYZ + translation;
-	// spread the direction
-	G4ThreeVector dirXYZ = {	G4RandGauss::shoot(beamDirection.x(),sigmaXprime),
-					G4RandGauss::shoot(beamDirection.y(),sigmaYprime),
-					beamDirection.z()};
+	G4ThreeVector posXYZrot = rotation * G4ThreeVector(X_real,Y_real,0.0) + translation;
+	G4ThreeVector dirXYZrot = rotation * 
+		G4ThreeVector(Xprime_real,Yprime_real,sqrt(1.0 - (pow(Xprime_real,2) + pow(Yprime_real,2))));
 
 	runAction->_beamPosX = posXYZrot.x()/cm;
 	runAction->_beamPosY = posXYZrot.y()/cm;
 	runAction->_beamPosZ = posXYZrot.z()/cm;
-	runAction->_beamMomX = Mom*dirXYZ.x()/eV;
-	runAction->_beamMomY = Mom*dirXYZ.y()/eV;
-	runAction->_beamMomZ = Mom*dirXYZ.z()/eV;
+	runAction->_beamMomX = Mom*dirXYZrot.x()/eV;
+	runAction->_beamMomY = Mom*dirXYZrot.y()/eV;
+	runAction->_beamMomZ = Mom*dirXYZrot.z()/eV;
 	runAction->_beamEnergy = (Ekin + mass)/eV;
+	runAction->_beamIniPosX = magVector2.x()/cm;
+	runAction->_beamIniPosY = magVector2.y()/cm;
+	runAction->_beamIniPosZ = magVector2.z()/cm;
+	runAction->_beamIniAngle = angle/rad;
 
     	fParticleGun->SetParticleDefinition(particleDef);
     	fParticleGun->SetParticleEnergy(Ekin);
-    	fParticleGun->SetParticleMomentumDirection(dirXYZ);
+    	fParticleGun->SetParticleMomentumDirection(dirXYZrot);
     	fParticleGun->SetParticlePosition(posXYZrot);
 
     	fParticleGun->GeneratePrimaryVertex(anEvent);

@@ -146,6 +146,12 @@ void SimParameters::ReadXML(G4String fName)
 		else if(child_node.second.get<string>("<xmlattr>.name") == "spread" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
 			SetBeamMomSpread(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "alphax" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamAlphaX(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "alphay" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamAlphaY(stod(child_node.second.data()));
 		else if(child_node.second.get<string>("<xmlattr>.name") == "betax" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "m")
 			SetBeamBetaX(stod(child_node.second.data())*m);
@@ -420,20 +426,22 @@ void SimParameters::InitDefault()
 	_absPosY = {0*cm,0*cm,0*cm,0*cm};
 	_absPosZ = {1527*cm,475*cm,-550*cm,-3720*cm};
 	
-    	_beamStartPosX = -589.55313475589*m;
-    	_beamStartPosY = 0*m;
-    	_beamStartPosZ = 37.300282625907*m;
-    	_beamEndPosX = -589.55061312277*m;
-    	_beamEndPosY = 0*m;
-    	_beamEndPosZ = 37.15030382285*m;
+    	_beamStartPosX = -589.55313475589*m; // "SQ2EF_6 - X"
+    	_beamStartPosY = 0*m; // "SQ2EF_6 - Y"
+    	_beamStartPosZ = 37.300282625907*m; // "SQ2EF_6 - Z"
+    	_beamEndPosX = -589.55061312277*m; // "OWW_SH - X"
+    	_beamEndPosY = 0*m; // "OWW_SH - Y"
+    	_beamEndPosZ = 37.15030382285*m; // "OWW_SH - Z"
 	_beamEmitX = 24.0*nm;
 	_beamEmitY =  2.0*nm;
-	_beamBetaX = 202.4452538*m;
-	_beamBetaY = 128.4636335*m;
-	_beamEtaX = -0.02443133971*m;
-	_beamEtaY = 0.0*m;
-	_beamEtaPrimeX = 0.01315593225;
-	_beamEtaPrimeY = 0.0;
+	_beamAlphaX = -7.031713181; // "OWW_SH - ALX"
+	_beamAlphaY = -1.226925635; // "OWW_SH - ALY"
+	_beamBetaX = 161.7921567*m; // "OWW_SH - BETX"
+	_beamBetaY = 121.6383193*m; // "OWW_SH - BETY"
+	_beamEtaX =  -0.07618056746*m; // "OWW_SH - DX"
+	_beamEtaY = 0.0*m; // "OWW_SH - DY"
+	_beamEtaPrimeX = 0.02481186422; // "OWW_SH - DPX"
+	_beamEtaPrimeY = 0.0*m; // "OWW_SH - DPY"
 	_beamMomSpread = 0.109e-2;
 	_beamGamma = 34924.26476;
 	_beamName = "e-";
@@ -474,6 +482,8 @@ void SimParameters::PrintBeamParameters()
 	G4cout<<"End position Z = "<<GetBeamEndPosZ()/m<<" [m]"<<G4endl;
 	G4cout<<"Gamma = "<<GetBeamGamma()<<" []"<<G4endl;
 	G4cout<<"Momentum spread = "<<GetBeamMomSpread()<<" []"<<G4endl;
+	G4cout<<"Alpha X = "<<GetBeamAlphaX()/m<<" []"<<G4endl;
+	G4cout<<"Alpha Y = "<<GetBeamAlphaY()/m<<" []"<<G4endl;
 	G4cout<<"Beta X = "<<GetBeamBetaX()/m<<" [m]"<<G4endl;
 	G4cout<<"Beta Y = "<<GetBeamBetaY()/m<<" [m]"<<G4endl;
 	G4cout<<"Dispersion X = "<<GetBeamEtaX()/m<<" [m]"<<G4endl;

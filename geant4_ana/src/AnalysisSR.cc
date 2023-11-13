@@ -49,6 +49,10 @@ void AnalysisSR::Init(TString treeName = "tree")
    	_fChain->SetBranchAddress("beamMomY_eV", &beamMomY_eV, &b_beamMomY_eV);
    	_fChain->SetBranchAddress("beamMomZ_eV", &beamMomZ_eV, &b_beamMomZ_eV);
    	_fChain->SetBranchAddress("beamEnergy_eV", &beamEnergy_eV, &b_beamEnergy_eV);
+   	_fChain->SetBranchAddress("beamIniPosX_cm", &beamIniPosX_cm, &b_beamIniPosX_cm);
+   	_fChain->SetBranchAddress("beamIniPosY_cm", &beamIniPosY_cm, &b_beamIniPosY_cm);
+   	_fChain->SetBranchAddress("beamIniPosZ_cm", &beamIniPosZ_cm, &b_beamIniPosZ_cm);
+   	_fChain->SetBranchAddress("beamIniAngle_rad", &beamIniAngle_rad, &b_beamIniAngle_rad);
 
    	_fChain->SetBranchAddress("gammaVtxPosX_cm", &gammaVtxPosX_cm, &b_gammaVtxPosX_cm);
    	_fChain->SetBranchAddress("gammaVtxPosY_cm", &gammaVtxPosY_cm, &b_gammaVtxPosY_cm);
@@ -75,15 +79,22 @@ void AnalysisSR::Init(TString treeName = "tree")
    	_fChain->SetBranchAddress("monMomY_eV", &monMomY_eV, &b_monMomY_eV);
    	_fChain->SetBranchAddress("monMomZ_eV", &monMomZ_eV, &b_monMomZ_eV);
 
+	_fChain->GetEntry(0);
 	// histograms
 	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",10100,-1000,100000);
 	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",600,-4000,2000,300,-30,30);
 	_h3 = new TH2F("h3","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",600,-4000,2000,300,-30,30);
 
-	_fChain->GetEntry(0);
 	_h4 = new TH2F("h4",Form("Monitor [%s]: Px vs X;X [cm];X'",monName->c_str()),1000,-4,4,1000,-1e-3,1e-3);
 	_h5 = new TH2F("h5",Form("Monitor [%s]: Py vs Y;Y [cm];Y'",monName->c_str()),1000,-4,4,1000,-1e-4,1e-4);
 	_h6 = new TH1F("h6",Form("Monitor [%s]: Momentum;P [GeV]",monName->c_str()),20000,0,20);
+
+	_h7 = new TH2F("h7",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Px vs X;X [cm];X'",
+		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,1000,-1e-3,1e-3);
+	_h8 = new TH2F("h8",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Py vs Y;Y [cm];Y'",
+		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,1000,-1e-4,1e-4);
+	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV]",
+		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),20000,0,20);
 
 	// ascii file to store generated events
 	_fHepmc = new WriterAscii(GetOutputFileNameHepmc().Data());
@@ -170,7 +181,6 @@ void AnalysisSR::Loop()
 			pout->set_generated_mass(0.);
 			event.add_particle(pout);
 			
-
 			// generate the vertex
 			GenVertexPtr vertex = make_shared<GenVertex>(FourVector(x,y,z,0.));
 			vertex->add_particle_in(pin);
@@ -191,6 +201,16 @@ void AnalysisSR::Loop()
 		_h4->Fill(monPosX_cm,monMomX_eV/monMom_eV);
 		_h5->Fill(monPosY_cm,monMomY_eV/monMom_eV);
 		_h6->Fill(monMom_eV/1e9); // eV --> GeV
+
+		// primary beam data
+		TVector3 beamMom(beamMomX_eV,beamMomY_eV,beamMomZ_eV);
+		TVector3 beamPos(beamPosX_cm-beamIniPosX_cm,beamPosY_cm-beamIniPosY_cm,beamPosZ_cm-beamIniPosZ_cm);
+		beamMom.RotateY(-beamIniAngle_rad);
+		beamPos.RotateY(-beamIniAngle_rad);
+
+		_h7->Fill(beamPos.x(),beamMom.x()/beamMom.Mag());
+		_h8->Fill(beamPos.y(),beamMom.y()/beamMom.Mag());
+		_h9->Fill(beamMom.Mag()/1e9); // eV --> GeV
    	}
  	printf("\r[INFO] Progress: %.3f [%%]\n",100.0*jentry/nEntries);
 
@@ -202,6 +222,9 @@ void AnalysisSR::Loop()
 	_h4->Write();
 	_h5->Write();
 	_h6->Write();
+	_h7->Write();
+	_h8->Write();
+	_h9->Write();
 	f->Close();
 
 	return;
