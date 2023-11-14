@@ -86,6 +86,10 @@ public:
 	G4float _monMomX;
 	G4float _monMomY;
 	G4float _monMomZ;
+	G4float _monRefPosX;
+	G4float _monRefPosY;
+	G4float _monRefPosZ;
+	G4float _monRefAngle;
 
 	G4double _avgEventTime;
 

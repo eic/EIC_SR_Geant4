@@ -71,6 +71,10 @@ public :
 	Float_t         monMomX_eV;
 	Float_t         monMomY_eV;
 	Float_t         monMomZ_eV;
+	Float_t 	monRefPosX_cm;
+	Float_t 	monRefPosY_cm;
+	Float_t 	monRefPosZ_cm;
+	Float_t 	monRefAngle_rad;
 
    	// List of branches
 	TBranch        *b_event;   //!
@@ -111,7 +115,10 @@ public :
 	TBranch        *b_monMomX_eV;   //!
 	TBranch        *b_monMomY_eV;   //!
 	TBranch        *b_monMomZ_eV;   //!
-
+	TBranch        *b_monRefPosX_cm;   //!
+	TBranch        *b_monRefPosY_cm;   //!
+	TBranch        *b_monRefPosZ_cm;   //!
+	TBranch        *b_monRefAngle_rad;   //!
 
  	void Init(TString);
 	void Loop();
@@ -138,6 +145,5 @@ private:
 	TH2F* _h7;
 	TH2F* _h8;
 	TH1F* _h9;
-
 };
 #endif

@@ -103,7 +103,7 @@
 
 	<!-- magnet parameters: from survey_ir_6m.tfs and ir6forward.18GeV.twi (Sep. 2023) -->
 	<!-- for the start position of the magnets use the end position for the previous element in the lattice -->
-	<!-- TWISS ANGLE < 0 -> GEANT4 ANGLE > 0 -->
+	<!-- TWISS ANGLE < 0 -> GEANT4 ANGLE > 0  and TWISS K1L < 0 -> GEANT4 K1L > 0 -->
 	<magnets>
 		<ip>
 			<sec desc="position X in a global ref. system" name="posx" unit="m">-589.77164158437</sec>
@@ -112,7 +112,7 @@
 			<sec desc="hor. angle in a global ref. system" name="theta" unit="rad">-3.1335926535898</sec>
 		</ip>
 		<magnet>
-			<sec desc="magnet name" name="name">D2EF2</sec>
+			<sec desc="magnet name" name="name">D2EF1</sec>
 			<sec desc="magnet type" name="type">D-pole</sec>
 			<sec desc="magnet length" name="length" unit="m">2.7260154313337</sec>
 			<sec desc="start position X in a global ref. system" name="posx1" unit="m">-589.55061312277</sec>
@@ -125,7 +125,7 @@
 			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0</sec>
 		</magnet>
 		<magnet>
-			<sec desc="magnet name" name="name">D2EF1</sec>
+			<sec desc="magnet name" name="name">D2EF2</sec>
 			<sec desc="magnet type" name="type">D-pole</sec>
 			<sec desc="magnet length" name="length" unit="m">2.7260154313337</sec>
 			<sec desc="start position X in a global ref. system" name="posx1" unit="m">-589.51933973323</sec>
@@ -161,7 +161,7 @@
 			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
 			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">10.759655681836</sec>
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
-			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.1611384495</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.1611384495</sec>
 		</magnet>
 		<magnet>
 			<sec desc="magnet name" name="name">Q0EF</sec>
@@ -174,7 +174,7 @@
 			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
 			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">5.7998144009899</sec>
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
-			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.261830778</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.261830778</sec>
 		</magnet>
 	</magnets>
 </xml>

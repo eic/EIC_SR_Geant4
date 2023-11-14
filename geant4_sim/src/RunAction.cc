@@ -64,6 +64,10 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("monMomX_eV",	&_monMomX);
     	_tree->Branch("monMomY_eV",	&_monMomY);
     	_tree->Branch("monMomZ_eV",	&_monMomZ);
+    	_tree->Branch("monRefPosX_cm",	&_monRefPosX);
+    	_tree->Branch("monRefPosY_cm",	&_monRefPosY);
+    	_tree->Branch("monRefPosZ_cm",	&_monRefPosZ);
+    	_tree->Branch("monRefAngle_rad",	&_monRefAngle);
 
 	_avgEventTime = 0;
 

@@ -44,6 +44,9 @@ DetectorConstruction::~DetectorConstruction()
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
 	//------------------------------------------------------------------------
+	//- Components visibility
+	G4bool visibility = true;
+	//------------------------------------------------------------------------
 	//- Particles
         G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
         G4ParticleDefinition* particleDef;
@@ -64,6 +67,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                  simPar->GetWorldSizeZ()/2);
     	G4LogicalVolume* world_log = new G4LogicalVolume(world_box, mat_vac, "world");
     	G4VPhysicalVolume* world_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),world_log,"world",0,false,0,true);
+	//- Visualization
 	world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
 
     	//- Build beam pipe vacuum
@@ -128,8 +132,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		// magnet logic volume
 		G4LogicalVolume* mag_log = new G4LogicalVolume(mag_solid,mat_vac, simPar->GetMagName(iMag)+"_log");
 		// magnet placement
-		new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),mag_log,"mag_"+simPar->GetMagName(iMag),
-			world_log,false,0,true);
+		new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),mag_log,"mag_"+simPar->GetMagName(iMag),world_log,false,0,true);
 
 		//- Create magnetic field
 		G4MagneticField* mag_field; 
@@ -140,22 +143,22 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 				((simPar->GetMagLength(iMag)/m)/(simPar->GetMagAngle(iMag)/rad)))*tesla;
 			// set field
 			mag_field = new G4UniformMagField(G4ThreeVector(0,By,0));
-			// set color
-			mag_log->SetVisAttributes(G4VisAttributes(G4Color::Blue()));  
+			//- Visualization
+			G4VisAttributes* mag_vis = new G4VisAttributes(G4Color::Blue());
+			mag_vis->SetVisibility(visibility);
+			mag_log->SetVisAttributes(mag_vis);
 		}
 		else if(simPar->GetMagType(iMag) == "Q-pole")
 		{
 			// k1[1/m^2] = 0.2998*grad[T/m]/pc[GeV], k1[1/m^2] = k1l[1/m]/l[m]
-			G4double grad = (0.2998*(simPar->GetMagK1L(iMag)/(1/m))/(simPar->GetMagLength(iMag)/m)/
-				((mass/GeV)*sqrt(pow(gamma,2)-1.0)))*tesla/m;
+			G4double grad = (3.33564*(simPar->GetMagK1L(iMag)/(1/m))/(simPar->GetMagLength(iMag)/m)*
+				(mass/GeV)*sqrt(pow(gamma,2)-1.0))*(tesla/m);
 			// set field
-			//mag_field = new G4QuadrupoleMagField(grad);
-
-			G4RotationMatrix *rot = new G4RotationMatrix(G4ThreeVector(0, 0, 1), M_PI_2);
-			mag_field = new G4QuadrupoleMagField(grad, G4ThreeVector(0, 0, 0), rot);
-
-			// set color
-			mag_log->SetVisAttributes(G4VisAttributes(G4Color::Yellow()));  
+			mag_field = new G4QuadrupoleMagField(grad);
+			//- Visualization
+			G4VisAttributes* mag_vis = new G4VisAttributes(G4Color::Yellow());
+			mag_vis->SetVisibility(visibility);
+			mag_log->SetVisAttributes(mag_vis);
 		}
 		else
 		{
@@ -177,8 +180,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4VSolid* ip_solid = new G4IntersectionSolid("ip_solid", beampipeUni_solid, ip_box,0,
 	G4ThreeVector(0,0,simPar->GetIpBeampipeZmin()+(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2));
 	G4LogicalVolume* ip_log = new G4LogicalVolume(ip_solid,mat_vac,"ip_log");
-	G4VPhysicalVolume* ip_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),ip_log,"vac_ip",world_log,false,0,true);
-	ip_log->SetVisAttributes(G4VisAttributes(G4Color::Cyan()));
+	new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),ip_log,"vac_ip",world_log,false,0,true);
+	//- Visualization
+	G4VisAttributes* ip_vis = new G4VisAttributes(G4Color::Cyan());
+	ip_vis->SetVisibility(visibility);
+	ip_log->SetVisAttributes(ip_vis);
 
 	//- Vacuum (subtract the ip beam pipe volume from the beam pipe volume)
 	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",beampipeVac_solid,ip_box,
@@ -187,8 +193,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//- Vacuum (place the beam pipe without magnet and IP volumes) 
 	G4LogicalVolume* beampipeVac_log = new G4LogicalVolume(beampipeVac_solid, mat_vac,"beampipeVac");
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"vac_beampipe",world_log,false,0,true);
+	//- Visualization
 	G4VisAttributes* beampipeVac_vis = new G4VisAttributes(G4Color::Grey());
-	beampipeVac_vis->SetVisibility(false);
+	beampipeVac_vis->SetVisibility(visibility);
 	beampipeVac_log->SetVisAttributes(beampipeVac_vis);
 
 	//- Absorbers
@@ -202,11 +209,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 		G4LogicalVolume* abs_log = new G4LogicalVolume(abs_solid,mat_vac, "abs_log_"+to_string(iAbs));
 
-		G4VPhysicalVolume* abs_phys = new G4PVPlacement(0, 
-		G4ThreeVector(simPar->GetAbsPosX(iAbs),simPar->GetAbsPosY(iAbs),simPar->GetAbsPosZ(iAbs)),
-		abs_log,"abs_"+to_string(iAbs),world_log,false,0,true);
-
-		abs_log->SetVisAttributes(G4VisAttributes(G4Color::Magenta()));  
+		new G4PVPlacement(0,
+			G4ThreeVector(simPar->GetAbsPosX(iAbs),simPar->GetAbsPosY(iAbs),simPar->GetAbsPosZ(iAbs)),
+			abs_log,"abs_"+to_string(iAbs),world_log,false,0,true);
+		//- Visualization
+		G4VisAttributes* abs_vis = new G4VisAttributes(G4Color::Magenta());
+		abs_vis->SetVisibility(visibility);
+		abs_log->SetVisAttributes(abs_vis);
 	}
 
 	return world_phys;

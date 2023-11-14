@@ -7,34 +7,118 @@ void DrawMomentum(TString name, TH1F* hP, Double_t minP, Double_t maxP, Double_t
 
 using namespace std;
 
-void plot()
+void plot(TString fName = "./output/output_Q0EF.root")
 {
+	Double_t delta, emitX, emitY, gamma, mass_GeV;
+
+	TString beam_name;
+	Double_t beam_minX, beam_maxX, beam_minXp, beam_maxXp;
+	Double_t beam_minY, beam_maxY, beam_minYp, beam_maxYp;
+	Double_t beam_alphaX, beam_betaX, beam_etaX, beam_etaPrimeX;
+	Double_t beam_alphaY, beam_betaY, beam_etaY, beam_etaPrimeY;
+	Double_t beam_minP, beam_maxP;
+
+	TString mon_name;
+	Double_t mon_minX, mon_maxX, mon_minXp, mon_maxXp;
+	Double_t mon_minY, mon_maxY, mon_minYp, mon_maxYp;
+	Double_t mon_alphaX, mon_betaX, mon_etaX, mon_etaPrimeX;
+	Double_t mon_alphaY, mon_betaY, mon_etaY, mon_etaPrimeY;
+	Double_t mon_minP, mon_maxP;
+
 	gStyle->SetOptStat(0);
 	gStyle->SetLegendFont(42);
 	gStyle->SetLegendTextSize(0.035);
 
-	TFile *file = TFile::Open("output/output.root");
+	//------------------------------------------------------------------------------------------------//
+	cout<<"[INFO] Input file name: "<<fName<<endl;
+	TFile *file = TFile::Open(fName.Data());
 
-	TH1F* h1 = (TH1F*)file->Get("h1");
-	TH2F* h2 = (TH2F*)file->Get("h2");
-	TH2F* h3 = (TH2F*)file->Get("h3");
-	TH2F* h4 = (TH2F*)file->Get("h4");
-	TH2F* h5 = (TH2F*)file->Get("h5");
-	TH1F* h6 = (TH1F*)file->Get("h6");
-	TH2F* h7 = (TH2F*)file->Get("h7");
-	TH2F* h8 = (TH2F*)file->Get("h8");
-	TH1F* h9 = (TH1F*)file->Get("h9");
+	TH1F* h1 = (TH1F*)file->Get("h1"); // SR photon energy
+	TH2F* h2 = (TH2F*)file->Get("h2"); // SR photon position
+	TH2F* h3 = (TH2F*)file->Get("h3"); // SR photon vertex position
+	TH2F* h4 = (TH2F*)file->Get("h4"); // Monitor Px vs X
+	TH2F* h5 = (TH2F*)file->Get("h5"); // Monitor Py vs Y
+	TH1F* h6 = (TH1F*)file->Get("h6"); // Monitor P
+	TH2F* h7 = (TH2F*)file->Get("h7"); // Beam Px vs X
+	TH2F* h8 = (TH2F*)file->Get("h8"); // Beam Py vs Y
+	TH1F* h9 = (TH1F*)file->Get("h9"); // Beam P
+	
+	//------------------------------------------------------------------------------------------------//
+	//- Parameters
+	emitX = 24e-9;	emitY = 2e-9;	delta = 0.109e-2; gamma = 34924.26476; mass_GeV = 0.00051099895;
 
-	DrawPhaseSpace("beamX",h7,
-		-1.0,1.0,-0.5e-3,0.5e-3,	// hor (X) range
-		24e-9,-7.031713181,161.7921567,-0.07618056746,0.02481186422,0.109e-2); // hor (X) twiss parameters
+	// Beam
+	beam_name = "beam";
+	beam_minX = -1.0;	beam_maxX = 1.0;	beam_minXp = -0.5e-3;	beam_maxXp = 0.5e-3;
+	beam_minY = -0.4;	beam_maxY = 0.4;	beam_minYp = -0.4e-4;	beam_maxYp = 0.4e-4;
+	beam_alphaX = -7.031713181;	beam_betaX = 161.7921567;	beam_etaX = -0.07618056746;	beam_etaPrimeX = 0.02481186422;
+	beam_alphaY = -1.226925635;	beam_betaY = 121.6383193;	beam_etaY = 0.;	beam_etaPrimeY = 0.0;
+	beam_minP = 17.5;	beam_maxP = 18.5;
 
-	DrawPhaseSpace("beamY",h8,
-		-0.4,0.4,-0.4e-4,0.4e-4,	// ver (Y) range
-		2e-9,-1.226925635,121.6383193,0,0,0.109e-2); // ver (Y) twiss parameters
+	// D2EF1
+//	mon_name = "D2EF1";
+//	mon_minX = -1.0;	mon_maxX = 1.0;		mon_minXp = -0.5e-3;	mon_maxXp = 0.5e-3;
+//	mon_minY = -0.4;	mon_maxY = 0.4;		mon_minYp = -0.4e-4;	mon_maxYp = 0.4e-4;
+//	mon_alphaX = -7.881635149;	mon_betaX = 202.4452538;	mon_etaX = -0.02443133971;	mon_etaPrimeX = 0.01315593225;
+//	mon_alphaY = -1.276673748;	mon_betaY = 128.4636335;	mon_etaY = 0.0;	mon_etaPrimeY = 0.0;
+//	mon_minP = 17.5;	mon_maxP = 18.5;
 
-	DrawMomentum("beamP",h9,17.5,18.5,0.109e-2,34924.26476,0.00051099895);
+	// D2EF2
+//	mon_name = "D2EF2";
+//	mon_minX = -1.0;	mon_maxX = 1.0;		mon_minXp = -0.5e-3;	mon_maxXp = 0.5e-3;
+//	mon_minY = -0.4;	mon_maxY = 0.4;		mon_minYp = -0.4e-4;	mon_maxYp = 0.4e-4;
+//	mon_alphaX = -8.812123355;	mon_betaX = 252.2653339;	mon_etaX = -0.00105615001;	mon_etaPrimeX = 0.001500000282;
+//	mon_alphaY = -1.33098365;	mon_betaY = 136.2482041;	mon_etaY = 0.0;	mon_etaPrimeY = 0.0;
+//	mon_minP = 17.5;	mon_maxP = 18.5;
 
+	// D1EF
+//	mon_name = "D1EF";
+//	mon_minX = -1.0;	mon_maxX = 1.0;		mon_minXp = -0.5e-3;	mon_maxXp = 0.5e-3;
+//	mon_minY = -0.4;	mon_maxY = 0.4;		mon_minYp = -0.4e-4;	mon_maxYp = 0.4e-4;
+//	mon_alphaX = -9.170618095;	mon_betaX = 272.9418855;	mon_etaX = 3.629583613e-15;	mon_etaPrimeX = 1.112391429e-16;
+//	mon_alphaY =  -1.354020837;	mon_betaY = 139.3355160;	mon_etaY = 0.0;	mon_etaPrimeY = 0.0;
+//	mon_minP = 17.5;	mon_maxP = 18.5;
+
+	// Q1EF
+//	mon_name = "Q1EF";
+//	mon_minX = -2.0;	mon_maxX = 2.0;		mon_minXp = -0.5e-2;	mon_maxXp = 0.5e-2;
+//	mon_minY = -0.4;	mon_maxY = 0.4;		mon_minYp = -0.5e-3;	mon_maxYp = 0.5e-3;
+//	mon_alphaX = 86.35527052;	mon_betaX = 575.3834696;	mon_etaX = 5.080805448e-15;	mon_etaPrimeX = -7.703104332e-16;
+//	mon_alphaY = -39.75962439;	mon_betaY = 255.9452491;	mon_etaY = 0.0;	mon_etaPrimeY = 0.0;
+//	mon_minP = 17.5;	mon_maxP = 18.5;
+
+	// Q0EF
+	mon_name = "Q0EF";
+	mon_minX = -0.5;	mon_maxX = 0.5;		mon_minXp = -0.1e-2;	mon_maxXp = 0.1e-2;
+	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.1e-2;	mon_maxYp = 0.1e-2;
+	mon_alphaX = 9.830508475;	mon_betaX = 57.60694915;	mon_etaX = 1.563145529e-15;	mon_etaPrimeX = -2.921487199e-16;
+	mon_alphaY = 101.754386;	mon_betaY = 590.2324386;	mon_etaY = 0.0;	mon_etaPrimeY = 0.0;
+	mon_minP = 17.5;	mon_maxP = 18.5;
+
+
+	//------------------------------------------------------------------------------------------------//
+	//- Draw
+	// Beam
+	DrawPhaseSpace(beam_name+"X",h7,
+		beam_minX,beam_maxX,beam_minXp,beam_maxXp,	// hor (X) range
+		emitX,beam_alphaX,beam_betaX,beam_etaX,beam_etaPrimeX,delta); // hor (X) twiss parameters
+
+	DrawPhaseSpace(beam_name+"Y",h8,
+		beam_minY,beam_maxY,beam_minYp,beam_maxYp,	// ver (Y) range
+		emitY,beam_alphaY,beam_betaY,beam_etaY,beam_etaPrimeY,delta); // ver (Y) twiss parameters
+
+	DrawMomentum(beam_name+"P",h9,beam_minP,beam_maxP,delta,gamma,mass_GeV);
+
+	// Monitor
+	DrawPhaseSpace(mon_name+"X",h4,
+		mon_minX,mon_maxX,mon_minXp,mon_maxXp,	// hor (X) range
+		emitX,mon_alphaX,mon_betaX,mon_etaX,mon_etaPrimeX,delta); // hor (X) twiss parameters
+
+	DrawPhaseSpace(mon_name+"Y",h5,
+		mon_minY,mon_maxY,mon_minYp,mon_maxYp,	// ver (Y) range
+		emitY,mon_alphaY,mon_betaY,mon_etaY,mon_etaPrimeY,delta); // ver (Y) twiss parameters
+
+	DrawMomentum(mon_name+"P",h6,mon_minP,mon_maxP,delta,gamma,mass_GeV);
 
 	return;
 }

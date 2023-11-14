@@ -78,6 +78,10 @@ void AnalysisSR::Init(TString treeName = "tree")
    	_fChain->SetBranchAddress("monMomX_eV", &monMomX_eV, &b_monMomX_eV);
    	_fChain->SetBranchAddress("monMomY_eV", &monMomY_eV, &b_monMomY_eV);
    	_fChain->SetBranchAddress("monMomZ_eV", &monMomZ_eV, &b_monMomZ_eV);
+   	_fChain->SetBranchAddress("monRefPosX_cm", &monRefPosX_cm, &b_monRefPosX_cm);
+   	_fChain->SetBranchAddress("monRefPosY_cm", &monRefPosY_cm, &b_monRefPosY_cm);
+   	_fChain->SetBranchAddress("monRefPosZ_cm", &monRefPosZ_cm, &b_monRefPosZ_cm);
+   	_fChain->SetBranchAddress("monRefAngle_rad", &monRefAngle_rad, &b_monRefAngle_rad);
 
 	_fChain->GetEntry(0);
 	// histograms
@@ -85,14 +89,14 @@ void AnalysisSR::Init(TString treeName = "tree")
 	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",600,-4000,2000,300,-30,30);
 	_h3 = new TH2F("h3","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",600,-4000,2000,300,-30,30);
 
-	_h4 = new TH2F("h4",Form("Monitor [%s]: Px vs X;X [cm];X'",monName->c_str()),1000,-4,4,1000,-1e-3,1e-3);
-	_h5 = new TH2F("h5",Form("Monitor [%s]: Py vs Y;Y [cm];Y'",monName->c_str()),1000,-4,4,1000,-1e-4,1e-4);
+	_h4 = new TH2F("h4",Form("Monitor [%s]: Px vs X;X [cm];X'",monName->c_str()),1000,-4,4,10000,-1e-1,1e-1);
+	_h5 = new TH2F("h5",Form("Monitor [%s]: Py vs Y;Y [cm];Y'",monName->c_str()),1000,-4,4,10000,-1e-1,1e-1);
 	_h6 = new TH1F("h6",Form("Monitor [%s]: Momentum;P [GeV/c]",monName->c_str()),20000,0,20);
 
 	_h7 = new TH2F("h7",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Px vs X;X [cm];X'",
-		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,1000,-1e-3,1e-3);
+		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,10000,-1e-1,1e-1);
 	_h8 = new TH2F("h8",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Py vs Y;Y [cm];Y'",
-		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,1000,-1e-4,1e-4);
+		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,10000,-1e-1,1e-1);
 	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV/c]",
 		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),20000,0,20);
 
@@ -195,12 +199,14 @@ void AnalysisSR::Loop()
 			_fHepmc->write_event(event);
 
 		// monitor data
-		Float_t monMom_eV = TMath::Sqrt(TMath::Power(monMomX_eV,2) + 
-						TMath::Power(monMomY_eV,2) + 
-						TMath::Power(monMomZ_eV,2));
-		_h4->Fill(monPosX_cm,monMomX_eV/monMom_eV);
-		_h5->Fill(monPosY_cm,monMomY_eV/monMom_eV);
-		_h6->Fill(monMom_eV/1e9); // eV --> GeV
+		TVector3 monMom(monMomX_eV,monMomY_eV,monMomZ_eV);
+		TVector3 monPos(monPosX_cm-monRefPosX_cm,monPosY_cm-monRefPosY_cm,monPosZ_cm-monRefPosZ_cm);
+		monMom.RotateY(-monRefAngle_rad);
+		monPos.RotateY(-monRefAngle_rad);
+
+		_h4->Fill(monPos.x(),monMom.x()/monMom.Mag());
+		_h5->Fill(monPos.y(),monMom.y()/monMom.Mag());
+		_h6->Fill(monMom.Mag()/1e9); // eV --> GeV
 
 		// primary beam data
 		TVector3 beamMom(beamMomX_eV,beamMomY_eV,beamMomZ_eV);

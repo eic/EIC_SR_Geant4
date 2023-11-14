@@ -24,21 +24,21 @@
 /vis/modeling/trajectories/drawByCharge-0/default/setAuxPtsSize 2
 /vis/modeling/trajectories/drawByCharge-0/default/setTimeSliceInterval 0.001 ns
 
-# Axes, scale, etc.
+#- Axes, scale, etc.
 /vis/scene/add/axes 0 0 0 2 m # Simple axes: x=red, y=green, z=blue.
 /vis/scene/add/date    # Date stamp
 
-# Visualize magnetic field
-#/vis/set/volumeForField mag_D2EF2
+#- Visualize magnetic field
 #/vis/set/volumeForField mag_D2EF1
+#/vis/set/volumeForField mag_D2EF2
 #/vis/set/volumeForField mag_D1EF
 #/vis/set/volumeForField mag_Q1EF
-/vis/set/volumeForField mag_Q0EF
-/vis/scene/add/magneticField 100 fullArrow #lightArrow
+#/vis/set/volumeForField mag_Q0EF
+#/vis/scene/add/magneticField 100 fullArrow #lightArrow
 
 /vis/scene/list
 /vis/drawTree
-# Built-in Commands:  https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_.html
+#- Built-in Commands:  https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_.html
 ##-----------------------------------------##
 /run/beamOn 1
 ##-----------------------------------------##
