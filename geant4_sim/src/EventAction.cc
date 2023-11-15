@@ -3,9 +3,22 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 
-EventAction::EventAction(RunAction* runAct) : runAction(runAct)
+EventAction::EventAction(RunAction* runAct, G4String xmlFileName) : runAction(runAct)
 {
 	_timer = new G4Timer;
+
+        simPar = new SimParameters();
+        simPar->InitDefault();
+        simPar->ReadXML(xmlFileName);
+	simPar->PrintMagParameters();
+
+	// fill magnet data vectors
+	for(G4int iMag = 0; iMag < simPar->GetMagNum(); iMag++)
+	{
+		runAction->_magName.push_back("mag_"+simPar->GetMagName(iMag));
+		runAction->_magNph.push_back(0.0);
+		runAction->_magSumEph.push_back(0.0);
+	}
 }
 
 EventAction::~EventAction()
@@ -15,6 +28,13 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 {
 	_timer->Start();
     	runAction->_event = event->GetEventID();
+
+	// clean magnet data vectors
+	for(G4int iMag = 0; iMag < runAction->_magName.size(); iMag++)
+	{
+		runAction->_magNph.at(iMag) = 0;
+		runAction->_magSumEph.at(iMag) = 0;
+	}
 
     	if((runAction->_event)%100 == 0)
         	printf("[INFO] EventAction::BeginOfEventAction ==> BeginOfEvent: %12d\n",runAction->_event);
@@ -27,15 +47,6 @@ void EventAction::EndOfEventAction(const G4Event*)
     	runAction->_tree->Fill();
 
 	// clean variables
-	runAction->_beamPdg = -999;
-	runAction->_beamPosX = -999;
-	runAction->_beamPosY = -999;
-	runAction->_beamPosZ = -999;
-	runAction->_beamMomX = -999;
-	runAction->_beamMomY = -999;
-	runAction->_beamMomZ = -999;
-	runAction->_beamEnergy = -999;
-
 	runAction->_gammaVtxPosX.clear();
 	runAction->_gammaVtxPosY.clear();
 	runAction->_gammaVtxPosZ.clear();

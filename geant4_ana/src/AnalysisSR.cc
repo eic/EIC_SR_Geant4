@@ -38,6 +38,9 @@ void AnalysisSR::Init(TString treeName = "tree")
 	gammaMomZ_eV = nullptr;
 	gammaEnergy_eV = nullptr;
 	gammaTime_ms = nullptr;
+	magName = nullptr;
+	magNph = nullptr;
+	magSumEph_eV = nullptr;
 
 	// set branch addresses and branch pointers
    	_fChain->SetBranchAddress("event", &event, &b_event);
@@ -49,10 +52,14 @@ void AnalysisSR::Init(TString treeName = "tree")
    	_fChain->SetBranchAddress("beamMomY_eV", &beamMomY_eV, &b_beamMomY_eV);
    	_fChain->SetBranchAddress("beamMomZ_eV", &beamMomZ_eV, &b_beamMomZ_eV);
    	_fChain->SetBranchAddress("beamEnergy_eV", &beamEnergy_eV, &b_beamEnergy_eV);
-   	_fChain->SetBranchAddress("beamIniPosX_cm", &beamIniPosX_cm, &b_beamIniPosX_cm);
-   	_fChain->SetBranchAddress("beamIniPosY_cm", &beamIniPosY_cm, &b_beamIniPosY_cm);
-   	_fChain->SetBranchAddress("beamIniPosZ_cm", &beamIniPosZ_cm, &b_beamIniPosZ_cm);
-   	_fChain->SetBranchAddress("beamIniAngle_rad", &beamIniAngle_rad, &b_beamIniAngle_rad);
+   	_fChain->SetBranchAddress("beamRefPosX_cm", &beamRefPosX_cm, &b_beamRefPosX_cm);
+   	_fChain->SetBranchAddress("beamRefPosY_cm", &beamRefPosY_cm, &b_beamRefPosY_cm);
+   	_fChain->SetBranchAddress("beamRefPosZ_cm", &beamRefPosZ_cm, &b_beamRefPosZ_cm);
+   	_fChain->SetBranchAddress("beamRefAngle_rad", &beamRefAngle_rad, &b_beamRefAngle_rad);
+
+   	_fChain->SetBranchAddress("magName", &magName, &b_magName);
+   	_fChain->SetBranchAddress("magNph", &magNph, &b_magNph);
+   	_fChain->SetBranchAddress("magSumEph_eV", &magSumEph_eV, &b_magSumEph_eV);
 
    	_fChain->SetBranchAddress("gammaVtxPosX_cm", &gammaVtxPosX_cm, &b_gammaVtxPosX_cm);
    	_fChain->SetBranchAddress("gammaVtxPosY_cm", &gammaVtxPosY_cm, &b_gammaVtxPosY_cm);
@@ -94,11 +101,20 @@ void AnalysisSR::Init(TString treeName = "tree")
 	_h6 = new TH1F("h6",Form("Monitor [%s]: Momentum;P [GeV/c]",monName->c_str()),20000,0,20);
 
 	_h7 = new TH2F("h7",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Px vs X;X [cm];X'",
-		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,10000,-1e-1,1e-1);
+		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),1000,-4,4,10000,-1e-1,1e-1);
 	_h8 = new TH2F("h8",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Py vs Y;Y [cm];Y'",
-		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),1000,-4,4,10000,-1e-1,1e-1);
+		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),1000,-4,4,10000,-1e-1,1e-1);
 	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV/c]",
-		beamIniPosX_cm,beamIniPosY_cm,beamIniPosZ_cm,beamIniAngle_rad),20000,0,20);
+		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),20000,0,20);
+
+	for(Int_t iMag = 0; iMag < magName->size(); iMag++)
+	{
+		_h10[iMag] = new TH1F(Form("h10_%d",iMag),
+			Form("Number of generated SR photons per event in %s",magName->at(iMag).c_str()),1000,0,1000);
+		_h11[iMag] = new TH1F(Form("h11_%d",iMag),
+			Form("Energy sum of generated SR photons per event in %s;#Sigma_{#gamma} [eV]",
+			magName->at(iMag).c_str()),1e5,0,1e6);
+	}	
 
 	// ascii file to store generated events
 	_fHepmc = new WriterAscii(GetOutputFileNameHepmc().Data());
@@ -210,13 +226,20 @@ void AnalysisSR::Loop()
 
 		// primary beam data
 		TVector3 beamMom(beamMomX_eV,beamMomY_eV,beamMomZ_eV);
-		TVector3 beamPos(beamPosX_cm-beamIniPosX_cm,beamPosY_cm-beamIniPosY_cm,beamPosZ_cm-beamIniPosZ_cm);
-		beamMom.RotateY(-beamIniAngle_rad);
-		beamPos.RotateY(-beamIniAngle_rad);
+		TVector3 beamPos(beamPosX_cm-beamRefPosX_cm,beamPosY_cm-beamRefPosY_cm,beamPosZ_cm-beamRefPosZ_cm);
+		beamMom.RotateY(-beamRefAngle_rad);
+		beamPos.RotateY(-beamRefAngle_rad);
 
 		_h7->Fill(beamPos.x(),beamMom.x()/beamMom.Mag());
 		_h8->Fill(beamPos.y(),beamMom.y()/beamMom.Mag());
 		_h9->Fill(beamMom.Mag()/1e9); // eV --> GeV
+
+		// loop over magnets
+		for(Int_t iMag = 0; iMag < magName->size(); iMag++) 
+		{
+			_h10[iMag]->Fill(magNph->at(iMag));
+			_h11[iMag]->Fill(magSumEph_eV->at(iMag));
+		}
    	}
  	printf("\r[INFO] Progress: %.3f [%%]\n",100.0*jentry/nEntries);
 
@@ -231,6 +254,12 @@ void AnalysisSR::Loop()
 	_h7->Write();
 	_h8->Write();
 	_h9->Write();
+	for(Int_t iMag = 0; iMag < magName->size(); iMag++)
+	{
+		_h10[iMag]->Write();
+		_h11[iMag]->Write();
+	}
+
 	f->Close();
 
 	return;

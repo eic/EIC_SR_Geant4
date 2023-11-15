@@ -21,7 +21,6 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     	G4ParticleDefinition* particleDef;
     	particleDef = particleTable->FindParticle(simPar->GetBeamName().c_str());
 
-    	runAction->_beamPdg = particleDef->GetPDGEncoding();
 	G4double mass = particleDef->GetPDGMass();
 	G4double gamma = simPar->GetBeamGamma();
 	G4double Mom = sqrt(pow(gamma,2) - 1.0)*mass;
@@ -80,6 +79,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	G4ThreeVector dirXYZrot = rotation * 
 		G4ThreeVector(Xprime_real,Yprime_real,sqrt(1.0 - (pow(Xprime_real,2) + pow(Yprime_real,2))));
 
+	// store beam coordinates
+    	runAction->_beamPdg = particleDef->GetPDGEncoding();
 	runAction->_beamPosX = posXYZrot.x()/cm;
 	runAction->_beamPosY = posXYZrot.y()/cm;
 	runAction->_beamPosZ = posXYZrot.z()/cm;
@@ -87,11 +88,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	runAction->_beamMomY = Mom*dirXYZrot.y()/eV;
 	runAction->_beamMomZ = Mom*dirXYZrot.z()/eV;
 	runAction->_beamEnergy = (Ekin + mass)/eV;
-	runAction->_beamIniPosX = magVector2.x()/cm;
-	runAction->_beamIniPosY = magVector2.y()/cm;
-	runAction->_beamIniPosZ = magVector2.z()/cm;
-	runAction->_beamIniAngle = angle/rad;
+	runAction->_beamRefPosX = magVector2.x()/cm;
+	runAction->_beamRefPosY = magVector2.y()/cm;
+	runAction->_beamRefPosZ = (Float_t)magVector2.z()/cm;
+	runAction->_beamRefAngle = angle/rad;
 
+	// generate the primary beam 
     	fParticleGun->SetParticleDefinition(particleDef);
     	fParticleGun->SetParticleEnergy(Ekin);
     	fParticleGun->SetParticleMomentumDirection(dirXYZrot);

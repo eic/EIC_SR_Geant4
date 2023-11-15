@@ -1,7 +1,9 @@
 #include "StackingAction.hh"
 #include "G4Track.hh"
+#include "G4Gamma.hh"
+#include "G4ProcessManager.hh"
 
-StackingAction::StackingAction(G4String xmlFileName)
+StackingAction::StackingAction(RunAction* runAct, G4String xmlFileName) : runAction(runAct)
 {
     	_kill_secondaries  = 0;
     	fStackingMessenger = new StackingMessenger(this);
@@ -22,6 +24,30 @@ StackingAction::ClassifyNewTrack(const G4Track* track)
 {
     	G4ClassificationOfNewTrack status = fUrgent;
     
+	// get new track info, if SR gamma -> store
+	if(	track->GetParticleDefinition()->GetPDGEncoding() == G4Gamma::Gamma()->GetPDGEncoding() &&
+		(track->GetCreatorProcess()->GetProcessName() == "SynRad" || 
+		 track->GetCreatorProcess()->GetProcessName() == "SynchrotronRadiation"))
+	{
+		// find the iterator of the magnet by its name
+		auto it = std::find(runAction->_magName.begin(),runAction->_magName.end(),track->GetVolume()->GetName());
+		// check if the current PhysVolume is present in the list of magnets
+		if (it != runAction->_magName.end())
+		{
+			// get the magnet index in the vector
+			G4int iMag = distance(runAction->_magName.begin(),it);	
+			runAction->_magNph[iMag]++;
+			runAction->_magSumEph[iMag] += track->GetTotalEnergy()/eV;
+		}
+		else
+		{
+			G4cout<<"\n\n=================================================================="<<G4endl;
+                        G4cout<<"[WARNING] StackingAction::ClassifyNewTrack ==> Cannot find the SR creation magnet"<<G4endl;
+                        G4cout<<"==================================================================\n"<<G4endl;
+		}
+
+	}
+
 	// kill secondaries
     	if(_kill_secondaries == 1 && track->GetTrackID() > 1){status = fKill;}
 

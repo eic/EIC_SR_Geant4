@@ -82,13 +82,13 @@ int main(int argc, char** argv)
     	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(runAction,xmlFileName);
     	runManager->SetUserAction(primary);
 
-    	EventAction* eventAction = new EventAction(runAction);
+    	EventAction* eventAction = new EventAction(runAction,xmlFileName);
     	runManager->SetUserAction(eventAction);
 
     	SteppingAction* stepAction = new SteppingAction(runAction,xmlFileName);
     	runManager->SetUserAction(stepAction);
 
-    	StackingAction* stackAction = new StackingAction(xmlFileName);
+    	StackingAction* stackAction = new StackingAction(runAction,xmlFileName);
     	runManager->SetUserAction(stackAction);
 
 	// Initialize G4 kernel
