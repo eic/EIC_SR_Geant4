@@ -4,10 +4,13 @@ void DrawPhaseSpace(	TString name, TH2F* hX,
 		Double_t minX, Double_t maxX, Double_t minXp, Double_t maxXp, 
 		Double_t emit, Double_t alpha, Double_t beta, Double_t eta, Double_t etaPrime, Double_t delta);
 void DrawMomentum(TString name, TH1F* hP, Double_t minP, Double_t maxP, Double_t delta, Double_t gamma, Double_t mass_GeV);
+void DrawMagData(TH1F* h1[], TH1F* h2[], Int_t nHist);
 
 using namespace std;
 
-void plot(TString fName = "./output/output_Q0EF.root")
+#define NMAGMAX 100 // maximum number of magnets
+
+void plot(TString fName = "./output/output.root")
 {
 	Double_t delta, emitX, emitY, gamma, mass_GeV;
 
@@ -42,7 +45,18 @@ void plot(TString fName = "./output/output_Q0EF.root")
 	TH2F* h7 = (TH2F*)file->Get("h7"); // Beam Px vs X
 	TH2F* h8 = (TH2F*)file->Get("h8"); // Beam Py vs Y
 	TH1F* h9 = (TH1F*)file->Get("h9"); // Beam P
-	
+
+	TH1F* h10[NMAGMAX];
+	TH1F* h11[NMAGMAX];
+	Int_t nMag = 0;
+	for(Int_t i = 0; i < NMAGMAX; i++)
+		if((TH1F*)file->Get(Form("h10_%d",i)) && (TH1F*)file->Get(Form("h11_%d",i))){nMag++;}
+	cout<<"[INFO] nMag = "<<nMag<<endl;
+	for(Int_t i = 0; i < nMag; i++)
+	{
+		h10[i] = (TH1F*)file->Get(Form("h10_%d",i));
+		h11[i] = (TH1F*)file->Get(Form("h11_%d",i));
+	}
 	//------------------------------------------------------------------------------------------------//
 	//- Parameters
 	emitX = 24e-9;	emitY = 2e-9;	delta = 0.109e-2; gamma = 34924.26476; mass_GeV = 0.00051099895;
@@ -119,6 +133,98 @@ void plot(TString fName = "./output/output_Q0EF.root")
 		emitY,mon_alphaY,mon_betaY,mon_etaY,mon_etaPrimeY,delta); // ver (Y) twiss parameters
 
 	DrawMomentum(mon_name+"P",h6,mon_minP,mon_maxP,delta,gamma,mass_GeV);
+	
+	// Magnet SR
+	cout<<"\n\n=================================================================="<<endl;
+
+	DrawMagData(h10,h11,nMag);
+
+	// calculate the number of radiated SR photons per electron	
+	for(Int_t i = 0; i < nMag; i++)
+	{
+		// number of generated SR photons in a dipole per electron per second: nPh = (alpha*gamma*c/rho)*(5/2*sqrt(3))
+		TString title = h10[i]->GetTitle();
+		Double_t nPh = -1, t_s = 0, l_m = 0, theta_rad = 0;
+		if(title.Contains("D2EF") || title.Contains("D1EF")) // Dipoles
+		{
+			if	(title.Contains("D2EF1")){l_m = 2.7260154313337; theta_rad = 0.011655839693698;}
+			else if (title.Contains("D2EF2")){l_m = 2.7260154313337; theta_rad = 0.011655839693698;}
+			else if (title.Contains("D1EF")){l_m = 0.89140008356876; theta_rad = 0.0015;}
+
+			t_s = (theta_rad*l_m/(2.*TMath::Sin(theta_rad/2.)))/TMath::C(); 
+			nPh = t_s*(1./137.)*gamma*TMath::C()*5./((l_m/(2.*sin(theta_rad/2)))*2.*sqrt(3.));
+		}
+		else if(title.Contains("Q1EF") || title.Contains("Q0EF")) // Quads
+		{
+			if	(title.Contains("Q1EF")){l_m = 1.61;}
+			else if	(title.Contains("Q0EF")){l_m = 1.20;}
+		
+			t_s = l_m/TMath::C();
+		}
+
+		printf("[INFO] %s: \t mean = %.2f [phs/event] | stdDev = %.2f [phs/event] <> calc = %.2f [phs/e]\n",h10[i]->GetTitle(),h10[i]->GetMean(),h10[i]->GetStdDev(),nPh);
+	}
+	cout<<endl;
+	// calculate the radiated SR power per electron	
+	for(Int_t i = 0; i < nMag; i++)
+	{
+		// integrated power of generated SR photons per electron: power = 
+		TString title = h10[i]->GetTitle();
+		Double_t P_W = -1, t_s = 0, l_m = 0, theta_rad = 0;
+		if(title.Contains("D2EF") || title.Contains("D1EF")) // Dipoles
+		{
+			if	(title.Contains("D2EF1")){l_m = 2.7260154313337; theta_rad = 0.011655839693698;}
+			else if (title.Contains("D2EF2")){l_m = 2.7260154313337; theta_rad = 0.011655839693698;}
+			else if (title.Contains("D1EF")){l_m = 0.89140008356876; theta_rad = 0.0015;}
+
+			t_s = (theta_rad*l_m/(2.*TMath::Sin(theta_rad/2.)))/TMath::C(); 
+			Double_t hbrac_GeVm = 0.1973269631e-15; // https://pdg.lbl.gov/2010/reviews/rpp2010-rev-phys-constants.pdf
+			Double_t r0_m = (1./137.)*hbrac_GeVm/mass_GeV; // classical radius of the particle
+			Double_t C_gamma = (4.*TMath::Pi()/3.0)*r0_m/TMath::Power(mass_GeV,3);
+			Double_t E0_GeV = gamma*mass_GeV;
+			Double_t rho_m = l_m/(2.*TMath::Sin(theta_rad/2.));		
+
+			P_W = (1e9)*TMath::Qe()*(TMath::C()*C_gamma*TMath::Power(E0_GeV,4))/(2.*TMath::Pi()*TMath::Power(rho_m,2));
+		}
+		else if(title.Contains("Q1EF") || title.Contains("Q0EF")) // Quads
+		{
+			if	(title.Contains("Q1EF")){l_m = 1.61;}
+			else if	(title.Contains("Q0EF")){l_m = 1.20;}
+		
+			t_s = l_m/TMath::C();
+		}
+		
+		printf("[INFO] %s: \t mean = %.3f [uW] | stdDev = %.3f [uW] <> calc %.3f [uW]\n",h11[i]->GetTitle(),(1e6)*h11[i]->GetMean()*TMath::Qe()/t_s,(1e6)*h11[i]->GetStdDev()*TMath::Qe()/t_s,P_W*(1e6));
+	}
+	cout<<"==================================================================\n"<<endl;
+
+	return;
+}
+
+void DrawMagData(TH1F* h1[], TH1F* h2[], Int_t nHist)
+{
+	TCanvas* c1 = new TCanvas("c1_mag","c1_mag",1600,800);
+	c1->Divide(nHist,2);
+
+	for(Int_t i = 0; i < nHist; i++)
+	{
+		c1->cd(i+1);
+		h1[i]->Draw();
+		h1[i]->SetLineColor(kBlack);
+		h1[i]->SetLineWidth(2);
+		h1[i]->SetFillColorAlpha(kBlue,0.2);
+		h1[i]->GetXaxis()->SetRangeUser(h1[i]->GetMean()-10.0*h1[i]->GetStdDev(),h1[i]->GetMean()+10.0*h1[i]->GetStdDev());
+
+		c1->cd(i+nHist+1);
+		h2[i]->Draw();
+		h2[i]->SetLineColor(kBlack);
+		h2[i]->SetLineWidth(2);
+		h2[i]->SetFillColorAlpha(kBlue,0.2);
+		h2[i]->Rebin(10);
+		gPad->SetLogx();
+		gPad->SetLogy();
+	}
+	c1->SaveAs("./pics/c1_mag.png");
 
 	return;
 }

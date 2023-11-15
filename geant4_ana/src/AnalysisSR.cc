@@ -18,9 +18,10 @@ void AnalysisSR::Init(TString treeName = "tree")
    	if(!_fChain){return;};
 	_fChain->Add(_inputFileName.Data());
 
+	cout<<"\n\n=================================================================="<<endl;
 	cout<<"\n[INFO] AnalysisSR::Init ==> Added files:"<<endl;
 	_fChain->ls();
-	cout<<"\n"<<endl;
+	cout<<"==================================================================\n\n"<<endl;
 
    	// set object pointer
 	monName = new string();
@@ -103,7 +104,7 @@ void AnalysisSR::Init(TString treeName = "tree")
 	_h7 = new TH2F("h7",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Px vs X;X [cm];X'",
 		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),1000,-4,4,10000,-1e-1,1e-1);
 	_h8 = new TH2F("h8",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Py vs Y;Y [cm];Y'",
-		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),1000,-4,4,10000,-1e-1,1e-1);
+		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),1000,-4,4,10000,-1e-2,1e-2);
 	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV/c]",
 		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),20000,0,20);
 

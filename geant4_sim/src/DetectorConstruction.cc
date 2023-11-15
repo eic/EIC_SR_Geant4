@@ -138,9 +138,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		G4MagneticField* mag_field; 
 		if(simPar->GetMagType(iMag) == "D-pole")
 		{
-			// By[T]*rho[m] = 3.33564*pc[GeV], rho[m] = l[m]/theta[rad], pc = mc^2*sqrt(gamma^2 - 1)
+			// By[T]*rho[m] = 3.33564*pc[GeV], rho[m] = l[m]/(2*sin(theta[rad]/2)) (RBEND), pc = mc^2*sqrt(gamma^2 - 1)
 			G4double By = ((3.33564*(mass/GeV)*sqrt(pow(gamma,2)-1.0))/
-				((simPar->GetMagLength(iMag)/m)/(simPar->GetMagAngle(iMag)/rad)))*tesla;
+				((simPar->GetMagLength(iMag)/m)/(2.*sin(simPar->GetMagAngle(iMag)/2.))))*tesla;
 			// set field
 			mag_field = new G4UniformMagField(G4ThreeVector(0,By,0));
 			//- Visualization
