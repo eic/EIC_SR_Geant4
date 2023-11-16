@@ -40,22 +40,22 @@
 *.swp
 
 # g4 sim
-geant4_sim/build
+geant4_sim/build*
 geant4_sim/output*
 
 # g4 ana
-geant4_ana/build
+geant4_ana/build*
 geant4_ana/output*
-geant4_ana/pics
+geant4_ana/pics*
 
 # eic sim
-eic_sim/output           
-eic_sim/data
-eic_sim/build
+eic_sim/output*         
+eic_sim/data*
+eic_sim/build*
 
 # eic reco
-eic_recon/analysisPlugin/build/
-eic_recon/build/
+eic_recon/analysisPlugin/build*
+eic_recon/build*
 
 # Git
 !.gitignore
