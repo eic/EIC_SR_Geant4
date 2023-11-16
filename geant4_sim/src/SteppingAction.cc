@@ -73,16 +73,10 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
         	runAction->_monRefPosZ = magVector2.z()/cm;
 
 		// orientation angle of the beam/monitor
-		runAction->_monRefAngle = (magVector2.z() != magVector1.z()) ? atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z())) : 0;
+		runAction->_monRefAngle = (magVector2.z() != magVector1.z()) ? 
+			atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z())) : 0;
 	}
 	//--------------------------------------------------------------------------//
-
-	// kill long living tracks
-	if(track->GetGlobalTime() > simPar->GetTrackTcut())
-	{
-		G4Track* aNonConstTrack = const_cast<G4Track*>(track);
-		aNonConstTrack->SetTrackStatus(fStopAndKill);
-	}
 
 	// check if the track (=gamma) is killed
 	if(track->GetTrackStatus() == fStopAndKill && 

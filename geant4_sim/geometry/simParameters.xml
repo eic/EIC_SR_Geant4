@@ -36,7 +36,7 @@
 
 	<!-- tracking time cut -->
 	<timecut>
-		<sec desc="simulation time cut" name="tcut" unit="s">10e-6</sec>
+		<sec desc="simulation time cut" name="tcut" unit="s">1e-6</sec>
 	</timecut>
 
 	<!-- beam parameters: from survey_ir_6m.tfs and ir6forward.18GeV.twi (Sep. 2023) -->

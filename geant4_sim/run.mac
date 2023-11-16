@@ -5,7 +5,7 @@
 ##-----------------------------------------##
 /output/filename ../output/output.root
 
-/stack/killsecondaries 1
+/stack/killsecondaries 0
 
 /run/initialize
 ##-----------------------------------------##

@@ -131,6 +131,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 			beampipeUni_solid, mag_box,mag_rot,G4ThreeVector(x0,y0,z0));
 		// magnet logic volume
 		G4LogicalVolume* mag_log = new G4LogicalVolume(mag_solid,mat_vac, simPar->GetMagName(iMag)+"_log");
+		// set tracking time limit in the volume
+		mag_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
 		// magnet placement
 		new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),mag_log,"mag_"+simPar->GetMagName(iMag),world_log,false,0,true);
 
@@ -192,6 +194,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	//- Vacuum (place the beam pipe without magnet and IP volumes) 
 	G4LogicalVolume* beampipeVac_log = new G4LogicalVolume(beampipeVac_solid, mat_vac,"beampipeVac");
+	// set tracking time limit in the volume
+	beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"vac_beampipe",world_log,false,0,true);
 	//- Visualization
 	G4VisAttributes* beampipeVac_vis = new G4VisAttributes(G4Color::Grey());

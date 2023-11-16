@@ -29,6 +29,7 @@
 #include "G4SynchrotronRadiationInMat.hh"
 
 #include "G4StepLimiter.hh"
+#include "G4UserSpecialCuts.hh"
 #include "G4DecayPhysics.hh"
 
 #include "G4SystemOfUnits.hh"
@@ -54,6 +55,7 @@ PhysicsList::~PhysicsList()
 void PhysicsList::ConstructParticle()
 {
   	fDecayPhysics->ConstructParticle();
+	return;
 }
 
 void PhysicsList::ConstructProcess()
@@ -61,6 +63,7 @@ void PhysicsList::ConstructProcess()
   	AddTransportation();
   	ConstructEM();
   	fDecayPhysics->ConstructProcess();
+	return;
 }
 
 void PhysicsList::ConstructEM()
@@ -71,6 +74,11 @@ void PhysicsList::ConstructEM()
 	{
     		G4ParticleDefinition* particle = particleIterator->value();
     		G4ProcessManager* pmanager = particle->GetProcessManager();
+
+		// set special limits defined by the user; see DetectorConstruction [SetUserLimits]
+		pmanager->AddProcess(new G4UserSpecialCuts(),-1,-1,1);
+
+		// get particle name
     		G4String particleName = particle->GetParticleName();
 
     		if (particleName == "gamma") 
@@ -158,4 +166,6 @@ void PhysicsList::ConstructEM()
 	      		pmanager->AddProcess(new G4SynchrotronRadiation,	-1,-1, 1);  
 		}
 	}
+
+	return;
 }
