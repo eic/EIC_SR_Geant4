@@ -5,10 +5,10 @@
 ##-----------------------------------------##
 /output/filename ../output/output.root
 
-/stack/killsecondaries 1
+/stack/killsecondaries 0
 
 /run/initialize
-##-----------------------------------------##
+
 #/vis/open DAWNFILE # then: dawn g4_0000.prim; epstopdf g4_0000.eps
 /vis/open HepRepFile # then: heprapp G4Data0.heprep
 
@@ -28,6 +28,7 @@
 /vis/scene/add/axes 0 0 0 2 m # Simple axes: x=red, y=green, z=blue.
 /vis/scene/add/date    # Date stamp
 
+##-----------------------------------------##
 #- Visualize magnetic field
 #/vis/set/volumeForField mag_D2EF1
 #/vis/set/volumeForField mag_D2EF2
@@ -35,6 +36,7 @@
 #/vis/set/volumeForField mag_Q1EF
 #/vis/set/volumeForField mag_Q0EF
 #/vis/scene/add/magneticField 100 fullArrow #lightArrow
+##-----------------------------------------##
 
 /vis/scene/list
 /vis/drawTree
