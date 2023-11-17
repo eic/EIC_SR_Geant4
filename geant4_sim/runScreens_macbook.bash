@@ -7,7 +7,7 @@ date;
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="${PWD}/geometry/simParameters.xml" # simulation geometry settings
-nParticles=10000 # number of primary particles per job
+nParticles=1000 # number of primary particles per job
 outputDir="${PWD}/output" # output directory
 nJobs=10
 #--------------------------------------------------#
@@ -22,12 +22,12 @@ echo " outputDir = ${outputDir}"
 echo ""
 
 # output directory
-if [ -d "${outputDir}" ]
-then 
-	dirName=${outputDir}_$(date +%s)
-	mv ${outputDir} ${dirName}
-	echo "[INFO] Directory '${outputDir}' exists. Moved to '${dirName}'"; 
-fi
+#if [ -d "${outputDir}" ]
+#then 
+#	dirName=${outputDir}_$(date +%s)
+#	mv ${outputDir} ${dirName}
+#	echo "[INFO] Directory '${outputDir}' exists. Moved to '${dirName}'"; 
+#fi
 mkdir -pv ${outputDir}
 
 # build directory

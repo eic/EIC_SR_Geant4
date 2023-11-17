@@ -25,6 +25,11 @@ void RunAction::BeginOfRunAction(const G4Run* run)
 
     	timer->Start();
 
+	_hfile = new TFile(_output_filename.c_str(), "RECREATE");
+    	if(_hfile->IsZombie())
+		throw runtime_error("\n\n[ERROR] RunAction::EndOfRunAction ==> Cannot open the file to write\n");
+	_hfile->cd();
+
     	_tree = new TTree("tree", "Collected Data");
     	_tree->Branch("event",		&_event);
 
@@ -86,7 +91,6 @@ void RunAction::BeginOfRunAction(const G4Run* run)
 
 void RunAction::EndOfRunAction(const G4Run* run)
 {
-	_hfile = new TFile(_output_filename.c_str(), "RECREATE");
     	if(_hfile->IsZombie())
 		throw runtime_error("\n\n[ERROR] RunAction::EndOfRunAction ==> Cannot open the file to write\n");
 

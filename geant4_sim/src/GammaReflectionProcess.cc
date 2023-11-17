@@ -3,6 +3,8 @@
 #include "G4VSolid.hh"
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4ParallelWorldProcess.hh"
+#include "G4TransportationManager.hh"
 
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
 {
@@ -32,6 +34,7 @@ G4VParticleChange *
 GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 {
   	aParticleChange.Initialize(track);
+	aParticleChange.ProposeVelocity(track.GetVelocity());
 
     	G4StepPoint*          	preStep		= step.GetPreStepPoint();
     	G4StepPoint*          	postStep	= step.GetPostStepPoint();
@@ -44,40 +47,73 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 
 
 	// get tracks at the edge of the vacuum beam pipe and world
+	//..............-----------------------------------------
+	//..............|..................Volume...............|
+	//.pre-step.....0....<--.step.status.on.boundary.-->....0.post-step.point
+	//.point........|\...................................../|.steps.ends.on.boundary
+	//..............|.\.................................../.|
+	//..............|..\................................./..|
+	//..............|...\.............................../...|
+	//..............|....0.post-step.point....pre-step.0....|
+	//..............|.........................point.........|
+	//..............-----------------------------------------
+
 	if(	postStep->GetStepStatus() == fGeomBoundary && postPV->GetName() == "world" &&
 		(G4StrUtil::contains(prePV->GetName(),"mag_") || G4StrUtil::contains(prePV->GetName(),"vac_")))
 	{
-		//..............-----------------------------------------
-		//..............|..................Volume...............|
-		//.pre-step.....0....<--.step.status.on.boundary.-->....0.post-step.point
-		//.point........|\...................................../|.steps.ends.on.boundary
-		//..............|.\.................................../.|
-		//..............|..\................................./..|
-		//..............|...\.............................../...|
-		//..............|....0.post-step.point....pre-step.0....|
-		//..............|.........................point.........|
-		//..............-----------------------------------------
 
-		G4double gammaEnergy_eV = track.GetTotalEnergy()/eV;
-		G4ThreeVector gammaDir_i = postStep->GetMomentum()/postStep->GetMomentum().mag(); 
-		G4ThreeVector stepPos = postStep->GetPosition();
+		const G4DynamicParticle* aParticle = track.GetDynamicParticle();
 
-		const G4VTouchable* touchable = preStep->GetTouchable();
-		const G4RotationMatrix* rotation = touchable->GetRotation();
-		G4RotationMatrix rotation_inv = rotation->inverse();
-		G4ThreeVector translation = touchable->GetTranslation();
-		G4VSolid* solid = touchable->GetSolid();
-		G4String name = touchable->GetVolume()->GetName();
-		G4ThreeVector posLoc = *rotation * (stepPos - translation);
-		// the norm vector looks from inside to outside of the volume
-		G4ThreeVector normLoc = solid->SurfaceNormal(posLoc); 
-		G4ThreeVector gammaDirLoc_i = *rotation * gammaDir_i;
-		G4double incidentAngle_rad = acos( normLoc.dot(gammaDirLoc_i) );
-		G4double grazingAngle_rad = M_PI_2 - incidentAngle_rad; 
+		G4ThreeVector fOldMomentum = aParticle->GetMomentumDirection();
+		G4double fTotalEnergy_eV = aParticle->GetTotalEnergy()/eV;
 
-		G4ThreeVector norm = rotation_inv*normLoc + translation;
+		G4ThreeVector theGlobalPoint = step.GetPostStepPoint()->GetPosition();
+		G4bool valid;
 
-		//- Reflection
+		// ID of Navigator which limits step
+		G4int hNavId = G4ParallelWorldProcess::GetHypNavigatorID();
+		auto iNav = G4TransportationManager::GetTransportationManager()->GetActiveNavigatorsIterator();
+		G4ThreeVector fGlobalNormal = (iNav[hNavId])->GetGlobalExitNormal(theGlobalPoint, &valid);
+
+		if(valid)
+		{
+			fGlobalNormal = -fGlobalNormal;
+		}
+		else
+		{
+			G4ExceptionDescription ed;
+			ed 	<< " GammaReflectionProcess/PostStepDoIt(): "
+				<< " The Navigator reports that it returned an invalid normal" << G4endl;
+			G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection01", 
+				JustWarning, // or EventMustBeAborted 
+				ed,
+				"Invalid Surface Normal - Geometry must return valid surface normal");
+		}
+
+		if(fOldMomentum * fGlobalNormal > 0.0)
+		{
+			G4ExceptionDescription ed;
+			ed 	<< 	" GammaReflectionProcess/PostStepDoIt(): fGlobalNormal points in a "
+					"wrong direction. "
+				<< G4endl
+				<< " The momentum of the photon arriving at interface (oldMomentum)"
+				<< " must exit the volume cross in the step. " << G4endl
+				<< " So it MUST have dot < 0 with the normal that Exits the new "
+				"volume (globalNormal)."
+				<< G4endl << "   >> The dot product of oldMomentum and global Normal is "
+				<< fOldMomentum * fGlobalNormal << G4endl
+				<< "     Old Momentum  (during step)     = " << fOldMomentum << G4endl
+				<< "     Global Normal (Exiting New Vol) = " << fGlobalNormal << G4endl
+				<< G4endl;
+			G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection02",
+				JustWarning, // or EventMustBeAborted
+				ed,
+				"Invalid Surface Normal - Geometry must return valid surface "
+				"normal pointing in the right direction");
+			fGlobalNormal = -fGlobalNormal;
+		}
+
+		// Total internal reflection
 		// https://link.springer.com/chapter/10.1007/978-1-4842-7185-8_8
 		// For a mirror reflective surface, the reflection formula is r = i–2(i·n)n,
 		// where i is the incoming ray direction, n the surface normal, and r the
@@ -86,38 +122,23 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		// either direction (e.g., upward or downward) and the formula still works. The 
 		// incoming ray direction does not have to be normalized, and the outgoing 
 		// direction vector will be computed having the same length as the incoming one.
+		G4ThreeVector fNewMomentum = fOldMomentum - 2. * fOldMomentum * fGlobalNormal * fGlobalNormal;
 
-		G4ThreeVector gammaDirLoc_r = gammaDirLoc_i - 2.0 * normLoc.dot(gammaDirLoc_i) * normLoc;
-		G4ThreeVector gammaDir_r = rotation_inv * gammaDirLoc_r + translation;
-
-		// check that the half-angle between reflected and incident angles is equal to the grazing angle
-		if(abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad > 1e-4)
-		{
-			G4cout<<"\n\n=================================================================="<<G4endl;
-			G4cout<<"[WARNING] GammaReflectionProcess::PostStepDoIt ==> Not accurate reflection calculation"<<G4endl;
-			G4cout<<"abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad = "
-				<<abs(grazingAngle_rad - acos(gammaDir_i.dot(gammaDir_r))/2.)/grazingAngle_rad<<" > 1e-4"<<G4endl;
-			G4cout<<"grazingAngle_rad = "<<grazingAngle_rad<<G4endl;
-			G4cout<<"acos(gammaDir_i.dot(gammaDir_r))/2. = "<<acos(gammaDir_i.dot(gammaDir_r))/2.<<G4endl;
-			G4cout<<"gammaDir_i(x,y,z) = "
-				<<gammaDir_i.x()<<" , "<<gammaDir_i.y()<<" , "<<gammaDir_i.z()<<G4endl;
-			G4cout<<"gammaDir_r(x,y,z) = "
-				<<gammaDir_r.x()<<" , "<<gammaDir_r.y()<<" , "<<gammaDir_r.z()<<G4endl;
-			G4cout<<"norm (x,y,z) = "<<norm.x()<<" , "<<norm.y()<<" , "<<norm.z()<<G4endl;
-			G4cout<<"==================================================================\n"<<G4endl;
-		}
+		// Calculate Angle between Normal and Photon Momentum
+		G4double anglePhotonToNormal_rad = fOldMomentum.angle(-fGlobalNormal)/rad;
+		G4double grazingPhotonAngle_rad = M_PI_2 - anglePhotonToNormal_rad; 
 
 		// get probability
 		G4double prob = 0;
-		if(prePV->GetName() == "vac_ip") // ip beam pipe
+		if(prePV->GetName() == "vac_ip") // Au ip beam pipe
 		{
 			prob = FindReflectionProbability(_reflectDataMap["Au"],
-			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingAngle_rad/1000.0,gammaEnergy_eV);
+			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle_rad,fTotalEnergy_eV);
 		}
-		else // beam pipe
+		else // Cu beam pipe
 		{
 			prob = FindReflectionProbability(_reflectDataMap["Cu"],
-				_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingAngle_rad/1000.0,gammaEnergy_eV);
+			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle_rad,fTotalEnergy_eV);
 		}
 
 		//- Roughtness
@@ -130,25 +151,40 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		// of cavities on the surface, and sigmaH is the st.dev. of the depth of those). Essentially, the larger the "roughness" value (theoretically the ratio 
 		// of RMS roughness and autocorrelation length), the more the reflection direction is perturbated around the perfect mirror direction.
 
-		G4ThreeVector gammaDir_tmp = gammaDir_r;
+		G4ThreeVector fNewMomentum_tmp = fNewMomentum;
 
-		gammaDir_tmp.setTheta(gammaDir_r.getTheta() + thetaOffset);
-		gammaDir_tmp.setPhi(gammaDir_r.getPhi() + phiOffset);
+		fNewMomentum_tmp.setTheta(fNewMomentum.getTheta() + thetaOffset);
+		fNewMomentum_tmp.setPhi(fNewMomentum.getPhi() + phiOffset);
 
 		// the offsetted reflected gamma is within physical ranges; since the norm vector looks from inside to outside of the vacuum volume,
 		// the theta should be (pi/2;pi); see above "SurfaceNormal": SurfaceNormal > 0 --> (pi/2;pi) OR SurfaceNormal < 0 --> (0;pi/2)
-		while(acos(norm.dot(gammaDir_tmp)) < M_PI_2)
+		while(	fNewMomentum_tmp.angle(-fGlobalNormal) < M_PI_2 || 
+			M_PI < fNewMomentum_tmp.angle(-fGlobalNormal))
 		{
+			G4ExceptionDescription ed;
+			ed 	<< " GammaReflectionProcess/PostStepDoIt(): The angle between"<<G4endl
+				<< " the surface normal and the photon direction is "<<
+				fNewMomentum_tmp.angle(-fGlobalNormal)<<" [rad],"<<G4endl
+				<< " while it should be [pi/2;pi]"<< G4endl;
+			G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection03", 
+				JustWarning, // or EventMustBeAborted 
+				ed,
+				"Wrong photon direction due to a random offset - repeat calculation");
+
 			thetaOffset = atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-			gammaDir_tmp.setTheta(gammaDir_r.getTheta() + thetaOffset);
+			fNewMomentum_tmp.setTheta(fNewMomentum.getTheta() + thetaOffset);
 		}
 
-		gammaDir_r = gammaDir_tmp;
+		// set the new offset direction
+		fNewMomentum = fNewMomentum_tmp;
+
+		// normalize: vector parallel to this, but of length 1.
+		fNewMomentum = fNewMomentum.unit();
 
 		if(G4UniformRand() > prob)
-    			aParticleChange.ProposeTrackStatus(fStopAndKill);
+    			aParticleChange.ProposeTrackStatus(fStopAndKill); // kill the track
 		else
-			aParticleChange.ProposeMomentumDirection(gammaDir_r);
+			aParticleChange.ProposeMomentumDirection(fNewMomentum); // propose momentum change
 	}
 
 	// get tracks at the edge of the absorber
