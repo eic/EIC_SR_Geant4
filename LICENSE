@@ -16,7 +16,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
+along with this program. If not, see https://www.gnu.org/licenses/.
 
 If you use this software for a publication,
 please cite: A.Natochii, "EIC Synchrotron Radiation Background Simulation Software" (2023), https://github.com/nat93/EIC_SR_Geant4.git. 
