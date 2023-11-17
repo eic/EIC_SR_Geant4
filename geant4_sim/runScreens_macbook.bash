@@ -22,13 +22,12 @@ echo " outputDir = ${outputDir}"
 echo ""
 
 # output directory
-#if [ -d "${outputDir}" ]
-#then 
-#	dirName=${outputDir}_$(date +%s)
-#	mv ${outputDir} ${dirName}
-#	echo "[INFO] Directory '${outputDir}' exists. Moved to '${dirName}'"; 
-#fi
-mkdir -pv ${outputDir}
+if [ -d "${outputDir}" ]
+then 
+	dirName=${outputDir}_$(date +%s)
+	mv ${outputDir} ${dirName}
+	echo "[INFO] Directory '${outputDir}' exists. Moved to '${dirName}'"; 
+fi
 
 # build directory
 mkdir -pv ./build
