@@ -38,7 +38,8 @@ int main(int argc, char* argv[])
 	{
 		cout<<"\n\n=================================================================="<<endl;
 		cout<<"[ERROR] main ==> Wrong number of input parameters: argc = "<<argc<<endl;
-		cout<<"Usage: ./exe ../../geant4_sim/output output_*.root ../output output tree"<<endl;
+		cout<<"Usage: [executable] [input file directory] [input file name] [output file directory] [output file name pattern] [input tree name]"<<endl;
+		cout<<"Example: ./exe ../../geant4_sim/output output_*.root ../output output tree"<<endl;
 		cout<<"==================================================================\n"<<endl;
 
 		return -1;

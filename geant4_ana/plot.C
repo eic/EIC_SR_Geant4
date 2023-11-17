@@ -10,7 +10,9 @@ using namespace std;
 
 #define NMAGMAX 100 // maximum number of magnets
 
-void plot(TString fName = "./output/output.root")
+// After running the geant4_analysis, merge all histogram files into one:  hadd /group/belle2/TMP/anatochi/eic/output_ana_all.root /group/belle2/TMP/anatochi/eic/output_ana/output_ana_*.root 
+
+void plot(TString fName = "/group/belle2/TMP/anatochi/eic/output_ana_all.root")
 {
 	Double_t delta, emitX, emitY, gamma, mass_GeV;
 
@@ -57,6 +59,54 @@ void plot(TString fName = "./output/output.root")
 		h10[i] = (TH1F*)file->Get(Form("h10_%d",i));
 		h11[i] = (TH1F*)file->Get(Form("h11_%d",i));
 	}
+	//------------------------------------------------------------------------------------------------//
+	// plot SR photon histograms
+	TCanvas* c0_1 = new TCanvas("c0_1","c0_1",900,900);
+	c0_1->cd();
+	TPad* pad0_1 = new TPad("pad0_1", "pad0_1",0,0,1,1);
+    	pad0_1->SetBottomMargin(0.12);
+    	pad0_1->SetTopMargin(0.10);
+    	pad0_1->SetRightMargin(0.10);
+    	pad0_1->SetLeftMargin(0.12);
+   	pad0_1->Draw();
+	pad0_1->cd();
+	gPad->SetGrid();
+	h1->SetLineWidth(2);
+	h1->SetLineColor(kBlack);
+	h1->SetFillColorAlpha(kBlue,0.2);
+	h1->Draw("HIST");
+	gPad->SetLogy();
+
+	c0_1->SaveAs("./pics/c0_1.png");
+
+	TCanvas* c0_2 = new TCanvas("c0_2","c0_2",900,900);
+	c0_2->Divide(1,2);
+
+	c0_2->cd(1);
+	TPad* pad0_21 = new TPad("pad0_21", "pad0_21",0,0,1,1);
+    	pad0_21->SetBottomMargin(0.12);
+    	pad0_21->SetTopMargin(0.12);
+    	pad0_21->SetRightMargin(0.12);
+    	pad0_21->SetLeftMargin(0.12);
+   	pad0_21->Draw();
+	pad0_21->cd();
+	gPad->SetGrid();
+	h2->Draw("colz");
+	gPad->SetLogz();
+
+	c0_2->cd(2);
+	TPad* pad0_22 = new TPad("pad0_22", "pad0_22",0,0,1,1);
+    	pad0_22->SetBottomMargin(0.12);
+    	pad0_22->SetTopMargin(0.12);
+    	pad0_22->SetRightMargin(0.12);
+    	pad0_22->SetLeftMargin(0.12);
+   	pad0_22->Draw();
+	pad0_22->cd();
+	gPad->SetGrid();
+	h3->Draw("colz");
+	gPad->SetLogz();
+
+	c0_2->SaveAs("./pics/c0_2.png");
 	//------------------------------------------------------------------------------------------------//
 	//- Parameters
 	emitX = 24e-9;	emitY = 2e-9;	delta = 0.109e-2; gamma = 34924.26476; mass_GeV = 0.00051099895;

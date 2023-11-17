@@ -6,6 +6,7 @@ mainInDir='/group/belle2/TMP/anatochi/eic/output' # input directory
 treeName='tree'
 outputDir='/group/belle2/TMP/anatochi/eic/output_ana' # output directory
 buildDir='./build' # build directory
+nJobs=1000 # number of jobs
 queue='s'
 #--------------------------------------------------#
 #--------------------------------------------------#
@@ -36,7 +37,7 @@ do
 	done
 	
 	# submit a job
-	com="./exe ${mainInDir} output_${jobID}.root ${outputDir} output_${jobID}.root ${treeName} &> ${outputDir}/logExe_ana_${jobID}.txt"
+	com="./exe ${mainInDir} output_${jobID}.root ${outputDir} output_ana_${jobID} ${treeName} &> ${outputDir}/logExe_ana_${jobID}.txt"
 	echo -ne "[INFO] ${com} => "
 	bsub -q $queue -o ${outputDir}/logJob_ana_${jobID}.txt "${com}"
 done
