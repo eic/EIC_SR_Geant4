@@ -1,7 +1,8 @@
 EIC Synchrotron Radiation Background Simulation Software (EIC-SynRadBG4)
 ============================================
 
-Author: Dr. Andrii Natochii [natochii@hawaii.edu](mailto:natochii@hawaii.edu?subject=EIC_SR_Geant4)
+Author: Dr. Andrii Natochii 
+E-mail:natochii@hawaii.edu
 ----------------------------------
 
 EIC-SynRadBG4 is free software: you can redistribute it and/or modify
@@ -18,6 +19,6 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 If you use this software for a publication,
-please cite 'A.Natochii, "EIC Synchrotron Radiation Background Simulation Software" (2023), <https://github.com/nat93/EIC_SR_Geant4.git>'. 
+please cite: A.Natochii, "EIC Synchrotron Radiation Background Simulation Software" (2023), https://github.com/nat93/EIC_SR_Geant4.git. 
 
 Japan, 2023
