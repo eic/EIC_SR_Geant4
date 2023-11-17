@@ -6,6 +6,8 @@
 #include "G4ParallelWorldProcess.hh"
 #include "G4TransportationManager.hh"
 
+#define NMAXLOOPS 100 // the maximum number of loops to find acceptable angular offsets
+
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
 {
 	//------------------- material properties -------------------//
@@ -73,8 +75,12 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		// ID of Navigator which limits step
 		G4int hNavId = G4ParallelWorldProcess::GetHypNavigatorID();
 		auto iNav = G4TransportationManager::GetTransportationManager()->GetActiveNavigatorsIterator();
+		//- GetGlobalExitNormal [https://bugzilla-geant4.kek.jp/show_bug.cgi?id=1300]
+		// Obtains the Normal vector to a surface (in global coordinates)
+		// pointing out of previous volume and into current volume
 		G4ThreeVector fGlobalNormal = (iNav[hNavId])->GetGlobalExitNormal(theGlobalPoint, &valid);
 
+		// flip the normal vector -- now, pointing inside the vacuum
 		if(valid)
 		{
 			fGlobalNormal = -fGlobalNormal;
@@ -141,46 +147,52 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle_rad,fTotalEnergy_eV);
 		}
 
-		//- Roughtness
-		// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), but as surface roughness is taken into account, 
-		// the theta and phi angles (between the reflected direction and the surface normal) are perturbated with a gaussian distributied offset
-		G4double thetaOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-		G4double phiOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-		// where thetaOffset and phiOffset are the random angles added to the calculated ones (those of mirror reflection), and _sigmaRatio is the value 
-		// the user inputs in the Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation of the size 
-		// of cavities on the surface, and sigmaH is the st.dev. of the depth of those). Essentially, the larger the "roughness" value (theoretically the ratio 
-		// of RMS roughness and autocorrelation length), the more the reflection direction is perturbated around the perfect mirror direction.
-
-		G4ThreeVector fNewMomentum_tmp = fNewMomentum;
-
-		fNewMomentum_tmp.setTheta(fNewMomentum.getTheta() + thetaOffset);
-		fNewMomentum_tmp.setPhi(fNewMomentum.getPhi() + phiOffset);
-
-		// the offsetted reflected gamma is within physical ranges; since the norm vector looks from inside to outside of the vacuum volume,
-		// the theta should be (pi/2;pi); see above "SurfaceNormal": SurfaceNormal > 0 --> (pi/2;pi) OR SurfaceNormal < 0 --> (0;pi/2)
-		while(	fNewMomentum_tmp.angle(-fGlobalNormal) < M_PI_2 || 
-			M_PI < fNewMomentum_tmp.angle(-fGlobalNormal))
-		{
-			G4ExceptionDescription ed;
-			ed 	<< " GammaReflectionProcess/PostStepDoIt(): The angle between"<<G4endl
-				<< " the surface normal and the photon direction is "<<
-				fNewMomentum_tmp.angle(-fGlobalNormal)<<" [rad],"<<G4endl
-				<< " while it should be [pi/2;pi]"<< G4endl;
-			G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection03", 
-				JustWarning, // or EventMustBeAborted 
-				ed,
-				"Wrong photon direction due to a random offset - repeat calculation");
-
-			thetaOffset = atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-			fNewMomentum_tmp.setTheta(fNewMomentum.getTheta() + thetaOffset);
-		}
-
-		// set the new offset direction
-		fNewMomentum = fNewMomentum_tmp;
-
 		// normalize: vector parallel to this, but of length 1.
 		fNewMomentum = fNewMomentum.unit();
 
+		//- Roughtness
+		G4ThreeVector fNewMomentum_tmp = fNewMomentum;
+
+		// get angular offsets and
+		// check if the new reflected gamma direction is within physical ranges;
+		// since the norm vector looks inside the vacuum, the angle between them should be (0;pi/2) --> dot > 0; 
+		G4int i = 0;
+		do
+		{
+			// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), but as surface roughness is taken into account, 
+			// the theta and phi angles (between the reflected direction and the surface normal) are perturbated with a gaussian distributied offset
+			G4double thetaOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+			G4double phiOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+			// where thetaOffset and phiOffset are the random angles added to the calculated ones (those of mirror reflection), and _sigmaRatio is the value 
+			// the user inputs in the Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation of the size 
+			// of cavities on the surface, and sigmaH is the st.dev. of the depth of those). Essentially, the larger the "roughness" value (theoretically the ratio 
+			// of RMS roughness and autocorrelation length), the more the reflection direction is perturbated around the perfect mirror direction.
+
+			fNewMomentum_tmp.setTheta(fNewMomentum.getTheta() + thetaOffset);
+			fNewMomentum_tmp.setPhi(fNewMomentum.getPhi() + phiOffset);
+			i++;
+		}
+		while(fNewMomentum_tmp*fGlobalNormal <= 0.0 && i < NMAXLOOPS);
+
+		// set the new offset direction
+		if(i < NMAXLOOPS)
+		{
+			fNewMomentum = fNewMomentum_tmp;
+		}
+		else
+		{
+			G4ExceptionDescription ed;
+			ed 	<< " GammaReflectionProcess/PostStepDoIt(): "
+				<< " Failed to find acceptable angular offsets after "<<NMAXLOOPS<<" trials."<< G4endl
+				<< " (fNewMomentum_tmp*fGlobalNormal) = "<<fNewMomentum_tmp*fGlobalNormal<<"." << G4endl
+				<< " while the dot product should be > 0." << G4endl;
+			G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection01", 
+				JustWarning, // or EventMustBeAborted 
+				ed,
+				"Bad angular offsets - use unperturbed reflection photon direction");
+		}
+
+		// play Monte-Carlo
 		if(G4UniformRand() > prob)
     			aParticleChange.ProposeTrackStatus(fStopAndKill); // kill the track
 		else
