@@ -8,7 +8,7 @@ date;
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="${PWD}/geometry/simParameters.xml" # simulation geometry settings
 nParticles=1000 # number of primary particles per job
-outputDir="${PWD}/output" # output directory
+outputDir="${PWD}/output_g4sim" # output directory
 nJobs=10
 #--------------------------------------------------#
 #--------------------------------------------------#
