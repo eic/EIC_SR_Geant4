@@ -93,6 +93,7 @@ void AnalysisSR::Init(TString treeName = "tree")
 
 	_fChain->GetEntry(0);
 	// histograms
+	_h0 = new TH1F("h0","SR photon energy (abs(gammaPosZ_cm) < 65 cm);E_{#gamma} [eV];# of photons",101000,-1000,100000);
 	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",101000,-1000,100000);
 	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",600,-4000,2000,300,-30,30);
 	_h3 = new TH2F("h3","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",600,-4000,2000,300,-30,30);
@@ -166,6 +167,9 @@ void AnalysisSR::Loop()
 		{
 			//---------------------------------------------------------------------------
 			// fill histograms
+
+			if(TMath::Abs(gammaPosZ_cm->at(i)) < 65.0)
+				_h0->Fill(gammaEnergy_eV->at(i));
 
 			_h1->Fill(gammaEnergy_eV->at(i));
 			_h2->Fill(gammaPosZ_cm->at(i),gammaPosX_cm->at(i));
@@ -246,6 +250,7 @@ void AnalysisSR::Loop()
 
 	TFile* f = new TFile(GetOutputFileNameRoot().Data(),"recreate");
 	f->cd();
+	_h0->Write();
 	_h1->Write();
 	_h2->Write();
 	_h3->Write();

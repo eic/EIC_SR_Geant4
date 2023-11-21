@@ -31,7 +31,7 @@
 
 	<!-- tracked gamma energy cut -->
 	<genecut>
-		<sec desc="gamma energy cut" name="ecut" unit="eV">-1</sec>
+		<sec desc="gamma energy cut" name="ecut" unit="eV">4</sec>
 	</genecut>
 
 	<!-- tracking time cut -->

@@ -11,6 +11,13 @@ queue='s'
 #--------------------------------------------------#
 #--------------------------------------------------#
 
+echo "[INFO] mainInDir = ${mainInDir}"
+echo "[INFO] treeName = ${treeName}"
+echo "[INFO] outputDir = ${outputDir}"
+echo "[INFO] buildDir = ${buildDir}"
+echo "[INFO] nJobs = ${nJobs}"
+echo "[INFO] queue = ${queue}"
+
 # output directory
 mkdir -pv ${outputDir}
 

@@ -7,7 +7,7 @@ date;
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="${PWD}/geometry/simParameters.xml" # simulation geometry settings
-nParticles=10000 # number of primary particles per job
+nParticles=100000 # number of primary particles per job
 outputDir='/group/belle2/TMP/anatochi/eic/output' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
@@ -37,6 +37,7 @@ mkdir -pv ${buildDir}
 cd ${buildDir}
 
 # config
+make clean
 cmake ../
 
 # compile
