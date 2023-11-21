@@ -52,6 +52,7 @@ Geant4 stand-alone simulation of synchrotron radiation in the EIC interaction re
 #- To run simulation with HEPMC events + optical photon physics
 # npsim --steeringFile --compactFile $DETECTOR_PATH/$DETECTOR_CONFIG.xml -numberOfEvents 10 --outputFile npsim_pythia8NCDIS_10x100.edm4hep.root
 #
+# EICrecon is now automatically loaded with eic-shell -- no needs to install and load it separately
 #-- To build EICreco
 # in eic-shell
 # git clone https://github.com/eic/EICrecon
