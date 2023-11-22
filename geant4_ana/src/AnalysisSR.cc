@@ -165,6 +165,8 @@ void AnalysisSR::Loop()
 		// loop over SR photons
 		for(Int_t i = 0; i < gammaEnergy_eV->size(); i++)
 		{
+			// only SR photons around the IP6
+			if(TMath::Abs(gammaPosZ_cm->at(i)) > 65.0){continue;} // geometry cut 
 			//---------------------------------------------------------------------------
 			// fill histograms
 
@@ -214,9 +216,8 @@ void AnalysisSR::Loop()
 			// add the vertex to the event
 			event.add_vertex(vertex);
 		}
-
 		// write a non-empty event
-		if(gammaEnergy_eV->size() > 0)
+		if(!event.vertices_empty())
 			_fHepmc->write_event(event);
 
 		// monitor data

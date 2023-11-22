@@ -2,11 +2,11 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim' # input directory
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon' # output directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_ip6' # input directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_ip6' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
-queue='l'
+queue='s'
 eicshell='/home/belle2/anatochi/eic/eic-shell'
 #--------------------------------------------------#
 #--------------------------------------------------#
@@ -61,7 +61,7 @@ do
 	runFile="runEICrecon_${jobID}.sh"
 	echo "#!/bin/bash" > ${runFile}
 	echo "source /opt/detector/epic-nightly/setup.sh" >> ${runFile}
-	echo "export EICrecon_MY=/home/belle2/anatochi/eic/EIC_SR_Geant4/eic_recon/EICrecon_MY" >> ${runFile}
+	echo "export EICrecon_MY=${PWD}/../EICrecon_MY" >> ${runFile}
 	echo -ne "time eicrecon -Pplugins=analysisPlugin -Ppodio:output_include_collections=\"MCParticles\" " >> ${runFile} 
 	echo -ne "-Ppodio:output_file=${outputDirName}/output_eicrecon_${jobID}.podio.root " >> ${runFile} 
 	echo "-Phistsfile=${outputDirName}/output_eicrecon_${jobID}.hist.root ${inputDirName}/output_eicsim_${jobID}.edm4hep.root" >> ${runFile}

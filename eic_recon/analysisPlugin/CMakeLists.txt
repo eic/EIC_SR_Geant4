@@ -26,6 +26,7 @@ set( analysisPlugin_PLUGIN_SOURCES ${mysourcefiles} )
 add_library(analysisPlugin_plugin SHARED ${analysisPlugin_PLUGIN_SOURCES})
 target_link_libraries(analysisPlugin_plugin ${JANA_LIB} ${ROOT_LIBRARIES} spdlog::spdlog)
 set_target_properties(analysisPlugin_plugin PROPERTIES PREFIX "" OUTPUT_NAME "analysisPlugin" SUFFIX ".so")
+target_compile_definitions(analysisPlugin_plugin PUBLIC HAVE_PODIO)
 
 # Install plugin USER_PLUGIN_OUTPUT_DIRECTORY is set depending on EICrecon_MY envar.
 install(TARGETS analysisPlugin_plugin DESTINATION ${USER_PLUGIN_OUTPUT_DIRECTORY} )

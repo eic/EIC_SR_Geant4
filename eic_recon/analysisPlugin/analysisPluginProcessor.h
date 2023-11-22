@@ -4,6 +4,8 @@
 // Include appropirate class headers
 #include <edm4hep/SimCalorimeterHit.h>
 #include <edm4hep/SimTrackerHit.h>
+#include <edm4hep/SimCalorimeterHitCollection.h>
+#include <edm4hep/SimTrackerHitCollection.h>
 
 
 class analysisPluginProcessor: public JEventProcessorSequentialRoot 

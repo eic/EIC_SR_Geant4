@@ -1,6 +1,9 @@
+// hadd -f /group/belle2/TMP/anatochi/eic/output_eicrecon_hist_all.root /group/belle2/TMP/anatochi/eic/output_eicrecon/output_eicrecon_*.hist.root
+// hadd -f /group/belle2/TMP/anatochi/eic/output_eicrecon_ip6_hist_all.root /group/belle2/TMP/anatochi/eic/output_eicrecon_ip6/output_eicrecon_*.hist.root
+
 void plot()
 {
-	TString fName = "eicrecon_all.root";
+	TString fName = "/group/belle2/TMP/anatochi/eic/output_eicrecon_ip6_hist_all.root";
 	TFile* file = TFile::Open(fName.Data());
 	TDirectory* dir = file->GetDirectory("analysisPlugin");
 	dir->ls();
@@ -20,7 +23,7 @@ void plot()
 				"MPGDBarrelHits","EcalEndcapPHits","B0TrackerHits",
 				"HcalBarrelHits","LumiSpecCALHits"};
 	Float_t nHits[bNum], nHitsSum[bNum];
-	Float_t x_VertexBarrelHits, y_VertexBarrelHits;
+	Float_t x_VertexBarrelHits, y_VertexBarrelHits, z_VertexBarrelHits;
 
 	for(Int_t i = 0; i < bNum; i++)
 	{
@@ -29,6 +32,7 @@ void plot()
 	}
 	ntraw_VertexBarrelHits->SetBranchAddress("x",&x_VertexBarrelHits);
 	ntraw_VertexBarrelHits->SetBranchAddress("y",&y_VertexBarrelHits);
+	ntraw_VertexBarrelHits->SetBranchAddress("z",&z_VertexBarrelHits);
 
 	TH1D* hHits = new TH1D("hHits","Hit frequency for different sub-detectors (t_{int.} = 100 nsec | 8000 Events);Subdetector;Hits freq. [Hz]",bNum,0,bNum);
 	TH2D* hVertexBarrelHits = new TH2D("hVertexBarrelHits","Scatter plot of SR hits in VertexBarrel (t_{int.} = 100 nsec | 8000 Events);x [mm];y [mm]",240,-120,120,240,-120,120);
@@ -73,7 +77,7 @@ void plot()
 	hHits->SetLineWidth(2);
 	hHits->SetLineColor(kBlack);
 	hHits->SetBarWidth(0.8);
-	hHits->SetMinimum(1e1);
+//	hHits->SetMinimum(1e1);
 	hHits->GetYaxis()->SetTitleOffset(1.2);
 	hHits->GetXaxis()->SetTitleOffset(3.0);
 	hHits->GetXaxis()->CenterTitle(true);
