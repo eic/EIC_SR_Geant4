@@ -57,5 +57,8 @@ eic_sim/build*
 eic_recon/analysisPlugin/build*
 eic_recon/build*
 
+# eic mat scan
+eic_matscan/build*
+
 # Git
 !.gitignore
