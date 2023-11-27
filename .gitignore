@@ -56,6 +56,7 @@ eic_sim/build*
 # eic reco
 eic_recon/analysisPlugin/build*
 eic_recon/build*
+eic_recon/*.png
 
 # eic mat scan
 eic_matscan/build*

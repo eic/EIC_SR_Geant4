@@ -4,10 +4,12 @@
 #---------------- INPUT PARAMETERS ----------------#
 mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim' # input directory
 treeName='tree'
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_ip6' # output directory
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
 queue='s'
+minZ=-1000 # [cm] minimum Z
+maxZ=1000 # [cm] maximum Z
 #--------------------------------------------------#
 #--------------------------------------------------#
 
@@ -17,6 +19,8 @@ echo "[INFO] outputDir = ${outputDir}"
 echo "[INFO] buildDir = ${buildDir}"
 echo "[INFO] nJobs = ${nJobs}"
 echo "[INFO] queue = ${queue}"
+echo "[INFO] minZ = ${minZ} [cm]"
+echo "[INFO] maxZ = ${maxZ} [cm]"
 
 # output directory
 mkdir -pv ${outputDir}
@@ -45,7 +49,7 @@ do
 	done
 	
 	# submit a job
-	com="./exe ${mainInDir} output_${jobID}.root ${outputDir} output_ana_${jobID} ${treeName} &> ${outputDir}/logExe_ana_${jobID}.txt"
+	com="./exe ${mainInDir} output_${jobID}.root ${outputDir} output_ana_${jobID} ${treeName} ${minZ} ${maxZ} &> ${outputDir}/logExe_ana_${jobID}.txt"
 	echo -ne "[INFO] ${com} => "
 	bsub -q $queue -o ${outputDir}/logJob_ana_${jobID}.txt "${com}"
 done

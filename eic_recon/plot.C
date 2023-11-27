@@ -9,7 +9,7 @@
 const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 1e8;
 
-void plot(TString fName = "/group/belle2/TMP/anatochi/eic/output_eicrecon_ip6_hist_all.root")
+void plot(TString fName = "output_eicrecon_hist_all.root")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	TFile* file = TFile::Open(fName.Data());

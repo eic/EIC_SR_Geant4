@@ -12,8 +12,12 @@ AnalysisSR::~AnalysisSR()
 		delete _fHepmc;
 }
 
-void AnalysisSR::Init(TString treeName = "tree")
+void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t maxZ = 1e9)
 {
+	// set Z coord limits
+	_minZ = minZ;
+	_maxZ = maxZ;
+
 	_fChain = new TChain(treeName.Data());
    	if(!_fChain){return;};
 	_fChain->Add(_inputFileName.Data());
@@ -165,11 +169,12 @@ void AnalysisSR::Loop()
 		// loop over SR photons
 		for(Int_t i = 0; i < gammaEnergy_eV->size(); i++)
 		{
-			// only SR photons around the IP6
-			if(TMath::Abs(gammaPosZ_cm->at(i)) > 65.0){continue;} // geometry cut 
+			// geometry cut for SR photons
+			if(gammaPosZ_cm->at(i) < _minZ || _maxZ < gammaPosZ_cm->at(i)){continue;} 
 			//---------------------------------------------------------------------------
 			// fill histograms
 
+			// only SR photons around the IP6
 			if(TMath::Abs(gammaPosZ_cm->at(i)) < 65.0)
 				_h0->Fill(gammaEnergy_eV->at(i));
 

@@ -1,6 +1,7 @@
 #include "src/AnalysisSR.hh"
 
 #include <ctime>
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -16,14 +17,17 @@ int main(int argc, char* argv[])
     	start_time = time(NULL);
 
 	TString mainInDir, inputFileName, mainOutDir, outputFileName, treeName;
+	Double_t minZ, maxZ;
 
-	if(argc == 6)
+	if(argc == 8)
 	{
 		mainInDir 	= argv[1];
 		inputFileName 	= argv[2];
 		mainOutDir 	= argv[3];
 		outputFileName 	= argv[4];
 		treeName 	= argv[5]; 
+		minZ		= atof(argv[6]);
+		maxZ		= atof(argv[7]);
 		
 		cout<<"\n\n=================================================================="<<endl;
 		cout<<"[INFO] main ==> Input parameters"<<endl;
@@ -32,14 +36,16 @@ int main(int argc, char* argv[])
 		cout<<"argv[3] = "<<mainOutDir<<endl;
 		cout<<"argv[4] = "<<outputFileName<<endl;
 		cout<<"argv[5] = "<<treeName<<endl;
+		cout<<"argv[6] = "<<minZ<<endl;
+		cout<<"argv[7] = "<<maxZ<<endl;
 		cout<<"==================================================================\n"<<endl;
 	}
 	else
 	{
 		cout<<"\n\n=================================================================="<<endl;
 		cout<<"[ERROR] main ==> Wrong number of input parameters: argc = "<<argc<<endl;
-		cout<<"Usage: [executable] [input file directory] [input file name] [output file directory] [output file name pattern] [input tree name]"<<endl;
-		cout<<"Example: ./exe ../../geant4_sim/output output_*.root ../output output tree"<<endl;
+		cout<<"Usage: [executable] [input file directory] [input file name] [output file directory] [output file name pattern] [input tree name] [min Z in cm] [max Z in cm]"<<endl;
+		cout<<"Example: ./exe ../../geant4_sim/output output_*.root ../output output tree -10000 10000"<<endl;
 		cout<<"==================================================================\n"<<endl;
 
 		return -1;
@@ -50,7 +56,7 @@ int main(int argc, char* argv[])
     	ana->SetInputFileName(mainInDir+"/"+inputFileName);
     	ana->SetOutputFileNameRoot(mainOutDir+"/"+outputFileName+".root");
     	ana->SetOutputFileNameHepmc(mainOutDir+"/"+outputFileName+".hepmc");
-    	ana->Init(treeName);
+    	ana->Init(treeName,minZ,maxZ);
 
     	cout<<"[INFO] Input file name: "<<ana->GetInputFileName()<<endl;
     	cout<<"[INFO] Output ROOT file name: "<<ana->GetOutputFileNameRoot()<<endl;

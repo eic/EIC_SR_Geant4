@@ -130,7 +130,7 @@ public :
 	TBranch        *b_monRefPosZ_cm;   //!
 	TBranch        *b_monRefAngle_rad;   //!
 
- 	void Init(TString);
+ 	void Init(TString,Double_t,Double_t);
 	void Loop();
 	void SetInputFileName(TString val){_inputFileName = val; return;}
 	TString GetInputFileName(){return _inputFileName;}
@@ -146,6 +146,8 @@ private:
 	TString _outputFileName_hepmc;
    	TChain* _fChain;
 	WriterAscii* _fHepmc;
+	Double_t _minZ;
+	Double_t _maxZ;
 
 	TH1F* _h0;
 	TH1F* _h1;
