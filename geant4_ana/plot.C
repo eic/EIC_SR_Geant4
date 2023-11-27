@@ -1,3 +1,11 @@
+/*********************************************************************************************************************/
+/*********************************************************************************************************************/
+/* Plot beam profiles in XX', YY', and ZP phase-space with SR photon spectrum and distribution                       */
+/* One should merge all output ROOT files into one using the 'hadd' command:                                         */
+/* hadd -f /path/output_g4ana_all.root /path/output_g4ana/output_ana_*.root                                          */
+/*********************************************************************************************************************/
+/*********************************************************************************************************************/
+
 void DrawEllipse(Double_t emit, Double_t alpha, Double_t beta, Double_t eta, Double_t etaPrime, Double_t delta, Double_t scale, Int_t nSigma, Color_t color);
 void GetEllipseValue(Double_t alpha, Double_t beta, Double_t emit, Double_t XX, Int_t sign, Double_t &x, Double_t &xp);
 void DrawPhaseSpace(	TString name, TH2F* hX, 
@@ -10,9 +18,7 @@ using namespace std;
 
 #define NMAGMAX 100 // maximum number of magnets
 
-// After running the geant4_analysis, merge all histogram files into one:  hadd /group/belle2/TMP/anatochi/eic/output_ana_all.root /group/belle2/TMP/anatochi/eic/output_ana/output_ana_*.root 
-
-void plot(TString fName = "/group/belle2/TMP/anatochi/eic/output_ana_all.root")
+void plot(TString fName = "output_ana_all.root")
 {
 	Double_t delta, emitX, emitY, gamma, mass_GeV;
 

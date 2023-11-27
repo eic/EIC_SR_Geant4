@@ -1,9 +1,17 @@
-// hadd -f /group/belle2/TMP/anatochi/eic/output_eicrecon_hist_all.root /group/belle2/TMP/anatochi/eic/output_eicrecon/output_eicrecon_*.hist.root
-// hadd -f /group/belle2/TMP/anatochi/eic/output_eicrecon_ip6_hist_all.root /group/belle2/TMP/anatochi/eic/output_eicrecon_ip6/output_eicrecon_*.hist.root
+/*********************************************************************************************************************/
+/*********************************************************************************************************************/
+/* Plot reconstructed detector hits and vertex detector hit-map                                                      */
+/* One should merge all output ROOT files into one using the 'hadd' command:                                         */
+/* hadd -f /path/output_eicrecon_hist_all.root /path/output_eicrecon/output_eicrecon_*.hist.root                     */
+/*********************************************************************************************************************/
+/*********************************************************************************************************************/
 
-void plot()
+const Double_t BeamCurrent_A = 0.227; // [A]
+const Double_t nElectrons_geant4 = 1e8;
+
+void plot(TString fName = "/group/belle2/TMP/anatochi/eic/output_eicrecon_ip6_hist_all.root")
 {
-	TString fName = "/group/belle2/TMP/anatochi/eic/output_eicrecon_ip6_hist_all.root";
+	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	TFile* file = TFile::Open(fName.Data());
 	TDirectory* dir = file->GetDirectory("analysisPlugin");
 	dir->ls();
@@ -34,9 +42,12 @@ void plot()
 	ntraw_VertexBarrelHits->SetBranchAddress("y",&y_VertexBarrelHits);
 	ntraw_VertexBarrelHits->SetBranchAddress("z",&z_VertexBarrelHits);
 
-	TH1D* hHits = new TH1D("hHits","Hit frequency for different sub-detectors (t_{int.} = 100 nsec | 8000 Events);Subdetector;Hits freq. [Hz]",bNum,0,bNum);
-	TH2D* hVertexBarrelHits = new TH2D("hVertexBarrelHits","Scatter plot of SR hits in VertexBarrel (t_{int.} = 100 nsec | 8000 Events);x [mm];y [mm]",240,-120,120,240,-120,120);
-
+	TH1D* hHits = new TH1D("hHits",
+		Form("Hit frequency for different sub-detectors (N_{e-} = %.e | I_{beam} = %.3f A);Subdetector;Hits freq. [Hz]",
+		nElectrons_geant4,BeamCurrent_A),bNum,0,bNum);
+	TH2D* hVertexBarrelHits = new TH2D("hVertexBarrelHits",
+		Form("Scatter plot of SR hits in VertexBarrel (N_{e-} = %.e | I_{beam} = %.3f A);x [mm];y [mm]",
+		nElectrons_geant4,BeamCurrent_A),240,-120,120,240,-120,120);
 
 	for(Int_t i = 0; i < nEntries_nHits; i++)
 	{
@@ -59,16 +70,17 @@ void plot()
 		ntraw_VertexBarrelHits->GetEntry(i);
 		hVertexBarrelHits->Fill(x_VertexBarrelHits,y_VertexBarrelHits);
 	}
+	hHits->Scale(BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
 
 	gStyle->SetErrorX(0);
 	gStyle->SetOptStat(0);
 
-	TCanvas* c1 = new TCanvas("c1","c1",1800,600);
+	TCanvas* c1 = new TCanvas("c1","c1",2000,2000);
 	c1->cd();
 	TPad *pad1 = new TPad("pad1","pad1",0,0,1,1);
-	pad1->SetBottomMargin(0.2);
-	pad1->SetTopMargin(0.12);
-	pad1->SetRightMargin(0.12);
+	pad1->SetBottomMargin(0.25);
+	pad1->SetTopMargin(0.1);
+	pad1->SetRightMargin(0.1);
 	pad1->SetLeftMargin(0.12);
 	pad1->Draw();
 	pad1->cd();
@@ -77,17 +89,21 @@ void plot()
 	hHits->SetLineWidth(2);
 	hHits->SetLineColor(kBlack);
 	hHits->SetBarWidth(0.8);
-//	hHits->SetMinimum(1e1);
+	hHits->SetMinimum(1e3);
+	hHits->SetMaximum(1e8);
 	hHits->GetYaxis()->SetTitleOffset(1.2);
 	hHits->GetXaxis()->SetTitleOffset(3.0);
 	hHits->GetXaxis()->CenterTitle(true);
 	hHits->GetYaxis()->CenterTitle(true);
-	hHits->GetXaxis()->SetLabelSize(0.05);
-	hHits->GetXaxis()->SetLabelOffset(0.02);
-//	hHits->LabelsOption("v");
+	hHits->GetXaxis()->SetLabelSize(0.04);
+	hHits->GetXaxis()->SetLabelOffset(0.01);
+	hHits->GetXaxis()->SetTitle("");
+	hHits->LabelsOption("v");
 	gPad->SetLogy();
 
-	TCanvas* c2 = new TCanvas("c2","c2",600,600);
+	c1->SaveAs("c1.png");
+
+	TCanvas* c2 = new TCanvas("c2","c2",2000,2000);
 	c2->cd();
 	TPad *pad2 = new TPad("pad2","pad2",0,0,1,1);
 	pad2->SetBottomMargin(0.12);
@@ -116,6 +132,8 @@ void plot()
    		arc->SetFillStyle(0);
    		arc->Draw();
 	}
+
+	c2->SaveAs("c2.png");
 
 	return;
 }

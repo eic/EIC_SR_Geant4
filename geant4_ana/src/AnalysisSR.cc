@@ -180,20 +180,23 @@ void AnalysisSR::Loop()
 			//---------------------------------------------------------------------------
 			// generate a HEPMC event
 
-			x = gammaPosX_cm->at(i)*1e1; // cm -> mm
-			y = gammaPosY_cm->at(i)*1e1; // cm -> mm
-			z = gammaPosZ_cm->at(i)*1e1; // cm -> mm
+			// flip XZ coordinates from Geant4 to EIC
+			x = (-1)*gammaPosX_cm->at(i)*1e1; // cm -> mm
+			y = ( 1)*gammaPosY_cm->at(i)*1e1; // cm -> mm
+			z = (-1)*gammaPosZ_cm->at(i)*1e1; // cm -> mm
 
-			px = gammaMomX_eV->at(i)/1e9; // eV -> GeV
-			py = gammaMomY_eV->at(i)/1e9; // eV -> GeV
-			pz = gammaMomZ_eV->at(i)/1e9; // eV -> GeV
+			// flip PxPz coordinates from Geant4 to EIC
+			px = (-1)*gammaMomX_eV->at(i)/1e9; // eV -> GeV
+			py = ( 1)*gammaMomY_eV->at(i)/1e9; // eV -> GeV
+			pz = (-1)*gammaMomZ_eV->at(i)/1e9; // eV -> GeV
 
 			energy = gammaEnergy_eV->at(i)/1e9; // eV -> GeV
 			pdg = 22; // gamma
 
-			pinx = energy*x/TMath::Sqrt(x*x+y*y+z*z);
-			piny = energy*y/TMath::Sqrt(x*x+y*y+z*z);
-			pinz = energy*z/TMath::Sqrt(x*x+y*y+z*z);
+			// flip PxPz coordinates from Geant4 to EIC
+			pinx = (-1)*energy*x/TMath::Sqrt(x*x+y*y+z*z);
+			piny = ( 1)*energy*y/TMath::Sqrt(x*x+y*y+z*z);
+			pinz = (-1)*energy*z/TMath::Sqrt(x*x+y*y+z*z);
 
 		    	// particles going into the vertex: 
 			// (px,py,pz,e),pdgid,status [https://arxiv.org/pdf/1912.08005.pdf]
