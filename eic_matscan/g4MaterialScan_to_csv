@@ -205,13 +205,11 @@ if __name__ == '__main__':
     # create a tree
     tree = TTree("tree", "Description")
     x0_array = array('f', [-1])
-    lambda_array = array('f', [-1])
     posx_array = array('f', [-1])
     posy_array = array('f', [-1])
     posz_array = array('f', [-1])
     
     tree.Branch("x0", x0_array, 'x0/F')
-    tree.Branch("lambda", lambda_array, 'lambda/F')
     tree.Branch("posx", posx_array, 'posx/F')
     tree.Branch("posy", posy_array, 'posy/F')
     tree.Branch("posz", posz_array, 'posz/F')
@@ -243,36 +241,46 @@ if __name__ == '__main__':
             #-----------------
             print(dfa)
 
-            #   material     Z       A  density    rad_length    int_length  thickness  path_length    int_X0  int_lambda   end_x  end_y     end_z
-            #1    Vacuum   7.0  14.784   0.0000  3.663460e+11  8.553940e+11     76.465        76.46  0.000000    0.000000    2.80    0.0    -76.41
-            #2    Vacuum   7.0  14.784   0.0000  3.663460e+11  8.553940e+11      1.365        77.83  0.000000    0.000000    2.85    0.0    -77.78
-            #3    Vacuum   7.0  14.784   0.0000  3.663460e+11  8.553940e+11      2.223        80.05  0.000000    0.000000    2.93    0.0    -80.00
-            #4    Vacuum   7.0  14.784   0.0000  3.663460e+11  8.553940e+11     12.034        92.09  0.000000    0.000000    3.37    0.0    -92.03
-            #5  Aluminum  13.0  26.982   2.6990  8.896300e+00  3.889440e+01     14.191       106.28  1.595177    0.364865    3.89    0.0   -106.21
-            #6       Air   7.0  14.784   0.0012  3.052884e+04  7.128279e+04     35.655       141.93  1.596345    0.365365    5.20    0.0   -141.84
-            #7  Aluminum  13.0  26.982   2.6990  8.896300e+00  3.889440e+01     30.881       172.82  5.067590    1.159343    6.33    0.0   -172.70
-            #8       Air   7.0  14.784   0.0012  3.052884e+04  7.128279e+04   9833.896     10006.71  5.389709    1.297299  366.44    0.0 -10000.00
+            #   material     Z       A  density    rad_length    int_length  thickness  path_length    int_X0  int_lambda   end_x  end_y   end_z
+            #1       Air   7.0  14.784   0.0012  3.052884e+04  7.128279e+04      286.5        286.5  0.009385    0.004019   -13.5    0.0 -1000.0
+            #2      Iron  26.0  55.845   7.8740  1.757500e+00  1.699030e+01        4.5        291.0  2.569850    0.268876    -9.0    0.0 -1000.0
+            #3  Aluminum  13.0  26.982   2.6990  8.896300e+00  3.889440e+01        0.2        291.2  2.592331    0.274018    -8.8    0.0 -1000.0
+            #4    Vacuum   7.0  14.784   0.0000  3.663460e+11  8.553940e+11       17.6        308.8  2.592331    0.274018     8.8    0.0 -1000.0
+            #5  Aluminum  13.0  26.982   2.6990  8.896300e+00  3.889440e+01        0.2        309.0  2.614812    0.279160     9.0    0.0 -1000.0
+            #6      Iron  26.0  55.845   7.8740  1.757500e+00  1.699030e+01        4.5        313.5  5.175277    0.544017    13.5    0.0 -1000.0
+            #7       Air   7.0  14.784   0.0012  3.052884e+04  7.128279e+04     2986.5       3300.0  5.273103    0.585914  3000.0    0.0 -1000.0
 
-            point_1 = start_point
-            x0_old = 0
-            lambda_old = 0
+            point_1 = start_point/10.0 # mm -> cm
             for ind in dfa.index:
                  point_2 = np.array([dfa['end_x'][ind],dfa['end_y'][ind],dfa['end_z'][ind]])
-                 x0_array[0] = dfa['int_X0'][ind] - x0_old 
-                 lambda_array[0] = dfa['int_lambda'][ind] - lambda_old
-                 x0_old = dfa['int_X0'][ind]
-                 lambda_old = dfa['int_lambda'][ind]
-
-                 nPoints=1000
+                 # get the radiation length in cm [https://pdg.lbl.gov/2017/AtomicNuclearProperties/]
+                 x0_array[0] = dfa['rad_length'][ind] 
+                 # claculate the number of steps between point-1 and point-2 (along the track in the given material)
+                 nPoints=math.ceil(dfa['thickness'][ind]*10) # returns the smallest integer higher or equal to the argument
+                 # adjust/limit the number of steps
+                 if nPoints > 1000:
+                      nPoints = 1000
+                 elif nPoints < 10:
+                      nPoints = 10
+                 # print numbers
+                 print("point_1 = ",point_1," --> point_2 = ",point_2,"; material = ",dfa['material'][ind],"; thickness = ",dfa['thickness'][ind]," --> nPoints = ",nPoints)
                  thickness=0
                  x = point_1[0]
                  y = point_1[1]
                  z = point_1[2]
+                 # claculate the step size
                  dx = (point_2[0]-point_1[0])/nPoints
                  dy = (point_2[1]-point_1[1])/nPoints
                  dz = (point_2[2]-point_1[2])/nPoints
                  dthickness = math.sqrt(math.pow(dx,2) + math.pow(dy,2) + math.pow(dz,2))
-
+                 # if the element is too thin
+                 if dthickness == 0.0 or dfa['thickness'][ind] == 0.0:
+                       # fill the output tree
+                      posx_array[0] = x
+                      posy_array[0] = y
+                      posz_array[0] = z
+                      tree.Fill();
+                 # loop over all steps
                  while thickness < dfa['thickness'][ind] and dthickness > 0.0:
                       # fill the output tree
                       posx_array[0] = x

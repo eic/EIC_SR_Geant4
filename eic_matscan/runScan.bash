@@ -2,8 +2,8 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_matscan' # output directory
-buildDir='./build' # build directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_matscan_ext' # output directory
+buildDir='./build_ext' # build directory
 nJobs=2001
 queue='s'
 eicshell='/home/belle2/anatochi/eic/eic-shell'
@@ -29,12 +29,12 @@ mkdir -pv ${outputDirName}
 
 #---------------------#
 # XZ-plane scan
-xx=-4000.0 # [mm]
-ymin=-10.0 # [mm]
-ymax=10.0 # [mm]
+xx=-30000.0 # [mm]
+ymin=-1.0 # [mm]
+ymax=1.0 # [mm]
 dy=1.0 # [mm]
-zz=-8000.0 # [mm]
-dz=8.0 # [mm]
+zz=-40000.0 # [mm]
+dz=40.0 # [mm]
 etamin=0
 etamax=0
 etastep=1
@@ -76,7 +76,7 @@ do
 
 	chmod 777 ${runFile}
 	echo -ne "${jobID} /  ${nJobs} : "
-	#bsub -q $queue -o ${outputDirName}/logJob_matscan_${jobID}.txt ". ${eicshell} -- ./${runFile}"
+	bsub -q $queue -o ${outputDirName}/logJob_matscan_${jobID}.txt ". ${eicshell} -- ./${runFile}"
 
 	zz=`echo $zz + $dz | bc`
 done
