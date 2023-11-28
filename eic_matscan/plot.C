@@ -24,12 +24,12 @@ void plot()
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-----------------------------------------------------------//
 	// MC particles (use eic-shell)
-	plotMCparticles("/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_podio_all.root","./output/output_eicrecon_geant4_podio_all_hist.root");
+//	plotMCparticles("/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_podio_all.root","./output/output_eicrecon_geant4_podio_all_hist.root");
 	plotMCpHisto("./output/output_eicrecon_geant4_podio_all_hist.root","./output/MCP_2D","xz");
 // [for Synrad+]	plotMCparticles("/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_synrad_XZflip/output_eicrecon.podio.root","./output/output_eicrecon_synrad_podio_all_hist.root");
 	//-----------------------------------------------------------//
 	// Material scan
-	plotMaterials("/gpfs/group/belle2/TMP/anatochi/eic/output_matscan/g4mat_scan_*.root","./output/g4mat_scan_histo.root");
+//	plotMaterials("/gpfs/group/belle2/TMP/anatochi/eic/output_matscan/g4mat_scan_*.root","./output/g4mat_scan_histo.root");
 	plotMatScanHisto("./output/g4mat_scan_histo.root","./output/X0_2D","xz");
 	//-----------------------------------------------------------//
 	// MC particles onto Material scan: Geant4 vs Synrad+
@@ -120,6 +120,7 @@ void plotMCpHisto(TString fNameIn, TString fNameOut, TString plane)
         pad1->Draw();
         pad1->cd();
 
+	hmc->GetYaxis()->SetRangeUser(-50,50);
 	hmc->SetMinimum(1e-1); 
 	hmc->GetZaxis()->SetTitle("N_{#gamma} [photons]");
 	hmc->Draw("colz"); 
@@ -152,6 +153,7 @@ void plotMatScanHisto(TString fNameIn, TString fNameOut, TString plane)
         pad1->Draw();
         pad1->cd();
 
+	hx0->GetYaxis()->SetRangeUser(-50,50);
 	hx0->SetMinimum(1e-4); 
 	hx0->GetZaxis()->SetTitle("X^{-1}_{0} [cm^{-1}]");
 	hx0->Draw("colz"); 

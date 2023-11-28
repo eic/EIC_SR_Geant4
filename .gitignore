@@ -60,6 +60,7 @@ eic_recon/*.png
 
 # eic mat scan
 eic_matscan/build*
+eic_matscan/output*
 
 # Git
 !.gitignore
