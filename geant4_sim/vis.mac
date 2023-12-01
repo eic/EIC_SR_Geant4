@@ -3,7 +3,7 @@
 /event/verbose 0
 /tracking/verbose 0
 ##-----------------------------------------##
-/output/filename ../output/output.root
+/output/filename ./output.root
 
 /stack/killsecondaries 0
 

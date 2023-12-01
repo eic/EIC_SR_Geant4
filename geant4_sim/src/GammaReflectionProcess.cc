@@ -139,12 +139,12 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		if(prePV->GetName() == "vac_ip") // Au ip beam pipe
 		{
 			prob = FindReflectionProbability(_reflectDataMap["Au"],
-			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle_rad,fTotalEnergy_eV);
+				_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle_rad,fTotalEnergy_eV);
 		}
 		else // Cu beam pipe
 		{
 			prob = FindReflectionProbability(_reflectDataMap["Cu"],
-			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle_rad,fTotalEnergy_eV);
+				_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle_rad,fTotalEnergy_eV);
 		}
 
 		// normalize: vector parallel to this, but of length 1.
