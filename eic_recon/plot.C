@@ -8,8 +8,27 @@
 
 const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 1e8;
-//const Double_t beamTailCoreRatio = (1.251e1+1.254e1)/(1.251e1+1.254e1+0+4.825e-7); // core
-const Double_t beamTailCoreRatio = (0+4.825e-7)/(1.251e1+1.254e1+0+4.825e-7); // tail
+
+Double_t getBeamCoreTailRatio(TString type = "core")
+{
+	const Double_t Kx = 0.0;
+	const Double_t Ky = 25e-7;
+	const Double_t tailmin = 5; 
+	const Double_t tailmax = 20; 
+
+	// core, integral of gauss [0;inf] = 1/2 x [-inf;inf]
+	Double_t Ic = TMath::Sqrt(TMath::PiOver2());
+	// tail, integral of K_r/r^3 [tailmin;tailmax]
+	Double_t xIt = (-0.5)*Kx*(1./TMath::Power(tailmax,2)-1./TMath::Power(tailmin,2)); // x-axis
+	Double_t yIt = (-0.5)*Ky*(1./TMath::Power(tailmax,2)-1./TMath::Power(tailmin,2)); // y-axis
+	// core + tail
+	Double_t xIct = Ic + xIt; // x-axis 
+	Double_t yIct = Ic + yIt; // y-axis 
+	// ratio = core/(core+tail)
+	Double_t Rc = Ic*Ic/(xIct*yIct);
+	
+	return (type == "core") ? (Rc /*core*/) : (1.0 - Rc /*tail*/);
+}
 
 void plot(TString fName = "output_eicrecon_hist_all.root")
 {
@@ -45,8 +64,15 @@ void plot(TString fName = "output_eicrecon_hist_all.root")
 	ntraw_VertexBarrelHits->SetBranchAddress("z",&z_VertexBarrelHits);
 
 	TH1D* hHits = new TH1D("hHits",
-		Form("Hit frequency for different sub-detectors (N_{e-} = %.e | I_{beam} = %.3f A | Tail/Core = %.3e);Subdetector;Hits freq. [Hz]",
-		nElectrons_geant4,BeamCurrent_A,beamTailCoreRatio),bNum,0,bNum);
+
+		/* core */		
+		Form("Hit frequency for different sub-detectors (N_{e-} = %.e | I_{beam} = %.3f A | Core/(Core+Tail) = %.3e);Subdetector;Hits freq. [Hz]",
+		nElectrons_geant4,BeamCurrent_A,getBeamCoreTailRatio("core")),bNum,0,bNum);
+
+		/* tail */
+		// Form("Hit frequency for different sub-detectors (N_{e-} = %.e | I_{beam} = %.3f A | Tail/(Core+Tail) = %.3e);Subdetector;Hits freq. [Hz]",
+		// nElectrons_geant4,BeamCurrent_A,getBeamCoreTailRatio("tail")),bNum,0,bNum);
+
 	TH2D* hVertexBarrelHits = new TH2D("hVertexBarrelHits",
 		Form("Scatter plot of SR hits in VertexBarrel (N_{e-} = %.e);x [mm];y [mm]",
 		nElectrons_geant4),240,-120,120,240,-120,120);
@@ -72,7 +98,9 @@ void plot(TString fName = "output_eicrecon_hist_all.root")
 		ntraw_VertexBarrelHits->GetEntry(i);
 		hVertexBarrelHits->Fill(x_VertexBarrelHits,y_VertexBarrelHits,1);
 	}
-	hHits->Scale(beamTailCoreRatio*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
+
+	/* core */ hHits->Scale(getBeamCoreTailRatio("core")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
+	/* tail */ // hHits->Scale(getBeamCoreTailRatio("tail")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
 
 	gStyle->SetErrorX(0);
 	gStyle->SetOptStat(0);
