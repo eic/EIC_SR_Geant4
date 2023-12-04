@@ -66,6 +66,11 @@ private:
 	G4double _beamMomSpread;
     	G4double _beamGamma;
     	G4String _beamName;
+	G4String _beamType;
+	G4double _beamTailKx;
+	G4double _beamTailKy;
+	G4double _beamTailMin;
+	G4double _beamTailMax;
 
 	G4int _SRtype;
 
@@ -132,6 +137,11 @@ public:
 	G4double GetAbsPosZ(G4int i){return _absPosZ.at(i);}
 
     	G4String GetBeamName(){return _beamName;}
+    	G4String GetBeamType(){return _beamType;}
+	G4double GetBeamTailKx(){return _beamTailKx;}
+	G4double GetBeamTailKy(){return _beamTailKy;}
+	G4double GetBeamTailMin(){return _beamTailMin;}
+	G4double GetBeamTailMax(){return _beamTailMax;}
 	G4double GetBeamStartPosX(){return _beamStartPosX;}
 	G4double GetBeamStartPosY(){return _beamStartPosY;}
 	G4double GetBeamStartPosZ(){return _beamStartPosZ;}
@@ -186,6 +196,11 @@ private:
 	G4double absPosX, G4double absPosY, G4double absPosZ);
 
     	void SetBeamName(G4String val){_beamName = val; return;}
+    	void SetBeamType(G4String val){_beamType = val; return;}
+	void SetBeamTailKx(G4double val){_beamTailKx = val; return;}
+	void SetBeamTailKy(G4double val){_beamTailKy = val; return;}
+    	void SetBeamTailMin(G4double val){_beamTailMin = val; return;}
+    	void SetBeamTailMax(G4double val){_beamTailMax = val; return;}
 	void SetBeamStartPosX(G4double val){_beamStartPosX = val; return;}
 	void SetBeamStartPosY(G4double val){_beamStartPosY = val; return;}
 	void SetBeamStartPosZ(G4double val){_beamStartPosZ = val; return;}

@@ -8,6 +8,8 @@
 
 const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 1e8;
+//const Double_t beamTailCoreRatio = (1.251e1+1.254e1)/(1.251e1+1.254e1+0+4.825e-7); // core
+const Double_t beamTailCoreRatio = (0+4.825e-7)/(1.251e1+1.254e1+0+4.825e-7); // tail
 
 void plot(TString fName = "output_eicrecon_hist_all.root")
 {
@@ -43,11 +45,11 @@ void plot(TString fName = "output_eicrecon_hist_all.root")
 	ntraw_VertexBarrelHits->SetBranchAddress("z",&z_VertexBarrelHits);
 
 	TH1D* hHits = new TH1D("hHits",
-		Form("Hit frequency for different sub-detectors (N_{e-} = %.e | I_{beam} = %.3f A);Subdetector;Hits freq. [Hz]",
-		nElectrons_geant4,BeamCurrent_A),bNum,0,bNum);
+		Form("Hit frequency for different sub-detectors (N_{e-} = %.e | I_{beam} = %.3f A | Tail/Core = %.3e);Subdetector;Hits freq. [Hz]",
+		nElectrons_geant4,BeamCurrent_A,beamTailCoreRatio),bNum,0,bNum);
 	TH2D* hVertexBarrelHits = new TH2D("hVertexBarrelHits",
-		Form("Scatter plot of SR hits in VertexBarrel (N_{e-} = %.e | I_{beam} = %.3f A);x [mm];y [mm]",
-		nElectrons_geant4,BeamCurrent_A),240,-120,120,240,-120,120);
+		Form("Scatter plot of SR hits in VertexBarrel (N_{e-} = %.e);x [mm];y [mm]",
+		nElectrons_geant4),240,-120,120,240,-120,120);
 
 	for(Int_t i = 0; i < nEntries_nHits; i++)
 	{
@@ -68,9 +70,9 @@ void plot(TString fName = "output_eicrecon_hist_all.root")
 	for(Int_t i = 0; i < nEntries_VertexBarrelHits; i++)
 	{
 		ntraw_VertexBarrelHits->GetEntry(i);
-		hVertexBarrelHits->Fill(x_VertexBarrelHits,y_VertexBarrelHits);
+		hVertexBarrelHits->Fill(x_VertexBarrelHits,y_VertexBarrelHits,1);
 	}
-	hHits->Scale(BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
+	hHits->Scale(beamTailCoreRatio*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
 
 	gStyle->SetErrorX(0);
 	gStyle->SetOptStat(0);
@@ -89,8 +91,8 @@ void plot(TString fName = "output_eicrecon_hist_all.root")
 	hHits->SetLineWidth(2);
 	hHits->SetLineColor(kBlack);
 	hHits->SetBarWidth(0.8);
-	hHits->SetMinimum(1e3);
-	hHits->SetMaximum(1e8);
+//	hHits->SetMinimum(1e3);
+//	hHits->SetMaximum(1e8);
 	hHits->GetYaxis()->SetTitleOffset(1.2);
 	hHits->GetXaxis()->SetTitleOffset(3.0);
 	hHits->GetXaxis()->CenterTitle(true);

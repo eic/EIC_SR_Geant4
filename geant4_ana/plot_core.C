@@ -18,7 +18,7 @@ using namespace std;
 
 #define NMAGMAX 100 // maximum number of magnets
 
-void plot(TString fName = "output_ana_all.root")
+void plot_core(TString fName = "output_ana_all.root")
 {
 	Double_t delta, emitX, emitY, gamma, mass_GeV;
 
@@ -46,7 +46,8 @@ void plot(TString fName = "output_ana_all.root")
 
 	TH1F* h1 = (TH1F*)file->Get("h1"); // SR photon energy
 	TH2F* h2 = (TH2F*)file->Get("h2"); // SR photon position
-	TH2F* h3 = (TH2F*)file->Get("h3"); // SR photon vertex position
+	TH2F* h3x = (TH2F*)file->Get("h3x"); // SR photon vertex position
+	TH2F* h3y = (TH2F*)file->Get("h3y"); // SR photon vertex position
 	TH2F* h4 = (TH2F*)file->Get("h4"); // Monitor Px vs X
 	TH2F* h5 = (TH2F*)file->Get("h5"); // Monitor Py vs Y
 	TH1F* h6 = (TH1F*)file->Get("h6"); // Monitor P
@@ -85,8 +86,8 @@ void plot(TString fName = "output_ana_all.root")
 
 	c0_1->SaveAs("./pics/c0_1.png");
 
-	TCanvas* c0_2 = new TCanvas("c0_2","c0_2",900,900);
-	c0_2->Divide(1,2);
+	TCanvas* c0_2 = new TCanvas("c0_2","c0_2",2000,2000);
+	c0_2->Divide(1,3);
 
 	c0_2->cd(1);
 	TPad* pad0_21 = new TPad("pad0_21", "pad0_21",0,0,1,1);
@@ -109,7 +110,19 @@ void plot(TString fName = "output_ana_all.root")
    	pad0_22->Draw();
 	pad0_22->cd();
 	gPad->SetGrid();
-	h3->Draw("colz");
+	h3x->Draw("colz");
+	gPad->SetLogz();
+
+	c0_2->cd(3);
+	TPad* pad0_23 = new TPad("pad0_23", "pad0_23",0,0,1,1);
+    	pad0_23->SetBottomMargin(0.12);
+    	pad0_23->SetTopMargin(0.12);
+    	pad0_23->SetRightMargin(0.12);
+    	pad0_23->SetLeftMargin(0.12);
+   	pad0_23->Draw();
+	pad0_23->cd();
+	gPad->SetGrid();
+	h3y->Draw("colz");
 	gPad->SetLogz();
 
 	c0_2->SaveAs("./pics/c0_2.png");

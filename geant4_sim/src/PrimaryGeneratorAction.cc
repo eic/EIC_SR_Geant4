@@ -1,5 +1,9 @@
 #include "PrimaryGeneratorAction.hh"
 
+// Beam tail function 
+// Ref.[Christoph Montag, "Transverse Beam Tails and Beam Lifetime in the EIC Electron Storage Ring" (July 1, 2021)]
+Double_t getBeamTailDistribution(Double_t *x, Double_t *par){return ( par[0]/pow(x[0],3) );}
+
 PrimaryGeneratorAction::PrimaryGeneratorAction(RunAction* runAct, G4String xmlFileName) : runAction(runAct)
 {
     	fParticleGun = new G4ParticleGun(1);
@@ -7,6 +11,14 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(RunAction* runAct, G4String xmlFi
 	simPar->InitDefault();
 	simPar->ReadXML(xmlFileName);
 	simPar->PrintBeamParameters();
+
+	if(simPar->GetBeamType() == "tail")
+	{
+		fBeamTailX = new TF1("fBeamTailX",getBeamTailDistribution,simPar->GetBeamTailMin(),simPar->GetBeamTailMax(),1);
+		fBeamTailY = new TF1("fBeamTailY",getBeamTailDistribution,simPar->GetBeamTailMin(),simPar->GetBeamTailMax(),1);
+		fBeamTailX->SetParameter(0,simPar->GetBeamTailKx());
+		fBeamTailY->SetParameter(0,simPar->GetBeamTailKy());
+	}
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -40,13 +52,38 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		sqrt(simPar->GetBeamBetaY())*simPar->GetBeamEtaPrimeY();
 	G4double sigmaY_norm = sqrt(simPar->GetBeamEmitY() + pow(EtaY_norm*simPar->GetBeamMomSpread(),2));
 	G4double sigmaPrimeY_norm = sqrt(simPar->GetBeamEmitY() + pow(EtaPrimeY_norm*simPar->GetBeamMomSpread(),2));
+
 	// Initial normalized coordinates
-	// XY
-	G4double X_norm = G4RandGauss::shoot(0.0,sigmaX_norm);
-	G4double Y_norm = G4RandGauss::shoot(0.0,sigmaY_norm);
-	// X'Y'
-	G4double Xprime_norm = G4RandGauss::shoot(0.0,sigmaPrimeX_norm);
-	G4double Yprime_norm = G4RandGauss::shoot(0.0,sigmaPrimeY_norm);
+	G4double X_norm, Y_norm, Xprime_norm, Yprime_norm;
+
+	// beam core -- Gaussian
+	// XX'
+	X_norm = G4RandGauss::shoot(0.0,sigmaX_norm);
+	Xprime_norm = G4RandGauss::shoot(0.0,sigmaPrimeX_norm);
+	// YY'
+	Yprime_norm = G4RandGauss::shoot(0.0,sigmaPrimeY_norm);
+	Y_norm = G4RandGauss::shoot(0.0,sigmaY_norm);
+
+	// beam tail -- non-Gaussian
+	if(simPar->GetBeamType() == "tail")
+	{
+		// XX'
+		if(simPar->GetBeamTailKx() > 0)
+		{
+			G4double rx = fBeamTailX->GetRandom(); // random radius following the given tail distribution
+			G4double tx = 2.*G4UniformRand()*M_PI; // uniformly distributed angle in the phase space
+			X_norm = rx*cos(tx)*sigmaX_norm;
+			Xprime_norm = rx*sin(tx)*sigmaPrimeX_norm;
+		}
+		// YY'
+		if(simPar->GetBeamTailKy() > 0)
+		{
+			G4double ry = fBeamTailY->GetRandom(); // random radius following the given tail distribution
+			G4double ty = 2.*G4UniformRand()*M_PI; // uniformly distributed angle in the phase space
+			Y_norm = ry*cos(ty)*sigmaY_norm;
+			Yprime_norm = ry*sin(ty)*sigmaPrimeY_norm;
+		}
+	}
 
 	//- Real coordinates [see S.Y.Lee "Accelerator Physics" 4th edition, (Floquet Transformation) page 49]
 	G4double X_real = X_norm*sqrt(simPar->GetBeamBetaX());

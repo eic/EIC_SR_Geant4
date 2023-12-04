@@ -2,8 +2,8 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim' # input directory
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon' # output directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_tails' # input directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_tails' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
 queue='s'

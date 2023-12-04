@@ -152,7 +152,8 @@ private:
 	TH1F* _h0;
 	TH1F* _h1;
 	TH2F* _h2;
-	TH2F* _h3;
+	TH2F* _h3x;
+	TH2F* _h3y;
 	TH2F* _h4;
 	TH2F* _h5;
 	TH1F* _h6;

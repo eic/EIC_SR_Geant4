@@ -16,6 +16,8 @@
 #include "G4SystemOfUnits.hh"
 #include "G4RotationMatrix.hh"
 #include "globals.hh"
+#include "TROOT.h"
+#include "TF1.h"
 
 using namespace std;
 
@@ -36,7 +38,10 @@ public:
 private:
     	G4ParticleGun* fParticleGun;
 	SimParameters* simPar;
-	RunAction* runAction;
+	RunAction* runAction;	
+
+	TF1* fBeamTailX;
+	TF1* fBeamTailY;
 };
 
 #endif

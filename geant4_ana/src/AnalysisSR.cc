@@ -100,7 +100,8 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	_h0 = new TH1F("h0","SR photon energy (abs(gammaPosZ_cm) < 65 cm);E_{#gamma} [eV];# of photons",101000,-1000,100000);
 	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",101000,-1000,100000);
 	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",600,-4000,2000,300,-30,30);
-	_h3 = new TH2F("h3","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",600,-4000,2000,300,-30,30);
+	_h3x = new TH2F("h3x","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",600,-4000,2000,300,-30,30);
+	_h3y = new TH2F("h3y","SR photon vertex position;Z_{vtx} [cm];Y_{vtx} [cm]",600,-4000,2000,300,-30,30);
 
 	_h4 = new TH2F("h4",Form("Monitor [%s]: Px vs X;X [cm];X'",monName->c_str()),1000,-4,4,10000,-1e-1,1e-1);
 	_h5 = new TH2F("h5",Form("Monitor [%s]: Py vs Y;Y [cm];Y'",monName->c_str()),1000,-4,4,10000,-1e-1,1e-1);
@@ -180,7 +181,8 @@ void AnalysisSR::Loop()
 
 			_h1->Fill(gammaEnergy_eV->at(i));
 			_h2->Fill(gammaPosZ_cm->at(i),gammaPosX_cm->at(i));
-			_h3->Fill(gammaVtxPosZ_cm->at(i),gammaVtxPosX_cm->at(i));
+			_h3x->Fill(gammaVtxPosZ_cm->at(i),gammaVtxPosX_cm->at(i));
+			_h3y->Fill(gammaVtxPosZ_cm->at(i),gammaVtxPosY_cm->at(i));
 
 			//---------------------------------------------------------------------------
 			// generate a HEPMC event
@@ -262,7 +264,8 @@ void AnalysisSR::Loop()
 	_h0->Write();
 	_h1->Write();
 	_h2->Write();
-	_h3->Write();
+	_h3x->Write();
+	_h3y->Write();
 	_h4->Write();
 	_h5->Write();
 	_h6->Write();

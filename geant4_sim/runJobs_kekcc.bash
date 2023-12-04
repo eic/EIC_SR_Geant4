@@ -7,10 +7,10 @@ date;
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="${PWD}/geometry/simParameters.xml" # simulation geometry settings
-nParticles=10000 # number of primary particles per job
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_test' # output directory
+nParticles=100000 # number of primary particles per job
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_tails' # output directory
 buildDir='./build' # build directory
-nJobs=100 # number of jobs
+nJobs=1000 # number of jobs
 queue='s'
 #--------------------------------------------------#
 #--------------------------------------------------#

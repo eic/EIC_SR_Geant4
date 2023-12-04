@@ -176,6 +176,21 @@ void SimParameters::ReadXML(G4String fName)
 		else if(child_node.second.get<string>("<xmlattr>.name") == "emity" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "nm")
 			SetBeamEmitY(stod(child_node.second.data())*nm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "type" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamType(child_node.second.data());
+		else if(child_node.second.get<string>("<xmlattr>.name") == "tailkx" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamTailKx(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "tailky" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamTailKy(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "tailmin" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamTailMin(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "tailmax" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamTailMax(stod(child_node.second.data()));
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
     	}
@@ -445,6 +460,11 @@ void SimParameters::InitDefault()
 	_beamMomSpread = 0.109e-2;
 	_beamGamma = 34924.26476;
 	_beamName = "e-";
+	_beamType = "core";
+	_beamTailKx = 0;
+	_beamTailKy = 0;
+	_beamTailMin = 0;
+	_beamTailMax = 0;
 
 	_SRtype = 1;
 
@@ -492,6 +512,11 @@ void SimParameters::PrintBeamParameters()
 	G4cout<<"Dispersion PY = "<<GetBeamEtaPrimeY()/m<<" []"<<G4endl;
 	G4cout<<"Emittance X = "<<GetBeamEmitX()/nm<<" [nm]"<<G4endl;
 	G4cout<<"Emittance Y = "<<GetBeamEmitY()/nm<<" [nm]"<<G4endl;
+	G4cout<<"Beam type = "<<GetBeamType()<<G4endl;
+	G4cout<<"Tail Kx = "<<GetBeamTailKx()<<G4endl;
+	G4cout<<"Tail Ky = "<<GetBeamTailKy()<<G4endl;
+	G4cout<<"Tail Min = "<<GetBeamTailMin()<<" [nSigma]"<<G4endl;
+	G4cout<<"Tail Max = "<<GetBeamTailMax()<<" [nSigma]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

@@ -3,8 +3,8 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_g4ana' # input directory
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim' # output directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_g4ana_tails' # input directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_tails' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
 queue='s'
@@ -22,6 +22,7 @@ echo "[INFO] queue = ${queue}"
 mkdir -pv ${outputDirName}
 
 # build directory
+rm -rf ${buildDir}
 mkdir -pv ${buildDir}
 cd ${buildDir}
 
