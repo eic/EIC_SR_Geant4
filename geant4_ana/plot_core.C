@@ -211,7 +211,7 @@ void plot_core(TString fName = "output_ana_all.root")
 	// calculate the number of radiated SR photons per electron	
 	for(Int_t i = 0; i < nMag; i++)
 	{
-		// number of generated SR photons in a dipole per electron per second: nPh = (alpha*gamma*c/rho)*(5/2*sqrt(3))
+		// number of generated SR photons in a dipole per electron per second: nPh = (alpha*gamma*c/rho)*(5/2/sqrt(3))
 		TString title = h10[i]->GetTitle();
 		Double_t nPh = -1, t_s = 0, l_m = 0, theta_rad = 0;
 		if(title.Contains("D2EF") || title.Contains("D1EF")) // Dipoles
