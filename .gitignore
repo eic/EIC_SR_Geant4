@@ -62,5 +62,8 @@ eic_recon/*.png
 eic_matscan/build*
 eic_matscan/output*
 
+# benchmark
+benchmark/SolenoidFieldMap/*.png
+
 # Git
 !.gitignore
