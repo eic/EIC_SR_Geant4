@@ -336,7 +336,7 @@ vector<pair<double, vector<double>>> GammaReflectionProcess::ReadReflectData(str
         	}
     	}
 
-    	// Close file
+    	// Close the file
     	myFile.close();
 
 	return dataset;

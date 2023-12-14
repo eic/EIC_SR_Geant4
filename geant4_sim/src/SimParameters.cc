@@ -602,7 +602,7 @@ void SimParameters::PrintTrackTcut()
 void SimParameters::PrintBeampipeFileName()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
-	G4cout<<"[INFO] SimParameters::PrintBeampipeFileName() ==> "<<GetBeampipeFileName()<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintBeampipeFileName ==> "<<GetBeampipeFileName()<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

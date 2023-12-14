@@ -5,11 +5,24 @@
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
 
+#include <string>
+#include <fstream>
+#include <vector>
+#include <utility> // pair
+#include <stdexcept> // runtime_error
+#include <sstream> // stringstream
+#include <stdio.h>
+#include <map>
+
+using namespace std;
+
 class SolenoidMagField : public G4MagneticField
 {
 public:
-	SolenoidMagField();
-    	SolenoidMagField(	const G4ThreeVector& pOrigin,
+	SolenoidMagField(	G4String pName);
+    	SolenoidMagField(	G4String pName,
+				G4bool pPrint,
+				const G4ThreeVector& pOrigin,
 				G4RotationMatrix* pMatrix);
 	~SolenoidMagField() override;
 	
@@ -17,24 +30,22 @@ public:
 				G4double B[]     ) const override;
 	G4Field* Clone() const override;
 
-	void SetFileName(G4String fName){_fileName = fName; return;}
-	G4String GetFileName(){return _fileName;}
-	void ReadSolenoidFieldData();
-	int FindIndexinVector(vector<double> myVector, G4double targetElement);
-
 private:
+	G4String 		fName = "../geometry/MARCO.txt";
+	G4bool 			fPrint = false;
 	G4ThreeVector		fOrigin = G4ThreeVector(0.0, 0.0, 0.0);
 	G4RotationMatrix*	fpMatrix = nullptr;
 
-	G4String _fileName;
 	vector<pair<double, vector<double>>> _Br;
 	vector<pair<double, vector<double>>> _Bz;
 	vector<double> _R;
 	vector<double> _Z;
 
+	void ReadSolenoidFieldData();
+	G4int FindIndexinVector(vector<double> myVector, G4double targetElement);
+	void PrintSolenoidFieldData();
+
 /*
-	void PrintReflectData(string name, vector<pair<double, vector<double>>> dataset,
-		vector<double> angle, vector<double> energy);
 	void FindClosestIndexesInVec(vector<double> vec, double val, int &id1, int &id2);
 	double FindReflectionProbability(vector<pair<double, vector<double>>> dataset,
 		vector<double> angle, vector<double> energy, 

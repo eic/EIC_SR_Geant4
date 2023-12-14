@@ -163,10 +163,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 			mag_vis->SetVisibility(visibility);
 			mag_log->SetVisAttributes(mag_vis);
 		}
-		else if(simPar->GetMagType(iMag) == "Solenoid")
-		{
-			mag_field = new SolenoidMagField(0); 
-		}
 		else
 		{
 			throw runtime_error("[ERROR] DetectorConstruction::Construct ==> Wrong magnet type\n");
@@ -206,6 +202,25 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4VisAttributes* beampipeVac_vis = new G4VisAttributes(G4Color::Grey());
 	beampipeVac_vis->SetVisibility(visibility);
 	beampipeVac_log->SetVisAttributes(beampipeVac_vis);
+
+	//- Detector solenoid
+//	if(simPar->BuildSolenoidField())
+	{
+		G4MagneticField* sol_field = new SolenoidMagField(
+			"../geometry/MARCO_v.6.4.1.1.3_1.7T_Magnetic_Field_Map_2022_11_14_rad_coords_cm_T.txt");
+//			,true,G4ThreeVector(0.0, 0.0, 0.0),nullptr); 
+
+		// apply the field to the IP and Vacuum logic volumes
+		G4FieldManager* localSolenoidFieldMgr = new G4FieldManager(sol_field);
+		localSolenoidFieldMgr->SetDetectorField(sol_field);
+		localSolenoidFieldMgr->CreateChordFinder(sol_field);
+
+		ip_log->SetFieldManager(localSolenoidFieldMgr, true);
+		beampipeVac_log->SetFieldManager(localSolenoidFieldMgr, true);
+	
+exit(-1);
+	}
+
 
 	//- Absorbers
 	for(int iAbs = 0; iAbs < simPar->GetAbsNum(); iAbs++)
