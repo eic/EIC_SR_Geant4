@@ -237,7 +237,7 @@ void plot_core(TString fName = "output_ana_all.root")
 	// calculate the radiated SR power per electron	
 	for(Int_t i = 0; i < nMag; i++)
 	{
-		// integrated power of generated SR photons per electron: power = 
+		// integrated power of generated SR photons per electron: power = (beta^4*c*C_gamma*E^4)/(2*pi*rho^2) [eV/s]
 		TString title = h10[i]->GetTitle();
 		Double_t P_W = -1, t_s = 0, l_m = 0, theta_rad = 0;
 		if(title.Contains("D2EF") || title.Contains("D1EF")) // Dipoles
@@ -252,8 +252,9 @@ void plot_core(TString fName = "output_ana_all.root")
 			Double_t C_gamma = (4.*TMath::Pi()/3.0)*r0_m/TMath::Power(mass_GeV,3);
 			Double_t E0_GeV = gamma*mass_GeV;
 			Double_t rho_m = l_m/(2.*TMath::Sin(theta_rad/2.));		
+			Double_t beta = TMath::Sqrt(1.0 - 1.0/TMath::Power(gamma,2));
 
-			P_W = (1e9)*TMath::Qe()*(TMath::C()*C_gamma*TMath::Power(E0_GeV,4))/(2.*TMath::Pi()*TMath::Power(rho_m,2));
+			P_W = (1e9)*TMath::Qe()*(TMath::Power(beta,4)*TMath::C()*C_gamma*TMath::Power(E0_GeV,4))/(2.*TMath::Pi()*TMath::Power(rho_m,2));
 		}
 		else if(title.Contains("Q1EF") || title.Contains("Q0EF")) // Quads
 		{
