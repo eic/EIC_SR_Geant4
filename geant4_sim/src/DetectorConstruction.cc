@@ -13,7 +13,6 @@
 #include "G4ThreeVector.hh"
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
-#include "CADMesh.hh" // https://github.com/christopherpoole/CADMesh
 #include "G4MagneticField.hh"
 #include "G4FieldManager.hh"
 #include "G4UniformMagField.hh"
@@ -23,6 +22,8 @@
 #include "G4UnionSolid.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4IntersectionSolid.hh"
+#include "CADMesh.hh" // https://github.com/christopherpoole/CADMesh
+#include "SolenoidMagField.hh"
 
 DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetectorConstruction()
 {
@@ -161,6 +162,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 			G4VisAttributes* mag_vis = new G4VisAttributes(G4Color::Yellow());
 			mag_vis->SetVisibility(visibility);
 			mag_log->SetVisAttributes(mag_vis);
+		}
+		else if(simPar->GetMagType(iMag) == "Solenoid")
+		{
+			mag_field = new SolenoidMagField(0); 
 		}
 		else
 		{

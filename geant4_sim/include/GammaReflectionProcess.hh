@@ -23,7 +23,7 @@ public:
 	explicit GammaReflectionProcess();
 	virtual ~GammaReflectionProcess();
 
-	virtual G4double PostStepGetPhysicalInteractionLength(const G4Track& aTrack,
+	virtual G4double PostStepGetPhysicalInteractionLength(	const G4Track& aTrack,
 				       				G4double   previousStepSize,
 				       				G4ForceCondition* condition);
     	// make processed being forced
@@ -41,19 +41,19 @@ public:  // without description
 
   	// no operation in  AtRestDoIt and  AlongStepDoIt
   	virtual G4double 
-  	AlongStepGetPhysicalInteractionLength(const G4Track&,
+  	AlongStepGetPhysicalInteractionLength(	const G4Track&,
 						G4double  ,
 						G4double  ,
 						G4double& ,
 						G4GPILSelection*);
   
   	virtual G4double 
-  	AtRestGetPhysicalInteractionLength(const G4Track&,
+  	AtRestGetPhysicalInteractionLength(	const G4Track&,
 				     		G4ForceCondition*);
-  	virtual G4VParticleChange* AtRestDoIt(const G4Track&,
+  	virtual G4VParticleChange* AtRestDoIt(	const G4Track&,
 						const G4Step&);
-  	virtual G4VParticleChange* AlongStepDoIt(const G4Track&,
-					   	const G4Step&);
+  	virtual G4VParticleChange* AlongStepDoIt(	const G4Track&,
+					   		const G4Step&);
   
 private:
 
