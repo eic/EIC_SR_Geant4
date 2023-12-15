@@ -19,8 +19,10 @@ using namespace std;
 class SolenoidMagField : public G4MagneticField
 {
 public:
-	SolenoidMagField(	G4String pName);
     	SolenoidMagField(	G4String pName,
+				G4double pRmax,
+				G4double pZmin,
+				G4double pZmax,
 				G4bool pPrint,
 				const G4ThreeVector& pOrigin,
 				G4RotationMatrix* pMatrix);
@@ -31,10 +33,13 @@ public:
 	G4Field* Clone() const override;
 
 private:
-	G4String 		fName = "../geometry/MARCO.txt";
-	G4bool 			fPrint = false;
-	G4ThreeVector		fOrigin = G4ThreeVector(0.0, 0.0, 0.0);
-	G4RotationMatrix*	fpMatrix = nullptr;
+	G4String 		fName 		=  "../geometry/MARCO.txt";
+	G4double		fRmax 		=  DBL_MAX;
+	G4double		fZmin 		= -DBL_MAX;
+	G4double		fZmax 		=  DBL_MAX;
+	G4bool 			fPrint 		=  false;
+	G4ThreeVector		fOrigin 	=  G4ThreeVector(0.0, 0.0, 0.0);
+	G4RotationMatrix*	fMatrix 	=  nullptr;
 
 	vector<pair<double, vector<double>>> _Br;
 	vector<pair<double, vector<double>>> _Bz;

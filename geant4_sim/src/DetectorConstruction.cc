@@ -46,8 +46,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 {
 	//------------------------------------------------------------------------
 	//- Components visibility
-	// G4bool visibility = true;
-	G4bool visibility = false;
+	G4bool visibility = true;
 	//------------------------------------------------------------------------
 	//- Particles
         G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
@@ -182,12 +181,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//- IP beam pipe
 	G4Box* ip_box = new G4Box("ip_box",1*m/2,1*m/2,(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2); 
 	G4VSolid* ip_solid = new G4IntersectionSolid("ip_solid", beampipeUni_solid, ip_box,0,
-	G4ThreeVector(0,0,simPar->GetIpBeampipeZmin()+(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2));
+		G4ThreeVector(	0,
+				0,
+				simPar->GetIpBeampipeZmin()+(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2));
 	G4LogicalVolume* ip_log = new G4LogicalVolume(ip_solid,mat_vac,"ip_log");
 	new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),ip_log,"vac_ip",world_log,false,0,true);
 	//- Visualization
 	G4VisAttributes* ip_vis = new G4VisAttributes(G4Color::Cyan());
-	ip_vis->SetVisibility(true); //visibility);
+	ip_vis->SetVisibility(visibility);
 	ip_log->SetVisAttributes(ip_vis);
 
 	//- Vacuum (subtract the ip beam pipe volume from the beam pipe volume)
@@ -207,9 +208,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//- Detector solenoid
 //	if(simPar->BuildSolenoidField())
 	{
+		// rotation matrix to flip XZ coordinates from EIC to Geant4
+		G4RotationMatrix* sol_rot = new G4RotationMatrix();
+		sol_rot->rotateY(M_PI*rad);
+
 		G4MagneticField* sol_field = new SolenoidMagField(
-			"../geometry/MARCO_v.6.4.1.1.3_1.7T_Magnetic_Field_Map_2022_11_14_rad_coords_cm_T.txt");
-//			,true,G4ThreeVector(0.0, 0.0, 0.0),nullptr); 
+			"../geometry/MARCO_v.6.4.1.1.3_1.7T_Magnetic_Field_Map_2022_11_14_rad_coords_cm_T.txt",
+			3*m,-3*m,3*m,false,G4ThreeVector(0.0, 0.0, 0.0),sol_rot); 
 
 		// apply the field to the IP and Vacuum logic volumes
 		G4FieldManager* localSolenoidFieldMgr = new G4FieldManager(sol_field);

@@ -8,32 +8,33 @@ namespace
 	G4RotationMatrix IdentityMatrix; 
 }
 
-SolenoidMagField::SolenoidMagField(	G4String pName)
-{
-	G4cout<<"\n\n=================================================================="<<G4endl;
-	G4cout<<"[INFO] SolenoidMagField::SolenoidMagField ==> "<<pName<<G4endl;
-	G4cout<<"==================================================================\n\n"<<G4endl;
-
-	fName = pName;
-	fpMatrix = &IdentityMatrix;
-
-	ReadSolenoidFieldData();
-	if(fPrint){PrintSolenoidFieldData();}
-}
-
 SolenoidMagField::SolenoidMagField(	G4String pName,
+					G4double pRmax,
+					G4double pZmin,
+					G4double pZmax,
 					G4bool pPrint,
 					const G4ThreeVector& pOrigin,
 					G4RotationMatrix* pMatrix)
 {
-	G4cout<<"\n\n=================================================================="<<G4endl;
-	G4cout<<"[INFO] SolenoidMagField::SolenoidMagField ==> "<<pName<<G4endl;
-	G4cout<<"==================================================================\n\n"<<G4endl;
-
+	// set values
 	fName = pName;
+	fRmax = pRmax;
+	fZmin = pZmin;
+	fZmax = pZmax;
 	fPrint = pPrint;
 	fOrigin = pOrigin;
-	fpMatrix = pMatrix;
+	fMatrix = pMatrix;
+
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SolenoidMagField::SolenoidMagField"<<G4endl;
+	G4cout<<"File name = "<<fName<<G4endl;
+	G4cout<<"Max R = "<<fRmax/cm<<" [cm]"<<G4endl;
+	G4cout<<"Min Z = "<<fZmin/cm<<" [cm]"<<G4endl;
+	G4cout<<"Max Z = "<<fZmax/cm<<" [cm]"<<G4endl;
+	G4cout<<"Print data flag = "<<fPrint<<G4endl;
+	G4cout<<"Origin (x;y;z) = ("<<fOrigin.x()/cm<<";"<<fOrigin.y()/cm<<";"<<fOrigin.z()/cm<<") [cm]"<<G4endl;
+	G4cout<<"Rotation matrix (theta;phi) = ("<<fMatrix->phi()/rad<<";"<<fMatrix->theta()/rad<<") [rad]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	ReadSolenoidFieldData();
 	if(fPrint){PrintSolenoidFieldData();}
@@ -41,7 +42,7 @@ SolenoidMagField::SolenoidMagField(	G4String pName,
 
 G4Field* SolenoidMagField::Clone() const
 {
-	return new SolenoidMagField(fName, fPrint, fOrigin, fpMatrix);
+	return new SolenoidMagField(fName, fRmax, fZmin, fZmax, fPrint, fOrigin, fMatrix);
 }
 
 SolenoidMagField::~SolenoidMagField() = default;
@@ -54,7 +55,7 @@ void SolenoidMagField::GetFieldValue(	const G4double y[],	// [7]
                                          	y[1] - fOrigin.y(),
                                          	y[2] - fOrigin.z());
   
-	const G4ThreeVector r_local = (*fpMatrix) * r_global;
+	const G4ThreeVector r_local = (*fMatrix) * r_global;
 	// x,y,z --> rho,z,phi
 	double zpos = r_local[2];
 	double rho = hypot(r_local[0],r_local[1]);
@@ -64,11 +65,14 @@ void SolenoidMagField::GetFieldValue(	const G4double y[],	// [7]
 	double Br, Bz;
 	FindSolenoidFieldValue(rho/cm,zpos/cm,Br,Bz); 
 
+	// limit the field in local coordinates
+	if(rho > fRmax || zpos < fZmin || zpos > fZmax){Br = 0; Bz = 0;}
+
 	// rho,z,phi --> x,y,z
 	const G4ThreeVector B_local(	Br * cos(phi) * tesla,
                                		Br * sin(phi) * tesla, 
 					Bz * tesla);
-	const G4ThreeVector B_global = fpMatrix->inverse() * B_local;
+	const G4ThreeVector B_global = fMatrix->inverse() * B_local;
 
 	B[0] = B_global.x();
 	B[1] = B_global.y();
@@ -113,7 +117,7 @@ void SolenoidMagField::ReadSolenoidFieldData()
 
 			// read values in the line
         		ss >> rr >> zz >> brr >> bzz;
-			
+		
 			// fill R vectors and create R-Br/R-Bz pairs
 			if(find(_R.begin(), _R.end(), rr) == _R.end())
 			{
