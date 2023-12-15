@@ -63,7 +63,7 @@
 		<sec desc="dispersion PY" name="etapy" unit="">0.0</sec>
 		<sec desc="emittance X" name="emitx" unit="nm">24.0</sec>
 		<sec desc="emittance Y" name="emity" unit="nm">2.0</sec>
-		<sec desc="type: core or tail" name="type" unit="">tail</sec>
+		<sec desc="type: core or tail" name="type" unit="">core</sec>
 		<sec desc="tail fit parameter X" name="tailkx" unit="">0.0</sec>
 		<sec desc="tail fit parameter Y" name="tailky" unit="">25e-7</sec>
 		<sec desc="tail min sigma" name="tailmin" unit="">5</sec>

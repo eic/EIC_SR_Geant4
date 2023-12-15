@@ -1,5 +1,7 @@
 #include "SolenoidMagField.hh"
 #include "G4RotationMatrix.hh"
+#include "G4SystemOfUnits.hh"
+#include "globals.hh"
 
 namespace
 {
@@ -53,14 +55,24 @@ void SolenoidMagField::GetFieldValue(	const G4double y[],	// [7]
                                          	y[2] - fOrigin.z());
   
 	const G4ThreeVector r_local = (*fpMatrix) * r_global;
-//	const G4ThreeVector B_local(	fGradient * r_local.y(),
-//                               		fGradient * r_local.x(), 
-//					0);
-  //	const G4ThreeVector B_global = fpMatrix->inverse() * B_local;
+	// x,y,z --> rho,z,phi
+	double zpos = r_local[2];
+	double rho = hypot(r_local[0],r_local[1]);
+	double phi = atan2(r_local[1],r_local[0]);
 
-  //	B[0] = B_global.x();
-  //	B[1] = B_global.y();
-  //	B[2] = B_global.z();
+	// get the field
+	double Br, Bz;
+	FindSolenoidFieldValue(rho/cm,zpos/cm,Br,Bz); 
+
+	// rho,z,phi --> x,y,z
+	const G4ThreeVector B_local(	Br * cos(phi) * tesla,
+                               		Br * sin(phi) * tesla, 
+					Bz * tesla);
+	const G4ThreeVector B_global = fpMatrix->inverse() * B_local;
+
+	B[0] = B_global.x();
+	B[1] = B_global.y();
+	B[2] = B_global.z();
 
 	return;
 }
@@ -203,4 +215,69 @@ void SolenoidMagField::PrintSolenoidFieldData()
 	return;
 }
 
+void SolenoidMagField::FindClosestIndexesInVec(vector<double> vec, double val, int &id1, int &id2) const
+{
+	id1 = id2 = 0;
+	// find the index of the element of the vecotr that is nearest-above to val
+	auto i = lower_bound(vec.begin(), vec.end(), val); 
+	// if the vector values are in decreasing order use:
+	//auto i = lower_bound(vec.rbegin(), vec.rend(), val);
+	id2 = i - vec.begin(); // nearest index
 
+	if (i == vec.end())
+  	{
+		--id2;  // extrapolating above
+	}
+	else if (*i == val)
+	{
+		id1 = id2;
+  		return;
+	}
+
+	id1 = id2 ? id2 - 1 : id2; //nearest-below index, except when extrapolating downward
+	id1 = (val > vec.at(id2)) ? id2 : id1; //outside the data range
+
+	return;
+}
+
+void SolenoidMagField::FindSolenoidFieldValue(double r_val, double z_val, double &Br_val, double &Bz_val) const
+{
+	int r_i, r_j, z_i, z_j;
+
+	FindClosestIndexesInVec(_R,r_val,r_i,r_j);
+	FindClosestIndexesInVec(_Z,z_val,z_i,z_j);
+
+	// Br
+	double Br_ii = _Br.at(r_i).second.at(z_i);
+	double Br_ji = _Br.at(r_j).second.at(z_i);
+	double Br_ij = _Br.at(r_i).second.at(z_j);
+	double Br_jj = _Br.at(r_j).second.at(z_j);
+
+	// linear interpolation between two points
+	double Br_ii_ji = (r_i == r_j) ? Br_ii : 
+		(Br_ji - Br_ii)*(r_val - _R.at(r_i))/(_R.at(r_j) - _R.at(r_i)) + Br_ii;
+	double Br_ij_jj = (r_i == r_j) ? Br_jj : 
+		(Br_jj - Br_ij)*(r_val - _R.at(r_j))/(_R.at(r_i) - _R.at(r_j)) + Br_ij;
+
+	Br_val = (z_i == z_j) ? Br_ii_ji : 
+		(Br_ij_jj - Br_ii_ji)*(z_val - _Z.at(z_i))/(_Z.at(z_j) - _Z.at(z_i)) + 
+		Br_ii_ji;
+
+	// Bz
+	double Bz_ii = _Bz.at(r_i).second.at(z_i);
+	double Bz_ji = _Bz.at(r_j).second.at(z_i);
+	double Bz_ij = _Bz.at(r_i).second.at(z_j);
+	double Bz_jj = _Bz.at(r_j).second.at(z_j);
+
+	// linear interpolation between two points
+	double Bz_ii_ji = (r_i == r_j) ? Bz_ii : 
+		(Bz_ji - Bz_ii)*(r_val - _R.at(r_i))/(_R.at(r_j) - _R.at(r_i)) + Bz_ii;
+	double Bz_ij_jj = (r_i == r_j) ? Bz_jj : 
+		(Bz_jj - Bz_ij)*(r_val - _R.at(r_j))/(_R.at(r_i) - _R.at(r_j)) + Bz_ij;
+
+	Bz_val = (z_i == z_j) ? Bz_ii_ji : 
+		(Bz_ij_jj - Bz_ii_ji)*(z_val - _Z.at(z_i))/(_Z.at(z_j) - _Z.at(z_i)) + 
+		Bz_ii_ji;
+
+	return;
+}

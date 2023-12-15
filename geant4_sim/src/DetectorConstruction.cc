@@ -46,7 +46,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 {
 	//------------------------------------------------------------------------
 	//- Components visibility
-	G4bool visibility = true;
+	// G4bool visibility = true;
+	G4bool visibility = false;
 	//------------------------------------------------------------------------
 	//- Particles
         G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
@@ -186,7 +187,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),ip_log,"vac_ip",world_log,false,0,true);
 	//- Visualization
 	G4VisAttributes* ip_vis = new G4VisAttributes(G4Color::Cyan());
-	ip_vis->SetVisibility(visibility);
+	ip_vis->SetVisibility(true); //visibility);
 	ip_log->SetVisAttributes(ip_vis);
 
 	//- Vacuum (subtract the ip beam pipe volume from the beam pipe volume)
@@ -217,10 +218,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 		ip_log->SetFieldManager(localSolenoidFieldMgr, true);
 		beampipeVac_log->SetFieldManager(localSolenoidFieldMgr, true);
-	
-exit(-1);
 	}
-
 
 	//- Absorbers
 	for(int iAbs = 0; iAbs < simPar->GetAbsNum(); iAbs++)

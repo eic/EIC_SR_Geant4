@@ -159,14 +159,19 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		G4int i = 0;
 		do
 		{
-			// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), but as surface roughness is taken into account, 
-			// the theta and phi angles (between the reflected direction and the surface normal) are perturbated with a gaussian distributied offset
+			// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), 
+			// but as surface roughness is taken into account; the theta and phi angles (between 
+			// the reflected direction and the surface normal) are perturbated with a gaussian 
+			// distributied offset
 			G4double thetaOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
 			G4double phiOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-			// where thetaOffset and phiOffset are the random angles added to the calculated ones (those of mirror reflection), and _sigmaRatio is the value 
-			// the user inputs in the Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation of the size 
-			// of cavities on the surface, and sigmaH is the st.dev. of the depth of those). Essentially, the larger the "roughness" value (theoretically the ratio 
-			// of RMS roughness and autocorrelation length), the more the reflection direction is perturbated around the perfect mirror direction.
+			// where thetaOffset and phiOffset are the random angles added to the calculated ones
+			// (those of mirror reflection), and _sigmaRatio is the value the user inputs in the 
+			// Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where 
+			// sigmaX is the standard deviation of the size of cavities on the surface, and sigmaH 
+			// is the st.dev. of the depth of those). Essentially, the larger the "roughness" value 
+			// (theoretically the ratio of RMS roughness and autocorrelation length), the more the 
+			// reflection direction is perturbated around the perfect mirror direction.
 
 			fNewMomentum_tmp.setTheta(fNewMomentum.getTheta() + thetaOffset);
 			fNewMomentum_tmp.setPhi(fNewMomentum.getPhi() + phiOffset);
@@ -382,10 +387,14 @@ double GammaReflectionProcess::FindReflectionProbability(vector<pair<double, vec
 	double prob_jj = dataset.at(ang_j).second.at(ene_j);
 
 	// linear interpolation between two points
-	double prob_ii_ji = (ang_i == ang_j) ? prob_ii : (prob_ji - prob_ii)*(angle_val - angle.at(ang_i))/(angle.at(ang_j) - angle.at(ang_i)) + prob_ii;
-	double prob_ij_jj = (ang_i == ang_j) ? prob_jj : (prob_jj - prob_ij)*(angle_val - angle.at(ang_j))/(angle.at(ang_i) - angle.at(ang_j)) + prob_ij;
+	double prob_ii_ji = (ang_i == ang_j) ? prob_ii : 
+		(prob_ji - prob_ii)*(angle_val - angle.at(ang_i))/(angle.at(ang_j) - angle.at(ang_i)) + prob_ii;
+	double prob_ij_jj = (ang_i == ang_j) ? prob_jj : 
+		(prob_jj - prob_ij)*(angle_val - angle.at(ang_j))/(angle.at(ang_i) - angle.at(ang_j)) + prob_ij;
 
-	double prob = (ene_i == ene_j) ? prob_ii_ji : (prob_ij_jj - prob_ii_ji)*(energy_val - energy.at(ene_i))/(energy.at(ene_j) - energy.at(ene_i)) + prob_ii_ji;
+	double prob = (ene_i == ene_j) ? prob_ii_ji : 
+		(prob_ij_jj - prob_ii_ji)*(energy_val - energy.at(ene_i))/(energy.at(ene_j) - energy.at(ene_i)) + 
+		prob_ii_ji;
 
 	return prob;
 }

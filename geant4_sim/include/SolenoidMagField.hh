@@ -44,13 +44,8 @@ private:
 	void ReadSolenoidFieldData();
 	G4int FindIndexinVector(vector<double> myVector, G4double targetElement);
 	void PrintSolenoidFieldData();
-
-/*
-	void FindClosestIndexesInVec(vector<double> vec, double val, int &id1, int &id2);
-	double FindReflectionProbability(vector<pair<double, vector<double>>> dataset,
-		vector<double> angle, vector<double> energy, 
-		double angle_val, double energy_val);
-*/
+	void FindClosestIndexesInVec(vector<double> vec, double val, int &id1, int &id2) const;
+	void FindSolenoidFieldValue(double r_val, double z_val, double &Br_val, double &Bz_val) const;
 };
 
 #endif
