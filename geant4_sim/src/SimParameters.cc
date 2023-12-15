@@ -119,8 +119,7 @@ void SimParameters::ReadXML(G4String fName)
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.beam"))
 	{
         	// The data function is used to access the data stored in a node.
-		if(child_node.second.get<string>("<xmlattr>.name") == "part" &&
-			child_node.second.get<string>("<xmlattr>.unit") == "")
+		if(child_node.second.get<string>("<xmlattr>.name") == "part")
 			SetBeamName(child_node.second.data());
 		else if(child_node.second.get<string>("<xmlattr>.name") == "posx1" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "m")
@@ -176,8 +175,7 @@ void SimParameters::ReadXML(G4String fName)
 		else if(child_node.second.get<string>("<xmlattr>.name") == "emity" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "nm")
 			SetBeamEmitY(stod(child_node.second.data())*nm);
-		else if(child_node.second.get<string>("<xmlattr>.name") == "type" &&
-			child_node.second.get<string>("<xmlattr>.unit") == "")
+		else if(child_node.second.get<string>("<xmlattr>.name") == "type")
 			SetBeamType(child_node.second.data());
 		else if(child_node.second.get<string>("<xmlattr>.name") == "tailkx" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
@@ -232,6 +230,45 @@ void SimParameters::ReadXML(G4String fName)
 		}
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+
+	// detector solenoid
+	BOOST_FOREACH(ptree::value_type &child_tree, tree.get_child("xml.detector")) 
+	{
+		if (child_tree.first == "solenoid")
+		{
+			BOOST_FOREACH(ptree::value_type &child_node, child_tree.second)
+			{
+				if(child_node.second.get<string>("<xmlattr>.name") == "build")
+					_solBuild = stoi(child_node.second.data());
+				else if(child_node.second.get<string>("<xmlattr>.name") == "fname")
+					SetSolFileName(child_node.second.data());
+				else if(child_node.second.get<string>("<xmlattr>.name") == "rmax" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					SetSolRmax(stod(child_node.second.data())*m);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "zmin" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					SetSolZmin(stod(child_node.second.data())*m);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "zmax" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					SetSolZmax(stod(child_node.second.data())*m);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "print")
+					_solPrint = stoi(child_node.second.data());
+				else if(child_node.second.get<string>("<xmlattr>.name") == "origposx" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					SetSolOrigPosX(stod(child_node.second.data())*cm);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "origposy" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					SetSolOrigPosY(stod(child_node.second.data())*cm);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "origposz" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					SetSolOrigPosZ(stod(child_node.second.data())*cm);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "flipxz")
+					_solFlipXZ = stoi(child_node.second.data());
+				else
+					throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+			}
+		}
 	}
 
 	// magnets
@@ -394,6 +431,17 @@ void SimParameters::InitDefault()
 	_ipPosZ = 5.6843418860808e-14*m;
 	_ipTheta = -3.1335926535898*rad;
 
+	_solFileName = "MARCO_v.6.4.1.1.3_1.7T_Magnetic_Field_Map_2022_11_14_rad_coords_cm_T.txt";
+	_solBuild = true;
+	_solPrint = true;
+	_solFlipXZ = true;
+	_solRmax =  8.0*m;
+	_solZmin = -8.0*m;
+	_solZmax =  8.0*m;
+	_solOrigPosX = 0.0*cm;
+	_solOrigPosY = 0.0*cm;
+	_solOrigPosZ = 0.0*cm;
+
 	_magName = {"D2EF2","D2EF1","D1EF","Q1EF","Q0EF"};
 	_magType = {"D-pole","D-pole","D-pole","Q-pole","Q-pole"};
 	_magLength = {	2.7260154313337*m,
@@ -517,6 +565,25 @@ void SimParameters::PrintBeamParameters()
 	G4cout<<"Tail Ky = "<<GetBeamTailKy()<<G4endl;
 	G4cout<<"Tail Min = "<<GetBeamTailMin()<<" [nSigma]"<<G4endl;
 	G4cout<<"Tail Max = "<<GetBeamTailMax()<<" [nSigma]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
+void SimParameters::PrintSolParameters()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintSolParameters ==> Solenoid parameters"<<G4endl;
+	G4cout<<"Build filed = "<<IsBuildSolenoid()<<G4endl;
+	G4cout<<"File name = "<<GetSolFileName()<<G4endl;
+	G4cout<<"Max R = "<<GetSolRmax()/m<<" [m]"<<G4endl;
+	G4cout<<"Min Z = "<<GetSolZmin()/m<<" [m]"<<G4endl;
+	G4cout<<"Max Z = "<<GetSolZmax()/m<<" [m]"<<G4endl;
+	G4cout<<"Print field = "<<IsPrintSolenoid()<<G4endl;
+	G4ThreeVector solOrigVec = GetSolOrigVec();
+	G4cout<<"Origin position = ("
+		<<solOrigVec.x()/cm<<";"<<solOrigVec.y()/cm<<";"<<solOrigVec.z()/cm<<") [cm]"<<G4endl;
+	G4cout<<"Flip XZ = "<<IsFlipXZSolenoid()<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

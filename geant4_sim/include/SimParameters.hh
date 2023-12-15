@@ -3,6 +3,7 @@
 
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4ThreeVector.hh"
 
 using namespace std;
 
@@ -26,6 +27,17 @@ private:
 	G4double _ipPosY;
 	G4double _ipPosZ;
 	G4double _ipTheta;
+
+	G4String _solFileName;
+	G4bool _solBuild;
+	G4bool _solPrint;
+	G4bool _solFlipXZ;
+	G4double _solRmax;
+	G4double _solZmin;
+	G4double _solZmax;
+	G4double _solOrigPosX;
+	G4double _solOrigPosY;
+	G4double _solOrigPosZ;
 
 	vector<G4String> _magName;
 	vector<G4String> _magType;
@@ -87,6 +99,7 @@ public:
 	void PrintBeampipeFileName();
 	void PrintBeamParameters();
 	void PrintMagParameters();
+	void PrintSolParameters();
 	void CleanMagParameters();
 	void PrintAbsParameters();
 	void PrintIpBeampipeParameters();
@@ -114,6 +127,15 @@ public:
 	G4double GetIpPosY(){return _ipPosY;}
 	G4double GetIpPosZ(){return _ipPosZ;}
 	G4double GetIpTheta(){return _ipTheta;}
+
+	G4bool IsBuildSolenoid(){return _solBuild;}
+	G4bool IsPrintSolenoid(){return _solPrint;}
+	G4bool IsFlipXZSolenoid(){return _solFlipXZ;}
+	G4String GetSolFileName(){return _solFileName;}
+	G4double GetSolRmax(){return _solRmax;}
+	G4double GetSolZmin(){return _solZmin;}
+	G4double GetSolZmax(){return _solZmax;}
+	G4ThreeVector GetSolOrigVec(){return G4ThreeVector(_solOrigPosX,_solOrigPosY,_solOrigPosZ);}
 
 	G4int GetMagNum(){return _magName.size();}
 	G4String GetMagName(G4int i){return _magName.at(i);}
@@ -186,6 +208,14 @@ private:
 	void SetIpPosY(G4double val){_ipPosY = val; return;}
 	void SetIpPosZ(G4double val){_ipPosZ = val; return;}
 	void SetIpTheta(G4double val){_ipTheta = val; return;}
+
+	void SetSolFileName(G4String val){_solFileName = val; return;}
+	void SetSolRmax(G4double val){_solRmax = val; return;}
+	void SetSolZmin(G4double val){_solZmin = val; return;}
+	void SetSolZmax(G4double val){_solZmax = val; return;}
+	void SetSolOrigPosX(G4double val){_solOrigPosX = val; return;}
+	void SetSolOrigPosY(G4double val){_solOrigPosY = val; return;}
+	void SetSolOrigPosZ(G4double val){_solOrigPosZ = val; return;}
 
 	void SetMagParameters(G4String magName, G4String magType, G4double magLength, 
 		G4double magStartPosX, G4double magStartPosY, G4double magStartPosZ,

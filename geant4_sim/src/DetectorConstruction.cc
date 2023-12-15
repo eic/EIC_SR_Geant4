@@ -33,6 +33,7 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	simPar->PrintBeampipeFileName();
 	simPar->PrintIpBeampipeParameters();
 	simPar->PrintGeoParameters();
+	simPar->PrintSolParameters();
 	simPar->PrintMagParameters();
 	simPar->PrintAbsParameters();
 }
@@ -112,7 +113,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		if((L - simPar->GetMagLength(iMag))/simPar->GetMagLength(iMag) > 1e-4)
 		{
                         G4cout<<"\n\n=================================================================="<<G4endl;
-                        G4cout<<"[WARNING] DetectorConstruction::Construct ==> Not accurate magnet length calculation"<<G4endl;
+                        G4cout<<"[WARNING] DetectorConstruction::Construct"<<G4endl;
+			G4cout<<"Not accurate magnet length calculation"<<G4endl;
 			G4cout<<"L (calc) = "<<L/m<<" [m]"<<G4endl;
 			G4cout<<"L (xml)  = "<<simPar->GetMagLength(iMag)/m<<" [m]"<<G4endl;
                         G4cout<<"==================================================================\n"<<G4endl;
@@ -135,13 +137,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		// set tracking time limit in the volume
 		mag_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
 		// magnet placement
-		new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),mag_log,"mag_"+simPar->GetMagName(iMag),world_log,false,0,true);
+		new G4PVPlacement(
+			0,G4ThreeVector(0.,0.,0.),mag_log,"mag_"+simPar->GetMagName(iMag),world_log,false,0,true);
 
 		//- Create magnetic field
 		G4MagneticField* mag_field; 
 		if(simPar->GetMagType(iMag) == "D-pole")
 		{
-			// By[T]*rho[m] = 3.33564*pc[GeV], rho[m] = l[m]/(2*sin(theta[rad]/2)) (RBEND), pc = mc^2*sqrt(gamma^2 - 1)
+			// By[T]*rho[m] = 3.33564*pc[GeV]
+			// rho[m] = l[m]/(2*sin(theta[rad]/2)) (RBEND)
+			// pc = mc^2*sqrt(gamma^2 - 1)
 			G4double By = ((3.33564*(mass/GeV)*sqrt(pow(gamma,2)-1.0))/
 				((simPar->GetMagLength(iMag)/m)/(2.*sin(simPar->GetMagAngle(iMag)/2.))))*tesla;
 			// set field
@@ -206,15 +211,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	beampipeVac_log->SetVisAttributes(beampipeVac_vis);
 
 	//- Detector solenoid
-//	if(simPar->BuildSolenoidField())
+	if(simPar->IsBuildSolenoid())
 	{
-		// rotation matrix to flip XZ coordinates from EIC to Geant4
+		// rotation matrix
 		G4RotationMatrix* sol_rot = new G4RotationMatrix();
-		sol_rot->rotateY(M_PI*rad);
+		// flip XZ coordinates from EIC to Geant4
+		if(simPar->IsFlipXZSolenoid()){sol_rot->rotateY(M_PI*rad);}
 
 		G4MagneticField* sol_field = new SolenoidMagField(
-			"../geometry/MARCO_v.6.4.1.1.3_1.7T_Magnetic_Field_Map_2022_11_14_rad_coords_cm_T.txt",
-			3*m,-3*m,3*m,false,G4ThreeVector(0.0, 0.0, 0.0),sol_rot); 
+			"../geometry/"+simPar->GetSolFileName(),
+			simPar->GetSolRmax(),simPar->GetSolZmin(),simPar->GetSolZmax(),
+			simPar->IsPrintSolenoid(),simPar->GetSolOrigVec(),sol_rot); 
 
 		// apply the field to the IP and Vacuum logic volumes
 		G4FieldManager* localSolenoidFieldMgr = new G4FieldManager(sol_field);
