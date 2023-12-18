@@ -136,7 +136,7 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 
 		// get probability
 		G4double prob = 0;
-		if(prePV->GetName() == "vac_ip") // Au ip beam pipe
+		if(prePV->GetName() == "vac_IP" || prePV->GetName() == "vac_ip") // Au ip beam pipe
 		{
 			prob = FindReflectionProbability(_reflectDataMap["Au"],
 				_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle_rad,fTotalEnergy_eV);

@@ -110,13 +110,8 @@
 	<!-- for the start position of the magnets use the end position for the previous element in the lattice -->
 	<!-- TWISS ANGLE < 0 -> GEANT4 ANGLE > 0  and TWISS K1L < 0 -> GEANT4 K1L > 0 -->
 	<!-- detector solenoid data based on: https://wiki.bnl.gov/EPIC/index.php?title=Experimental_Solenoid -->
+	<!-- list the magnets, starting with the farthest element w.r.t. the IP -->
 	<magnets>
-		<ip>
-			<sec desc="position X in a global ref. system" name="posx" unit="m">-589.77164158437</sec>
-			<sec desc="position Y in a global ref. system" name="posy" unit="m">0</sec>
-			<sec desc="position Z in a global ref. system" name="posz" unit="m">5.6843418860808e-14</sec>
-			<sec desc="hor. angle in a global ref. system" name="theta" unit="rad">-3.1335926535898</sec>
-		</ip>
 		<magnet>
 			<sec desc="magnet name" name="name">D2EF1</sec>
 			<sec desc="magnet type" name="type">D-pole</sec>
@@ -196,6 +191,12 @@
 			<sec desc="solenoid origin position in z" name="origposz" unit="cm">0.0</sec>
 			<sec desc="solenoid field flip xz coord." name="flipxz">1</sec>
 		</solenoid>
+		<ip>
+			<sec desc="position X in a global ref. system" name="posx" unit="m">-589.77164158437</sec>
+			<sec desc="position Y in a global ref. system" name="posy" unit="m">0</sec>
+			<sec desc="position Z in a global ref. system" name="posz" unit="m">5.6843418860808e-14</sec>
+			<sec desc="hor. angle in a global ref. system" name="theta" unit="rad">-3.1335926535898</sec>
+		</ip>
 		<monitor>
 			<sec desc="the name of the magnet in front of the beam monitor" name="magname">Q0EF</sec>
 		</monitor>
