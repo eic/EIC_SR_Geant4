@@ -25,6 +25,7 @@
 #include "CADMesh.hh" // https://github.com/christopherpoole/CADMesh
 #include "SolenoidMagField.hh"
 
+
 DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetectorConstruction()
 {
 	simPar = new SimParameters();
@@ -36,6 +37,17 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	simPar->PrintSolParameters();
 	simPar->PrintMagParameters();
 	simPar->PrintAbsParameters();
+
+	visibility = true;
+	mat_vac = nullptr;
+	world_log = nullptr;
+	world_phys = nullptr;
+	beampipeUni_solid = nullptr;
+	beampipeVac_solid = nullptr;
+	beampipeVac_log = nullptr;
+	ip_log = nullptr;
+	mass = -1;
+	gamma = -1;
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -45,34 +57,56 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
-	//------------------------------------------------------------------------
-	//- Components visibility
-	G4bool visibility = true;
-	//------------------------------------------------------------------------
-	//- Particles
-        G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-        G4ParticleDefinition* particleDef;
-        particleDef = particleTable->FindParticle(simPar->GetBeamName().c_str());
-        G4double mass = particleDef->GetPDGMass();
-        G4double gamma = simPar->GetBeamGamma();
-	//------------------------------------------------------------------------
-	//- Materials
+	BuildMaterials();
+	BuildWorld();
+	CreateBeamPipeSolid();
+	BuildMagnets();
+	BuildIpBeamPipe();
+	BuildIrBeamPipe();
+	BuildAbsorbers();
+
+	if(simPar->IsBuildSolenoid())
+		BuildDetectorSolenoidField();
+
+	return world_phys;
+}
+
+void DetectorConstruction::BuildMaterials()
+{
 	G4NistManager* nistManager = G4NistManager::Instance();
-	//------------------------------------------------------------------------
 	//- Vacuum
-	G4Material* mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic");
-	//------------------------------------------------------------------------
-    	//- Build world
+	mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic");
+
+	return;	
+}
+
+void DetectorConstruction::BuildWorld()
+{
+	if(!mat_vac)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::CreateBeamPipeSolid ==> Materials are not created\n");
+	}
+
    	G4Box* world_box = new G4Box("world",
                                  simPar->GetWorldSizeX()/2,
                                  simPar->GetWorldSizeY()/2,
                                  simPar->GetWorldSizeZ()/2);
-    	G4LogicalVolume* world_log = new G4LogicalVolume(world_box, mat_vac, "world");
-    	G4VPhysicalVolume* world_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),world_log,"world",0,false,0,true);
+    	world_log = new G4LogicalVolume(world_box,mat_vac,"world");
+    	world_phys = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),world_log,"world",0,false,0,true);
 	//- Visualization
 	world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
 
-    	//- Build beam pipe vacuum
+	return;
+}
+
+void DetectorConstruction::CreateBeamPipeSolid()
+{
+	if(!mat_vac)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::CreateBeamPipeSolid ==> Materials are not created\n");
+	}
 
 	//- Original (beam pipe)
 	auto mesh = CADMesh::TessellatedMesh::FromOBJ(simPar->GetBeampipeFileName().c_str());
@@ -87,9 +121,22 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//- Union (beam pipe with an extention)
 	G4VSolid* beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", 
 		beampipeOrig_solid, beampipeExt_solid, 0, G4ThreeVector(0, 0, simPar->GetExtE()-simPar->GetExtL()/2));
-	G4LogicalVolume* beampipeUni_log = new G4LogicalVolume(beampipeUni_solid, mat_vac,"beampipeUni");
 
-	G4VSolid* beampipeVac_solid = beampipeUni_solid;
+	//- Copy
+	beampipeVac_solid = beampipeUni_solid;
+
+	return;
+}
+
+void DetectorConstruction::BuildMagnets()
+{
+	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::BuildMagnets ==> Materials or beam pipe solids are not created\n");
+	}
+	// Particles
+	BuildParticles();
 
 	//- Magnets (fill the beam pipe volume with the magnetic field)
 	for(int iMag = 0; iMag < simPar->GetMagNum(); iMag++)
@@ -113,7 +160,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		if((L - simPar->GetMagLength(iMag))/simPar->GetMagLength(iMag) > 1e-4)
 		{
                         G4cout<<"\n\n=================================================================="<<G4endl;
-                        G4cout<<"[WARNING] DetectorConstruction::Construct"<<G4endl;
+                        G4cout<<"[WARNING] DetectorConstruction::BuildMagnets"<<G4endl;
 			G4cout<<"Not accurate magnet length calculation"<<G4endl;
 			G4cout<<"L (calc) = "<<L/m<<" [m]"<<G4endl;
 			G4cout<<"L (xml)  = "<<simPar->GetMagLength(iMag)/m<<" [m]"<<G4endl;
@@ -141,37 +188,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 			0,G4ThreeVector(0.,0.,0.),mag_log,"mag_"+simPar->GetMagName(iMag),world_log,false,0,true);
 
 		//- Create magnetic field
-		G4MagneticField* mag_field; 
-		if(simPar->GetMagType(iMag) == "D-pole")
-		{
-			// By[T]*rho[m] = 3.33564*pc[GeV]
-			// rho[m] = l[m]/(2*sin(theta[rad]/2)) (RBEND)
-			// pc = mc^2*sqrt(gamma^2 - 1)
-			G4double By = ((3.33564*(mass/GeV)*sqrt(pow(gamma,2)-1.0))/
-				((simPar->GetMagLength(iMag)/m)/(2.*sin(simPar->GetMagAngle(iMag)/2.))))*tesla;
-			// set field
-			mag_field = new G4UniformMagField(G4ThreeVector(0,By,0));
-			//- Visualization
-			G4VisAttributes* mag_vis = new G4VisAttributes(G4Color::Blue());
-			mag_vis->SetVisibility(visibility);
-			mag_log->SetVisAttributes(mag_vis);
-		}
-		else if(simPar->GetMagType(iMag) == "Q-pole")
-		{
-			// k1[1/m^2] = 0.2998*grad[T/m]/pc[GeV], k1[1/m^2] = k1l[1/m]/l[m]
-			G4double grad = (3.33564*(simPar->GetMagK1L(iMag)/(1/m))/(simPar->GetMagLength(iMag)/m)*
-				(mass/GeV)*sqrt(pow(gamma,2)-1.0))*(tesla/m);
-			// set field
-			mag_field = new G4QuadrupoleMagField(grad);
-			//- Visualization
-			G4VisAttributes* mag_vis = new G4VisAttributes(G4Color::Yellow());
-			mag_vis->SetVisibility(visibility);
-			mag_log->SetVisAttributes(mag_vis);
-		}
-		else
-		{
-			throw runtime_error("[ERROR] DetectorConstruction::Construct ==> Wrong magnet type\n");
-		}
+		G4MagneticField* mag_field = GetMagField(iMag,mag_log); 
 		// apply the field to logic volume
 		G4FieldManager* localFieldMgr = new G4FieldManager(mag_field);
 		localFieldMgr->SetDetectorField(mag_field);
@@ -183,13 +200,79 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 			mag_box,mag_rot,G4ThreeVector(x0,y0,z0));
 	}
 
+	return;
+}
+
+G4MagneticField* DetectorConstruction::GetMagField(G4int iMag, G4LogicalVolume* mag_log)
+{
+	if(mass < 0 || gamma < 0)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::GetMagField ==> Particles are not built\n");
+	}
+
+	G4MagneticField* mag_field;
+	if(simPar->GetMagType(iMag) == "D-pole")
+	{
+		// By[T]*rho[m] = 3.33564*pc[GeV]
+		// rho[m] = l[m]/(2*sin(theta[rad]/2)) (RBEND)
+		// pc = mc^2*sqrt(gamma^2 - 1)
+		G4double By = ((3.33564*(mass/GeV)*sqrt(pow(gamma,2)-1.0))/
+			((simPar->GetMagLength(iMag)/m)/(2.*sin(simPar->GetMagAngle(iMag)/2.))))*tesla;
+		// set field
+		mag_field = new G4UniformMagField(G4ThreeVector(0,By,0));
+		//- Visualization
+		G4VisAttributes* mag_vis = new G4VisAttributes(G4Color::Blue());
+		mag_vis->SetVisibility(visibility);
+		mag_log->SetVisAttributes(mag_vis);
+	}
+	else if(simPar->GetMagType(iMag) == "Q-pole")
+	{
+		// k1[1/m^2] = 0.2998*grad[T/m]/pc[GeV], k1[1/m^2] = k1l[1/m]/l[m]
+		G4double grad = (3.33564*(simPar->GetMagK1L(iMag)/(1/m))/(simPar->GetMagLength(iMag)/m)*
+			(mass/GeV)*sqrt(pow(gamma,2)-1.0))*(tesla/m);
+		// set field
+		mag_field = new G4QuadrupoleMagField(grad);
+		//- Visualization
+		G4VisAttributes* mag_vis = new G4VisAttributes(G4Color::Yellow());
+		mag_vis->SetVisibility(visibility);
+		mag_log->SetVisAttributes(mag_vis);
+	}
+	else
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::GetMagField ==> Wrong magnet type\n");
+	}
+
+	return mag_field;
+}
+
+void DetectorConstruction::BuildParticles()
+{
+        G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+        G4ParticleDefinition* particleDef;
+        particleDef = particleTable->FindParticle(simPar->GetBeamName().c_str());
+        G4double mass = particleDef->GetPDGMass();
+        G4double gamma = simPar->GetBeamGamma();
+
+	return;
+}
+
+void DetectorConstruction::BuildIpBeamPipe()
+{
+	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::BuildIpBeamPipe ==> Materials or beam pipe solids are not created\n");
+	}
+
 	//- IP beam pipe
 	G4Box* ip_box = new G4Box("ip_box",1*m/2,1*m/2,(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2); 
 	G4VSolid* ip_solid = new G4IntersectionSolid("ip_solid", beampipeUni_solid, ip_box,0,
 		G4ThreeVector(	0,
 				0,
 				simPar->GetIpBeampipeZmin()+(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2));
-	G4LogicalVolume* ip_log = new G4LogicalVolume(ip_solid,mat_vac,"ip_log");
+	ip_log = new G4LogicalVolume(ip_solid,mat_vac,"ip_log");
 	new G4PVPlacement(0, G4ThreeVector(0.,0.,0.),ip_log,"vac_ip",world_log,false,0,true);
 	//- Visualization
 	G4VisAttributes* ip_vis = new G4VisAttributes(G4Color::Cyan());
@@ -200,8 +283,19 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",beampipeVac_solid,ip_box,
 	0,G4ThreeVector(0.,0.,simPar->GetIpBeampipeZmin()+(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2));
 
+	return;
+}
+
+void DetectorConstruction::BuildIrBeamPipe()
+{
+	if(!mat_vac || !beampipeVac_solid)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::BuildIrBeamPipe ==> Materials or beam pipe solids are not created\n");
+	}
+
 	//- Vacuum (place the beam pipe without magnet and IP volumes) 
-	G4LogicalVolume* beampipeVac_log = new G4LogicalVolume(beampipeVac_solid, mat_vac,"beampipeVac");
+	beampipeVac_log = new G4LogicalVolume(beampipeVac_solid, mat_vac,"beampipeVac");
 	// set tracking time limit in the volume
 	beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),beampipeVac_log,"vac_beampipe",world_log,false,0,true);
@@ -210,26 +304,44 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	beampipeVac_vis->SetVisibility(visibility);
 	beampipeVac_log->SetVisAttributes(beampipeVac_vis);
 
-	//- Detector solenoid
-	if(simPar->IsBuildSolenoid())
+	return;
+}
+
+void DetectorConstruction::BuildDetectorSolenoidField()
+{
+	if(!ip_log || !beampipeVac_log)
 	{
-		// rotation matrix
-		G4RotationMatrix* sol_rot = new G4RotationMatrix();
-		// flip XZ coordinates from EIC to Geant4
-		if(simPar->IsFlipXZSolenoid()){sol_rot->rotateY(M_PI*rad);}
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::BuildDetectorSolenoid ==> IR or IR beam pipes are not built\n");
+	}
 
-		G4MagneticField* sol_field = new SolenoidMagField(
-			"../geometry/"+simPar->GetSolFileName(),
-			simPar->GetSolRmax(),simPar->GetSolZmin(),simPar->GetSolZmax(),
-			simPar->IsPrintSolenoid(),simPar->GetSolOrigVec(),sol_rot); 
+	// rotation matrix
+	G4RotationMatrix* sol_rot = new G4RotationMatrix();
+	// flip XZ coordinates from EIC to Geant4
+	if(simPar->IsFlipXZSolenoid()){sol_rot->rotateY(M_PI*rad);}
 
-		// apply the field to the IP and Vacuum logic volumes
-		G4FieldManager* localSolenoidFieldMgr = new G4FieldManager(sol_field);
-		localSolenoidFieldMgr->SetDetectorField(sol_field);
-		localSolenoidFieldMgr->CreateChordFinder(sol_field);
+	G4MagneticField* sol_field = new SolenoidMagField(
+		"../geometry/"+simPar->GetSolFileName(),
+		simPar->GetSolRmax(),simPar->GetSolZmin(),simPar->GetSolZmax(),
+		simPar->IsPrintSolenoid(),simPar->GetSolOrigVec(),sol_rot); 
 
-		ip_log->SetFieldManager(localSolenoidFieldMgr, true);
-		beampipeVac_log->SetFieldManager(localSolenoidFieldMgr, true);
+	// apply the field to the IP and Vacuum logic volumes
+	G4FieldManager* localSolenoidFieldMgr = new G4FieldManager(sol_field);
+	localSolenoidFieldMgr->SetDetectorField(sol_field);
+	localSolenoidFieldMgr->CreateChordFinder(sol_field);
+
+	ip_log->SetFieldManager(localSolenoidFieldMgr, true);
+	beampipeVac_log->SetFieldManager(localSolenoidFieldMgr, true);
+
+	return;
+}
+
+void DetectorConstruction::BuildAbsorbers()
+{
+	if(!mat_vac || !beampipeVac_solid)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::BuildIpBeamPipe ==> Materials or beam pipe solids are not created\n");
 	}
 
 	//- Absorbers
@@ -252,5 +364,5 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		abs_log->SetVisAttributes(abs_vis);
 	}
 
-	return world_phys;
+	return;
 }
