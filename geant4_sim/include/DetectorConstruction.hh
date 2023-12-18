@@ -26,6 +26,7 @@ private:
 	G4VSolid* beampipeUni_solid; // beam pipe SV = original beam pipe + extension
 	G4VSolid* beampipeVac_solid; // beam pipe SV = beampipeUni_solid - (all magnets + IP beam pipe)
 	G4LogicalVolume* beampipeVac_log; // beam pipe LV
+	G4VSolid* ip_box; // IP beam pipe virtual volume
 	G4LogicalVolume* ip_log; // IP beam pipe LV
 	G4double mass;
 	G4double gamma;
@@ -36,10 +37,9 @@ private:
 	void BuildMagnets();
 	G4MagneticField* GetMagField(G4int,G4LogicalVolume*);
 	void BuildParticles();
-	void BuildIpBeamPipe(); 	
-	void BuildIrBeamPipe(); 	
+	void BuildIrBeamPipe();
+	void BuildIpBeamPipe();
 	void BuildAbsorbers();
-	void BuildDetectorSolenoidField();
 };
 
 #endif

@@ -35,16 +35,34 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	G4VPhysicalVolume*      prePV           = preStep->GetPhysicalVolume();
 	G4VPhysicalVolume*      postPV          = postStep->GetPhysicalVolume();
 
-	// the monitor is associated with the magnet at the given ID [0;GetMagNum()-1]
-	G4int iMag = simPar->GetMagNum() - 1;
+	// the monitor is associated with one of the magnets
+	G4String prePV_name = prePV->GetName();
+	// solenoid field in the IP beam pipe
+	if(prePV_name == "vac_IP" && simPar->IsBuildSolenoid()){prePV_name = "mag_MARCO";}
+
 	// check the track
 	if(     track->GetTrackID() == 1 && // primary particle 
 		postStep->GetStepStatus() == fGeomBoundary && // at boundary
-		G4StrUtil::contains(postPV->GetName(),"vac_") && // entering vacuum
-		prePV->GetName() == "mag_"+simPar->GetMagName(iMag)) // leaving the magnet
+		postPV->GetName() == "vac_beampipe" && // entering vacuum
+		G4StrUtil::contains(prePV_name,simPar->GetBeamMonName())) // leaving the magnet
 	{
+		G4int iMag = simPar->GetMagNum() - 1;
+		// find the iterator of the magnet by its name
+		auto it = std::find(runAction->_magName.begin(),runAction->_magName.end(),prePV_name);
+		if (it != runAction->_magName.end())
+		{
+			iMag = distance(runAction->_magName.begin(),it);
+		}
+		else
+		{
+			G4cout<<"\n\n=================================================================="<<G4endl;
+			G4cout<<"[WARNING] SteppingAction::UserSteppingAction ==> ";
+			G4cout<<"Cannot find the magnet for the beam monitoring"<<G4endl;
+			G4cout<<"==================================================================\n"<<G4endl;
+		}
+
 		// get particle coordinates
-		runAction->_monName = prePV->GetName();
+		runAction->_monName = prePV_name;
 		runAction->_monPosX = postStep->GetPosition().getX()/cm;
 		runAction->_monPosY = postStep->GetPosition().getY()/cm;
 		runAction->_monPosZ = postStep->GetPosition().getZ()/cm;
@@ -75,6 +93,15 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		// orientation angle of the beam/monitor
 		runAction->_monRefAngle = (magVector2.z() != magVector1.z()) ? 
 			atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z())) : 0;
+
+		// solenoid
+		if(simPar->IsBuildSolenoid() && prePV_name == "mag_MARCO")
+		{
+			runAction->_monRefPosX = 0.0;
+			runAction->_monRefPosY = 0.0;
+			runAction->_monRefPosZ = 0.0;
+			runAction->_monRefAngle = 0.0;
+		}
 	}
 	//--------------------------------------------------------------------------//
 

@@ -46,7 +46,7 @@ void SimParameters::ReadXML(G4String fName)
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.beampipe"))
 	{
 		// The data function is used to access the data stored in a node.
-		if(child_node.second.get<string>("<xmlattr>.name") == "filename")
+		if(child_node.second.get<string>("<xmlattr>.name") == "fname")
 			SetBeampipeFileName(child_node.second.data());
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
@@ -232,45 +232,6 @@ void SimParameters::ReadXML(G4String fName)
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
 
-	// detector solenoid
-	BOOST_FOREACH(ptree::value_type &child_tree, tree.get_child("xml.detector")) 
-	{
-		if (child_tree.first == "solenoid")
-		{
-			BOOST_FOREACH(ptree::value_type &child_node, child_tree.second)
-			{
-				if(child_node.second.get<string>("<xmlattr>.name") == "build")
-					_solBuild = stoi(child_node.second.data());
-				else if(child_node.second.get<string>("<xmlattr>.name") == "fname")
-					SetSolFileName(child_node.second.data());
-				else if(child_node.second.get<string>("<xmlattr>.name") == "rmax" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "m")
-					SetSolRmax(stod(child_node.second.data())*m);
-				else if(child_node.second.get<string>("<xmlattr>.name") == "zmin" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "m")
-					SetSolZmin(stod(child_node.second.data())*m);
-				else if(child_node.second.get<string>("<xmlattr>.name") == "zmax" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "m")
-					SetSolZmax(stod(child_node.second.data())*m);
-				else if(child_node.second.get<string>("<xmlattr>.name") == "print")
-					_solPrint = stoi(child_node.second.data());
-				else if(child_node.second.get<string>("<xmlattr>.name") == "origposx" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "cm")
-					SetSolOrigPosX(stod(child_node.second.data())*cm);
-				else if(child_node.second.get<string>("<xmlattr>.name") == "origposy" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "cm")
-					SetSolOrigPosY(stod(child_node.second.data())*cm);
-				else if(child_node.second.get<string>("<xmlattr>.name") == "origposz" &&
-					child_node.second.get<string>("<xmlattr>.unit") == "cm")
-					SetSolOrigPosZ(stod(child_node.second.data())*cm);
-				else if(child_node.second.get<string>("<xmlattr>.name") == "flipxz")
-					_solFlipXZ = stoi(child_node.second.data());
-				else
-					throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
-			}
-		}
-	}
-
 	// magnets
 	// clean vectors
 	CleanMagParameters();
@@ -341,6 +302,56 @@ void SimParameters::ReadXML(G4String fName)
 				else
 					throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 			}
+		}
+		else if (child_tree.first == "monitor")
+		{
+			BOOST_FOREACH(ptree::value_type &child_node, child_tree.second)
+			{
+				if(child_node.second.get<string>("<xmlattr>.name") == "magname")
+					SetBeamMonName(child_node.second.data()); 
+				else
+					throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+			}
+		}
+		else if (child_tree.first == "solenoid")
+		{
+			BOOST_FOREACH(ptree::value_type &child_node, child_tree.second)
+			{
+				if(child_node.second.get<string>("<xmlattr>.name") == "name")
+					magName = child_node.second.data();
+				else if(child_node.second.get<string>("<xmlattr>.name") == "type")
+					magType = child_node.second.data();
+				else if(child_node.second.get<string>("<xmlattr>.name") == "build")
+					_solBuild = stoi(child_node.second.data());
+				else if(child_node.second.get<string>("<xmlattr>.name") == "fname")
+					SetSolFileName(child_node.second.data());
+				else if(child_node.second.get<string>("<xmlattr>.name") == "rmax" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					SetSolRmax(stod(child_node.second.data())*m);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "zmin" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					SetSolZmin(stod(child_node.second.data())*m);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "zmax" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "m")
+					SetSolZmax(stod(child_node.second.data())*m);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "print")
+					_solPrint = stoi(child_node.second.data());
+				else if(child_node.second.get<string>("<xmlattr>.name") == "origposx" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					SetSolOrigPosX(stod(child_node.second.data())*cm);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "origposy" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					SetSolOrigPosY(stod(child_node.second.data())*cm);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "origposz" &&
+					child_node.second.get<string>("<xmlattr>.unit") == "cm")
+					SetSolOrigPosZ(stod(child_node.second.data())*cm);
+				else if(child_node.second.get<string>("<xmlattr>.name") == "flipxz")
+					_solFlipXZ = stoi(child_node.second.data());
+				else
+					throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+			}
+			// fill vectors with the new numbers
+			SetMagParameters(magName,magType,0,0,0,0,0,0,0,0,0);
 		}
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
@@ -431,7 +442,7 @@ void SimParameters::InitDefault()
 	_ipPosZ = 5.6843418860808e-14*m;
 	_ipTheta = -3.1335926535898*rad;
 
-	_solFileName = "MARCO_v.6.4.1.1.3_1.7T_Magnetic_Field_Map_2022_11_14_rad_coords_cm_T.txt";
+	_solFileName = "../geometry/MARCO_v.6.4.1.1.3_1.7T_Magnetic_Field_Map_2022_11_14_rad_coords_cm_T.txt";
 	_solBuild = true;
 	_solPrint = true;
 	_solFlipXZ = true;
@@ -481,6 +492,8 @@ void SimParameters::InitDefault()
 			0*1/m,
 			0.1611384495*1/m,
 			-0.261830778*1/m};
+
+	_beamMonName = "Q0EF";
 	
 	_absSizeX = {30*cm,10*cm,10*cm,50*cm};
 	_absSizeY = {30*cm,10*cm,10*cm,50*cm};
@@ -603,6 +616,13 @@ void SimParameters::PrintMagParameters()
 		G4cout<<"ID = "<<iMag<<G4endl;
 		G4cout<<"  Name = "<<GetMagName(iMag)<<G4endl;
 		G4cout<<"  Type = "<<GetMagType(iMag)<<G4endl;
+
+		if(GetMagType(iMag) == "SOL")
+		{
+			PrintSolParameters();
+			continue;
+		}
+
 		G4cout<<"  Length = "<<GetMagLength(iMag)/m<<" [m]"<<G4endl;
 		G4cout<<"  Start position X = "<<GetMagStartPosX(iMag)/m<<" [m]"<<G4endl;
 		G4cout<<"  Start position Y = "<<GetMagStartPosY(iMag)/m<<" [m]"<<G4endl;
@@ -613,6 +633,7 @@ void SimParameters::PrintMagParameters()
 		G4cout<<"  Dipole angle = "<<GetMagAngle(iMag)/rad<<" [rad]"<<G4endl;
 		G4cout<<"  Quadrupole strength K1L = "<<GetMagK1L(iMag)/(1/m)<<" [1/m)]"<<G4endl;
 	}
+	G4cout<<"Beam monitor name = "<<GetBeamMonName()<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

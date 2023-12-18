@@ -74,7 +74,6 @@ private:
 	double FindReflectionProbability(vector<pair<double, vector<double>>> dataset,
 		vector<double> angle, vector<double> energy, 
 		double angle_val, double energy_val);
-
 };
 
 #endif

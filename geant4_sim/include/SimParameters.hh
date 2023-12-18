@@ -51,6 +51,8 @@ private:
 	vector<G4double> _magAngle;
 	vector<G4double> _magK1L;
 
+	G4String _beamMonName;
+
 	vector<G4double> _absSizeX;
 	vector<G4double> _absSizeY;
 	vector<G4double> _absSizeZ;
@@ -149,6 +151,8 @@ public:
 	G4double GetMagEndPosZ(G4int i){return _magEndPosZ.at(i);}
 	G4double GetMagAngle(G4int i){return _magAngle.at(i);}
 	G4double GetMagK1L(G4int i){return _magK1L.at(i);}
+
+	G4String GetBeamMonName(){return _beamMonName;}
 	
 	G4int GetAbsNum(){return _absSizeX.size();}
 	G4double GetAbsSizeX(G4int i){return _absSizeX.at(i);}
@@ -221,6 +225,8 @@ private:
 		G4double magStartPosX, G4double magStartPosY, G4double magStartPosZ,
 		G4double magEndPosX, G4double magEndPosY, G4double magEndPosZ,
 		G4double magAngle, G4double magK1L);
+
+	void SetBeamMonName(G4String name){_beamMonName = name; return;}
 
 	void SetAbsParameters(G4double absSizeX, G4double absSizeY, G4double absSizeZ,
 	G4double absPosX, G4double absPosY, G4double absPosZ);

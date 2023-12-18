@@ -29,8 +29,12 @@ StackingAction::ClassifyNewTrack(const G4Track* track)
 		(track->GetCreatorProcess()->GetProcessName() == "SynRad" || 
 		 track->GetCreatorProcess()->GetProcessName() == "SynchrotronRadiation"))
 	{
+		G4String volume_name = track->GetVolume()->GetName();
+		// solenoid field in the IP beam pipe
+		if(volume_name == "vac_IP" && simPar->IsBuildSolenoid()){volume_name = "mag_MARCO";}
+
 		// find the iterator of the magnet by its name
-		auto it = std::find(runAction->_magName.begin(),runAction->_magName.end(),track->GetVolume()->GetName());
+		auto it = std::find(runAction->_magName.begin(),runAction->_magName.end(),volume_name);
 		// check if the current PhysVolume is present in the list of magnets
 		if (it != runAction->_magName.end())
 		{
@@ -42,8 +46,9 @@ StackingAction::ClassifyNewTrack(const G4Track* track)
 		else
 		{
 			G4cout<<"\n\n=================================================================="<<G4endl;
-                        G4cout<<"[WARNING] StackingAction::ClassifyNewTrack ==> Cannot find the SR creation magnet"<<G4endl;
-                        G4cout<<"==================================================================\n"<<G4endl;
+			G4cout<<"[WARNING] StackingAction::ClassifyNewTrack ==> ";
+			G4cout<<"Cannot find the SR creation magnet"<<G4endl;
+			G4cout<<"==================================================================\n"<<G4endl;
 		}
 
 	}
