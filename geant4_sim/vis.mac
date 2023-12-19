@@ -30,13 +30,13 @@
 
 ##-----------------------------------------##
 #- Visualize magnetic field
+#/vis/set/volumeForField vac_IP
 #/vis/set/volumeForField mag_D2EF1
 #/vis/set/volumeForField mag_D2EF2
 #/vis/set/volumeForField mag_D1EF
 #/vis/set/volumeForField mag_Q1EF
 #/vis/set/volumeForField mag_Q0EF
-#/vis/set/volumeForField vac_ip
-#/vis/set/volumeForField vac_beampipe
+#/vis/set/volumeForField mag_MARCO
 #/vis/scene/add/magneticField 20 fullArrow #lightArrow
 ##-----------------------------------------##
 
