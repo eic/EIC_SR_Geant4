@@ -2,14 +2,14 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_tails' # input directory
+mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_core_solenoid_test' # input directory
 treeName='tree'
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_tails' # output directory
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_core_solenoid_test' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
 queue='s'
-minZ=-1000 # [cm] minimum Z
-maxZ=1000 # [cm] maximum Z
+minZ=-4000 # [cm] minimum Z
+maxZ=4000 # [cm] maximum Z
 #--------------------------------------------------#
 #--------------------------------------------------#
 

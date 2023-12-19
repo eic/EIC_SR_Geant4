@@ -47,6 +47,7 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		G4StrUtil::contains(prePV_name,simPar->GetBeamMonName())) // leaving the magnet
 	{
 		G4int iMag = simPar->GetMagNum() - 1;
+		G4int jMag = simPar->GetMagNum() - 1;
 		// find the iterator of the magnet by its name
 		auto it = std::find(runAction->_magName.begin(),runAction->_magName.end(),prePV_name);
 		if (it != runAction->_magName.end())
@@ -76,10 +77,14 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 						simPar->GetMagEndPosZ(iMag) - simPar->GetIpPosZ());
 
 		// end of the beam vector between the two magnets 
-		iMag = (iMag < simPar->GetMagNum() - 1) ? iMag + 1 : iMag;
-		G4ThreeVector magVector2(	simPar->GetMagStartPosX(iMag) - simPar->GetIpPosX(),
-						simPar->GetMagStartPosY(iMag) - simPar->GetIpPosY(),
-						simPar->GetMagStartPosZ(iMag) - simPar->GetIpPosZ());
+		jMag = (iMag < simPar->GetMagNum() - 1) ? iMag + 1 : iMag;
+		// do not use solenoid coordinates
+		if(G4StrUtil::contains(runAction->_magName.at(jMag),"MARCO")){jMag = iMag;}
+
+
+		G4ThreeVector magVector2(	simPar->GetMagStartPosX(jMag) - simPar->GetIpPosX(),
+						simPar->GetMagStartPosY(jMag) - simPar->GetIpPosY(),
+						simPar->GetMagStartPosZ(jMag) - simPar->GetIpPosZ());
 
 		// rotate coordinate vectors from global to local/ip system
 		magVector1.rotateY(-simPar->GetIpTheta());

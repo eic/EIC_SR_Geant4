@@ -256,15 +256,16 @@ void plot_core(TString fName = "output_ana_all.root")
 
 			P_W = (1e9)*TMath::Qe()*(TMath::Power(beta,4)*TMath::C()*C_gamma*TMath::Power(E0_GeV,4))/(2.*TMath::Pi()*TMath::Power(rho_m,2));
 		}
-		else if(title.Contains("Q1EF") || title.Contains("Q0EF")) // Quads
+		else if(title.Contains("Q1EF") || title.Contains("Q0EF") || title.Contains("MARCO")) // Quads and Solenoid
 		{
 			if	(title.Contains("Q1EF")){l_m = 1.61;}
 			else if	(title.Contains("Q0EF")){l_m = 1.20;}
+			else if	(title.Contains("MARCO")){l_m = 10.0;}
 		
 			t_s = l_m/TMath::C();
 		}
 		
-		printf("[INFO] %s: \t mean = %.3f [uW] | stdDev = %.3f [uW] <> calc %.3f [uW]\n",h11[i]->GetTitle(),(1e6)*h11[i]->GetMean()*TMath::Qe()/t_s,(1e6)*h11[i]->GetStdDev()*TMath::Qe()/t_s,P_W*(1e6));
+		printf("[INFO] %s: \t mean = %.3e [uW] | stdDev = %.3e [uW] <> calc %.3e [uW]\n",h11[i]->GetTitle(),(1e6)*h11[i]->GetMean()*TMath::Qe()/t_s,(1e6)*h11[i]->GetStdDev()*TMath::Qe()/t_s,P_W*(1e6));
 	}
 	cout<<"==================================================================\n"<<endl;
 
