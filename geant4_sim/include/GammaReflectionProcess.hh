@@ -5,6 +5,7 @@
 #include "G4VProcess.hh"
 #include "G4VTrackTerminator.hh"
 #include "G4Gamma.hh"
+#include "G4NistManager.hh"
 
 #include <string>
 #include <fstream>
@@ -60,6 +61,9 @@ private:
   	GammaReflectionProcess(const GammaReflectionProcess &);
   	GammaReflectionProcess &operator=(const GammaReflectionProcess &);
 
+	void DoGammaReflection(const G4double GamEner, G4double &prob, G4ThreeVector &fNewMomentum);
+	void DoXrayReflection(const G4double GamEner, G4double &prob, G4ThreeVector &fNewMomentum);
+
 	map<string, string> _reflectFileNameMap;
 	G4double _sigmaRatio;
 	map<string, vector<pair<double, vector<double>>>> _reflectDataMap;
@@ -74,6 +78,16 @@ private:
 	double FindReflectionProbability(vector<pair<double, vector<double>>> dataset,
 		vector<double> angle, vector<double> energy, 
 		double angle_val, double energy_val);
+
+	//
+	G4double Reflectivity(const G4double GamEner, const G4double SinIncidentAngle, const G4Material* theMat) const;
+	void SaveHenkeDataAsMaterialProperty();
+	G4int ReadHenkeXrayData(std::string ElName, std::vector<G4double>& Ephot, std::vector<G4double>& f1, std::vector<G4double>& f2);
+
+	static G4double fSurfaceRoughness;  // same value in all threads
+	G4NistManager* fNistManager;
+	G4Material* theMatIP;
+	G4Material* theMatIR;
 };
 
 #endif
