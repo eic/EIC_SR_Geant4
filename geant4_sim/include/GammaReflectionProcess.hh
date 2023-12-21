@@ -21,6 +21,7 @@ using namespace std;
 class GammaReflectionProcess : public G4VProcess
 {
 public:
+	explicit GammaReflectionProcess(G4int,G4bool,G4double,G4double);
 	explicit GammaReflectionProcess();
 	virtual ~GammaReflectionProcess();
 
@@ -60,12 +61,26 @@ private:
 
   	GammaReflectionProcess(const GammaReflectionProcess &);
   	GammaReflectionProcess &operator=(const GammaReflectionProcess &);
+	void Init(G4bool);
+
+	void DoXrayReflection(	const G4double GamEner, 
+				const G4ThreeVector theGlobalPoint, 
+				const G4ThreeVector fOldMomentum,
+				const G4String volName,
+				G4double &prob, 
+				G4ThreeVector &fNewMomentum);
+	void DoGammaReflection(	const G4double GamEner, 
+				const G4ThreeVector theGlobalPoint, 
+				const G4ThreeVector fOldMomentum,
+				const G4String volName,
+				G4double &prob, 
+				G4ThreeVector &fNewMomentum);
 
 	void DoGammaReflection(const G4double GamEner, G4double &prob, G4ThreeVector &fNewMomentum);
 	void DoXrayReflection(const G4double GamEner, G4double &prob, G4ThreeVector &fNewMomentum);
 
 	map<string, string> _reflectFileNameMap;
-	G4double _sigmaRatio;
+	G4double fSigmaRatio;
 	map<string, vector<pair<double, vector<double>>>> _reflectDataMap;
 	map<string, vector<double>> _grazingAngleMap;
 	map<string, vector<double>> _photonEnergyMap;
@@ -78,16 +93,15 @@ private:
 	double FindReflectionProbability(vector<pair<double, vector<double>>> dataset,
 		vector<double> angle, vector<double> energy, 
 		double angle_val, double energy_val);
-
-	//
 	G4double Reflectivity(const G4double GamEner, const G4double SinIncidentAngle, const G4Material* theMat) const;
-	void SaveHenkeDataAsMaterialProperty();
-	G4int ReadHenkeXrayData(std::string ElName, std::vector<G4double>& Ephot, std::vector<G4double>& f1, std::vector<G4double>& f2);
+	void SaveHenkeDataAsMaterialProperty(G4bool);
+	G4int ReadHenkeXrayData(string ElName, vector<G4double>& Ephot, vector<G4double>& f1, vector<G4double>& f2);
 
-	static G4double fSurfaceRoughness;  // same value in all threads
+	G4double fSurfaceRoughness;
 	G4NistManager* fNistManager;
 	G4Material* theMatIP;
 	G4Material* theMatIR;
+	G4int fReflectionType;
 };
 
 #endif

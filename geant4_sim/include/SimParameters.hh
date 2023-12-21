@@ -87,6 +87,10 @@ private:
 	G4double _beamTailMax;
 
 	G4int _SRtype;
+	G4int _reflType;
+	G4bool _reflPrint;
+	G4double _sigmaRatio;
+        G4double _surfaceRoughness;
 
 	G4double _gammaEcut;
 	G4double _trackTcut;
@@ -106,7 +110,7 @@ public:
 	void PrintAbsParameters();
 	void PrintIpBeampipeParameters();
 	void CleanAbsParameters();
-	void PrintSRtype();
+	void PrintSRprocParameters();
 	void PrintGammaEcut();
 	void PrintTrackTcut();
 	void ReadXML(G4String fName);
@@ -188,6 +192,10 @@ public:
 	G4double GetBeamEmitY(){return _beamEmitY;}
 
 	G4int GetSRtype(){return _SRtype;}
+	G4int GetReflType(){return _reflType;}
+	G4bool GetReflPrint(){return _reflPrint;}
+	G4double GetSigmaRatio(){return _sigmaRatio;}
+	G4double GetSurfRoughness(){return _surfaceRoughness;}
 
 	G4double GetGammaEcut(){return _gammaEcut;}
 
@@ -256,7 +264,11 @@ private:
 	void SetBeamEmitX(G4double val){_beamEmitX = val; return;}
 	void SetBeamEmitY(G4double val){_beamEmitY = val; return;}
 
-	void SetSRtype(G4int val){_SRtype = val; return;}
+	void SetSrType(G4int val){_SRtype = val; return;}
+	void SetReflType(G4int val){_reflType = val; return;}
+	void SetReflPrint(G4int val){if(val == 1){_reflPrint=true;}else{_reflPrint=false;}return;}
+	void SetSigmaRatio(G4double val){_sigmaRatio = val; return;}
+	void SetSurfRoughness(G4double val){_surfaceRoughness = val; return;}
 
 	void SetGammaEcut(G4double val){_gammaEcut = val; return;}
 

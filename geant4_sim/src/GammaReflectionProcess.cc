@@ -9,28 +9,64 @@
 
 #define NMAXLOOPS 100 // the maximum number of loops to find acceptable angular offsets
 
-G4double GammaReflectionProcess::fSurfaceRoughness = 50e-9 * m;
+GammaReflectionProcess::GammaReflectionProcess(G4int fType, G4bool print, G4double fRoughness, G4double fSigma) : 	
+	fReflectionType(fType), fSurfaceRoughness(fRoughness), fSigmaRatio(fSigma), G4VProcess("GammaReflectionProcess")
+{
+	Init(print);
+}
 
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
 {
-	//------------------- material properties -------------------//
-	_reflectFileNameMap["Cu"] = "../materials/02-Copper.csv";
-	_reflectFileNameMap["Au"] = "../materials/04-Gold.csv";
-	_sigmaRatio = 0.005;
-	//-----------------------------------------------------------//
+	// default
+	fReflectionType = 1;
+	fSurfaceRoughness = 50e-9 * m; // RMS roughness
+	fSigmaRatio = 0.005; 	// the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation 
+				// of the size of cavities on the surface, and sigmaH is the st.dev. of the depth of 
+				// those
 
-	_reflectDataMap["Cu"] = ReadReflectData(_reflectFileNameMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
-	_reflectDataMap["Au"] = ReadReflectData(_reflectFileNameMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
-
-	PrintReflectData("Cu",_reflectDataMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
-	PrintReflectData("Au",_reflectDataMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
-
-
-	fNistManager = G4NistManager::Instance();
-	theMatIP = fNistManager->FindOrBuildMaterial("G4_Au");
-	theMatIR = fNistManager->FindOrBuildMaterial("G4_Cu");
-	SaveHenkeDataAsMaterialProperty();
+	Init(true);
 }
+
+void GammaReflectionProcess::Init(G4bool print)
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] GammaReflectionProcess::GammaReflectionProcess"<<G4endl;
+	G4cout<<"X-ray reflection process is:"<<G4endl;
+	if(fReflectionType == 1) {G4cout<<" - DoGammaReflection"<<G4endl;}
+	else {G4cout<<" - DoXrayReflection"<<G4endl;}
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	if(fReflectionType == 1)
+	{
+		_reflectFileNameMap["Cu"] = "../materials/02-Copper.csv";
+		_reflectFileNameMap["Au"] = "../materials/04-Gold.csv";
+
+		_reflectDataMap["Cu"] = ReadReflectData(	_reflectFileNameMap["Cu"],
+								_grazingAngleMap["Cu"],
+								_photonEnergyMap["Cu"]);
+		_reflectDataMap["Au"] = ReadReflectData(	_reflectFileNameMap["Au"],
+								_grazingAngleMap["Au"],
+								_photonEnergyMap["Au"]);
+
+		if(print)
+		{
+			G4cout<<"[INFO] fSigmaRatio = "<<fSigmaRatio<<G4endl;
+			PrintReflectData("Cu",_reflectDataMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
+			PrintReflectData("Au",_reflectDataMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
+		}
+	}
+	else
+	{
+		G4cout<<"[INFO] fSurfaceRoughness = "<<fSurfaceRoughness/m<<" [m]"<<G4endl;
+		fNistManager = G4NistManager::Instance();
+		theMatIP = fNistManager->FindOrBuildMaterial("G4_Au");
+		theMatIR = fNistManager->FindOrBuildMaterial("G4_Cu");
+		SaveHenkeDataAsMaterialProperty(print);
+	}
+
+	return;
+}
+
 
 GammaReflectionProcess::~GammaReflectionProcess()
 {}
@@ -82,17 +118,22 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		G4double GamEner = aParticle->GetTotalEnergy(); // photon energy
 		G4ThreeVector theGlobalPoint = step.GetPostStepPoint()->GetPosition(); // reflection point
 		G4double prob = 0; // reflection probability
+		G4String volName = prePV->GetName(); // volume name
 
-
-		// Based on new Geant4 implementation of 'G4XrayReflection'
-		// Ref.[https://geant4.web.cern.ch/download/11.2.0.html]
-		// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013]
-		DoXrayReflection(GamEner,prob,fNewMomentum);
-
-		// Based on Synrad+ implementation
-		// Ref.[https://molflow.web.cern.ch/node/116]
-		// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013]
-		DoGammaReflection(GamEner,prob,fNewMomentum);
+		if(fReflectionType == 1)
+		{
+			// Based on Synrad+ implementation
+			// Ref.[https://molflow.web.cern.ch/node/116]
+			// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013]
+			DoGammaReflection(GamEner,theGlobalPoint,fOldMomentum,volName,prob,fNewMomentum);
+		}
+		else
+		{
+			// Based on new Geant4 implementation of 'G4XrayReflection'
+			// Ref.[https://geant4.web.cern.ch/download/11.2.0.html]
+			// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013]
+			DoXrayReflection(GamEner,theGlobalPoint,fOldMomentum,volName,prob,fNewMomentum);
+		}
 
 		// play Monte-Carlo
 		if(G4UniformRand() > prob)
@@ -110,7 +151,12 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
   	return &aParticleChange;
 }
 
-void GammaReflectionProcess::DoXrayReflection(const G4double GamEner, G4double &prob, G4ThreeVector &fNewMomentum)
+void GammaReflectionProcess::DoXrayReflection(	const G4double GamEner, 
+						const G4ThreeVector theGlobalPoint, 
+						const G4ThreeVector fOldMomentum,
+						const G4String volName,
+						G4double &prob, 
+						G4ThreeVector &fNewMomentum)
 {
 	G4bool valid;
 
@@ -147,7 +193,7 @@ void GammaReflectionProcess::DoXrayReflection(const G4double GamEner, G4double &
 	fNewMomentum = fNewMomentum.unit(); // normalize: vector parallel to this, but of length 1.
 
 	// get probability
-	if(prePV->GetName() == "vac_IP" || prePV->GetName() == "vac_ip") // Au ip beam pipe
+	if(volName == "vac_IP" || volName == "vac_ip") // Au ip beam pipe
 		prob = Reflectivity(GamEner, SinIncidentAngle, theMatIP);
 	else // Cu beam pipe
 		prob = Reflectivity(GamEner, SinIncidentAngle, theMatIR);
@@ -155,7 +201,12 @@ void GammaReflectionProcess::DoXrayReflection(const G4double GamEner, G4double &
 	return;
 }
 
-void GammaReflectionProcess::DoGammaReflection(const G4double GamEner, G4double &prob, G4ThreeVector &fNewMomentum)
+void GammaReflectionProcess::DoGammaReflection(	const G4double GamEner, 
+						const G4ThreeVector theGlobalPoint,
+						const G4ThreeVector fOldMomentum,
+						const G4String volName,
+						G4double &prob, 
+						G4ThreeVector &fNewMomentum)
 {
 	G4bool valid;
 
@@ -215,7 +266,7 @@ void GammaReflectionProcess::DoGammaReflection(const G4double GamEner, G4double 
 	// either direction (e.g., upward or downward) and the formula still works. The 
 	// incoming ray direction does not have to be normalized, and the outgoing 
 	// direction vector will be computed having the same length as the incoming one.
-	G4ThreeVector fNewMomentum = fOldMomentum - 2. * fOldMomentum * fGlobalNormal * fGlobalNormal;
+	fNewMomentum = fOldMomentum - 2. * fOldMomentum * fGlobalNormal * fGlobalNormal;
 	fNewMomentum = fNewMomentum.unit(); // normalize: vector parallel to this, but of length 1.
 
 	// Calculate Angle between Normal and Photon Momentum
@@ -223,7 +274,7 @@ void GammaReflectionProcess::DoGammaReflection(const G4double GamEner, G4double 
 	G4double grazingPhotonAngle = M_PI_2 - anglePhotonToNormal; 
 
 	// get probability
-	if(prePV->GetName() == "vac_IP" || prePV->GetName() == "vac_ip") // Au ip beam pipe
+	if(volName == "vac_IP" || volName == "vac_ip") // Au ip beam pipe
 		prob = FindReflectionProbability(_reflectDataMap["Au"],
 			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle/rad,GamEner/eV);
 	else // Cu beam pipe
@@ -243,10 +294,10 @@ void GammaReflectionProcess::DoGammaReflection(const G4double GamEner, G4double 
 		// but as surface roughness is taken into account; the theta and phi angles (between 
 		// the reflected direction and the surface normal) are perturbated with a gaussian 
 		// distributied offset
-		G4double thetaOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-		G4double phiOffset 	= atan(_sigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+		G4double thetaOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+		G4double phiOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
 		// where thetaOffset and phiOffset are the random angles added to the calculated ones
-		// (those of mirror reflection), and _sigmaRatio is the value the user inputs in the 
+		// (those of mirror reflection), and fSigmaRatio is the value the user inputs in the 
 		// Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where 
 		// sigmaX is the standard deviation of the size of cavities on the surface, and sigmaH 
 		// is the st.dev. of the depth of those). Essentially, the larger the "roughness" value 
@@ -295,12 +346,12 @@ G4double GammaReflectionProcess::Reflectivity(const G4double GamEner, const G4do
     		if (nullptr == RealIndex || nullptr == ImagIndex) { return theReflectivity; }
     		const G4double delta = RealIndex->Value(GamEner);
     		const G4double beta = ImagIndex->Value(GamEner);
-    		const G4double sin2 = std::pow(SinIncidentAngle, 2);
-    		const G4double rho2 = 0.5 * (sin2 - 2 * delta + std::sqrt(std::pow(sin2 - 2 * delta, 2) + 4 * beta * beta));
-    		const G4double rho = std::sqrt(rho2);
-    		const G4double Refl_sigma = (rho2 * std::pow(SinIncidentAngle - rho, 2) + std::pow(beta, 2)) / (rho2 * std::pow(SinIncidentAngle + rho, 2) + std::pow(beta, 2));
-    		const G4double coscot = std::sqrt(1 - sin2) / SinIncidentAngle;
-    		const G4double pi_over_sigma = (rho2 * std::pow(rho - coscot, 2) + std::pow(beta, 2)) / (rho2 * std::pow(rho + coscot, 2) + std::pow(beta, 2));
+    		const G4double sin2 = pow(SinIncidentAngle, 2);
+    		const G4double rho2 = 0.5 * (sin2 - 2 * delta + sqrt(pow(sin2 - 2 * delta, 2) + 4 * beta * beta));
+    		const G4double rho = sqrt(rho2);
+    		const G4double Refl_sigma = (rho2 * pow(SinIncidentAngle - rho, 2) + pow(beta, 2)) / (rho2 * pow(SinIncidentAngle + rho, 2) + pow(beta, 2));
+    		const G4double coscot = sqrt(1 - sin2) / SinIncidentAngle;
+    		const G4double pi_over_sigma = (rho2 * pow(rho - coscot, 2) + pow(beta, 2)) / (rho2 * pow(rho + coscot, 2) + pow(beta, 2));
     		const G4double Refl_pi = Refl_sigma * pi_over_sigma;
     		theReflectivity = 0.5 * (Refl_sigma + Refl_pi);  // unpolarized
     		G4double RoughAtten = 1;
@@ -315,7 +366,7 @@ G4double GammaReflectionProcess::Reflectivity(const G4double GamEner, const G4do
   	return theReflectivity;
 }
 
-void GammaReflectionProcess::SaveHenkeDataAsMaterialProperty()
+void GammaReflectionProcess::SaveHenkeDataAsMaterialProperty(G4bool print)
 {
   	// loop through the material table and load set up MaterialPropertiesTable
   	// with Henke data used to calculate the reflection
@@ -328,28 +379,31 @@ void GammaReflectionProcess::SaveHenkeDataAsMaterialProperty()
     		if (a_material->GetNumberOfElements() == 1 && a_material->GetDensity() > 1) 
 		{
       			G4double factor = N * CLHEP::classic_electr_radius / CLHEP::twopi;
-      			std::vector<G4double> Ephot, f1, f2;
+      			vector<G4double> Ephot, f1, f2;
       			const G4Element* theElement = a_material->GetElement(0);
       			G4int iret = ReadHenkeXrayData(theElement->GetName(), Ephot, f1, f2);
       			if (iret) 
 			{
-          			G4cout << std::left << std::setw(12) << __FILE__ << " " << __FUNCTION__ << " line "
-                 		<< std::right << std::setw(4) << __LINE__ << " no Henke data found for "
+          			G4cout << left << setw(12) << __FILE__ << " " << __FUNCTION__ << " line "
+                 		<< right << setw(4) << __LINE__ << " no Henke data found for "
                  		<< a_material->GetName() << " " << theElement->GetName() << G4endl;
       			}
       			else 
 			{
-        			std::vector<G4double> RealIndex(Ephot.size()), ImagIndex(Ephot.size());
-        			for (std::size_t i = 0; i < Ephot.size(); ++i) 
+        			vector<G4double> RealIndex(Ephot.size()), ImagIndex(Ephot.size());
+        			for (size_t i = 0; i < Ephot.size(); ++i) 
 				{
           				G4double lambda = CLHEP::twopi * CLHEP::hbarc / Ephot[i];
           				G4double lambda_sqr = lambda * lambda;
           				RealIndex[i] = fmax(0, factor * lambda_sqr * f1[i]);  // delta or 1-RealIndex
           				ImagIndex[i] = factor * lambda_sqr * f2[i];  // beta  or  -ImagIndex
             			
-					G4cout << "Ephot=" << std::setw(10) << Ephot[i] / eV << " eV delta=" << std::setw(10)
-                   			<< RealIndex[i] << " beta=" << std::setw(10) << ImagIndex[i] << G4endl;
+					if(print)
+						G4cout << "Ephot=" << setw(10) << Ephot[i] / eV << " eV delta=" 
+						<< setw(10) << RealIndex[i] << " beta=" << setw(10) 
+						<< ImagIndex[i] << G4endl;
         			}  // photon energy
+
         			G4MaterialPropertiesTable* proptab = a_material->GetMaterialPropertiesTable();
         			if(proptab == nullptr) 
 				{
@@ -359,10 +413,10 @@ void GammaReflectionProcess::SaveHenkeDataAsMaterialProperty()
         			proptab->AddProperty("REALRINDEX", Ephot, RealIndex);  // 1-RealIndex
         			proptab->AddProperty("IMAGINARYRINDEX", Ephot, ImagIndex);
           			
-				G4cout << std::left << std::setw(12) << __FILE__ << " " << __FUNCTION__ << " line "
-                 		<< std::right << std::setw(4) << __LINE__ << " " << a_material->GetName()
+				G4cout << left << setw(12) << __FILE__ << " " << __FUNCTION__ << " line "
+                 		<< right << setw(4) << __LINE__ << " " << a_material->GetName()
                  		<< " " << theElement->GetName()
-                 		<< " reflection data saved in PropertiesTable" << G4endl;
+                 		<< " reflection data saved in PropertiesTable\n" << G4endl;
       			}  // data found
     		}
   	}
@@ -370,18 +424,23 @@ void GammaReflectionProcess::SaveHenkeDataAsMaterialProperty()
 	return;
 }
 
-G4int GammaReflectionProcess::ReadHenkeXrayData(std::string ElName, std::vector<G4double>& Ephot, std::vector<G4double>& f1, std::vector<G4double>& f2)
+G4int GammaReflectionProcess::ReadHenkeXrayData(string ElName, 
+						vector<G4double>& Ephot, 
+						vector<G4double>& f1, 
+						vector<G4double>& f2)
 {
-  	std::transform(ElName.begin(), ElName.end(), ElName.begin(),::tolower);  // henke_physical_reference uses lower case filanames
+	// henke_physical_reference uses lower case filenames
+  	transform(ElName.begin(), ElName.end(), ElName.begin(),::tolower);
+
   	const G4String DataDir = "../materials/henke_physical_reference/";
   	const G4String InpFname = DataDir + ElName + ".nff";
-  	std::ifstream infile(InpFname);
+  	ifstream infile(InpFname);
   	if (!infile.is_open()) 
 	{
     		G4cout << "ReadHenkeXrayReflData " << InpFname << " not found" << G4endl;
     		return 1;  // failure
   	}
-  	std::vector<std::string> VarName(3);
+  	vector<string> VarName(3);
   	infile >> VarName[0] >> VarName[1] >> VarName[2];
     
 	G4cout << "ReadHenkeXrayData variable names " << VarName[0] << " " << VarName[1] << " "
@@ -409,7 +468,11 @@ const G4String &GammaReflectionProcess::GetName() const
 }
 
 
-G4double GammaReflectionProcess::AlongStepGetPhysicalInteractionLength(const G4Track&,G4double,G4double,G4double&,G4GPILSelection*) 
+G4double GammaReflectionProcess::AlongStepGetPhysicalInteractionLength(	const G4Track&,
+									G4double,
+									G4double,
+									G4double&,
+									G4GPILSelection*) 
 {
   	return -1.0;
 }
@@ -429,11 +492,14 @@ G4VParticleChange* GammaReflectionProcess::AlongStepDoIt(const G4Track&,const G4
   	return 0;
 }
 
-void GammaReflectionProcess::PrintReflectData(string name, vector<pair<double, vector<double>>> dataset,
-		vector<double> angle, vector<double> energy)
+void GammaReflectionProcess::PrintReflectData(	string name, 
+						vector<pair<double, 
+						vector<double>>> dataset,
+						vector<double> angle, 
+						vector<double> energy)
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
-	cout<<"[INFO] GammaReflectionProcess::GammaReflectionProcess ==> "<<name<<" data"<<endl;
+	G4cout<<"[INFO] GammaReflectionProcess::GammaReflectionProcess ==> "<<name<<" data"<<G4endl;
 
 	// print column names
 	printf("Angl/Ene : ");
@@ -462,8 +528,9 @@ void GammaReflectionProcess::PrintReflectData(string name, vector<pair<double, v
 	return;
 }
 
-vector<pair<double, vector<double>>> GammaReflectionProcess::ReadReflectData(string filename,
-	vector<double> &angle, vector<double> &energy)
+vector<pair<double, vector<double>>> GammaReflectionProcess::ReadReflectData(	string filename,
+										vector<double> &angle, 
+										vector<double> &energy)
 {
 	// Reads a CSV file into a vector of <string, vector<double>> pairs where
 	// each pair represents <column name, column values>
@@ -562,7 +629,7 @@ void GammaReflectionProcess::FindClosestIndexesInVec(vector<double> vec, double 
 	return;
 }
 
-double GammaReflectionProcess::FindReflectionProbability(vector<pair<double, vector<double>>> dataset,
+double GammaReflectionProcess::FindReflectionProbability(	vector<pair<double, vector<double>>> dataset,
 								vector<double> angle, vector<double> energy, 
 								double angle_val, double energy_val)
 {

@@ -43,7 +43,7 @@ PhysicsList::PhysicsList(G4String xmlFileName): G4VUserPhysicsList()
 	simPar = new SimParameters();
 	simPar->InitDefault();
 	simPar->ReadXML(xmlFileName);
-	simPar->PrintSRtype();
+	simPar->PrintSRprocParameters();
 }
 
 PhysicsList::~PhysicsList()
@@ -92,7 +92,10 @@ void PhysicsList::ConstructEM()
 			//pmanager->AddDiscreteProcess(new G4RayleighScattering);
 	
 			// turn on the custom gamma process
-			pmanager->AddDiscreteProcess(new GammaReflectionProcess);
+			pmanager->AddDiscreteProcess(new GammaReflectionProcess(simPar->GetReflType(),
+										simPar->GetReflPrint(),
+										simPar->GetSurfRoughness(),
+										simPar->GetSigmaRatio()));
     		} 
 		else if (particleName == "e-") 
 		{

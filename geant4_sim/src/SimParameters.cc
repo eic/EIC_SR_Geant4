@@ -88,7 +88,17 @@ void SimParameters::ReadXML(G4String fName)
 	{
 		// The data function is used to access the data stored in a node.
 		if(child_node.second.get<string>("<xmlattr>.name") == "model")
-			SetSRtype(stoi(child_node.second.data()));
+			SetSrType(stoi(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "type")
+			SetReflType(stoi(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "print")
+			SetReflPrint(stoi(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "sigma" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetSigmaRatio(stod(child_node.second.data()));	
+		else if(child_node.second.get<string>("<xmlattr>.name") == "roughness" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetSurfRoughness(stod(child_node.second.data())*m);
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
@@ -528,6 +538,10 @@ void SimParameters::InitDefault()
 	_beamTailMax = 0;
 
 	_SRtype = 1;
+	_reflType = 1;
+	_reflPrint = true;
+	_sigmaRatio = 5e-3;
+	_surfaceRoughness = 50e-9*m;
 
 	_gammaEcut = -1*keV;
 	_trackTcut =  1*s;
@@ -658,12 +672,21 @@ void SimParameters::PrintAbsParameters()
 	return;
 }
 
-void SimParameters::PrintSRtype()
+void SimParameters::PrintSRprocParameters()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
-	G4cout<<"[INFO] SimParameters::PrintSRtype ==> "<<GetSRtype()<<G4endl;
-	G4cout<<" 1 - G4SynchrotronRadiation"<<G4endl;
-	G4cout<<" 2 - G4SynchrotronRadiationInMat"<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintSRprocParameters"<<G4endl;
+	G4cout<<" SRtype = "<<GetSRtype()<<G4endl;
+	G4cout<<" 	1 - G4SynchrotronRadiation"<<G4endl;
+	G4cout<<" 	2 - G4SynchrotronRadiationInMat"<<G4endl;
+	G4cout<<" SR photon reflection type = "<<GetReflType()<<G4endl;
+	G4cout<<" 	1 - Synrad+"<<G4endl;
+	G4cout<<" 	2 - Geant4"<<G4endl;
+	G4cout<<" Print surface material data = "<<GetReflPrint()<<G4endl;
+	G4cout<<" 	0 - yes"<<G4endl;
+	G4cout<<" 	1 - no"<<G4endl;
+	G4cout<<" Sigma ratio = "<<GetSigmaRatio()<<G4endl;
+	G4cout<<" Surface roughness = "<<GetSurfRoughness()/m<<" [m]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
