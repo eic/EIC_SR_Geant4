@@ -120,7 +120,8 @@ void plotMCpHisto(TString fNameIn, TString fNameOut, TString plane)
         pad1->Draw();
         pad1->cd();
 
-	hmc->GetYaxis()->SetRangeUser(-50,50);
+	hmc->GetXaxis()->SetRangeUser(-500,500);
+	hmc->GetYaxis()->SetRangeUser(0,400);
 	hmc->SetMinimum(1e-1); 
 	hmc->GetZaxis()->SetTitle("N_{#gamma} [photons]");
 	hmc->Draw("colz"); 
@@ -153,7 +154,8 @@ void plotMatScanHisto(TString fNameIn, TString fNameOut, TString plane)
         pad1->Draw();
         pad1->cd();
 
-	hx0->GetYaxis()->SetRangeUser(-50,50);
+	hx0->GetXaxis()->SetRangeUser(-500,500);
+	hx0->GetYaxis()->SetRangeUser(0,400);
 	hx0->SetMinimum(1e-4); 
 	hx0->GetZaxis()->SetTitle("X^{-1}_{0} [cm^{-1}]");
 	hx0->Draw("colz"); 
