@@ -6,6 +6,7 @@
 #include <TFile.h>
 #include <TH1.h>
 #include <TH2.h>
+#include <TH3.h>
 #include <TMath.h>
 #include <TVector3.h>
 
@@ -162,5 +163,17 @@ private:
 	TH1F* _h9;
 	TH1F* _h10[NMAGMAX];
 	TH1F* _h11[NMAGMAX];
+
+	// for benchmark/debug
+	TH1D*	h1_ene;	
+	TH1D*	h1_dirx;	
+  	TH1D*	h1_diry;	
+  	TH1D*	h1_dirz;	
+  	TH1D*	h1_posx;	
+  	TH1D*	h1_posy;
+  	TH1D*	h1_posz;
+	TH2D*	h1_ene_dirx;
+	TH2D*	h1_ene_diry;
+	TH2D*	h1_ene_dirz;
 };
 #endif

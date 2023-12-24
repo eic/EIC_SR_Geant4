@@ -635,23 +635,32 @@ double GammaReflectionProcess::FindReflectionProbability(	vector<pair<double, ve
 {
 	int ang_i, ang_j, ene_i, ene_j;
 
+	// find the closest data in the table
 	FindClosestIndexesInVec(angle,angle_val,ang_i,ang_j);
 	FindClosestIndexesInVec(energy,energy_val,ene_i,ene_j);
 
+	// get probabilities
 	double prob_ii = dataset.at(ang_i).second.at(ene_i);
 	double prob_ji = dataset.at(ang_j).second.at(ene_i);
 	double prob_ij = dataset.at(ang_i).second.at(ene_j);
 	double prob_jj = dataset.at(ang_j).second.at(ene_j);
 
 	// linear interpolation between two points
-	double prob_ii_ji = (ang_i == ang_j) ? prob_ii : 
-		(prob_ji - prob_ii)*(angle_val - angle.at(ang_i))/(angle.at(ang_j) - angle.at(ang_i)) + prob_ii;
-	double prob_ij_jj = (ang_i == ang_j) ? prob_jj : 
-		(prob_jj - prob_ij)*(angle_val - angle.at(ang_j))/(angle.at(ang_i) - angle.at(ang_j)) + prob_ij;
 
-	double prob = (ene_i == ene_j) ? prob_ii_ji : 
-		(prob_ij_jj - prob_ii_ji)*(energy_val - energy.at(ene_i))/(energy.at(ene_j) - energy.at(ene_i)) + 
-		prob_ii_ji;
+	// interbolate between ene_i and ene_j; at ang_i
+	double k1 = (prob_ij - prob_ii)/(energy.at(ene_j) - energy.at(ene_i));
+	double b1 = prob_ii - k1*energy.at(ene_i);
+	double prob1 = (energy.at(ene_j) == energy.at(ene_i)) ? prob_ii : k1*energy_val + b1;
+
+	// interbolate between ene_i and ene_j; at ang_j
+	double k2 = (prob_jj - prob_ji)/(energy.at(ene_j) - energy.at(ene_i));
+	double b2 = prob_ji - k2*energy.at(ene_i);
+	double prob2 = (energy.at(ene_j) == energy.at(ene_i)) ? prob_ji : k2*energy_val + b2;
+
+	// interpolate between ang_i and ang_j
+	double k = (prob2 - prob1)/(angle.at(ang_j) - angle.at(ang_i));
+	double b = prob1 - k*angle.at(ang_i);
+	double prob = (angle.at(ang_j) == angle.at(ang_i)) ? prob1 : k*angle_val + b;
 
 	return prob;
 }

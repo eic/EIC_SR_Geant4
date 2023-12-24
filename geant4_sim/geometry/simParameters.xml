@@ -27,10 +27,10 @@
 	<!-- synrad model -->
 	<srmodel>
 		<sec desc="1 - G4SynchrotronRadiation; 2 - G4SynchrotronRadiationInMat" name="model">1</sec>
-		<sec desc="SR photon reflection process: 1 - Synrad+; 2 - Geant4" name="type">2</sec>
+		<sec desc="SR photon reflection process: 1 - Synrad+; 2 - Geant4" name="type">1</sec>
 		<sec desc="Print SR photon reflection data: 1 - true; 0 - false" name="print">1</sec>
-		<sec desc="Surface roughness ratio (for type = 1)" name="sigma" unit="">5e-3</sec>
-		<sec desc="Surface roughness (for type = 2)" name="roughness" unit="m">50e-9</sec>
+		<sec desc="Surface roughness ratio (for type = 1)" name="sigma" unit="">0</sec>
+		<sec desc="Surface roughness (for type = 2)" name="roughness" unit="m">0</sec>
 	</srmodel>
 
 	<!-- tracked gamma energy cut -->
