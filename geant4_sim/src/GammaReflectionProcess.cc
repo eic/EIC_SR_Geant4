@@ -18,7 +18,7 @@ GammaReflectionProcess::GammaReflectionProcess(G4int fType, G4bool print, G4doub
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
 {
 	// default
-	fReflectionType = -1;
+	fReflectionType = 2;
 	fSurfaceRoughness = 50e-9 * m; // RMS roughness
 	fSigmaRatio = 0.005; 	// the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation 
 				// of the size of cavities on the surface, and sigmaH is the st.dev. of the depth of 
