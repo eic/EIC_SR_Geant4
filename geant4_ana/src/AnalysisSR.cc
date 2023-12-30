@@ -132,9 +132,9 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	h1_dirx = new TH1D("h1_dirx_g4","SR photon momDir X; Px_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
 	h1_diry = new TH1D("h1_diry_g4","SR photon momDir Y; Py_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
 	h1_dirz = new TH1D("h1_dirz_g4","SR photon momDir Z; Pz_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
-	h1_posx = new TH1D("h1_posx_g4","SR photon position X; X_{#gamma} [eV];Flux [ph/s]",10000,-10,0);
-	h1_posy = new TH1D("h1_posy_g4","SR photon position Y; Y_{#gamma} [eV];Flux [ph/s]",2000,-1,1);
-	h1_posz = new TH1D("h1_posz_g4","SR photon position Z; Z_{#gamma} [eV];Flux [ph/s]",11000,-3400,-2300);
+	h1_posx = new TH1D("h1_posx_g4","SR photon position X; X_{#gamma} [cm];Flux [ph/s]",10000,-10,0);
+	h1_posy = new TH1D("h1_posy_g4","SR photon position Y; Y_{#gamma} [cm];Flux [ph/s]",2000,-1,1);
+	h1_posz = new TH1D("h1_posz_g4","SR photon position Z; Z_{#gamma} [cm];Flux [ph/s]",11000,-3400,-2300);
 	h1_ene_dirx = 
 	new TH2D("h1_ene_dirx_g4","SR photon energy vs momDir X;Px_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
 	4e3,-2,2,4e3,0,40e3);

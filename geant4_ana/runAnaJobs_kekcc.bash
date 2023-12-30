@@ -2,9 +2,9 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_core_solenoid_synradmodel_r0' # input directory
+mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim' # input directory
 treeName='tree'
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_core_solenoid_synradmodel_r0' # output directory
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
 queue='s'
@@ -50,7 +50,7 @@ do
 	
 	# submit a job
 	com="./exe ${mainInDir} output_${jobID}.root ${outputDir} output_ana_${jobID} ${treeName} ${minZ} ${maxZ}"
-	com=${com}+" &> ${outputDir}/logExe_ana_${jobID}.txt"
+	com="${com} &> ${outputDir}/logExe_ana_${jobID}.txt"
 	echo -ne "[INFO] ${com} => "
 	bsub -q $queue -o ${outputDir}/logJob_ana_${jobID}.txt "${com}"
 done
