@@ -186,13 +186,13 @@
 			<sec desc="magnet type" name="type">SOL</sec>
 			<sec desc="a flag to build the solenoid field: 1 - true; 0 - false" name="build">1</sec>
 			<sec desc="solenoid field map file in the /geometry/ directory" name="fname">../geometry/MARCO_v.6.4.1.1.3_1.7T_Magnetic_Field_Map_2022_11_14_rad_coords_cm_T.txt</sec>
-			<sec desc="maximum radius of the fielf" name="rmax" unit="m">3.0</sec>
+			<sec desc="maximum radius of the fielf" name="rmax" unit="m">5.0</sec>
 			<sec desc="minimum position in z of the fielf" name="zmin" unit="m">-5.0</sec>
 			<sec desc="maximum position in z of the fielf" name="zmax" unit="m">5.0</sec>
 			<sec desc="print the field map: 1 - true; 0 - false" name="print">0</sec>
-			<sec desc="solenoid origin position in x" name="origposx" unit="cm">0.0</sec>
-			<sec desc="solenoid origin position in y" name="origposy" unit="cm">0.0</sec>
-			<sec desc="solenoid origin position in z" name="origposz" unit="cm">0.0</sec>
+			<sec desc="solenoid origin position in x (custom-built syst.)" name="origposx" unit="cm">0.0</sec>
+			<sec desc="solenoid origin position in y (custom-built syst.)" name="origposy" unit="cm">0.0</sec>
+			<sec desc="solenoid origin position in z (custom-built syst.)" name="origposz" unit="cm">8.0</sec>
 			<sec desc="solenoid field flip xz coord." name="flipxz">1</sec>
 		</solenoid>
 		<ip>

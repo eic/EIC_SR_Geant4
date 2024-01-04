@@ -456,12 +456,12 @@ void SimParameters::InitDefault()
 	_solBuild = true;
 	_solPrint = true;
 	_solFlipXZ = true;
-	_solRmax =  8.0*m;
-	_solZmin = -8.0*m;
-	_solZmax =  8.0*m;
+	_solRmax =  5.0*m;
+	_solZmin = -5.0*m;
+	_solZmax =  5.0*m;
 	_solOrigPosX = 0.0*cm;
 	_solOrigPosY = 0.0*cm;
-	_solOrigPosZ = 0.0*cm;
+	_solOrigPosZ = 8.0*cm; // in the custom-build Geant4 coord. system (in the eic-shell = -8 cm)
 
 	_magName = {"D2EF2","D2EF1","D1EF","Q1EF","Q0EF"};
 	_magType = {"D-pole","D-pole","D-pole","Q-pole","Q-pole"};
