@@ -18,7 +18,7 @@ GammaReflectionProcess::GammaReflectionProcess(G4int fType, G4bool print, G4doub
 GammaReflectionProcess::GammaReflectionProcess() : G4VProcess("GammaReflectionProcess")
 {
 	// default
-	fReflectionType = 1;
+	fReflectionType = 2;
 	fSurfaceRoughness = 50e-9 * m; // RMS roughness
 	fSigmaRatio = 0.005; 	// the ratio of the sigmaH and sigmaX values, where sigmaX is the standard deviation 
 				// of the size of cavities on the surface, and sigmaH is the st.dev. of the depth of 
@@ -32,12 +32,42 @@ void GammaReflectionProcess::Init(G4bool print)
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] GammaReflectionProcess::GammaReflectionProcess"<<G4endl;
 	G4cout<<"X-ray reflection process is:"<<G4endl;
-	if(fReflectionType == 1) {G4cout<<" - DoGammaReflection"<<G4endl;}
-	else {G4cout<<" - DoXrayReflection"<<G4endl;}
+	switch(fReflectionType)
+	{
+		case 0:
+			G4cout<<" - DoXrayReflection:";
+			G4cout<<" specular reflection with Henke data [30;30000] eV used to calculate";
+			G4cout<<" the reflection and Névot-Croce factor attenuation";
+			G4cout<<G4endl;
+			break;
+		case 1:
+			G4cout<<" - DoGammaReflection:";
+			G4cout<<" specular reflection with Synrad+ data [1;50000] eV used to calculate";
+			G4cout<<" the reflection and Debye-Waller factor attenuation";
+			G4cout<<G4endl;
+			break;
+		default:
+			G4cout<<" - DoGammaReflection:";
+			G4cout<<" specular reflection with Synrad+ data [1;50000] eV used to calculate";
+			G4cout<<" the reflection and random reflection angle offsets";
+			G4cout<<G4endl;
+	}
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
-	if(fReflectionType == 1)
+	if(fReflectionType == 0)
 	{
+		G4cout<<"[INFO] fSurfaceRoughness = "<<fSurfaceRoughness/m<<" [m]"<<G4endl;
+
+		fNistManager = G4NistManager::Instance();
+		theMatIP = fNistManager->FindOrBuildMaterial("G4_Au");
+		theMatIR = fNistManager->FindOrBuildMaterial("G4_Cu");
+		SaveHenkeDataAsMaterialProperty(print);
+	}
+	else
+	{
+		G4cout<<"[INFO] fSigmaRatio = "<<fSigmaRatio<<G4endl;
+		G4cout<<"[INFO] fSurfaceRoughness = "<<fSurfaceRoughness/m<<" [m]"<<G4endl;
+
 		_reflectFileNameMap["Cu"] = "../materials/02-Copper.csv";
 		_reflectFileNameMap["Au"] = "../materials/04-Gold.csv";
 
@@ -50,18 +80,9 @@ void GammaReflectionProcess::Init(G4bool print)
 
 		if(print)
 		{
-			G4cout<<"[INFO] fSigmaRatio = "<<fSigmaRatio<<G4endl;
 			PrintReflectData("Cu",_reflectDataMap["Cu"],_grazingAngleMap["Cu"],_photonEnergyMap["Cu"]);
 			PrintReflectData("Au",_reflectDataMap["Au"],_grazingAngleMap["Au"],_photonEnergyMap["Au"]);
 		}
-	}
-	else
-	{
-		G4cout<<"[INFO] fSurfaceRoughness = "<<fSurfaceRoughness/m<<" [m]"<<G4endl;
-		fNistManager = G4NistManager::Instance();
-		theMatIP = fNistManager->FindOrBuildMaterial("G4_Au");
-		theMatIR = fNistManager->FindOrBuildMaterial("G4_Cu");
-		SaveHenkeDataAsMaterialProperty(print);
 	}
 
 	return;
@@ -120,19 +141,20 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		G4double prob = 0; // reflection probability
 		G4String volName = prePV->GetName(); // volume name
 
-		if(fReflectionType == 1)
-		{
-			// Based on Synrad+ implementation
-			// Ref.[https://molflow.web.cern.ch/node/116]
-			// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013]
-			DoGammaReflection(GamEner,theGlobalPoint,fOldMomentum,volName,prob,fNewMomentum);
-		}
-		else
+		if(fReflectionType == 0)
 		{
 			// Based on new Geant4 implementation of 'G4XrayReflection'
 			// Ref.[https://geant4.web.cern.ch/download/11.2.0.html]
-			// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013]
+			// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013] for [30;30000] eV
 			DoXrayReflection(GamEner,theGlobalPoint,fOldMomentum,volName,prob,fNewMomentum);
+		}
+		else
+		{
+			// Based on Synrad+ implementation
+			// Ref.[https://molflow.web.cern.ch/node/116]
+			// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013] for [30;30000] eV
+			// Uses data from Ref.[https://lib-extopc.kek.jp/preprints/PDF/1981/8102/8102231.pdf] for < 30 eV
+			DoGammaReflection(GamEner,theGlobalPoint,fOldMomentum,volName,fReflectionType,prob,fNewMomentum);
 		}
 
 		// play Monte-Carlo
@@ -204,7 +226,8 @@ void GammaReflectionProcess::DoXrayReflection(	const G4double GamEner,
 void GammaReflectionProcess::DoGammaReflection(	const G4double GamEner, 
 						const G4ThreeVector theGlobalPoint,
 						const G4ThreeVector fOldMomentum,
-						const G4String volName,
+						const G4String volName, 
+						const G4int specRef,
 						G4double &prob, 
 						G4ThreeVector &fNewMomentum)
 {
@@ -217,6 +240,7 @@ void GammaReflectionProcess::DoGammaReflection(	const G4double GamEner,
 	// Obtains the Normal vector to a surface (in global coordinates)
 	// pointing out of previous volume and into current volume
 	G4ThreeVector fGlobalNormal = (iNav[hNavId])->GetGlobalExitNormal(theGlobalPoint, &valid);
+	G4double SinIncidentAngle = fOldMomentum * fGlobalNormal;
 
 	// flip the normal vector -- now, pointing inside the vacuum
 	if(valid)
@@ -228,7 +252,7 @@ void GammaReflectionProcess::DoGammaReflection(	const G4double GamEner,
 		G4ExceptionDescription ed;
 		ed 	<< " GammaReflectionProcess/PostStepDoIt(): "
 			<< " The Navigator reports that it returned an invalid normal" << G4endl;
-		G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection01", 
+		G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection02", 
 			JustWarning, // or EventMustBeAborted 
 			ed,
 			"Invalid Surface Normal - Geometry must return valid surface normal");
@@ -249,7 +273,7 @@ void GammaReflectionProcess::DoGammaReflection(	const G4double GamEner,
 			<< "     Old Momentum  (during step)     = " << fOldMomentum << G4endl
 			<< "     Global Normal (Exiting New Vol) = " << fGlobalNormal << G4endl
 			<< G4endl;
-		G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection02",
+		G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection03",
 			JustWarning, // or EventMustBeAborted
 			ed,
 			"Invalid Surface Normal - Geometry must return valid surface "
@@ -282,56 +306,66 @@ void GammaReflectionProcess::DoGammaReflection(	const G4double GamEner,
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
 
 	//- Roughtness
-	G4ThreeVector fNewMomentum_tmp = fNewMomentum;
-
-	// get angular offsets and
-	// check if the new reflected gamma direction is within physical ranges;
-	// since the norm vector looks inside the vacuum, the angle between them should be (0;pi/2) --> dot > 0; 
-	G4int i = 0;
-	do
+	if(specRef == 1) // Debye–Waller factor [https://doi.org/10.1364/OSAC.422924]	
 	{
-		// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), 
-		// but as surface roughness is taken into account; the theta and phi angles (between 
-		// the reflected direction and the surface normal) are perturbated with a gaussian 
-		// distributied offset
-		G4double thetaOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-		G4double phiOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-		// where thetaOffset and phiOffset are the random angles added to the calculated ones
-		// (those of mirror reflection), and fSigmaRatio is the value the user inputs in the 
-		// Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where 
-		// sigmaX is the standard deviation of the size of cavities on the surface, and sigmaH 
-		// is the st.dev. of the depth of those). Essentially, the larger the "roughness" value 
-		// (theoretically the ratio of RMS roughness and autocorrelation length), the more the 
-		// reflection direction is perturbated around the perfect mirror direction.
-
-		fNewMomentum_tmp.setTheta(fNewMomentum.getTheta() + thetaOffset);
-		fNewMomentum_tmp.setPhi(fNewMomentum.getPhi() + phiOffset);
-		i++;
+      		G4double kiz = SinIncidentAngle * GamEner / CLHEP::hbarc;
+		prob *= G4Exp(-2.0 * pow(kiz * fSurfaceRoughness,2));
 	}
-	while(fNewMomentum_tmp*fGlobalNormal <= 0.0 && i < NMAXLOOPS);
+	else // old (default) Synrad+ model [https://molflow.web.cern.ch/node/116]
+	{
+		G4ThreeVector fNewMomentum_tmp = fNewMomentum;
 
-	// set the new offset direction
-	if(i < NMAXLOOPS)
-	{
-		fNewMomentum = fNewMomentum_tmp;
-	}
-	else
-	{
-		G4ExceptionDescription ed;
-		ed 	<< " GammaReflectionProcess/PostStepDoIt(): "
-			<< " Failed to find acceptable angular offsets after "<<NMAXLOOPS<<" trials."<< G4endl
-			<< " (fNewMomentum_tmp*fGlobalNormal) = "<<fNewMomentum_tmp*fGlobalNormal<<"." << G4endl
-			<< " while the dot product should be > 0." << G4endl;
-		G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection01", 
-			JustWarning, // or EventMustBeAborted 
-			ed,
-			"Bad angular offsets - use unperturbed reflection photon direction");
+		// get angular offsets and
+		// check if the new reflected gamma direction is within physical ranges;
+		// since the norm vector looks inside the vacuum, the angle between them should be (0;pi/2) --> dot > 0; 
+		G4int i = 0;
+		do
+		{
+			// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), 
+			// but as surface roughness is taken into account; the theta and phi angles (between 
+			// the reflected direction and the surface normal) are perturbated with a gaussian 
+			// distributied offset
+			G4double thetaOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+			G4double phiOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+			// where thetaOffset and phiOffset are the random angles added to the calculated ones
+			// (those of mirror reflection), and fSigmaRatio is the value the user inputs in the 
+			// Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where 
+			// sigmaX is the standard deviation of the size of cavities on the surface, and sigmaH 
+			// is the st.dev. of the depth of those). Essentially, the larger the "roughness" value 
+			// (theoretically the ratio of RMS roughness and autocorrelation length), the more the 
+			// reflection direction is perturbated around the perfect mirror direction.
+
+			fNewMomentum_tmp.setTheta(fNewMomentum.getTheta() + thetaOffset);
+			fNewMomentum_tmp.setPhi(fNewMomentum.getPhi() + phiOffset);
+			i++;
+		}
+		while(fNewMomentum_tmp*fGlobalNormal <= 0.0 && i < NMAXLOOPS);
+
+		// set the new offset direction
+		if(i < NMAXLOOPS)
+		{
+			fNewMomentum = fNewMomentum_tmp;
+		}
+		else
+		{
+			G4ExceptionDescription ed;
+			ed 	<< " GammaReflectionProcess/PostStepDoIt(): "
+				<< " Failed to find acceptable angular offsets after "<<NMAXLOOPS<<" trials."<< G4endl
+				<< " (fNewMomentum_tmp*fGlobalNormal) = "<<fNewMomentum_tmp*fGlobalNormal<<"." << G4endl
+				<< " while the dot product should be > 0." << G4endl;
+			G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection04", 
+				JustWarning, // or EventMustBeAborted 
+				ed,
+				"Bad angular offsets - use unperturbed reflection photon direction");
+		}
 	}
 
 	return;
 }
 
-G4double GammaReflectionProcess::Reflectivity(const G4double GamEner, const G4double SinIncidentAngle, const G4Material* theMat) const
+G4double GammaReflectionProcess::Reflectivity(	const G4double GamEner, 
+						const G4double SinIncidentAngle, 
+						const G4Material* theMat) const
 {
 	if(GamEner < 30. * eV || GamEner > 30. * keV) return 0;
 
@@ -349,20 +383,25 @@ G4double GammaReflectionProcess::Reflectivity(const G4double GamEner, const G4do
     		const G4double sin2 = pow(SinIncidentAngle, 2);
     		const G4double rho2 = 0.5 * (sin2 - 2 * delta + sqrt(pow(sin2 - 2 * delta, 2) + 4 * beta * beta));
     		const G4double rho = sqrt(rho2);
-    		const G4double Refl_sigma = (rho2 * pow(SinIncidentAngle - rho, 2) + pow(beta, 2)) / (rho2 * pow(SinIncidentAngle + rho, 2) + pow(beta, 2));
+    		const G4double Refl_sigma = 	(rho2 * pow(SinIncidentAngle - rho, 2) + pow(beta, 2)) / 
+						(rho2 * pow(SinIncidentAngle + rho, 2) + pow(beta, 2));
     		const G4double coscot = sqrt(1 - sin2) / SinIncidentAngle;
-    		const G4double pi_over_sigma = (rho2 * pow(rho - coscot, 2) + pow(beta, 2)) / (rho2 * pow(rho + coscot, 2) + pow(beta, 2));
+    		const G4double pi_over_sigma = 	(rho2 * pow(rho - coscot, 2) + pow(beta, 2)) / 
+						(rho2 * pow(rho + coscot, 2) + pow(beta, 2));
     		const G4double Refl_pi = Refl_sigma * pi_over_sigma;
     		theReflectivity = 0.5 * (Refl_sigma + Refl_pi);  // unpolarized
     		G4double RoughAtten = 1;
     		if (fSurfaceRoughness > 0) 
 		{
       			G4double kiz = SinIncidentAngle * GamEner / CLHEP::hbarc;
-      			G4double kjz = SinIncidentAngle * (1 - delta) * GamEner / CLHEP::hbarc;
-      			RoughAtten = G4Exp(-2 * kiz * kjz * fSurfaceRoughness * fSurfaceRoughness);  // Nevot–Croce
+      			G4double kjz = SinIncidentAngle * (1.0 - delta) * GamEner / CLHEP::hbarc;
+
+			// Nevot–Croce [https://doi.org/10.1016/S0076-695X(08)60047-2]
+      			RoughAtten = G4Exp(-2.0 * kiz * kjz * fSurfaceRoughness * fSurfaceRoughness); 
       			theReflectivity *= RoughAtten;
     		}
   	}
+
   	return theReflectivity;
 }
 
@@ -635,23 +674,32 @@ double GammaReflectionProcess::FindReflectionProbability(	vector<pair<double, ve
 {
 	int ang_i, ang_j, ene_i, ene_j;
 
+	// find the closest data in the table
 	FindClosestIndexesInVec(angle,angle_val,ang_i,ang_j);
 	FindClosestIndexesInVec(energy,energy_val,ene_i,ene_j);
 
+	// get probabilities
 	double prob_ii = dataset.at(ang_i).second.at(ene_i);
 	double prob_ji = dataset.at(ang_j).second.at(ene_i);
 	double prob_ij = dataset.at(ang_i).second.at(ene_j);
 	double prob_jj = dataset.at(ang_j).second.at(ene_j);
 
 	// linear interpolation between two points
-	double prob_ii_ji = (ang_i == ang_j) ? prob_ii : 
-		(prob_ji - prob_ii)*(angle_val - angle.at(ang_i))/(angle.at(ang_j) - angle.at(ang_i)) + prob_ii;
-	double prob_ij_jj = (ang_i == ang_j) ? prob_jj : 
-		(prob_jj - prob_ij)*(angle_val - angle.at(ang_j))/(angle.at(ang_i) - angle.at(ang_j)) + prob_ij;
 
-	double prob = (ene_i == ene_j) ? prob_ii_ji : 
-		(prob_ij_jj - prob_ii_ji)*(energy_val - energy.at(ene_i))/(energy.at(ene_j) - energy.at(ene_i)) + 
-		prob_ii_ji;
+	// interbolate between ene_i and ene_j; at ang_i
+	double k1 = (prob_ij - prob_ii)/(energy.at(ene_j) - energy.at(ene_i));
+	double b1 = prob_ii - k1*energy.at(ene_i);
+	double prob1 = (energy.at(ene_j) == energy.at(ene_i)) ? prob_ii : k1*energy_val + b1;
+
+	// interbolate between ene_i and ene_j; at ang_j
+	double k2 = (prob_jj - prob_ji)/(energy.at(ene_j) - energy.at(ene_i));
+	double b2 = prob_ji - k2*energy.at(ene_i);
+	double prob2 = (energy.at(ene_j) == energy.at(ene_i)) ? prob_ji : k2*energy_val + b2;
+
+	// interpolate between ang_i and ang_j
+	double k = (prob2 - prob1)/(angle.at(ang_j) - angle.at(ang_i));
+	double b = prob1 - k*angle.at(ang_i);
+	double prob = (angle.at(ang_j) == angle.at(ang_i)) ? prob1 : k*angle_val + b;
 
 	return prob;
 }

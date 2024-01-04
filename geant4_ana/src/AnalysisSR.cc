@@ -97,7 +97,8 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 
 	_fChain->GetEntry(0);
 	// histograms
-	_h0 = new TH1F("h0","SR photon energy (abs(gammaPosZ_cm) < 65 cm);E_{#gamma} [eV];# of photons",101000,-1000,100000);
+	_h0 = new TH1F("h0","SR photon energy (abs(gammaPosZ_cm) < 65 cm);E_{#gamma} [eV];# of photons",
+		101000,-1000,100000);
 	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",101000,-1000,100000);
 	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",600,-4000,2000,300,-30,30);
 	_h3x = new TH2F("h3x","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",600,-4000,2000,300,-30,30);
@@ -125,6 +126,24 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 
 	// ascii file to store generated events
 	_fHepmc = new WriterAscii(GetOutputFileNameHepmc().Data());
+
+	// for benchmark/debug
+	h1_ene = new TH1D("h1_ene_g4","SR photon spectrum;E_{#gamma} [eV];Flux [ph/s]",1e6,0,1e6);
+	h1_dirx = new TH1D("h1_dirx_g4","SR photon momDir X; Px_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
+	h1_diry = new TH1D("h1_diry_g4","SR photon momDir Y; Py_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
+	h1_dirz = new TH1D("h1_dirz_g4","SR photon momDir Z; Pz_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
+	h1_posx = new TH1D("h1_posx_g4","SR photon position X; X_{#gamma} [cm];Flux [ph/s]",10000,-10,0);
+	h1_posy = new TH1D("h1_posy_g4","SR photon position Y; Y_{#gamma} [cm];Flux [ph/s]",2000,-1,1);
+	h1_posz = new TH1D("h1_posz_g4","SR photon position Z; Z_{#gamma} [cm];Flux [ph/s]",11000,-3400,-2300);
+	h1_ene_dirx = 
+	new TH2D("h1_ene_dirx_g4","SR photon energy vs momDir X;Px_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
+	4e3,-2,2,4e3,0,40e3);
+	h1_ene_diry = 
+	new TH2D("h1_ene_diry_g4","SR photon energy vs momDir Y;Py_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
+	4e3,-2,2,4e3,0,40e3);
+	h1_ene_dirz = 
+	new TH2D("h1_ene_dirz_g4","SR photon energy vs momDir Z;Pz_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
+	4e3,-2,2,4e3,0,40e3);
 
 	return;
 }
@@ -170,6 +189,25 @@ void AnalysisSR::Loop()
 		// loop over SR photons
 		for(Int_t i = 0; i < gammaEnergy_eV->size(); i++)
 		{
+			// for benchmark/debug
+			if(	-3350.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < -2350.0 &&
+				gammaPosX_cm->at(i) < -4.925)
+			{
+				h1_ene->Fill(gammaEnergy_eV->at(i));
+				h1_dirx->Fill(gammaMomX_eV->at(i)/gammaEnergy_eV->at(i));
+				h1_diry->Fill(gammaMomY_eV->at(i)/gammaEnergy_eV->at(i));
+				h1_dirz->Fill(gammaMomZ_eV->at(i)/gammaEnergy_eV->at(i));
+				h1_posx->Fill(gammaPosX_cm->at(i));
+				h1_posy->Fill(gammaPosY_cm->at(i));
+				h1_posz->Fill(gammaPosZ_cm->at(i));
+				h1_ene_dirx->Fill(	gammaMomX_eV->at(i)/gammaEnergy_eV->at(i),
+							gammaEnergy_eV->at(i));
+				h1_ene_diry->Fill(	gammaMomY_eV->at(i)/gammaEnergy_eV->at(i),
+							gammaEnergy_eV->at(i));
+				h1_ene_dirz->Fill(	gammaMomZ_eV->at(i)/gammaEnergy_eV->at(i),
+							gammaEnergy_eV->at(i));
+			}
+			
 			// geometry cut for SR photons
 			if(gammaPosZ_cm->at(i) < _minZ || _maxZ < gammaPosZ_cm->at(i)){continue;} 
 			//---------------------------------------------------------------------------
@@ -277,6 +315,17 @@ void AnalysisSR::Loop()
 		_h10[iMag]->Write();
 		_h11[iMag]->Write();
 	}
+	// for benchmark/debug
+	h1_ene->Write();
+	h1_dirx->Write();
+	h1_diry->Write();
+	h1_dirz->Write();
+	h1_posx->Write();
+	h1_posy->Write();
+	h1_posz->Write();
+	h1_ene_dirx->Write();
+	h1_ene_diry->Write();
+	h1_ene_dirz->Write();
 
 	f->Close();
 

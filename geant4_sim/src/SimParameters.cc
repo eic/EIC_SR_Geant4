@@ -538,7 +538,7 @@ void SimParameters::InitDefault()
 	_beamTailMax = 0;
 
 	_SRtype = 1;
-	_reflType = 1;
+	_reflType = 2;
 	_reflPrint = true;
 	_sigmaRatio = 5e-3;
 	_surfaceRoughness = 50e-9*m;
@@ -680,8 +680,9 @@ void SimParameters::PrintSRprocParameters()
 	G4cout<<" 	1 - G4SynchrotronRadiation"<<G4endl;
 	G4cout<<" 	2 - G4SynchrotronRadiationInMat"<<G4endl;
 	G4cout<<" SR photon reflection type = "<<GetReflType()<<G4endl;
-	G4cout<<" 	1 - Synrad+"<<G4endl;
-	G4cout<<" 	2 - Geant4"<<G4endl;
+	G4cout<<" 	0 - Geant4 (Xray,Névot-Croce)"<<G4endl;
+	G4cout<<" 	1 - Synrad+ (Gamma,Debye-Waller)"<<G4endl;
+	G4cout<<" 	2 - Synrad+ (Gamma,offset)"<<G4endl;
 	G4cout<<" Print surface material data = "<<GetReflPrint()<<G4endl;
 	G4cout<<" 	0 - yes"<<G4endl;
 	G4cout<<" 	1 - no"<<G4endl;

@@ -73,11 +73,9 @@ private:
 				const G4ThreeVector theGlobalPoint, 
 				const G4ThreeVector fOldMomentum,
 				const G4String volName,
+				const G4int specRef,
 				G4double &prob, 
 				G4ThreeVector &fNewMomentum);
-
-	void DoGammaReflection(const G4double GamEner, G4double &prob, G4ThreeVector &fNewMomentum);
-	void DoXrayReflection(const G4double GamEner, G4double &prob, G4ThreeVector &fNewMomentum);
 
 	map<string, string> _reflectFileNameMap;
 	G4double fSigmaRatio;
