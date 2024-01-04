@@ -12,6 +12,8 @@
 using namespace std;
 
 const Bool_t _print = kFALSE;
+const Double_t Z_offset = -8.0; // cm
+const Double_t minB = 1e-3; // T = 10 Gs
 
 void plotData(TString fNameIn, TString fNameOut);
 
@@ -48,9 +50,9 @@ void plotData(TString fNameIn, TString fNameOut)
 	Int_t line = 0;
 
 	// 2D histograms for field maps
-	TH2D* hBr = new TH2D("hBr",";Z [cm];R [cm];Br [T]",500,-500,500,200,0,400);
-	TH2D* hBz = new TH2D("hBz",";Z [cm];R [cm];Bz [T]",500,-500,500,200,0,400);
-	TH2D* hB = new TH2D("hB",";Z [cm];R [cm];B [T]",500,-500,500,200,0,400);
+	TH2D* hBr = new TH2D("hBr",";Z [cm];R [cm];Br [T]",800,-800,800,300,0,600);
+	TH2D* hBz = new TH2D("hBz",";Z [cm];R [cm];Bz [T]",800,-800,800,300,0,600);
+	TH2D* hB = new TH2D("hB",";Z [cm];R [cm];B [T]",800,-800,800,300,0,600);
 
 	hBr->GetYaxis()->SetTitleOffset(1.2);
 	hBz->GetYaxis()->SetTitleOffset(1.2);
@@ -65,6 +67,10 @@ void plotData(TString fNameIn, TString fNameOut)
 	while (inputFile >> r >> z >> Br >> Bz )
 	{
 		if(_print) cout<<setw(10)<<line<<" "<<setw(10)<<r<<" "<<setw(10)<<z<<" "<<setw(10)<<Br<<" "<<setw(10)<<Bz<<endl;
+		
+		// Z-offset
+		z += Z_offset;
+		
 		hBr->SetBinContent(	hBr->GetXaxis()->FindBin(z),
 					hBr->GetYaxis()->FindBin(r),
 					Br);
@@ -119,7 +125,25 @@ void plotData(TString fNameIn, TString fNameOut)
 
 	c1->SaveAs(fNameOut.Data());
 
+	TCanvas* c2 = new TCanvas("c2","c2",1800,900); 
+	c2->cd(); 
+        TPad *pad2 = new TPad("pad2","pad2",0,0,1,1);
+        pad2->SetBottomMargin(0.12);
+        pad2->SetTopMargin(0.12);
+        pad2->SetRightMargin(0.12);
+        pad2->SetLeftMargin(0.12);
+        pad2->Draw();
+        pad2->cd();
+
+	hB->SetMinimum(minB);
+	hB->Draw("colz"); 
+	
+	gPad->SetLogz();
+
+	c2->SaveAs(Form("%s_B.png",fNameOut.Data()));
+
 	delete c1;
+	delete c2;
 	delete hBr;
 	delete hBz;
 	delete hB;
