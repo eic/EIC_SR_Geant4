@@ -5,11 +5,27 @@
 /* hadd -f /path/output_eicrecon_podio_all.root /path/output_eicrecon/output_eicrecon_*.podio.root */
 /***************************************************************************************************/
 /***************************************************************************************************/
+#include "TROOT.h"
+#include "TH2D.h"
+#include "TCanvas.h"
+#include "TStyle.h"
+#include "TMath.h"
+#include "TTreeReaderArray.h"
+#include "TTreeReader.h"
+#include "TFile.h"
+#include "TChain.h"
 
-#define MINX -400 // [cm]
-#define MAXX  400 // [cm]
-#define MINY -400 // [cm]
-#define MAXY  400 // [cm]
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+#define MINX -1000 // [cm]
+#define MAXX  1000 // [cm]
+#define MINY -1000 // [cm]
+#define MAXY  1000 // [cm]
 #define MINZ -1000 // [cm]
 #define MAXZ  1000 // [cm]
 
@@ -25,11 +41,11 @@ void plot()
 	//-----------------------------------------------------------//
 	// MC particles (use eic-shell)
 //	plotMCparticles("/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_podio_all.root","./output/output_eicrecon_geant4_podio_all_hist.root");
-	plotMCpHisto("./output/output_eicrecon_geant4_podio_all_hist.root","./output/MCP_2D","xz");
+//	plotMCpHisto("./output/output_eicrecon_geant4_podio_all_hist.root","./output/MCP_2D","xz");
 // [for Synrad+]	plotMCparticles("/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_synrad_XZflip/output_eicrecon.podio.root","./output/output_eicrecon_synrad_podio_all_hist.root");
 	//-----------------------------------------------------------//
 	// Material scan
-//	plotMaterials("/gpfs/group/belle2/TMP/anatochi/eic/output_matscan/g4mat_scan_*.root","./output/g4mat_scan_histo.root");
+	plotMaterials("/gpfs/group/belle2/TMP/anatochi/eic/output_matscan/g4mat_scan_*.root","./output/g4mat_scan_histo.root");
 	plotMatScanHisto("./output/g4mat_scan_histo.root","./output/X0_2D","xz");
 	//-----------------------------------------------------------//
 	// MC particles onto Material scan: Geant4 vs Synrad+
@@ -120,8 +136,8 @@ void plotMCpHisto(TString fNameIn, TString fNameOut, TString plane)
         pad1->Draw();
         pad1->cd();
 
-	hmc->GetXaxis()->SetRangeUser(-500,500);
-	hmc->GetYaxis()->SetRangeUser(0,400);
+	hmc->GetXaxis()->SetRangeUser(-800,800);
+	hmc->GetYaxis()->SetRangeUser(0,600);
 	hmc->SetMinimum(1e-1); 
 	hmc->GetZaxis()->SetTitle("N_{#gamma} [photons]");
 	hmc->Draw("colz"); 
@@ -154,8 +170,8 @@ void plotMatScanHisto(TString fNameIn, TString fNameOut, TString plane)
         pad1->Draw();
         pad1->cd();
 
-	hx0->GetXaxis()->SetRangeUser(-500,500);
-	hx0->GetYaxis()->SetRangeUser(0,400);
+	hx0->GetXaxis()->SetRangeUser(-800,800);
+	hx0->GetYaxis()->SetRangeUser(0,600);
 	hx0->SetMinimum(1e-4); 
 	hx0->GetZaxis()->SetTitle("X^{-1}_{0} [cm^{-1}]");
 	hx0->Draw("colz"); 
@@ -174,11 +190,11 @@ void plotMaterials(TString fNameIn, TString fNameOut)
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	TFile* f = new TFile(fNameOut.Data(),"recreate");
-	TH2F* hx0_xz = new TH2F("hx0_xz","XZ;Z [cm];X [cm]",(MAXZ-MINZ)*1,MINZ,MAXZ,(MAXX-MINX)*100,MINX,MAXX);
-	TH2F* hx0_yz = new TH2F("hx0_yz","YZ;Z [cm];Y [cm]",(MAXZ-MINZ)*1,MINZ,MAXZ,(MAXY-MINY)*100,MINY,MAXY);
-	TH2F* hx0_yx = new TH2F("hx0_yx","YX;X [cm];Y [cm]",(MAXX-MINX)*10,MINX,MAXX,(MAXY-MINY)*10,MINY,MAXY);
-	TH1F* hx0_x = new TH1F("hx0_x","X;X [cm]",(MAXX-MINX)*1000,MINX,MAXX);
-	TH1F* hx0_y = new TH1F("hx0_y","Y;Y [cm]",(MAXY-MINY)*1000,MINY,MAXY);
+	TH2F* hx0_xz = new TH2F("hx0_xz","XZ;Z [cm];X [cm]",(MAXZ-MINZ)*1,MINZ,MAXZ,(MAXX-MINX)*1,MINX,MAXX);
+	TH2F* hx0_yz = new TH2F("hx0_yz","YZ;Z [cm];Y [cm]",(MAXZ-MINZ)*1,MINZ,MAXZ,(MAXY-MINY)*1,MINY,MAXY);
+	TH2F* hx0_yx = new TH2F("hx0_yx","YX;X [cm];Y [cm]",(MAXX-MINX)*1,MINX,MAXX,(MAXY-MINY)*1,MINY,MAXY);
+	TH1F* hx0_x = new TH1F("hx0_x","X;X [cm]",(MAXX-MINX)*1,MINX,MAXX);
+	TH1F* hx0_y = new TH1F("hx0_y","Y;Y [cm]",(MAXY-MINY)*1,MINY,MAXY);
 
 	//-----------------------------------------------------------//
 	// read the root file with material scan results
@@ -282,7 +298,8 @@ void plotMCparticles(TString fNameIn, TString fNameOut)
 	cout<<"MC particles calculation ..."<<endl;
 	while(myReader.Next())
 	{
-		for (Int_t imcPart = 0; imcPart < pdg_mc.GetSize(); imcPart++)
+		Int_t nPart = pdg_mc.GetSize();
+		for (Int_t imcPart = 0; imcPart < nPart; imcPart++)
 		{
 			if(simulatorStatus_mc[imcPart])
 			{
