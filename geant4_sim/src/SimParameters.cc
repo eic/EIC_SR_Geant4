@@ -601,7 +601,7 @@ void SimParameters::PrintSolParameters()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintSolParameters ==> Solenoid parameters"<<G4endl;
-	G4cout<<"Build filed = "<<IsBuildSolenoid()<<G4endl;
+	G4cout<<"Build field = "<<IsBuildSolenoid()<<G4endl;
 	G4cout<<"File name = "<<GetSolFileName()<<G4endl;
 	G4cout<<"Max R = "<<GetSolRmax()/m<<" [m]"<<G4endl;
 	G4cout<<"Min Z = "<<GetSolZmin()/m<<" [m]"<<G4endl;
