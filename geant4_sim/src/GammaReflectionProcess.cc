@@ -49,7 +49,7 @@ void GammaReflectionProcess::Init(G4bool print)
 		default:
 			G4cout<<" - DoGammaReflection:";
 			G4cout<<" specular reflection with Synrad+ data [1;50000] eV used to calculate";
-			G4cout<<" the reflection and random reflection angle offsets";
+			G4cout<<" the offsets for the surface normal";
 			G4cout<<G4endl;
 	}
 	G4cout<<"==================================================================\n\n"<<G4endl;
@@ -141,20 +141,27 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 		G4double prob = 0; // reflection probability
 		G4String volName = prePV->GetName(); // volume name
 
-		if(fReflectionType == 0)
+		switch(fReflectionType)
 		{
-			// Based on new Geant4 implementation of 'G4XrayReflection'
-			// Ref.[https://geant4.web.cern.ch/download/11.2.0.html]
-			// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013] for [30;30000] eV
-			DoXrayReflection(GamEner,theGlobalPoint,fOldMomentum,volName,prob,fNewMomentum);
-		}
-		else
-		{
-			// Based on Synrad+ implementation
-			// Ref.[https://molflow.web.cern.ch/node/116]
-			// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013] for [30;30000] eV
-			// Uses data from Ref.[https://lib-extopc.kek.jp/preprints/PDF/1981/8102/8102231.pdf] for < 30 eV
-			DoGammaReflection(GamEner,theGlobalPoint,fOldMomentum,volName,fReflectionType,prob,fNewMomentum);
+			case 0:
+				// Based on new Geant4 implementation of 'G4XrayReflection'
+				// Ref.[https://geant4.web.cern.ch/download/11.2.0.html]
+				// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013] for [30;30000] eV
+				DoXrayReflection(GamEner,theGlobalPoint,fOldMomentum,volName,prob,fNewMomentum);
+				break;
+			case 1:
+				// Based on Synrad+ implementation
+				// Ref.[https://molflow.web.cern.ch/node/116]
+				// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013] for [30;30000] eV
+				// Uses data from Ref.[https://lib-extopc.kek.jp/preprints/PDF/1981/8102/8102231.pdf] for < 30 eV
+				DoGammaReflection1(GamEner,theGlobalPoint,fOldMomentum,volName,prob,fNewMomentum);
+				break;
+			default:
+				// Based on Synrad+ implementation
+				// Ref.[https://molflow.web.cern.ch/node/116]
+				// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013] for [30;30000] eV
+				// Uses data from Ref.[https://lib-extopc.kek.jp/preprints/PDF/1981/8102/8102231.pdf] for < 30 eV
+				DoGammaReflection2(GamEner,theGlobalPoint,fOldMomentum,volName,prob,fNewMomentum);
 		}
 
 		// play Monte-Carlo
@@ -223,11 +230,10 @@ void GammaReflectionProcess::DoXrayReflection(	const G4double GamEner,
 	return;
 }
 
-void GammaReflectionProcess::DoGammaReflection(	const G4double GamEner, 
+void GammaReflectionProcess::DoGammaReflection1(const G4double GamEner, 
 						const G4ThreeVector theGlobalPoint,
 						const G4ThreeVector fOldMomentum,
 						const G4String volName, 
-						const G4int specRef,
 						G4double &prob, 
 						G4ThreeVector &fNewMomentum)
 {
@@ -297,7 +303,7 @@ void GammaReflectionProcess::DoGammaReflection(	const G4double GamEner,
 	G4double anglePhotonToNormal = fOldMomentum.angle(-fGlobalNormal);
 	G4double grazingPhotonAngle = M_PI_2 - anglePhotonToNormal; 
 
-	// get probability
+	// get reflection probability from the database
 	if(volName == "vac_IP" || volName == "vac_ip") // Au ip beam pipe
 		prob = FindReflectionProbability(_reflectDataMap["Au"],
 			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle/rad,GamEner/eV);
@@ -306,59 +312,156 @@ void GammaReflectionProcess::DoGammaReflection(	const G4double GamEner,
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
 
 	//- Roughtness
-	if(specRef == 1) // Debye–Waller factor [https://doi.org/10.1364/OSAC.422924]	
+	// Debye–Waller factor [https://doi.org/10.1364/OSAC.422924]	
+	G4double kiz = SinIncidentAngle * GamEner / CLHEP::hbarc;
+	prob *= G4Exp(-2.0 * pow(kiz * fSurfaceRoughness,2));
+
+	return;
+}
+void GammaReflectionProcess::DoGammaReflection2(const G4double GamEner, 
+						const G4ThreeVector theGlobalPoint,
+						const G4ThreeVector fOldMomentum,
+						const G4String volName, 
+						G4double &prob, 
+						G4ThreeVector &fNewMomentum)
+{
+	G4bool valid;
+
+	// ID of Navigator which limits step
+	G4int hNavId = G4ParallelWorldProcess::GetHypNavigatorID();
+	auto iNav = G4TransportationManager::GetTransportationManager()->GetActiveNavigatorsIterator();
+	//- GetGlobalExitNormal [https://bugzilla-geant4.kek.jp/show_bug.cgi?id=1300]
+	// Obtains the Normal vector to a surface (in global coordinates)
+	// pointing out of previous volume and into current volume
+	G4ThreeVector fGlobalNormal = (iNav[hNavId])->GetGlobalExitNormal(theGlobalPoint, &valid);
+
+	// flip the normal vector -- now, pointing inside the vacuum
+	if(valid)
 	{
-      		G4double kiz = SinIncidentAngle * GamEner / CLHEP::hbarc;
-		prob *= G4Exp(-2.0 * pow(kiz * fSurfaceRoughness,2));
+		fGlobalNormal = -fGlobalNormal;
 	}
-	else // old (default) Synrad+ model [https://molflow.web.cern.ch/node/116]
+	else
 	{
-		G4ThreeVector fNewMomentum_tmp = fNewMomentum;
-
-		// get angular offsets and
-		// check if the new reflected gamma direction is within physical ranges;
-		// since the norm vector looks inside the vacuum, the angle between them should be (0;pi/2) --> dot > 0; 
-		G4int i = 0;
-		do
-		{
-			// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), 
-			// but as surface roughness is taken into account; the theta and phi angles (between 
-			// the reflected direction and the surface normal) are perturbated with a gaussian 
-			// distributied offset
-			G4double thetaOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-			G4double phiOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
-			// where thetaOffset and phiOffset are the random angles added to the calculated ones
-			// (those of mirror reflection), and fSigmaRatio is the value the user inputs in the 
-			// Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where 
-			// sigmaX is the standard deviation of the size of cavities on the surface, and sigmaH 
-			// is the st.dev. of the depth of those). Essentially, the larger the "roughness" value 
-			// (theoretically the ratio of RMS roughness and autocorrelation length), the more the 
-			// reflection direction is perturbated around the perfect mirror direction.
-
-			fNewMomentum_tmp.setTheta(fNewMomentum.getTheta() + thetaOffset);
-			fNewMomentum_tmp.setPhi(fNewMomentum.getPhi() + phiOffset);
-			i++;
-		}
-		while(fNewMomentum_tmp*fGlobalNormal <= 0.0 && i < NMAXLOOPS);
-
-		// set the new offset direction
-		if(i < NMAXLOOPS)
-		{
-			fNewMomentum = fNewMomentum_tmp;
-		}
-		else
-		{
-			G4ExceptionDescription ed;
-			ed 	<< " GammaReflectionProcess/PostStepDoIt(): "
-				<< " Failed to find acceptable angular offsets after "<<NMAXLOOPS<<" trials."<< G4endl
-				<< " (fNewMomentum_tmp*fGlobalNormal) = "<<fNewMomentum_tmp*fGlobalNormal<<"." << G4endl
-				<< " while the dot product should be > 0." << G4endl;
-			G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection04", 
-				JustWarning, // or EventMustBeAborted 
-				ed,
-				"Bad angular offsets - use unperturbed reflection photon direction");
-		}
+		G4ExceptionDescription ed;
+		ed 	<< " GammaReflectionProcess/PostStepDoIt(): "
+			<< " The Navigator reports that it returned an invalid normal" << G4endl;
+		G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection02", 
+			JustWarning, // or EventMustBeAborted 
+			ed,
+			"Invalid Surface Normal - Geometry must return valid surface normal");
 	}
+
+	if(fOldMomentum * fGlobalNormal > 0.0)
+	{
+		G4ExceptionDescription ed;
+		ed 	<< 	" GammaReflectionProcess/PostStepDoIt(): fGlobalNormal points in a "
+				"wrong direction. "
+			<< G4endl
+			<< " The momentum of the photon arriving at interface (oldMomentum)"
+			<< " must exit the volume cross in the step. " << G4endl
+			<< " So it MUST have dot < 0 with the normal that Exits the new "
+			"volume (globalNormal)."
+			<< G4endl << "   >> The dot product of oldMomentum and global Normal is "
+			<< fOldMomentum * fGlobalNormal << G4endl
+			<< "     Old Momentum  (during step)     = " << fOldMomentum << G4endl
+			<< "     Global Normal (Exiting New Vol) = " << fGlobalNormal << G4endl
+			<< G4endl;
+		G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection03",
+			JustWarning, // or EventMustBeAborted
+			ed,
+			"Invalid Surface Normal - Geometry must return valid surface "
+			"normal pointing in the right direction");
+		fGlobalNormal = -fGlobalNormal;
+	}
+
+	//- Total internal reflection
+	// https://link.springer.com/chapter/10.1007/978-1-4842-7185-8_8
+	// For a mirror reflective surface, the reflection formula is r = i–2(i·n)n,
+	// where i is the incoming ray direction, n the surface normal, and r the
+	// reflection direction. The normal direction is expected to be
+	// normalized (equal to a length of one) in this form. The normal can point in 
+	// either direction (e.g., upward or downward) and the formula still works. The 
+	// incoming ray direction does not have to be normalized, and the outgoing 
+	// direction vector will be computed having the same length as the incoming one.
+	fNewMomentum = fOldMomentum - 2. * fOldMomentum * fGlobalNormal * fGlobalNormal;
+
+	//- Roughtness
+	// old (default) Synrad+ model [https://molflow.web.cern.ch/node/116]
+	// From: https://molflow-forum.web.cern.ch/t/unexpected-absorbed-sr-photon-distribution-in-synrad/584/19
+	//  First perturbate surface normal according to “roughness ratio”
+	//   - If incident shadowing (ray would come from behind), repeat by generating a new random tilt angle
+	//  Treat everything else as if the surface was locally flat
+	//   - Calculate incident theta with perturbated surface
+	//   - Look up reflection probability (function of theta and energy)
+	//   - Specularly reflect on perturbated surface
+	//   - If outgoing shadowing (going against original surface), 
+	//     generate new perturbated surface and do everything again
+	G4ThreeVector fGlobalNormal_tmp = fGlobalNormal;
+	G4ThreeVector fNewMomentum_tmp = fNewMomentum;
+
+	// get angular offsets and check if the new surface normal and gamma direction are within physical ranges;
+	G4int i = 0;
+	do
+	{
+		// In the old (default) Synrad+ reflection model, reflection is specular (mirror-like), 
+		// but as surface roughness is taken into account; the theta and phi angles (between 
+		// the reflected direction and the surface normal) are perturbated with a gaussian 
+		// distributied offset
+		G4double thetaOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+		G4double phiOffset 	= atan(fSigmaRatio*tan(M_PI*(G4UniformRand() - 0.5)));
+		// where thetaOffset and phiOffset are the random angles added to the calculated ones
+		// (those of mirror reflection), and fSigmaRatio is the value the user inputs in the 
+		// Synrad+ Material Roughness field (the ratio of the sigmaH and sigmaX values, where 
+		// sigmaX is the standard deviation of the size of cavities on the surface, and sigmaH 
+		// is the st.dev. of the depth of those). Essentially, the larger the "roughness" value 
+		// (theoretically the ratio of RMS roughness and autocorrelation length), the more the 
+		// reflection direction is perturbated around the perfect mirror direction.
+
+		fGlobalNormal_tmp.setTheta(fGlobalNormal.getTheta() + thetaOffset);
+		fGlobalNormal_tmp.setPhi(fGlobalNormal.getPhi() + phiOffset);
+		fGlobalNormal_tmp = fGlobalNormal_tmp.unit(); // normalize: vector parallel to this, but of length 1.
+
+		// Total internal reflection
+		fNewMomentum_tmp = fOldMomentum - 2. * fOldMomentum * fGlobalNormal_tmp * fGlobalNormal_tmp;
+		fNewMomentum_tmp = fNewMomentum_tmp.unit();
+
+		i++;
+	}
+	while(	(fGlobalNormal*fGlobalNormal_tmp <= 0.0 || // old and new normals: angle between them should be (0;pi/2) --> dot > 0; 
+		fNewMomentum_tmp*fGlobalNormal <= 0.0) && // new outgoing gamma and old normal: angle between them should be (0;pi/2) --> dot > 0;
+		i < NMAXLOOPS); // loops
+
+	// set the new offset direction
+	if(i < NMAXLOOPS)
+	{
+		fGlobalNormal = fGlobalNormal_tmp;
+		fNewMomentum = fNewMomentum_tmp;
+	}
+	else
+	{
+		G4ExceptionDescription ed;
+		ed 	<< " GammaReflectionProcess/PostStepDoIt(): "
+			<< " Failed to find acceptable angular offsets after "<<NMAXLOOPS<<" trials."<< G4endl
+			<< " (fGlobalNormal*fGlobalNormal_tmp) = "<<fGlobalNormal*fGlobalNormal_tmp<<" and " << G4endl
+			<< " (fNewMomentum_tmp*fGlobalNormal) = "<<fNewMomentum_tmp*fGlobalNormal<<"," << G4endl
+			<< " while the dot products should be > 0." << G4endl;
+		G4Exception("GammaReflectionProcess::PostStepDoIt", "GammaReflection04", 
+			JustWarning, // or EventMustBeAborted 
+			ed,
+			"Bad angular offsets - use unperturbed surface normal and momentum direction");
+	}
+
+	// Calculate Angle between Normal and Photon Momentum
+	G4double anglePhotonToNormal = fOldMomentum.angle(-fGlobalNormal);
+	G4double grazingPhotonAngle = M_PI_2 - anglePhotonToNormal; 
+
+	// get reflection probability from the database
+	if(volName == "vac_IP" || volName == "vac_ip") // Au ip beam pipe
+		prob = FindReflectionProbability(_reflectDataMap["Au"],
+			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle/rad,GamEner/eV);
+	else // Cu beam pipe
+		prob = FindReflectionProbability(_reflectDataMap["Cu"],
+			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
 
 	return;
 }
