@@ -33,87 +33,25 @@ void plotMCparticles(TString fNameIn, TString fNameOut);
 void plotMCpHisto(TString fNameIn, TString fNameOut, TString plane);
 void plotMaterials(TString fNameIn, TString fNameOut);
 void plotMatScanHisto(TString fNameIn, TString fNameOut, TString plane);
-void plotMCpartAndMatScanProfileY(TString fNameIn, TString fNameInMc1, TString fNameInMc2, TString fNameOut);
 
 void plot()
 {	
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-----------------------------------------------------------//
 	// MC particles (use eic-shell)
-//	plotMCparticles("/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_podio_all.root","./output/output_eicrecon_geant4_podio_all_hist.root");
-//	plotMCpHisto("./output/output_eicrecon_geant4_podio_all_hist.root","./output/MCP_2D","xz");
-// [for Synrad+]	plotMCparticles("/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_synrad_XZflip/output_eicrecon.podio.root","./output/output_eicrecon_synrad_podio_all_hist.root");
+	plotMCparticles(	"/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_podio_all.root",
+				"./output/output_eicrecon_geant4_podio_all_hist.root");
+//	plotMCpHisto(		"./output/output_eicrecon_geant4_podio_all_hist.root",
+//				"./output/MCP_2D",
+//				"xz");
 	//-----------------------------------------------------------//
 	// Material scan
-	plotMaterials("/gpfs/group/belle2/TMP/anatochi/eic/output_matscan/g4mat_scan_*.root","./output/g4mat_scan_histo.root");
-	plotMatScanHisto("./output/g4mat_scan_histo.root","./output/X0_2D","xz");
+//	plotMaterials(		"/gpfs/group/belle2/TMP/anatochi/eic/output_matscan/g4mat_scan_*.root",
+//				"./output/g4mat_scan_histo.root");
+//	plotMatScanHisto(	"./output/g4mat_scan_histo.root",
+//				"./output/X0_2D",
+//				"xz");
 	//-----------------------------------------------------------//
-	// MC particles onto Material scan: Geant4 vs Synrad+
-//	plotMCpartAndMatScanProfileY(	"./output/g4mat_scan_histo.root",
-//					"./output/output_eicrecon_ip6_geant4_podio_all_hist.root",
-//					"./output/output_eicrecon_ip6_synrad_podio_all_hist.root",
-//					"./output/matscan_geant4_synrad");
-
-	return;
-}
-
-void plotMCpartAndMatScanProfileY(TString fNameIn, TString fNameInMc1, TString fNameInMc2, TString fNameOut)
-{
-	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
-	gStyle->SetOptStat(0);
-
-	TFile *_file0 = TFile::Open(fNameIn.Data());
-	TH1F* hx0_projY = (TH1F*)_file0->Get("hx0_x");
-
-	TFile *_file1 = TFile::Open(fNameInMc1.Data());
-	TH2F* hmc1 = (TH2F*)_file1->Get("hmc_xz");
-
-	TFile *_file2 = TFile::Open(fNameInMc2.Data());
-	TH2F* hmc2 = (TH2F*)_file2->Get("hmc_xz");
-
-	TH1F* hmc1_projY = (TH1F*)hmc1->ProjectionY("hmc1_projY");
-	TH1F* hmc2_projY = (TH1F*)hmc2->ProjectionY("hmc2_projY");
-
-	TCanvas* c1 = new TCanvas("c1","c1",900,900); 
-	c1->cd(); 
-        TPad *pad1 = new TPad("pad1","pad1",0,0,1,1);
-        pad1->SetBottomMargin(0.12);
-        pad1->SetTopMargin(0.12);
-        pad1->SetRightMargin(0.12);
-        pad1->SetLeftMargin(0.12);
-        pad1->Draw();
-        pad1->cd();
-
-	gPad->SetGrid();
-	gPad->SetLogy(); 
-
-	hx0_projY->SetLineWidth(3);
-	hx0_projY->SetLineColor(kBlack);
-	hmc1_projY->SetLineColor(kBlue);
-	hmc2_projY->SetLineColor(kRed);
-
-	hx0_projY->SetFillColorAlpha(kBlack,0.2);
-	hmc1_projY->SetFillColorAlpha(kBlue,0.2);
-	hmc2_projY->SetFillColorAlpha(kRed,0.2);
-
-	hmc1_projY->SetFillStyle(3345);
-	hmc2_projY->SetFillStyle(3354);
-
-	hx0_projY->GetXaxis()->SetRangeUser(3.0,3.2);
-	hx0_projY->SetMinimum(1e-9);
-	hx0_projY->SetMaximum(1e+9);
-
-	hx0_projY->Draw("HIST");
-	hmc1_projY->Draw("SAME & HIST");
-	hmc2_projY->Draw("SAME & HIST");
-
-	c1->SaveAs(Form("%s_projY.png",fNameOut.Data()));
-	c1->SaveAs(Form("%s_projY.root",fNameOut.Data()));
-	delete c1;
-
-	_file0->Close();
-	_file1->Close();
-	_file2->Close();
 
 	return;
 }
