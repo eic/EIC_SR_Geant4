@@ -684,8 +684,8 @@ void SimParameters::PrintSRprocParameters()
 	G4cout<<" 	1 - Synrad+ (Gamma,Debye-Waller)"<<G4endl;
 	G4cout<<" 	2 - Synrad+ (Gamma,offset)"<<G4endl;
 	G4cout<<" Print surface material data = "<<GetReflPrint()<<G4endl;
-	G4cout<<" 	0 - yes"<<G4endl;
-	G4cout<<" 	1 - no"<<G4endl;
+	G4cout<<" 	0 - no"<<G4endl;
+	G4cout<<" 	1 - yes"<<G4endl;
 	G4cout<<" Sigma ratio = "<<GetSigmaRatio()<<G4endl;
 	G4cout<<" Surface roughness = "<<GetSurfRoughness()/m<<" [m]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;

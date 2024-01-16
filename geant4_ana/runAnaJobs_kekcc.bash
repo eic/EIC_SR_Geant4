@@ -8,8 +8,8 @@ outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
 queue='s'
-minZ=-4000 # [cm] minimum Z
-maxZ=4000 # [cm] maximum Z
+minZ=-400 # [cm] minimum Z
+maxZ=500 # [cm] maximum Z
 #--------------------------------------------------#
 #--------------------------------------------------#
 
