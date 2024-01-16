@@ -30,10 +30,11 @@ Double_t getBeamCoreTailRatio(TString type = "core")
 	return (type == "core") ? (Rc /*core*/) : (1.0 - Rc /*tail*/);
 }
 
-void plot(TString fName = "output_eicrecon_hist_all.root")
+void plot(TString dName = "./", TString fName = "output_eicrecon_hist_all.root")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
-	TFile* file = TFile::Open(fName.Data());
+	TString fileName = dName + "/" + fName;
+	TFile* file = TFile::Open(fileName.Data());
 	TDirectory* dir = file->GetDirectory("analysisPlugin");
 	dir->ls();
 	TNtuple* ntraw_nHits = (TNtuple*)dir->Get("ntraw_nHits");	
@@ -131,7 +132,7 @@ void plot(TString fName = "output_eicrecon_hist_all.root")
 	hHits->LabelsOption("v");
 	gPad->SetLogy();
 
-	c1->SaveAs("c1.png");
+	c1->SaveAs(Form("c1_%s.png",fName.Data()));
 
 	TCanvas* c2 = new TCanvas("c2","c2",2000,2000);
 	c2->cd();
@@ -163,7 +164,7 @@ void plot(TString fName = "output_eicrecon_hist_all.root")
    		arc->Draw();
 	}
 
-	c2->SaveAs("c2.png");
+	c2->SaveAs(Form("c2_%s.png",fName.Data()));
 
 	return;
 }
