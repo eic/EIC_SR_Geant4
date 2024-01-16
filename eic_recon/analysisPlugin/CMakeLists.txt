@@ -24,7 +24,10 @@ set( analysisPlugin_PLUGIN_SOURCES ${mysourcefiles} )
 
 # Create plugin
 add_library(analysisPlugin_plugin SHARED ${analysisPlugin_PLUGIN_SOURCES})
-target_link_libraries(analysisPlugin_plugin ${JANA_LIB} ${ROOT_LIBRARIES} spdlog::spdlog)
+
+# (was used in 2023) target_link_libraries(analysisPlugin_plugin ${JANA_LIB} ${ROOT_LIBRARIES} spdlog::spdlog)
+target_link_libraries(analysisPlugin_plugin EICrecon::rootfile_plugin)
+
 set_target_properties(analysisPlugin_plugin PROPERTIES PREFIX "" OUTPUT_NAME "analysisPlugin" SUFFIX ".so")
 target_compile_definitions(analysisPlugin_plugin PUBLIC HAVE_PODIO)
 
