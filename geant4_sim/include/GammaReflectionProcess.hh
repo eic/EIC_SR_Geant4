@@ -21,7 +21,7 @@ using namespace std;
 class GammaReflectionProcess : public G4VProcess
 {
 public:
-	explicit GammaReflectionProcess(G4int,G4bool,G4double,G4double);
+	explicit GammaReflectionProcess(G4int,G4bool,G4double,G4double,G4double);
 	explicit GammaReflectionProcess();
 	virtual ~GammaReflectionProcess();
 
@@ -81,9 +81,14 @@ private:
 				const G4String volName,
 				G4double &prob, 
 				G4ThreeVector &fNewMomentum);
+	void DoGammaReflection3(const G4double GamEner, 
+				const G4ThreeVector theGlobalPoint, 
+				const G4ThreeVector fOldMomentum,
+				const G4String volName,
+				G4double &prob, 
+				G4ThreeVector &fNewMomentum);
 
 	map<string, string> _reflectFileNameMap;
-	G4double fSigmaRatio;
 	map<string, vector<pair<double, vector<double>>>> _reflectDataMap;
 	map<string, vector<double>> _grazingAngleMap;
 	map<string, vector<double>> _photonEnergyMap;
@@ -100,7 +105,7 @@ private:
 	void SaveHenkeDataAsMaterialProperty(G4bool);
 	G4int ReadHenkeXrayData(string ElName, vector<G4double>& Ephot, vector<G4double>& f1, vector<G4double>& f2);
 
-	G4double fSurfaceRoughness;
+	G4double fSurfaceRoughness, fAutoCorrLength, fSigmaRatio;
 	G4NistManager* fNistManager;
 	G4Material* theMatIP;
 	G4Material* theMatIR;

@@ -95,6 +95,7 @@ void PhysicsList::ConstructEM()
 			pmanager->AddDiscreteProcess(new GammaReflectionProcess(simPar->GetReflType(),
 										simPar->GetReflPrint(),
 										simPar->GetSurfRoughness(),
+										simPar->GetAutoCorrLength(),
 										simPar->GetSigmaRatio()));
     		} 
 		else if (particleName == "e-") 

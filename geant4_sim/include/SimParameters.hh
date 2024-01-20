@@ -91,6 +91,7 @@ private:
 	G4bool _reflPrint;
 	G4double _sigmaRatio;
         G4double _surfaceRoughness;
+	G4double _autoCorrLength;
 
 	G4double _gammaEcut;
 	G4double _trackTcut;
@@ -196,6 +197,7 @@ public:
 	G4bool GetReflPrint(){return _reflPrint;}
 	G4double GetSigmaRatio(){return _sigmaRatio;}
 	G4double GetSurfRoughness(){return _surfaceRoughness;}
+	G4double GetAutoCorrLength(){return _autoCorrLength;}
 
 	G4double GetGammaEcut(){return _gammaEcut;}
 
@@ -269,6 +271,7 @@ private:
 	void SetReflPrint(G4int val){if(val == 1){_reflPrint=true;}else{_reflPrint=false;}return;}
 	void SetSigmaRatio(G4double val){_sigmaRatio = val; return;}
 	void SetSurfRoughness(G4double val){_surfaceRoughness = val; return;}
+	void SetAutoCorrLength(G4double val){_autoCorrLength = val; return;}
 
 	void SetGammaEcut(G4double val){_gammaEcut = val; return;}
 

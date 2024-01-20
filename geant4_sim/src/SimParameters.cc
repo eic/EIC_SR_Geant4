@@ -99,6 +99,9 @@ void SimParameters::ReadXML(G4String fName)
 		else if(child_node.second.get<string>("<xmlattr>.name") == "roughness" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "m")
 			SetSurfRoughness(stod(child_node.second.data())*m);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "corrlength" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetAutoCorrLength(stod(child_node.second.data())*m);
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
@@ -538,10 +541,11 @@ void SimParameters::InitDefault()
 	_beamTailMax = 0;
 
 	_SRtype = 1;
-	_reflType = 2;
+	_reflType = 3;
 	_reflPrint = true;
 	_sigmaRatio = 5e-3;
 	_surfaceRoughness = 50e-9*m;
+	_autoCorrLength = 10000e-9*m;
 
 	_gammaEcut = -1*keV;
 	_trackTcut =  1*s;
@@ -682,12 +686,14 @@ void SimParameters::PrintSRprocParameters()
 	G4cout<<" SR photon reflection type = "<<GetReflType()<<G4endl;
 	G4cout<<" 	0 - Geant4 (Xray,Névot-Croce)"<<G4endl;
 	G4cout<<" 	1 - Synrad+ (Gamma,Debye-Waller)"<<G4endl;
-	G4cout<<" 	2 - Synrad+ (Gamma,offset)"<<G4endl;
+	G4cout<<" 	2 - Synrad+ (Gamma,perturb norm - old model)"<<G4endl;
+	G4cout<<" 	3 - Synrad+ (Gamma,Debye-Waller,perturb refl - new model)"<<G4endl;
 	G4cout<<" Print surface material data = "<<GetReflPrint()<<G4endl;
 	G4cout<<" 	0 - no"<<G4endl;
 	G4cout<<" 	1 - yes"<<G4endl;
 	G4cout<<" Sigma ratio = "<<GetSigmaRatio()<<G4endl;
 	G4cout<<" Surface roughness = "<<GetSurfRoughness()/m<<" [m]"<<G4endl;
+	G4cout<<" Surface autocorrelation length = "<<GetAutoCorrLength()/m<<" [m]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
