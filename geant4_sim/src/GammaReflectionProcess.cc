@@ -55,10 +55,11 @@ void GammaReflectionProcess::Init(G4bool print)
 			G4cout<<" diffuse reflection with Synrad+ data [1;50000] eV used to calculate";
 			G4cout<<" the offsets for the surface normal -- old model";
 			G4cout<<G4endl;
+			break;
 		default:
 			G4cout<<" - DoGammaReflection3:";
 			G4cout<<" diffuse reflection with Synrad+ data [1;50000] eV used to calculate";
-			G4cout<<" the reflection, Debye-Waller factor attenuation, and perturbed reflection direction";
+			G4cout<<" the reflection, Debye-Waller factor attenuation, and perturbed reflection direction -- new model";
 			G4cout<<G4endl;
 	}
 	G4cout<<"==================================================================\n\n"<<G4endl;
@@ -172,6 +173,7 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 				// Uses data from Ref.[https://doi.org/10.1006/adnd.1993.1013] for [30;30000] eV
 				// Uses data from Ref.[https://lib-extopc.kek.jp/preprints/PDF/1981/8102/8102231.pdf] for < 30 eV
 				DoGammaReflection2(GamEner,theGlobalPoint,fOldMomentum,volName,prob,fNewMomentum);
+				break;
 			default:
 				// Based on Synrad+ implementation (new model) - diffuse reflection
 				// Ref.[https://molflow.web.cern.ch/node/116]
