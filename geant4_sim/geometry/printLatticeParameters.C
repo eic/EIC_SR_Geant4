@@ -14,11 +14,11 @@ void printLatticeParameters()
 	opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
 
 	//- lists of elements
-	const Int_t nElements = 6;
+	const Int_t nElements = 7;
 	TString startElementName[nElements] = {	
-		"\"SQ2EF_6\"", "\"OWW_SH\"", "\"ODB23\"", "\"ODB23\"", "\"MCOLL_MASK\"", "\"O1EF_6\""};
+		"\"SQ2EF_6\"", "\"OWW_SH\"", "\"ODB23\"", "\"ODB23\"", "\"MCOLL_MASK\"", "\"O1EF_6\"","\"O0EF_6\""};
 	TString stopElementName[nElements] = {
-		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\""};
+		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
 
 	//- get parameters
 	for(Int_t i = 0; i < nElements; i++)
