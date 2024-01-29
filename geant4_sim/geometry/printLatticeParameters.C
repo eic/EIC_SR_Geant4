@@ -5,7 +5,7 @@ void printLatticeParameters()
 {
 	TString surveyFileName, opticsFileName;
 
-	//- new lattice (Sep. 2023)
+	//- old lattice (Sep. 2023)
 	// surveyFileName = "./lattice_v6.X/survey_ir_6m.tfs";
 	// opticsFileName = "./lattice_v6.X/ir6forward.18GeV.twi";
 
@@ -88,10 +88,10 @@ void printOpticsParameters(TString opticsFileName, TString startElementName, TSt
 	printf("> alphax = %.12f\n",alphax);
 	printf("> betay = %.12f\n",betay);
 	printf("> alphay = %.12f\n",alphay);
-	printf("> etax = %.12f\n",etax);
-	printf("> etapx = %.12f\n",etapx);
-	printf("> etay = %.12f\n",etay);
-	printf("> etapy = %.12f\n",etapy);
+	printf("> etax = %.12e\n",etax);
+	printf("> etapx = %.12e\n",etapx);
+	printf("> etay = %.12e\n",etay);
+	printf("> etapy = %.12e\n",etapy);
 	printf("> k1l = %.12f\n",k1l);
 
 	return;

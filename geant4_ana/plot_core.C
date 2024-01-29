@@ -18,6 +18,8 @@ using namespace std;
 
 #define NMAGMAX 100 // maximum number of magnets
 
+const Double_t hbrac_GeVm = 0.1973269631e-15; // https://pdg.lbl.gov/2010/reviews/rpp2010-rev-phys-constants.pdf
+
 void plot_core(TString fName = "output_ana_all.root")
 {
 	Double_t delta, emitX, emitY, gamma, mass_GeV;
@@ -35,6 +37,9 @@ void plot_core(TString fName = "output_ana_all.root")
 	Double_t mon_alphaX, mon_betaX, mon_etaX, mon_etaPrimeX;
 	Double_t mon_alphaY, mon_betaY, mon_etaY, mon_etaPrimeY;
 	Double_t mon_minP, mon_maxP;
+
+	Double_t D2EF1_l_m, D2EF2_l_m, D1EF_l_m, Q1EF_l_m, Q0EF_l_m, MARCO_l_m;
+	Double_t D2EF1_theta_rad, D2EF2_theta_rad, D1EF_theta_rad;
 
 	gStyle->SetOptStat(0);
 	gStyle->SetLegendFont(42);
@@ -126,9 +131,25 @@ void plot_core(TString fName = "output_ana_all.root")
 	gPad->SetLogz();
 
 	c0_2->SaveAs("./pics/c0_2.png");
+
 	//------------------------------------------------------------------------------------------------//
 	//- Parameters
 	emitX = 24e-9;	emitY = 2e-9;	delta = 0.109e-2; gamma = 34924.26476; mass_GeV = 0.00051099895;
+
+	
+	//--------------------------------------------------------------------------------------------------------------------------//
+	// lattice v6.X (Sep. 2023) ------------------------------------------------------------------------------------------------//
+/*
+	D2EF1_l_m = 2.726015431334;
+	D2EF2_l_m = 2.726015431334;
+	D1EF_l_m = 0.891400083569;
+	Q1EF_l_m = 1.610000000000;
+	Q0EF_l_m = 1.200000000000;
+	MARCO_l_m = 10.0;
+
+	D2EF1_theta_rad = 0.011655839694;
+	D2EF2_theta_rad = 0.011655839694;
+	D1EF_theta_rad = 0.001500000000;
 
 	// Beam
 	beam_name = "beam";
@@ -177,7 +198,37 @@ void plot_core(TString fName = "output_ana_all.root")
 	mon_alphaX = 9.830508475;	mon_betaX = 57.60694915;	mon_etaX = 1.563145529e-15;	mon_etaPrimeX = -2.921487199e-16;
 	mon_alphaY = 101.754386;	mon_betaY = 590.2324386;	mon_etaY = 0.0;	mon_etaPrimeY = 0.0;
 	mon_minP = 17.5;	mon_maxP = 18.5;
+*/
 
+	//--------------------------------------------------------------------------------------------------------------------------//
+	// lattice v6.2 (Jan. 2024) ------------------------------------------------------------------------------------------------//
+
+	D2EF1_l_m = 2.726015431334;
+	D2EF2_l_m = 2.726015431334;
+	D1EF_l_m = 0.891400083569;
+	Q1EF_l_m = 1.610000000000;
+	Q0EF_l_m = 1.200000000000;
+	MARCO_l_m = 10.0;
+
+	D2EF1_theta_rad = 0.012348600000;
+	D2EF2_theta_rad = 0.012348600000;
+	D1EF_theta_rad = 0.001500000000;
+
+	// Beam
+	beam_name = "beam";
+	beam_minX = -1.0;	beam_maxX = 1.0;	beam_minXp = -0.5e-3;	beam_maxXp = 0.5e-3;
+	beam_minY = -0.4;	beam_maxY = 0.4;	beam_minYp = -0.4e-4;	beam_maxYp = 0.4e-4;
+	beam_alphaX = -7.031865647000;	beam_betaX = 161.795592000000;	beam_etaX = -7.998094176000e-02;	beam_etaPrimeX =  2.620431436000e-02;
+	beam_alphaY = -1.228382442000;	beam_betaY = 121.628037600000;	beam_etaY = -5.700969553000e-10;	beam_etaPrimeY = -7.670917881000e-13;
+	beam_minP = 17.5;	beam_maxP = 18.5;
+
+	// Q0EF
+	mon_name = "Q0EF";
+	mon_minX = -0.5;	mon_maxX = 0.5;		mon_minXp = -0.1e-2;	mon_maxXp = 0.1e-2;
+	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.1e-2;	mon_maxYp = 0.1e-2;
+	mon_alphaX = 9.830716909000;	mon_betaX = 57.608145240000;	mon_etaX =  9.272066198000e-05;	mon_etaPrimeX = -1.594020290000e-05;
+	mon_alphaY = 101.7529380000;	mon_betaY = 590.22402530000;	mon_etaY = -9.954373930000e-10;	mon_etaPrimeY =  1.742211955000e-10;
+	mon_minP = 17.5;	mon_maxP = 18.5;
 
 	//------------------------------------------------------------------------------------------------//
 	//- Draw
@@ -216,18 +267,19 @@ void plot_core(TString fName = "output_ana_all.root")
 		Double_t nPh = -1, t_s = 0, l_m = 0, theta_rad = 0;
 		if(title.Contains("D2EF") || title.Contains("D1EF")) // Dipoles
 		{
-			if	(title.Contains("D2EF1")){l_m = 2.7260154313337; theta_rad = 0.011655839693698;}
-			else if (title.Contains("D2EF2")){l_m = 2.7260154313337; theta_rad = 0.011655839693698;}
-			else if (title.Contains("D1EF")){l_m = 0.89140008356876; theta_rad = 0.0015;}
+			if      (title.Contains("D2EF1")){l_m = D2EF1_l_m; theta_rad = D2EF1_theta_rad;}
+			else if (title.Contains("D2EF2")){l_m = D2EF2_l_m; theta_rad = D2EF2_theta_rad;}
+			else if (title.Contains("D1EF")){l_m = D1EF_l_m; theta_rad = D1EF_theta_rad;}
 
 			t_s = (theta_rad*l_m/(2.*TMath::Sin(theta_rad/2.)))/TMath::C(); 
 			nPh = t_s*(1./137.)*gamma*TMath::C()*5./((l_m/(2.*sin(theta_rad/2)))*2.*sqrt(3.));
 		}
-		else if(title.Contains("Q1EF") || title.Contains("Q0EF")) // Quads
+		else if(title.Contains("Q1EF") || title.Contains("Q0EF") || title.Contains("MARCO")) // Quads and Solenoid
 		{
-			if	(title.Contains("Q1EF")){l_m = 1.61;}
-			else if	(title.Contains("Q0EF")){l_m = 1.20;}
-		
+			if	(title.Contains("Q1EF")){l_m = Q1EF_l_m;}
+			else if	(title.Contains("Q0EF")){l_m = Q0EF_l_m;}
+			else if	(title.Contains("MARCO")){l_m = MARCO_l_m;}
+	
 			t_s = l_m/TMath::C();
 		}
 
@@ -242,12 +294,11 @@ void plot_core(TString fName = "output_ana_all.root")
 		Double_t P_W = -1, t_s = 0, l_m = 0, theta_rad = 0;
 		if(title.Contains("D2EF") || title.Contains("D1EF")) // Dipoles
 		{
-			if	(title.Contains("D2EF1")){l_m = 2.7260154313337; theta_rad = 0.011655839693698;}
-			else if (title.Contains("D2EF2")){l_m = 2.7260154313337; theta_rad = 0.011655839693698;}
-			else if (title.Contains("D1EF")){l_m = 0.89140008356876; theta_rad = 0.0015;}
+			if      (title.Contains("D2EF1")){l_m = D2EF1_l_m; theta_rad = D2EF1_theta_rad;}
+			else if (title.Contains("D2EF2")){l_m = D2EF2_l_m; theta_rad = D2EF2_theta_rad;}
+			else if (title.Contains("D1EF")){l_m = D1EF_l_m; theta_rad = D1EF_theta_rad;}
 
 			t_s = (theta_rad*l_m/(2.*TMath::Sin(theta_rad/2.)))/TMath::C(); 
-			Double_t hbrac_GeVm = 0.1973269631e-15; // https://pdg.lbl.gov/2010/reviews/rpp2010-rev-phys-constants.pdf
 			Double_t r0_m = (1./137.)*hbrac_GeVm/mass_GeV; // classical radius of the particle
 			Double_t C_gamma = (4.*TMath::Pi()/3.0)*r0_m/TMath::Power(mass_GeV,3);
 			Double_t E0_GeV = gamma*mass_GeV;
@@ -258,9 +309,9 @@ void plot_core(TString fName = "output_ana_all.root")
 		}
 		else if(title.Contains("Q1EF") || title.Contains("Q0EF") || title.Contains("MARCO")) // Quads and Solenoid
 		{
-			if	(title.Contains("Q1EF")){l_m = 1.61;}
-			else if	(title.Contains("Q0EF")){l_m = 1.20;}
-			else if	(title.Contains("MARCO")){l_m = 10.0;}
+			if	(title.Contains("Q1EF")){l_m = Q1EF_l_m;}
+			else if	(title.Contains("Q0EF")){l_m = Q0EF_l_m;}
+			else if	(title.Contains("MARCO")){l_m = MARCO_l_m;}
 		
 			t_s = l_m/TMath::C();
 		}
