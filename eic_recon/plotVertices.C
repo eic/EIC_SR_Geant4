@@ -38,8 +38,8 @@ void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 
 	//-- get data from eic-shell output data
-	getFileNames(directory, pattern, extension);
-	readDataFromFiles(outputfile);
+//	getFileNames(directory, pattern, extension);
+//	readDataFromFiles(outputfile);
 
 	//-- draw histograms from above
 	drawHistograms(outputfile);
@@ -100,6 +100,7 @@ void drawHistograms(const string filename)
 
 	TCanvas* cMcPrim_ene = new TCanvas("cMcPrim_ene","cMcPrim_ene",900,900);
 	cMcPrim_ene->cd();
+	hMcPrim_ene->Rebin(10);
 	hMcPrim_ene->Draw("hist");
 	hMcPrim_ene->GetXaxis()->SetRangeUser(0,40e-6);
 	gPad->SetLogy();
@@ -113,20 +114,86 @@ void drawHistograms(const string filename)
 	hVertexBarrel_xz->SetMarkerStyle(21);
 	hVertexBarrel_xz->SetMarkerSize(0.4);
 	hVertexBarrel_xz->GetXaxis()->SetRangeUser(-2000,2000);
+	hVertexBarrel_xz->GetYaxis()->SetRangeUser(-200,200);
 	hVertexBarrel_xz->Draw("box");
 
 	cVertexBarrel->cd(2);
 	hVertexBarrel_yz->SetMarkerStyle(21);
 	hVertexBarrel_yz->SetMarkerSize(0.4);
 	hVertexBarrel_yz->GetXaxis()->SetRangeUser(-2000,2000);
+	hVertexBarrel_yz->GetYaxis()->SetRangeUser(-200,200);
 	hVertexBarrel_yz->Draw("box");
 
 	cVertexBarrel->cd(3);
 	hVertexBarrel_yx->SetMarkerStyle(21);
 	hVertexBarrel_yx->SetMarkerSize(0.4);
+	hVertexBarrel_yx->GetXaxis()->SetRangeUser(-200,200);
+	hVertexBarrel_yx->GetYaxis()->SetRangeUser(-200,200);
 	hVertexBarrel_yx->Draw("box");
 
+	//-------------------------------------------------------//
+	// draw the detector layers
+	// from https://github.com/eic/epic/blob/main/compact/tracking/vertex_barrel.xml
+	Double_t VertexBarrel_rmin = 36.0; // [mm]
+	Double_t VertexBarrelMod_rmin = VertexBarrel_rmin;
+	Double_t VertexBarrelMod1_rmin = VertexBarrelMod_rmin;
+	Double_t VertexBarrelLayer_thickness = 2.0; // [mm]
+	Double_t VertexBarrelMod2_rmin = VertexBarrelMod_rmin + 12.0; // [mm]
+	Double_t VertexBarrelMod3_rmin = 120.0; // [mm] 
+	Double_t VertexBarrel_length = 270.0; // [mm]
+
+	Double_t VertexBarrelLayer1_rmin = VertexBarrelMod1_rmin - VertexBarrelLayer_thickness/2.0;
+	Double_t VertexBarrelLayer1_rmax = VertexBarrelLayer1_rmin + VertexBarrelLayer_thickness;
+	Double_t VertexBarrelLayer2_rmin = VertexBarrelMod2_rmin - VertexBarrelLayer_thickness/2.0;
+	Double_t VertexBarrelLayer2_rmax = VertexBarrelLayer2_rmin + VertexBarrelLayer_thickness;
+	Double_t VertexBarrelLayer3_rmin = VertexBarrelMod3_rmin - VertexBarrelLayer_thickness/2.0;
+	Double_t VertexBarrelLayer3_rmax = VertexBarrelLayer3_rmin + VertexBarrelLayer_thickness;
+
+	TArc *arc_VertexBarrelLayer1_rmin = new TArc(0,0,VertexBarrelLayer1_rmin);
+	TArc *arc_VertexBarrelLayer1_rmax = new TArc(0,0,VertexBarrelLayer1_rmax);
+	TArc *arc_VertexBarrelLayer2_rmin = new TArc(0,0,VertexBarrelLayer2_rmin);
+	TArc *arc_VertexBarrelLayer2_rmax = new TArc(0,0,VertexBarrelLayer2_rmax);
+	TArc *arc_VertexBarrelLayer3_rmin = new TArc(0,0,VertexBarrelLayer3_rmin);
+	TArc *arc_VertexBarrelLayer3_rmax = new TArc(0,0,VertexBarrelLayer3_rmax);
+
+	arc_VertexBarrelLayer1_rmin->SetLineStyle(1);
+	arc_VertexBarrelLayer2_rmin->SetLineStyle(1);
+	arc_VertexBarrelLayer3_rmin->SetLineStyle(1);
+	arc_VertexBarrelLayer1_rmax->SetLineStyle(1);
+	arc_VertexBarrelLayer2_rmax->SetLineStyle(1);
+	arc_VertexBarrelLayer3_rmax->SetLineStyle(1);
+
+	arc_VertexBarrelLayer1_rmin->SetFillStyle(0);
+	arc_VertexBarrelLayer2_rmin->SetFillStyle(0);
+	arc_VertexBarrelLayer3_rmin->SetFillStyle(0);
+	arc_VertexBarrelLayer1_rmax->SetFillStyle(0);
+	arc_VertexBarrelLayer2_rmax->SetFillStyle(0);
+	arc_VertexBarrelLayer3_rmax->SetFillStyle(0);
+
+	arc_VertexBarrelLayer1_rmin->SetLineWidth(1);
+	arc_VertexBarrelLayer2_rmin->SetLineWidth(1);
+	arc_VertexBarrelLayer3_rmin->SetLineWidth(1);
+	arc_VertexBarrelLayer1_rmax->SetLineWidth(1);
+	arc_VertexBarrelLayer2_rmax->SetLineWidth(1);
+	arc_VertexBarrelLayer3_rmax->SetLineWidth(1);
+
+	arc_VertexBarrelLayer1_rmin->SetLineColorAlpha(kRed,0.2);
+	arc_VertexBarrelLayer2_rmin->SetLineColorAlpha(kRed,0.2);
+	arc_VertexBarrelLayer3_rmin->SetLineColorAlpha(kRed,0.2);
+	arc_VertexBarrelLayer1_rmax->SetLineColorAlpha(kRed,0.8);
+	arc_VertexBarrelLayer2_rmax->SetLineColorAlpha(kRed,0.8);
+	arc_VertexBarrelLayer3_rmax->SetLineColorAlpha(kRed,0.8);
+
+	arc_VertexBarrelLayer1_rmin->Draw();
+	arc_VertexBarrelLayer2_rmin->Draw();
+	arc_VertexBarrelLayer3_rmin->Draw();
+	arc_VertexBarrelLayer1_rmax->Draw();
+	arc_VertexBarrelLayer2_rmax->Draw();
+	arc_VertexBarrelLayer3_rmax->Draw();
+	//-------------------------------------------------------//
+
 	cVertexBarrel->cd(4);
+	hVertexBarrel_edep->Rebin(10);
 	hVertexBarrel_edep->GetXaxis()->SetRangeUser(0,40e-6);
 	hVertexBarrel_edep->Draw("hist");
 	gPad->SetLogy();
@@ -135,20 +202,25 @@ void drawHistograms(const string filename)
 	hMcPrim_VertexBarrel_xz->SetMarkerStyle(21);
 	hMcPrim_VertexBarrel_xz->SetMarkerSize(0.4);
 	hMcPrim_VertexBarrel_xz->GetXaxis()->SetRangeUser(-2000,2000);
+	hMcPrim_VertexBarrel_xz->GetYaxis()->SetRangeUser(-200,200);
 	hMcPrim_VertexBarrel_xz->Draw("box");
 
 	cVertexBarrel->cd(6);
 	hMcPrim_VertexBarrel_yz->SetMarkerStyle(21);
 	hMcPrim_VertexBarrel_yz->SetMarkerSize(0.4);
 	hMcPrim_VertexBarrel_yz->GetXaxis()->SetRangeUser(-2000,2000);
+	hMcPrim_VertexBarrel_yz->GetYaxis()->SetRangeUser(-200,200);
 	hMcPrim_VertexBarrel_yz->Draw("box");
 
 	cVertexBarrel->cd(7);
 	hMcPrim_VertexBarrel_yx->SetMarkerStyle(21);
 	hMcPrim_VertexBarrel_yx->SetMarkerSize(0.4);
+	hMcPrim_VertexBarrel_yx->GetYaxis()->SetRangeUser(-200,200);
+	hMcPrim_VertexBarrel_yx->GetYaxis()->SetRangeUser(-200,200);
 	hMcPrim_VertexBarrel_yx->Draw("box");
 
 	cVertexBarrel->cd(8);
+	hMcPrim_VertexBarrel_ene->Rebin(10);
 	hMcPrim_VertexBarrel_ene->GetXaxis()->SetRangeUser(0,40e-6);
 	hMcPrim_VertexBarrel_ene->Draw("hist");
 	gPad->SetLogy();
@@ -177,6 +249,7 @@ void drawHistograms(const string filename)
 	hTrackerEndcap_yx->Draw("box");
 
 	cTrackerEndcap->cd(4);
+	hTrackerEndcap_edep->Rebin(10);
 	hTrackerEndcap_edep->GetXaxis()->SetRangeUser(0,40e-6);
 	hTrackerEndcap_edep->Draw("hist");
 	gPad->SetLogy();
@@ -199,6 +272,7 @@ void drawHistograms(const string filename)
 	hMcPrim_TrackerEndcap_yx->Draw("box");
 
 	cTrackerEndcap->cd(8);
+	hMcPrim_TrackerEndcap_ene->Rebin(10);
 	hMcPrim_TrackerEndcap_ene->GetXaxis()->SetRangeUser(0,40e-6);
 	hMcPrim_TrackerEndcap_ene->Draw("hist");
 	gPad->SetLogy();
@@ -242,23 +316,39 @@ void readDataFromFiles(const string outputfile)
 	TH2F* hMcPrim_yx = new TH2F("hMcPrim_yx","MCparticle prim. YX;X [mm];Y [mm]",1000,-500,500,1000,-500,500);
 	TH1F* hMcPrim_ene = new TH1F("hMcPrim_ene","MCparticle prim. E;E [GeV]",1e6,0,1e-3);
 
-	TH2F* hVertexBarrel_xz = new TH2F("hVertexBarrel_xz","VertexBarrel XZ;Z [mm];X [mm]",200,-10000,10000,100,-500,500);
-	TH2F* hVertexBarrel_yz = new TH2F("hVertexBarrel_yz","VertexBarrel YZ;Z [mm];Y [mm]",200,-10000,10000,100,-500,500);
-	TH2F* hVertexBarrel_yx = new TH2F("hVertexBarrel_yx","VertexBarrel YX;X [mm];Y [mm]",100,-500,500,100,-500,500);
-	TH1F* hVertexBarrel_edep = new TH1F("hVertexBarrel_edep","VertexBarrel E_{dep}; E_{dep} [GeV]",1e6,0,1e-3);
-	TH2F* hMcPrim_VertexBarrel_xz = new TH2F("hMcPrim_VertexBarrel_xz","VertexBarrel MCp XZ;Z [mm];X [mm]",200,-10000,10000,100,-500,500);
-	TH2F* hMcPrim_VertexBarrel_yz = new TH2F("hMcPrim_VertexBarrel_yz","VertexBarrel MCp YZ;Z [mm];Y [mm]",200,-10000,10000,100,-500,500);
-	TH2F* hMcPrim_VertexBarrel_yx = new TH2F("hMcPrim_VertexBarrel_yx","VertexBarrel MCp YX;X [mm];Y [mm]",100,-500,500,100,-500,500);
-	TH1F* hMcPrim_VertexBarrel_ene = new TH1F("hMcPrim_VertexBarrel_ene","VertexBarrel MCp E; E [GeV]",1e6,0,1e-3);
+	TH2F* hVertexBarrel_xz 
+		= new TH2F("hVertexBarrel_xz","VertexBarrel XZ;Z [mm];X [mm]",200,-10000,10000,1000,-500,500);
+	TH2F* hVertexBarrel_yz 
+		= new TH2F("hVertexBarrel_yz","VertexBarrel YZ;Z [mm];Y [mm]",200,-10000,10000,1000,-500,500);
+	TH2F* hVertexBarrel_yx 
+		= new TH2F("hVertexBarrel_yx","VertexBarrel YX;X [mm];Y [mm]",1000,-500,500,1000,-500,500);
+	TH1F* hVertexBarrel_edep 
+		= new TH1F("hVertexBarrel_edep","VertexBarrel E_{dep}; E_{dep} [GeV]",1e6,0,1e-3);
+	TH2F* hMcPrim_VertexBarrel_xz 
+		= new TH2F("hMcPrim_VertexBarrel_xz","VertexBarrel MCp XZ;Z [mm];X [mm]",200,-10000,10000,1000,-500,500);
+	TH2F* hMcPrim_VertexBarrel_yz 
+		= new TH2F("hMcPrim_VertexBarrel_yz","VertexBarrel MCp YZ;Z [mm];Y [mm]",200,-10000,10000,1000,-500,500);
+	TH2F* hMcPrim_VertexBarrel_yx 
+		= new TH2F("hMcPrim_VertexBarrel_yx","VertexBarrel MCp YX;X [mm];Y [mm]",1000,-500,500,1000,-500,500);
+	TH1F* hMcPrim_VertexBarrel_ene 
+		= new TH1F("hMcPrim_VertexBarrel_ene","VertexBarrel MCp E; E [GeV]",1e6,0,1e-3);
 
-	TH2F* hTrackerEndcap_xz = new TH2F("hTrackerEndcap_xz","TrackerEndcap XZ;Z [mm];X [mm]",200,-10000,10000,100,-500,500);
-	TH2F* hTrackerEndcap_yz = new TH2F("hTrackerEndcap_yz","TrackerEndcap YZ;Z [mm];Y [mm]",200,-10000,10000,100,-500,500);
-	TH2F* hTrackerEndcap_yx = new TH2F("hTrackerEndcap_yx","TrackerEndcap YX;X [mm];Y [mm]",100,-500,500,100,-500,500);
-	TH1F* hTrackerEndcap_edep = new TH1F("hTrackerEndcap_edep","TrackerEndcap E_{dep}; E_{dep} [GeV]",1e6,0,1e-3);
-	TH2F* hMcPrim_TrackerEndcap_xz = new TH2F("hMcPrim_TrackerEndcap_xz","TrackerEndcap MCp XZ;Z [mm];X [mm]",200,-10000,10000,100,-500,500);
-	TH2F* hMcPrim_TrackerEndcap_yz = new TH2F("hMcPrim_TrackerEndcap_yz","TrackerEndcap MCp YZ;Z [mm];Y [mm]",200,-10000,10000,100,-500,500);
-	TH2F* hMcPrim_TrackerEndcap_yx = new TH2F("hMcPrim_TrackerEndcap_yx","TrackerEndcap MCp YX;X [mm];Y [mm]",100,-500,500,100,-500,500);
-	TH1F* hMcPrim_TrackerEndcap_ene = new TH1F("hMcPrim_TrackerEndcap_ene","TrackerEndcap MCp E; E [GeV]",1e6,0,1e-3);
+	TH2F* hTrackerEndcap_xz 
+		= new TH2F("hTrackerEndcap_xz","TrackerEndcap XZ;Z [mm];X [mm]",200,-10000,10000,1000,-500,500);
+	TH2F* hTrackerEndcap_yz 
+		= new TH2F("hTrackerEndcap_yz","TrackerEndcap YZ;Z [mm];Y [mm]",200,-10000,10000,1000,-500,500);
+	TH2F* hTrackerEndcap_yx 
+		= new TH2F("hTrackerEndcap_yx","TrackerEndcap YX;X [mm];Y [mm]",1000,-500,500,1000,-500,500);
+	TH1F* hTrackerEndcap_edep 
+		= new TH1F("hTrackerEndcap_edep","TrackerEndcap E_{dep}; E_{dep} [GeV]",1e6,0,1e-3);
+	TH2F* hMcPrim_TrackerEndcap_xz 
+		= new TH2F("hMcPrim_TrackerEndcap_xz","TrackerEndcap MCp XZ;Z [mm];X [mm]",200,-10000,10000,1000,-500,500);
+	TH2F* hMcPrim_TrackerEndcap_yz 
+		= new TH2F("hMcPrim_TrackerEndcap_yz","TrackerEndcap MCp YZ;Z [mm];Y [mm]",200,-10000,10000,1000,-500,500);
+	TH2F* hMcPrim_TrackerEndcap_yx 
+		= new TH2F("hMcPrim_TrackerEndcap_yx","TrackerEndcap MCp YX;X [mm];Y [mm]",1000,-500,500,1000,-500,500);
+	TH1F* hMcPrim_TrackerEndcap_ene 
+		= new TH1F("hMcPrim_TrackerEndcap_ene","TrackerEndcap MCp E; E [GeV]",1e6,0,1e-3);
 
 	for(Int_t iFile = 0; iFile < _fileNames.size(); iFile++)
 	{
