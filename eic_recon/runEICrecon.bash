@@ -2,8 +2,8 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_tails' # input directory
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_tails' # output directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim' # input directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
 queue='s'
@@ -26,7 +26,8 @@ echo "[INFO] queue = ${queue}"
 
 	compileScript='compileAnalysisPlugin.bash'
 	echo "#!/bin/bash" > ${compileScript}
-	echo "source /opt/detector/epic-nightly/setup.sh" >> ${compileScript}
+#	echo "source /opt/detector/epic-nightly/setup.sh" >> ${compileScript}
+	echo "source /home/belle2/anatochi/eic/epic/install/setup.sh" >> ${compileScript}
 	echo "export EICrecon_MY=${PWD}/EICrecon_MY" >> ${compileScript}
 	echo "cmake -S analysisPlugin -B analysisPlugin/build" >> ${compileScript}
 	echo "cmake --build analysisPlugin/build --target install" >> ${compileScript}
@@ -60,9 +61,11 @@ do
 	# submit a job
 	runFile="runEICrecon_${jobID}.sh"
 	echo "#!/bin/bash" > ${runFile}
-	echo "source /opt/detector/epic-nightly/setup.sh" >> ${runFile}
+#	echo "source /opt/detector/epic-nightly/setup.sh" >> ${runFile}
+	echo "source /home/belle2/anatochi/eic/epic/install/setup.sh" >> ${runFile}
 	echo "export EICrecon_MY=${PWD}/../EICrecon_MY" >> ${runFile}
-	echo -ne "time eicrecon -Pplugins=analysisPlugin -Ppodio:output_include_collections=\"MCParticles\" " >> ${runFile} 
+#	echo -ne "time eicrecon -Pplugins=analysisPlugin -Ppodio:output_include_collections=\"MCParticles\" " >> ${runFile} 
+	echo -ne "time eicrecon -Pplugins=analysisPlugin -Ppodio:output_include_collections=\"MCParticles,VertexBarrelHits,TrackerEndcapHits\" " >> ${runFile} 
 	echo -ne "-Ppodio:output_file=${outputDirName}/output_eicrecon_${jobID}.podio.root " >> ${runFile} 
 	echo "-Phistsfile=${outputDirName}/output_eicrecon_${jobID}.hist.root ${inputDirName}/output_eicsim_${jobID}.edm4hep.root" >> ${runFile}
 	# -Pjana:nevents=1000 <-- to limit the number of events
