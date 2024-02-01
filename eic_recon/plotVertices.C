@@ -1,8 +1,9 @@
-/***************************************************************************************************/
-/***************************************************************************************************/
-/* Run in eic-shell  */
-/***************************************************************************************************/
-/***************************************************************************************************/
+/********************************************************/
+/********************************************************/
+/* Plot MCparticle vertices and detector hit map 	*/
+/* Run in eic-shell  					*/
+/********************************************************/
+/********************************************************/
 #include "TROOT.h"
 #include "TH2F.h"
 #include "TCanvas.h"
@@ -193,7 +194,7 @@ void drawHistograms(const string filename)
 	//-------------------------------------------------------//
 
 	cVertexBarrel->cd(4);
-	hVertexBarrel_edep->Rebin(10);
+	hVertexBarrel_edep->Rebin(1e3);
 	hVertexBarrel_edep->GetXaxis()->SetRangeUser(0,40e-6);
 	hVertexBarrel_edep->Draw("hist");
 	gPad->SetLogy();
@@ -220,7 +221,7 @@ void drawHistograms(const string filename)
 	hMcPrim_VertexBarrel_yx->Draw("box");
 
 	cVertexBarrel->cd(8);
-	hMcPrim_VertexBarrel_ene->Rebin(10);
+	hMcPrim_VertexBarrel_ene->Rebin(1e3);
 	hMcPrim_VertexBarrel_ene->GetXaxis()->SetRangeUser(0,40e-6);
 	hMcPrim_VertexBarrel_ene->Draw("hist");
 	gPad->SetLogy();
@@ -249,7 +250,7 @@ void drawHistograms(const string filename)
 	hTrackerEndcap_yx->Draw("box");
 
 	cTrackerEndcap->cd(4);
-	hTrackerEndcap_edep->Rebin(10);
+	hTrackerEndcap_edep->Rebin(1e3);
 	hTrackerEndcap_edep->GetXaxis()->SetRangeUser(0,40e-6);
 	hTrackerEndcap_edep->Draw("hist");
 	gPad->SetLogy();
@@ -272,7 +273,7 @@ void drawHistograms(const string filename)
 	hMcPrim_TrackerEndcap_yx->Draw("box");
 
 	cTrackerEndcap->cd(8);
-	hMcPrim_TrackerEndcap_ene->Rebin(10);
+	hMcPrim_TrackerEndcap_ene->Rebin(1e3);
 	hMcPrim_TrackerEndcap_ene->GetXaxis()->SetRangeUser(0,40e-6);
 	hMcPrim_TrackerEndcap_ene->Draw("hist");
 	gPad->SetLogy();
@@ -350,9 +351,10 @@ void readDataFromFiles(const string outputfile)
 	TH1F* hMcPrim_TrackerEndcap_ene 
 		= new TH1F("hMcPrim_TrackerEndcap_ene","TrackerEndcap MCp E; E [GeV]",1e6,0,1e-3);
 
+	//-----------------------------------------------------------//
+	// loop over files
 	for(Int_t iFile = 0; iFile < _fileNames.size(); iFile++)
 	{
-		//-----------------------------------------------------------//
 		cout<<iFile+1<<"/"<<_fileNames.size()<<" : "<<_fileNames.at(iFile)<<endl;
 
 		TFile* file = new TFile(_fileNames.at(iFile).c_str());
@@ -402,7 +404,8 @@ void readDataFromFiles(const string outputfile)
 					// get MCparticle info
 					Int_t index = index_mc_VertexBarrel[iHit];
 					Bool_t primary = false;
-					if(simulatorStatus_mc[index] > 0 && generatorStatus_mc[index] == 1){primary = true;} // primary
+					if(simulatorStatus_mc[index] > 0 && generatorStatus_mc[index] == 1)
+					{primary = true;} // primary
 					else // secondary
 					{
 						// loop over parents
@@ -446,7 +449,8 @@ void readDataFromFiles(const string outputfile)
 					// get MCparticle info
 					Int_t index = index_mc_TrackerEndcap[iHit];
 					Bool_t primary = false;
-					if(simulatorStatus_mc[index] > 0 && generatorStatus_mc[index] == 1){primary = true;} // primary
+					if(simulatorStatus_mc[index] > 0 && generatorStatus_mc[index] == 1)
+					{primary = true;} // primary
 					else // secondary
 					{
 						// loop over parents
@@ -470,7 +474,8 @@ void readDataFromFiles(const string outputfile)
 					}
 					else // skip
 					{
-						cout<<endl<<"[WARNING] : Cannot find the primary vertex. Skipping MCparticle info."<<endl<<endl;
+						cout<<endl<<"[WARNING] : Cannot find the primary vertex.";
+						cout<<" Skipping MCparticle info."<<endl<<endl;
 					}
 				}
 			}
@@ -493,8 +498,8 @@ void readDataFromFiles(const string outputfile)
 
 		}
 		file->Close();
-		//-----------------------------------------------------------//
 	}
+	//-----------------------------------------------------------//
 
 
 	cout<<"Writing to a file ..."<<endl;

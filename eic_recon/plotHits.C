@@ -1,13 +1,153 @@
-/*********************************************************************************************************************/
-/*********************************************************************************************************************/
-/* Plot reconstructed detector hits and vertex detector hit-map                                                      */
-/* One should merge all output ROOT files into one using the 'hadd' command:                                         */
-/* hadd -f /path/output_eicrecon_hist_all.root /path/output_eicrecon/output_eicrecon_*.hist.root                     */
-/*********************************************************************************************************************/
-/*********************************************************************************************************************/
+/********************************/
+/********************************/
+/* Plot detector hit rates	*/
+/* Run in eic-shell		*/
+/********************************/
+/********************************/
+#include "TROOT.h"
+#include "TH2F.h"
+#include "TCanvas.h"
+#include "TStyle.h"
+#include "TMath.h"
+#include "TTreeReaderArray.h"
+#include "TTreeReader.h"
+#include "TFile.h"
+#include "TChain.h"
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <filesystem>
+
+using namespace std;
+namespace fs = filesystem;
+
+#define NMAXFILES INT_MAX // maximum number of file to r aximum number of file to read
+
+void getFileNames(const string directory, const string pattern, const string extension);
+void readDataFromFiles(const string outputfile); 
+void drawHistograms(const string filename);
+Double_t getBeamCoreTailRatio(TString type = "core");
+
+vector<string> _fileNames;
 
 const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 1e8;
+const Int_t subDetNum = 11;
+
+void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_v6.2_new/",
+		const string pattern = ".hist",
+		const string extension = ".root",
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_v6.2_new_plotHits.root")
+{
+	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
+	//-- get data from eic-shell output data 
+	getFileNames(directory, pattern, extension);
+	readDataFromFiles(outputfile);
+
+	//-- draw histograms from above
+	drawHistograms(outputfile);
+
+	return;
+
+}
+
+void getFileNames(const string directory, const string pattern, const string extension) 
+{
+	try 
+	{
+        	for(const auto& entry : fs::directory_iterator(directory)) 
+		{
+			if(	entry.is_regular_file() && 
+				entry.path().filename().string().find(pattern) != string::npos && 
+				entry.path().extension() == extension)
+			{
+				_fileNames.push_back(entry.path());
+				if(_fileNames.size() >= NMAXFILES){return;}
+            		}
+        	}
+    	} 
+	catch (const filesystem::filesystem_error& ex) 
+	{
+        	cerr << "Error: " << ex.what() << endl;
+    	}
+	return;
+}
+
+void readDataFromFiles(const string outputfile)
+{
+	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
+	
+	TFile* f = new TFile(outputfile.c_str(),"recreate");
+
+	TH1D* hHits = new TH1D("hHits","Hits;Sub-detector;Hits [counts]",subDetNum,0,subDetNum);
+
+	const TString bName[subDetNum] = {	"TrackerEndcapHits","HcalEndcapNHits","EcalEndcapNHits",
+						"VertexBarrelHits","TOFBarrelHits","SiBarrelHits",
+						"MPGDBarrelHits","EcalEndcapPHits","B0TrackerHits",
+						"HcalBarrelHits","LumiSpecCALHits"};
+
+	//-----------------------------------------------------------//
+	Float_t nHits[subDetNum], nHitsSum[subDetNum];
+
+	// empty array
+	for(Int_t i = 0; i < subDetNum; i++){nHitsSum[i] = 0;}
+
+	// loop over files
+	for(Int_t iFile = 0; iFile < _fileNames.size(); iFile++)
+	{
+		cout<<iFile+1<<"/"<<_fileNames.size()<<" : "<<_fileNames.at(iFile)<<endl;
+
+		TFile* file = new TFile(_fileNames.at(iFile).c_str());
+		TDirectory* dir = file->GetDirectory("analysisPlugin");
+		// dir->ls();
+	
+		TNtuple* ntraw_nHits = (TNtuple*)dir->Get("ntraw_nHits");	
+		Int_t nEntries_nHits = ntraw_nHits->GetEntries();
+
+		for(Int_t i = 0; i < subDetNum; i++)
+		{
+			ntraw_nHits->SetBranchAddress(Form("nHits_%s",bName[i].Data()),&nHits[i]);
+		}
+
+		// loop over events in the ntuple
+		for(Int_t i = 0; i < nEntries_nHits; i++)
+		{
+			ntraw_nHits->GetEntry(i);
+			for(Int_t j = 0; j < subDetNum; j++)
+			{
+				nHitsSum[j] += nHits[j];
+			}
+		}
+
+		file->Close();
+	}
+	//-----------------------------------------------------------//
+
+	// fill histograms
+	for(Int_t i = 0; i < subDetNum; i++)
+	{
+		hHits->SetBinContent(i+1,nHitsSum[i]);
+		hHits->SetBinError(i+1,TMath::Sqrt(nHitsSum[i]));
+		hHits->GetXaxis()->SetBinLabel(i+1,bName[i].Data());
+	}
+
+	cout<<"Writing to a file ..."<<endl;
+	if(!f)
+	{
+		cout<<"[ERROR] Cannot recreate the output file: "<<outputfile<<endl;
+		return;
+	}
+	f->cd();
+
+	hHits->Write(); 
+
+	f->Close();
+	cout<<"Output file name: "<<f->GetName()<<endl;
+
+	return;
+}
 
 Double_t getBeamCoreTailRatio(TString type = "core")
 {
@@ -30,78 +170,17 @@ Double_t getBeamCoreTailRatio(TString type = "core")
 	return (type == "core") ? (Rc /*core*/) : (1.0 - Rc /*tail*/);
 }
 
-void plot(TString dName = "./", TString fName = "output_eicrecon_hist_all.root")
+void drawHistograms(const string filename)
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
-	TString fileName = dName + "/" + fName;
-	TFile* file = TFile::Open(fileName.Data());
-	TDirectory* dir = file->GetDirectory("analysisPlugin");
-	dir->ls();
-	TNtuple* ntraw_nHits = (TNtuple*)dir->Get("ntraw_nHits");	
-	TNtuple* ntraw_VertexBarrelHits = (TNtuple*)dir->Get("ntraw_VertexBarrelHits");
 
-	Int_t nEntries_nHits = ntraw_nHits->GetEntries();
-	Int_t nEntries_VertexBarrelHits = ntraw_VertexBarrelHits->GetEntries();
+	gStyle->SetOptStat(0);
+	TFile *_file0 = TFile::Open(filename.c_str());
 
-	cout<<"nEntries_nHits = "<<nEntries_nHits<<endl;
-	cout<<"nEntries_VertexBarrelHits = "<<nEntries_VertexBarrelHits<<endl;
+	TH1D* hHits = (TH1D*)_file0->Get("hHits");
 
-	const Int_t bNum = 11;
-	const Double_t time = 1; // [sec]
-	TString bName[bNum] = {	"TrackerEndcapHits","HcalEndcapNHits","EcalEndcapNHits",
-				"VertexBarrelHits","TOFBarrelHits","SiBarrelHits",
-				"MPGDBarrelHits","EcalEndcapPHits","B0TrackerHits",
-				"HcalBarrelHits","LumiSpecCALHits"};
-	Float_t nHits[bNum], nHitsSum[bNum];
-	Float_t x_VertexBarrelHits, y_VertexBarrelHits, z_VertexBarrelHits;
-
-	for(Int_t i = 0; i < bNum; i++)
-	{
-		ntraw_nHits->SetBranchAddress(Form("nHits_%s",bName[i].Data()),&nHits[i]);
-		nHitsSum[i] = 0;
-	}
-	ntraw_VertexBarrelHits->SetBranchAddress("x",&x_VertexBarrelHits);
-	ntraw_VertexBarrelHits->SetBranchAddress("y",&y_VertexBarrelHits);
-	ntraw_VertexBarrelHits->SetBranchAddress("z",&z_VertexBarrelHits);
-
-	TH1D* hHits = new TH1D("hHits",
-
-		/* core */		
-		Form("Hit frequency for different sub-detectors (N_{e-} = %.e | I_{beam} = %.3f A | Core/(Core+Tail) = %.3e);Subdetector;Hits freq. [Hz]",
-		nElectrons_geant4,BeamCurrent_A,getBeamCoreTailRatio("core")),bNum,0,bNum);
-
-		/* tail */
-		// Form("Hit frequency for different sub-detectors (N_{e-} = %.e | I_{beam} = %.3f A | Tail/(Core+Tail) = %.3e);Subdetector;Hits freq. [Hz]",
-		// nElectrons_geant4,BeamCurrent_A,getBeamCoreTailRatio("tail")),bNum,0,bNum);
-
-	TH2D* hVertexBarrelHits = new TH2D("hVertexBarrelHits",
-		Form("Scatter plot of SR hits in VertexBarrel (N_{e-} = %.e);x [mm];y [mm]",
-		nElectrons_geant4),240,-120,120,240,-120,120);
-
-	for(Int_t i = 0; i < nEntries_nHits; i++)
-	{
-		ntraw_nHits->GetEntry(i);
-		for(Int_t j = 0; j < bNum; j++)
-		{
-			nHitsSum[j] += nHits[j];
-		}
-	}
-
-	for(Int_t i = 0; i < bNum; i++)
-	{
-		hHits->SetBinContent(i+1,nHitsSum[i]/(time*nEntries_nHits));
-		hHits->SetBinError(i+1,TMath::Sqrt(nHitsSum[i])/(time*nEntries_nHits));
-		hHits->GetXaxis()->SetBinLabel(i+1,bName[i].Data());
-	}
-
-	for(Int_t i = 0; i < nEntries_VertexBarrelHits; i++)
-	{
-		ntraw_VertexBarrelHits->GetEntry(i);
-		hVertexBarrelHits->Fill(x_VertexBarrelHits,y_VertexBarrelHits,1);
-	}
-
-	/* core */ hHits->Scale(getBeamCoreTailRatio("core")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
-	/* tail */ // hHits->Scale(getBeamCoreTailRatio("tail")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
+	/* core */	hHits->Scale(getBeamCoreTailRatio("core")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
+	/* tail */	// hHits->Scale(getBeamCoreTailRatio("tail")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
 
 	gStyle->SetErrorX(0);
 	gStyle->SetOptStat(0);
@@ -132,39 +211,7 @@ void plot(TString dName = "./", TString fName = "output_eicrecon_hist_all.root")
 	hHits->LabelsOption("v");
 	gPad->SetLogy();
 
-	c1->SaveAs(Form("c1_%s.png",fName.Data()));
-
-	TCanvas* c2 = new TCanvas("c2","c2",2000,2000);
-	c2->cd();
-	TPad *pad2 = new TPad("pad2","pad2",0,0,1,1);
-	pad2->SetBottomMargin(0.12);
-	pad2->SetTopMargin(0.12);
-	pad2->SetRightMargin(0.12);
-	pad2->SetLeftMargin(0.12);
-	pad2->Draw();
-	pad2->cd();
-	hVertexBarrelHits->SetMarkerStyle(21);
-	hVertexBarrelHits->Draw();
-	hVertexBarrelHits->GetYaxis()->SetTitleOffset(1.4);
-	hVertexBarrelHits->GetXaxis()->SetTitleOffset(1.4);
-	hVertexBarrelHits->GetYaxis()->CenterTitle(true);
-	hVertexBarrelHits->GetXaxis()->CenterTitle(true);
-
-	Double_t VertexBarrel_rmin[3] = {36.0-2.0/2.0,
-					36.0+12.0-2.0/2.0,
-					120.0-2.0/2.0}; // [mm]
-	for(Int_t i = 0; i < 3; i++)
-	{
-		TArc *arc = new TArc(0,0,VertexBarrel_rmin[i]);
-   		arc->SetLineColor(kRed);
-   		arc->SetLineWidth(4);
-   		arc->SetLineStyle(9);
-   		arc->SetLineColorAlpha(kRed,0.4);
-   		arc->SetFillStyle(0);
-   		arc->Draw();
-	}
-
-	c2->SaveAs(Form("c2_%s.png",fName.Data()));
+	c1->SaveAs("./pics/c1_hits.png");
 
 	return;
 }
