@@ -28,8 +28,6 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 {
 	const G4Track* track = step->GetTrack();
 
-	//--------------------------------------------------------------------------//
-	//- Beam monitor at the last magnet
 	G4StepPoint*            preStep         = step->GetPreStepPoint();
 	G4StepPoint*            postStep        = step->GetPostStepPoint();
 	G4VPhysicalVolume*      prePV           = preStep->GetPhysicalVolume();
@@ -39,6 +37,9 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	G4String prePV_name = prePV->GetName();
 	// solenoid field in the IP beam pipe
 	if(prePV_name == "vac_IP" && simPar->IsBuildSolenoid()){prePV_name = "mag_MARCO";}
+
+	//--------------------------------------------------------------------------//
+	//- Beam monitor at the last magnet
 
 	// check the track
 	if(     track->GetTrackID() == 1 && // primary particle 
@@ -108,7 +109,23 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 			runAction->_monRefAngle = 0.0;
 		}
 	}
+
 	//--------------------------------------------------------------------------//
+	//-- Store photon coordinates at the edge of the vacuum
+
+	// check if the next step is not outside the world and skip everything except for gamma
+	if(postPV && track->GetParticleDefinition()->GetPDGEncoding() == G4Gamma::Gamma()->GetPDGEncoding())
+	{
+		// fill trajectory vectors
+		G4ThreeVector pos = track->GetPosition();
+		runAction->_trackPosX_cm.push_back(pos.x()/cm);
+		runAction->_trackPosY_cm.push_back(pos.y()/cm);
+		runAction->_trackPosZ_cm.push_back(pos.z()/cm);
+		runAction->_trackEne_GeV.push_back(track->GetKineticEnergy()/GeV);
+	}
+
+	//--------------------------------------------------------------------------//
+	//-- Store killed photon info
 
 	// check if the track (=gamma) is killed
 	if(track->GetTrackStatus() == fStopAndKill && 

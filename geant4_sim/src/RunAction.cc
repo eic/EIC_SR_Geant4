@@ -78,6 +78,13 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("monRefPosZ_cm",	&_monRefPosZ);
     	_tree->Branch("monRefAngle_rad",	&_monRefAngle);
 
+    	_tracks = new TTree("tracks", "Collected SR Track Data");
+    	_tracks->Branch("trackEvent",	&_trackEvent);
+    	_tracks->Branch("trackPosX_cm",	&_trackPosX_cm);
+    	_tracks->Branch("trackPosY_cm",	&_trackPosY_cm);
+    	_tracks->Branch("trackPosZ_cm",	&_trackPosZ_cm);
+    	_tracks->Branch("trackEne_GeV", &_trackEne_GeV);
+
 	_avgEventTime = 0;
 
 	_xml = new TTree("xml", "Simulation settings from the XML file");
@@ -97,6 +104,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
 	_hfile->cd();
     	_xml->Write();
     	_tree->Write();
+	_tracks->Write();
 
     	delete _hfile;
 

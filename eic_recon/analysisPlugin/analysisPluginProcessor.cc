@@ -26,8 +26,8 @@ void analysisPluginProcessor::InitWithGlobalRootLock()
     	rootfile->mkdir("analysisPlugin")->cd();
 
     	// Create histograms
-    	ntraw_VertexBarrelHits = new TNtuple("ntraw_VertexBarrelHits","VertexBarrelHits","x:y:z");
-    	ntraw_SiBarrelHits = new TNtuple("ntraw_SiBarrelHits","SiBarrelHits","x:y:z");
+//    	ntraw_VertexBarrelHits = new TNtuple("ntraw_VertexBarrelHits","VertexBarrelHits","x:y:z");
+//    	ntraw_SiBarrelHits = new TNtuple("ntraw_SiBarrelHits","SiBarrelHits","x:y:z");
 
     	ntraw_nHits = new TNtuple("ntraw_nHits","nHits",
 	"nHits_TrackerEndcapHits:nHits_HcalEndcapNHits:nHits_EcalEndcapNHits:nHits_VertexBarrelHits:nHits_TOFBarrelHits:nHits_SiBarrelHits:nHits_MPGDBarrelHits:nHits_EcalEndcapPHits:nHits_B0TrackerHits:nHits_HcalBarrelHits:nHits_LumiSpecCALHits");
@@ -52,19 +52,6 @@ void analysisPluginProcessor::ProcessSequential(const std::shared_ptr<const JEve
 				raw_B0TrackerHits().size(),
 				raw_HcalBarrelHits().size(),
 				raw_LumiSpecCALHits().size());
-
-    	for( auto hit : raw_VertexBarrelHits() )
-	{
-		ntraw_VertexBarrelHits->Fill(	hit->getPosition().x, 
-						hit->getPosition().y,
-						hit->getPosition().z);
-	}
-    	for( auto hit : raw_SiBarrelHits() )
-	{
-		ntraw_SiBarrelHits->Fill(	hit->getPosition().x, 
-						hit->getPosition().y,
-						hit->getPosition().z);
-	}
 /*
 	// Alternative method
         const auto & raw_TrackerEndcapHits   = *static_cast<const edm4hep::SimTrackerHitCollection*>(

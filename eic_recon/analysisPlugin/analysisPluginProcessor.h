@@ -25,6 +25,7 @@ private:
     	PrefetchT<edm4hep::SimCalorimeterHit>       	raw_LumiSpecCALHits     = {this, "LumiSpecCALHits"};
 
     	// Declare histograms and ntuples
+/*
     	TNtuple *ntraw_TrackerEndcapHits = nullptr;
     	TNtuple *ntraw_VertexBarrelHits = nullptr;
     	TNtuple *ntraw_TOFBarrelHits = nullptr;
@@ -36,7 +37,9 @@ private:
     	TNtuple *ntraw_EcalEndcapNHits = nullptr;
     	TNtuple *ntraw_EcalEndcapPHits = nullptr;
     	TNtuple *ntraw_LumiSpecCALHits = nullptr;
+*/
     	TNtuple *ntraw_nHits = nullptr;
+
 
 public:
     	analysisPluginProcessor() { SetTypeName(NAME_OF_THIS); }

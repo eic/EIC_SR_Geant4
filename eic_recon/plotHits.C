@@ -36,10 +36,10 @@ const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 1e8;
 const Int_t subDetNum = 11;
 
-void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_v6.2_new/",
+void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3/",
 		const string pattern = ".hist",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_v6.2_new_plotHits.root")
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_plotHits.root")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-- get data from eic-shell output data 
@@ -179,7 +179,10 @@ void drawHistograms(const string filename)
 
 	TH1D* hHits = (TH1D*)_file0->Get("hHits");
 
-	/* core */	hHits->Scale(getBeamCoreTailRatio("core")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
+	/* core */	hHits->Scale(BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
+	/* tail */	// hHits->Scale(BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
+
+	/* core */	// hHits->Scale(getBeamCoreTailRatio("core")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
 	/* tail */	// hHits->Scale(getBeamCoreTailRatio("tail")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
 
 	gStyle->SetErrorX(0);

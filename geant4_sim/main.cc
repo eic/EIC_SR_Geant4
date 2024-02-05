@@ -4,6 +4,7 @@
 #include "RunAction.hh"
 #include "SteppingAction.hh"
 #include "StackingAction.hh"
+#include "TrackingAction.hh"
 #include "G4RunManager.hh"
 #include "G4eMultipleScattering.hh"
 #include "G4UImanager.hh"
@@ -90,6 +91,9 @@ int main(int argc, char** argv)
 
     	StackingAction* stackAction = new StackingAction(runAction,xmlFileName);
     	runManager->SetUserAction(stackAction);
+
+    	TrackingAction* trackAction = new TrackingAction(runAction,xmlFileName);
+    	runManager->SetUserAction(trackAction);
 
 	// Initialize G4 kernel
 	//

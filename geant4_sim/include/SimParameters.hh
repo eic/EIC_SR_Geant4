@@ -86,6 +86,11 @@ private:
 	G4double _beamTailMin;
 	G4double _beamTailMax;
 
+	G4bool _storeTrj;
+	G4double _storeTrjZmin;
+	G4double _storeTrjZmax;
+	G4double _storeTrjEmin;
+
 	G4int _SRtype;
 	G4int _reflType;
 	G4bool _reflPrint;
@@ -115,6 +120,7 @@ public:
 	void PrintGammaEcut();
 	void PrintTrackTcut();
 	void ReadXML(G4String fName);
+	void PrintStoreTrajectories();
 
 	// get functions
 	G4double GetWorldSizeX(){return _world_dim_x;}
@@ -203,6 +209,11 @@ public:
 
 	G4double GetTrackTcut(){return _trackTcut;}
 
+	G4bool GetStoreTrajectories(){return _storeTrj;}
+	G4double GetStoreTrajectoriesZmin(){return _storeTrjZmin;}
+	G4double GetStoreTrajectoriesZmax(){return _storeTrjZmax;}
+	G4double GetStoreTrajectoriesEmin(){return _storeTrjEmin;}
+
 private:
 	// set functions
 	void SetWorldSizeX(G4double val){_world_dim_x = val; return;}
@@ -278,6 +289,11 @@ private:
 	void SetTrackTcut(G4double val){_trackTcut = val; return;}
 
 	G4bool FileExists(const G4String& fName);
+
+	void SetStoreTrajectories(G4int val){if(val == 1){_storeTrj=true;}else{_storeTrj=false;}return;}
+	void SetStoreTrajectoriesZmin(G4double val){_storeTrjZmin = val;return;}
+	void SetStoreTrajectoriesZmax(G4double val){_storeTrjZmax = val;return;}
+	void SetStoreTrajectoriesEmin(G4double val){_storeTrjEmin = val;return;}
 };
 
 #endif

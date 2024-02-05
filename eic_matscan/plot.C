@@ -39,8 +39,9 @@ void plot()
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-----------------------------------------------------------//
 	// MC particles (use eic-shell)
-	plotMCparticles(	"/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_podio_all.root",
-				"./output/output_eicrecon_geant4_podio_all_hist.root");
+	plotMCparticles("/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_v6.2/output_eicrecon_7.podio.root","./output/output.root");
+//	plotMCparticles(	"/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_podio_all.root",
+//				"./output/output_eicrecon_geant4_podio_all_hist.root");
 //	plotMCpHisto(		"./output/output_eicrecon_geant4_podio_all_hist.root",
 //				"./output/MCP_2D",
 //				"xz");
@@ -232,10 +233,27 @@ void plotMCparticles(TString fNameIn, TString fNameOut)
 	TTreeReaderArray<Double_t> 	vy_mc(myReader, "MCParticles.vertex.y");
 	TTreeReaderArray<Double_t> 	vz_mc(myReader, "MCParticles.vertex.z");
 
+	TTreeReaderArray<Float_t>      	edep_VertexBarrel(myReader, "VertexBarrelHits.EDep");
+	TTreeReaderArray<Double_t>      vx_VertexBarrel(myReader, "VertexBarrelHits.position.x");
+	TTreeReaderArray<Double_t>      vy_VertexBarrel(myReader, "VertexBarrelHits.position.y");
+	TTreeReaderArray<Double_t>      vz_VertexBarrel(myReader, "VertexBarrelHits.position.z");
+	TTreeReaderArray<Int_t>      	index_mc_VertexBarrel(myReader, "_VertexBarrelHits_MCParticle.index");
+
+	TTreeReaderArray<UInt_t> 	parents_begin_mc(myReader, "MCParticles.parents_begin");
+	TTreeReaderArray<UInt_t> 	parents_end_mc(myReader, "MCParticles.parents_end");
+
 	//-----------------------------------------------------------//
 	cout<<"MC particles calculation ..."<<endl;
 	while(myReader.Next())
 	{
+		Int_t nHits_VertexBarrel = edep_VertexBarrel.GetSize();
+		for(Int_t iHit = 0; iHit < nHits_VertexBarrel; iHit++)
+		{
+			printf("%d : \t eDep = %.3e [keV] | (x;y;z) = (%.3e;%.3e;%.3e) | index_mc_VertexBarrel = %d\n",iHit,edep_VertexBarrel[iHit]*1e6,vx_VertexBarrel[iHit],vy_VertexBarrel[iHit],vz_VertexBarrel[iHit],index_mc_VertexBarrel[iHit]);
+			cout<<"parents_begin_mc["<<index_mc_VertexBarrel[iHit]<<"] = "<<parents_begin_mc[index_mc_VertexBarrel[iHit]]<<endl;
+			cout<<"parents_end_mc["<<index_mc_VertexBarrel[iHit]<<"] = "<<parents_end_mc[index_mc_VertexBarrel[iHit]]<<endl;
+		}
+/*
 		Int_t nPart = pdg_mc.GetSize();
 		for (Int_t imcPart = 0; imcPart < nPart; imcPart++)
 		{
@@ -246,6 +264,7 @@ void plotMCparticles(TString fNameIn, TString fNameOut)
 				hmc_yx->Fill(vx_mc[imcPart]/1e1,vy_mc[imcPart]/1e1); // mm -> cm
 			}
 		}
+*/
 	}
 	file->Close();
 	//-----------------------------------------------------------//

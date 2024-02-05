@@ -31,16 +31,16 @@ void drawHistograms(const string filename);
 
 vector<string> _fileNames;
 
-void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_v6.2_new/", 
+void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3/", 
 			const string pattern = ".podio", 
 			const string extension = ".root", 
-			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_v6.2_new_plotVertices.root")
+			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_plotVertices.root")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 
 	//-- get data from eic-shell output data
-//	getFileNames(directory, pattern, extension);
-//	readDataFromFiles(outputfile);
+	getFileNames(directory, pattern, extension);
+	readDataFromFiles(outputfile);
 
 	//-- draw histograms from above
 	drawHistograms(outputfile);

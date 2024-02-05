@@ -50,7 +50,6 @@ StackingAction::ClassifyNewTrack(const G4Track* track)
 			G4cout<<"Cannot find the SR creation magnet"<<G4endl;
 			G4cout<<"==================================================================\n"<<G4endl;
 		}
-
 	}
 
 	// kill secondaries

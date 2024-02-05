@@ -3,8 +3,8 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_g4ana_tails' # input directory
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_tails' # output directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_g4ana' # input directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim' # output directory
 buildDir='./build' # build directory
 nJobs=1000 # number of jobs
 queue='s'
@@ -39,14 +39,20 @@ do
 	done
 
 	# submit a job
-	runFile="runEICsim_${jobID}.sh"
+	runDir="runEICsim_${jobID}"
+	mkdir -pv ${runDir}
+	cd ${runDir}
+	runFile="runEICsim.sh"
 	echo "#!/bin/bash" > ${runFile}
-	echo "source /opt/detector/epic-nightly/setup.sh" >> ${runFile}
+	echo "source /opt/detector/setup.sh" >> ${runFile}
 	echo -ne "time npsim --runType batch --numberOfEvents -1 --compactFile /opt/detector/epic-nightly/share/epic/epic.xml" >> ${runFile}
+	# echo "source /home/belle2/anatochi/eic/epic/install/setup.sh" >> ${runFile}
+	# echo -ne "time npsim --runType batch --numberOfEvents -1 --compactFile /home/belle2/anatochi/eic/epic/install/share/epic/epic.xml" >> ${runFile}
 	echo " --inputFiles ${inputDirName}/output_ana_${jobID}.hepmc --outputFile ${outputDirName}/output_eicsim_${jobID}.edm4hep.root &> ${outputDirName}/logExe_eicsim_${jobID}.txt" >> ${runFile}
 
 	chmod 777 ${runFile}
 	bsub -q $queue -o ${outputDirName}/logJob_eicsim_${jobID}.txt ". ${eicshell} -- ./${runFile}"
+	cd -
 done
 
 cd -

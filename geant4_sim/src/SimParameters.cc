@@ -106,6 +106,25 @@ void SimParameters::ReadXML(G4String fName)
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
 
+	// Store SR trajectories
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.storetrj"))
+	{
+		// The data function is used to access the data stored in a node.
+		if(child_node.second.get<string>("<xmlattr>.name") == "store")
+			SetStoreTrajectories(stoi(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "Zmin" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetStoreTrajectoriesZmin(stod(child_node.second.data())*cm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "Zmax" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetStoreTrajectoriesZmax(stod(child_node.second.data())*cm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "Emin" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "GeV")
+			SetStoreTrajectoriesEmin(stod(child_node.second.data())*GeV);
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+
 	// gamma energy cut
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.genecut"))
 	{
@@ -550,6 +569,11 @@ void SimParameters::InitDefault()
 	_gammaEcut = -1*keV;
 	_trackTcut =  1*s;
 
+	_storeTrj = false;
+	_storeTrjZmin = -67.0*cm;
+	_storeTrjZmax =  68.7*cm;
+	_storeTrjEmin = 10e-6*GeV;
+
 	return;
 }
 
@@ -563,6 +587,21 @@ void SimParameters::PrintGeoParameters()
 	G4cout<<"Extension length = "<<GetExtL()/cm<<" [cm]"<<G4endl;
 	G4cout<<"Extension radius = "<<GetExtR()/cm<<" [cm]"<<G4endl;
 	G4cout<<"Extension end position = "<<GetExtE()/cm<<" [cm]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
+void SimParameters::PrintStoreTrajectories()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintStoreTrajectories ==> Store SR photon trajectories"<<G4endl;
+	G4cout<<"Store trajectory flag = "<<GetStoreTrajectories()<<G4endl;
+	G4cout<<"	0 - false"<<G4endl;
+	G4cout<<"	1 - true"<<G4endl;
+	G4cout<<"Zmin = "<<GetStoreTrajectoriesZmin()/cm<<" [cm]"<<G4endl;
+	G4cout<<"Zmax = "<<GetStoreTrajectoriesZmax()/cm<<" [cm]"<<G4endl;
+	G4cout<<"Emin = "<<GetStoreTrajectoriesEmin()/GeV<<" [GeV]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

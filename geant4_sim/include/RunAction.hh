@@ -46,6 +46,7 @@ public:
 	TFile* _hfile;
     	TTree* _tree;
     	TTree* _xml;
+	TTree* _tracks;
 
     	G4int _event;
 	G4long _seed;
@@ -73,6 +74,12 @@ public:
 	vector<G4float> _gammaVtxDirX;
 	vector<G4float> _gammaVtxDirY;
 	vector<G4float> _gammaVtxDirZ;
+
+	vector<G4float> _trackPosX_cm;
+	vector<G4float> _trackPosY_cm;
+	vector<G4float> _trackPosZ_cm;
+	vector<G4float> _trackEne_GeV;
+	G4int _trackEvent;
 
 	vector<G4float> _gammaPosX;
 	vector<G4float> _gammaPosY;

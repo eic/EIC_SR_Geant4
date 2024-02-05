@@ -28,6 +28,7 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 {
 	_timer->Start();
     	runAction->_event = event->GetEventID();
+	runAction->_trackEvent = event->GetEventID();
 
 	// clean magnet data vectors
 	for(G4int iMag = 0; iMag < runAction->_magName.size(); iMag++)
