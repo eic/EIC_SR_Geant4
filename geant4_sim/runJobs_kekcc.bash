@@ -6,7 +6,7 @@ date;
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-xmlFile="${PWD}/geometry/simParameters.xml" # simulation geometry settings
+xmlFile="${PWD}/geometry/simParameters_v6.2.xml" # simulation geometry settings
 nParticles=100000 # number of primary particles per job
 outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim' # output directory
 buildDir='./build' # build directory

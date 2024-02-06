@@ -44,10 +44,13 @@ do
 	cd ${runDir}
 	runFile="runEICsim.sh"
 	echo "#!/bin/bash" > ${runFile}
-	echo "source /opt/detector/setup.sh" >> ${runFile}
-	echo -ne "time npsim --runType batch --numberOfEvents -1 --compactFile /opt/detector/epic-nightly/share/epic/epic.xml" >> ${runFile}
-	# echo "source /home/belle2/anatochi/eic/epic/install/setup.sh" >> ${runFile}
-	# echo -ne "time npsim --runType batch --numberOfEvents -1 --compactFile /home/belle2/anatochi/eic/epic/install/share/epic/epic.xml" >> ${runFile}
+
+	# echo "source /opt/detector/setup.sh" >> ${runFile}
+	# echo -ne "time npsim --runType batch --numberOfEvents -1 --compactFile /opt/detector/epic-nightly/share/epic/epic.xml" >> ${runFile}
+
+	echo "source /home/belle2/anatochi/eic/epic/install/setup.sh" >> ${runFile}
+	echo -ne "time npsim --runType batch --numberOfEvents -1 --compactFile /home/belle2/anatochi/eic/epic/install/share/epic/epic.xml" >> ${runFile}
+
 	echo " --inputFiles ${inputDirName}/output_ana_${jobID}.hepmc --outputFile ${outputDirName}/output_eicsim_${jobID}.edm4hep.root &> ${outputDirName}/logExe_eicsim_${jobID}.txt" >> ${runFile}
 
 	chmod 777 ${runFile}
