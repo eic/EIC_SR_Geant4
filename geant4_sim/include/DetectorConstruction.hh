@@ -34,6 +34,7 @@ private:
 	void BuildMaterials();
 	void BuildWorld();
 	void CreateBeamPipeSolid();
+	void CreateSrMask();
 	void BuildMagnets();
 	G4MagneticField* GetMagField(G4int,G4LogicalVolume*);
 	void BuildParticles();

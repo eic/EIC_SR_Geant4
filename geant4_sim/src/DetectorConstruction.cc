@@ -2,6 +2,7 @@
 #include "G4Material.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
+#include "G4EllipticalTube.hh"
 #include "G4LogicalVolume.hh"
 #include "G4ThreeVector.hh"
 #include "G4PVPlacement.hh"
@@ -60,6 +61,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
+	CreateSrMask();
 	BuildIpBeamPipe();
 	BuildMagnets();
 	BuildIrBeamPipe();
@@ -113,7 +115,6 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	//- Extention
 	G4VSolid* beampipeExt_solid = new G4Tubs("beampipeExt_solid", 0, 
 		simPar->GetExtR(), simPar->GetExtL()/2, 0, 2.0 * M_PI);
-	G4LogicalVolume* beampipeExt_log = new G4LogicalVolume(beampipeExt_solid, mat_vac,"beampipeExt");
 
 	//- Union (beam pipe with an extention)
 	beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", 
@@ -121,6 +122,43 @@ void DetectorConstruction::CreateBeamPipeSolid()
 
 	//- Copy
 	beampipeVac_solid = beampipeUni_solid;
+
+	return;
+}
+
+void DetectorConstruction::CreateSrMask()
+{
+	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::BuildMagnets ==> Materials or beam pipe solids are not created\n");
+	}
+
+	G4VSolid* mask_vol = new G4Box("mask_vol",1.0 * m/2,1.0 * m/2,1.0 * cm /2);
+	G4VSolid* mask_ring = new G4Tubs("mask_ring", 0, 5.0 * cm, 1.0 * cm/2, 0, 2.0 * M_PI);
+
+	//- Cut out the mask profile from the vacuum beam pipe
+	G4double dz = 50.0 * cm;
+	G4double posZ = -2300.0 * cm + dz;
+	while(posZ < -1300.0 * cm - dz)
+	{
+		//- Vacuum (subtract the magnet volume from the beam pipe volume) and add a new pipe with the mask
+		beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+			beampipeVac_solid,mask_vol,0,G4ThreeVector(0,0,posZ));
+
+		//- Mask logic volume
+		G4LogicalVolume* mask_log = new G4LogicalVolume(mask_ring,mat_vac, "mask_log");
+		mask_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
+
+		//- Set tracking time limit in the volume
+		new G4PVPlacement(
+			0,G4ThreeVector(0.,0.,posZ),mask_log,"vac_mask",world_log,false,0,true);
+		G4VisAttributes* mask_vis = new G4VisAttributes(G4Color::Red());
+		mask_vis->SetVisibility(visibility);
+		mask_log->SetVisAttributes(mask_vis);
+
+		posZ += dz;
+	}	
 
 	return;
 }
