@@ -39,6 +39,9 @@
 #/vis/set/volumeForField mag_MARCO
 #/vis/scene/add/magneticField 20 fullArrow #lightArrow
 ##-----------------------------------------##
+#- Material scan
+#/control/matScan/scan
+##-----------------------------------------##
 
 /vis/scene/list
 /vis/drawTree
