@@ -134,31 +134,46 @@ void DetectorConstruction::CreateSrMask()
 		"[ERROR] DetectorConstruction::BuildMagnets ==> Materials or beam pipe solids are not created\n");
 	}
 
-	G4VSolid* mask_vol = new G4Box("mask_vol",1.0 * m/2,1.0 * m/2,1.0 * cm /2);
-	G4VSolid* mask_ring = new G4Tubs("mask_ring", 0, 5.0 * cm, 1.0 * cm/2, 0, 2.0 * M_PI);
+	//- mask-0
+	G4VSolid* mask0_vol = new G4Box("mask0_vol",1.0 * m/2,1.0 * m/2,1.0 * cm /2);
+	G4VSolid* mask0_ring = new G4Tubs("mask0_ring", 0, 5.0 * cm, 1.0 * cm/2, 0, 2.0 * M_PI);
 
-	//- Cut out the mask profile from the vacuum beam pipe
 	G4double dz = 50.0 * cm;
 	G4double posZ = -2300.0 * cm + dz;
 	while(posZ < -1300.0 * cm - dz)
 	{
-		//- Vacuum (subtract the magnet volume from the beam pipe volume) and add a new pipe with the mask
+		//- Vacuum (subtract the mask volume from the beam pipe volume) and add a new pipe with the mask
 		beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
-			beampipeVac_solid,mask_vol,0,G4ThreeVector(0,0,posZ));
+			beampipeVac_solid,mask0_vol,0,G4ThreeVector(0,0,posZ));
 
 		//- Mask logic volume
-		G4LogicalVolume* mask_log = new G4LogicalVolume(mask_ring,mat_vac, "mask_log");
-		mask_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
+		G4LogicalVolume* mask0_log = new G4LogicalVolume(mask0_ring,mat_vac, "mask0_log");
+		mask0_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
 
 		//- Set tracking time limit in the volume
 		new G4PVPlacement(
-			0,G4ThreeVector(0.,0.,posZ),mask_log,"vac_mask",world_log,false,0,true);
-		G4VisAttributes* mask_vis = new G4VisAttributes(G4Color::Red());
-		mask_vis->SetVisibility(visibility);
-		mask_log->SetVisAttributes(mask_vis);
+			0,G4ThreeVector(0.,0.,posZ),mask0_log,"vac_mask0",world_log,false,0,true);
+		G4VisAttributes* mask0_vis = new G4VisAttributes(G4Color::Red());
+		mask0_vis->SetVisibility(visibility);
+		mask0_log->SetVisAttributes(mask0_vis);
 
 		posZ += dz;
 	}	
+
+	//- mask-1
+	G4VSolid* mask1_ring = new G4Tubs("mask1_ring", 2.0 * cm, 4.0 * cm, 1.0 * cm/2, 0, 2.0 * M_PI);
+
+	posZ = -700.0 * cm;
+	while(posZ <= -550.0 * cm)
+	{
+		//- Vacuum (subtract the mask ring from the beam pipe)
+		beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+			beampipeVac_solid,mask1_ring,0,G4ThreeVector(0,0,posZ));
+		beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
+			beampipeUni_solid,mask1_ring,0,G4ThreeVector(0,0,posZ));
+
+		posZ += dz;
+	}
 
 	return;
 }
