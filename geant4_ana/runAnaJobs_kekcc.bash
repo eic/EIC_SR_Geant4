@@ -2,11 +2,11 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim' # input directory
+mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_srmask1_ultrahighstat' # input directory
 treeName='tree'
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana' # output directory
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_srmask1_ultrahighstat' # output directory
 buildDir='./build' # build directory
-nJobs=1000 # number of jobs
+nJobs=20000 # number of jobs
 queue='s'
 minZ=-67.0 # [cm] minimum Z
 maxZ=68.7 # [cm] maximum Z
@@ -26,6 +26,7 @@ echo "[INFO] maxZ = ${maxZ} [cm]"
 mkdir -pv ${outputDir}
 
 # build directory
+rm -rf ${buildDir}
 mkdir -pv ${buildDir}
 cd ${buildDir}
 
@@ -36,23 +37,20 @@ cmake ../
 # compile
 make -j4
 
+runID=0
 for jobID in $(seq 1 1 ${nJobs})
 do
-	# count how many jobs are pending, the maximum is 20000 jobs
-	nPend=$(bjobs | grep "PEND" | wc -l);
-	while [ $nPend -gt 19000 ]
-	do 
-		date
-		echo "[INFO] Waiting 10min for an empty slot to submit the next job to an LSF queue ..."
-		sleep 600
-		nPend=$(bjobs | grep "PEND" | wc -l)
-	done
-	
 	# submit a job
 	com="./exe ${mainInDir} output_${jobID}.root ${outputDir} output_ana_${jobID} ${treeName} ${minZ} ${maxZ}"
 	com="${com} &> ${outputDir}/logExe_ana_${jobID}.txt"
-	echo -ne "[INFO] ${com} => "
-	bsub -q $queue -o ${outputDir}/logJob_ana_${jobID}.txt "${com}"
+	echo "$com" >> run_${runID}.sh
+	jobID_tmp=$(($jobID % 100))
+	if [ $jobID_tmp -eq 0 ]; then
+		echo -ne "Run = ${runID} (last job = ${jobID}/${nJobs}): "
+		chmod a+x run_${runID}.sh
+		bsub -q $queue -o ${outputDir}/logRun_ana_${runID}.txt "./run_${runID}.sh"
+		runID=$(($runID+1))
+	fi	
 done
 
 cd -
