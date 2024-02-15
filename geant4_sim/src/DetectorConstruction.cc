@@ -61,22 +61,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
-	CreateSrMask();
+//	CreateSrMask();
 	BuildIpBeamPipe();
+	BuildFarBackwardBeamPipe();
 	BuildMagnets();
 	BuildIrBeamPipe();
-	BuildAbsorbers();
+//	BuildAbsorbers();
 
 	return world_phys;
-}
-
-void DetectorConstruction::BuildMaterials()
-{
-	G4NistManager* nistManager = G4NistManager::Instance();
-	//- Vacuum
-	mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic");
-
-	return;	
 }
 
 void DetectorConstruction::BuildWorld()
@@ -84,7 +76,7 @@ void DetectorConstruction::BuildWorld()
 	if(!mat_vac)
 	{
 		throw runtime_error(
-		"[ERROR] DetectorConstruction::CreateBeamPipeSolid ==> Materials are not created\n");
+		"[ERROR] DetectorConstruction::BuildWorld ==> Materials are not created\n");
 	}
 
    	G4Box* world_box = new G4Box("world",
@@ -131,7 +123,7 @@ void DetectorConstruction::CreateSrMask()
 	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid)
 	{
 		throw runtime_error(
-		"[ERROR] DetectorConstruction::BuildMagnets ==> Materials or beam pipe solids are not created\n");
+		"[ERROR] DetectorConstruction::CreateSrMask ==> Materials or beam pipe solids are not created\n");
 	}
 
 	//- mask-0
@@ -425,6 +417,236 @@ void DetectorConstruction::BuildIrBeamPipe()
 
 	return;
 }
+
+void DetectorConstruction::BuildFarBackwardBeamPipe()
+{
+	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::BuildFarBackwardBeamPipe ==> Materials or beam pipe solids are not created\n");
+	}
+
+	//- Feb 13, 2024
+	// The geometry and numbers are based on 	src/BackwardsTaggers_geo.cpp & 
+	//						compact/far_backward/taggers.xml & 
+	//						compact/far_backward/definitions.xml 
+
+	G4double Q3eR_InnerRadius = 0.05 * m;
+	G4double Q3eR_StartX = -0.460027 * m;
+	G4double Q3eR_StartZ = -37.696067 * m;
+	G4double Q3eR_EndZ = -38.295969 * m;
+	G4double Q3eR_Theta = 0.0180766389 * rad; 
+	G4bool addLumi = true;
+	G4double B2BeR_InnerRadius = 100.0 * mm;
+	G4double LumiWin_Zstart = -18.5 * m;
+	G4double LumiWin_R = 4.0 * cm;
+
+	G4double Exit_Width = B2BeR_InnerRadius;
+	G4double Exit_Height = B2BeR_InnerRadius;
+	G4double lumiZ = LumiWin_Zstart;
+	G4double Lumi_R = LumiWin_R;
+	G4double Beam_Theta = Q3eR_Theta; 
+	G4double WidthL = Q3eR_InnerRadius;
+	G4double WidthR = Q3eR_InnerRadius;
+	G4double Width = (WidthL + WidthR) / 2;
+	G4double Backwards_Box_Wall = 2.0 * mm;
+	G4double wall = Backwards_Box_Wall;
+	G4double Height = Q3eR_InnerRadius;
+	G4double Dipole_Focus_X = 0.0 * mm;
+	G4double Dipole_Focus_Y = 0.0 * mm;
+	G4double Dipole_Focus_Z = Q3eR_StartZ-Q3eR_StartX/tan(Beam_Theta);
+	G4double Thickness = (Dipole_Focus_Z-Q3eR_StartZ)/cos(Beam_Theta);
+	G4double off = Dipole_Focus_Z;
+
+	//- Make bounding box to make IntersectionSolid with other components
+	G4double Vacuum_BB_MinX = -2.5 * m;
+	G4double Vacuum_BB_MaxX = 0.5 * m;
+	G4double Vacuum_BB_MinY = -1.5 * m;
+	G4double Vacuum_BB_MaxY = 1.5 * m;
+	G4double Vacuum_BB_MinZ = -15 * m; //B2BeR_CenterPosition-B2BeR_Length/2;
+	G4double Vacuum_BB_MaxZ = Q3eR_EndZ;
+
+	G4double BB_MinX = Vacuum_BB_MinX;
+	G4double BB_MinY = Vacuum_BB_MinY;
+	G4double BB_MinZ = Vacuum_BB_MinZ;
+	G4double BB_MaxX = Vacuum_BB_MaxX;
+	G4double BB_MaxY = Vacuum_BB_MaxY;
+	G4double BB_MaxZ = Vacuum_BB_MaxZ;
+	G4double BB_X = abs(BB_MaxX - BB_MinX);
+	G4double BB_Y = abs(BB_MaxY - BB_MinY);
+	G4double BB_Z = abs(BB_MaxZ - BB_MinZ);
+	G4double exitDist = BB_MinZ - off;
+	G4double ED_X = Exit_Width;
+	G4double ED_Y = Exit_Height;
+	G4double ED_Z = off - lumiZ;
+
+ 	// Maximum theta to exit the dipole from
+	G4double Exit_Theta = 0.07 * rad;
+	G4double maxTheta = Exit_Theta;
+	G4double exitTheta = maxTheta;
+
+	//- Central pipe box
+	G4Box* Extended_Vacuum_Box = new G4Box("Extended_Vacuum_Box",Width, Height, Thickness); // Simpler box pipe
+	G4VSolid* Vacuum_Box = Extended_Vacuum_Box;
+
+  	//- Add Tagger box containers and vacuum box extension for modules
+	G4double Tagger1_Width = 147.84 * mm;
+	G4double Tagger2_Width = 147.84 * mm;
+	G4double Tagger1_Height = 200 * mm;
+	G4double Tagger2_Height = 150.0 * mm;
+	G4double Tag_Tracker_1_Depth = 305 * mm;
+	G4double Tag_Tracker_2_Depth = Tag_Tracker_1_Depth;
+	G4double Tagger1_Length = Tag_Tracker_1_Depth;
+	G4double Tagger2_Length = Tag_Tracker_2_Depth;
+	const G4int nModules = 2;
+	G4double Tagger1_Min_Theta = 0.0262 * rad;
+	G4double Tagger2_Min_Theta = 0.02 * rad;
+	G4double Tagger1_Min_Offset = Q3eR_InnerRadius;
+	G4double Tagger2_Min_Offset = Q3eR_InnerRadius+Backwards_Box_Wall;	
+
+	G4double offset_min[] = {Tagger1_Min_Offset,Tagger2_Min_Offset};
+	G4double theta_min[] = {Tagger1_Min_Theta,Tagger2_Min_Theta};
+	G4double theta_max[] = {0.030 * rad,Tagger1_Min_Theta};
+    	G4bool max_align[] = {false,true};
+    	G4bool extend_vacuum[] = {true,true};
+	// Size of the actual tagger box, replicated in BackwardsTagger
+    	G4double w[] = {Tagger1_Width/2,Tagger2_Width/2};
+    	G4double h[] = {Tagger1_Height/2,Tagger2_Height/2};
+    	G4double tagboxL[] = {Tagger1_Length,Tagger2_Length};
+    	// Overlap left beyond theta setting
+	G4double overlap[] = {0.0 * mm,Backwards_Box_Wall};
+
+	for(G4int iMod = 0; iMod < nModules; iMod++)
+	{
+    		// Offset from the electron beam
+    		G4double tagoff  = offset_min[iMod];
+
+    		// Theta coverage expected
+    		G4double thetamin = theta_min[iMod] - Beam_Theta;
+    		G4double thetamax = theta_max[iMod] - Beam_Theta;
+
+    		// Width and height of vacuum volume
+    		auto vac_w = w[iMod];
+    		auto vac_h = h[iMod];
+
+    		// Width and height of box volume
+    		auto box_w = w[iMod] + wall;
+    		auto box_h = h[iMod] + wall;
+
+    		// Angle in relation to the main beam
+    		auto theta = thetamin;
+
+    		auto offsetx = -(box_w - wall) * (cos(theta));
+    		auto offsetz = (box_w - wall) * (sin(theta));
+    		auto vacoffsetx = -vac_w * (cos(theta));
+    		auto vacoffsetz = vac_w * (sin(theta));
+    		auto l = (tagoff) / (sin(theta)) + tagboxL[iMod];
+
+    		auto tagoffsetx = vacoffsetx - (l) * sin(theta);
+    		auto tagoffsetz = vacoffsetz - (l) * cos(theta);
+
+    		// Align box to max or minimum theta expected at the tagger from focal point
+    		if(max_align[iMod]) 
+		{
+      			theta = thetamax;
+      			offsetx = (overlap[iMod]+box_w - wall) * (cos(theta));
+      			offsetz = -(overlap[iMod]+box_w - wall) * (sin(theta));
+      			vacoffsetx = (overlap[iMod]+vac_w) * (cos(theta));
+      			vacoffsetz = -(overlap[iMod]+vac_w) * (sin(theta));
+      			l = (2 * offsetx + tagoff) / sin(theta);
+      			tagoffsetx = vacoffsetx - (l) * sin(theta);
+      			tagoffsetz = vacoffsetz - (l) * cos(theta);
+    		}
+
+    		G4Box* TagWallBox = new G4Box("TagWallBox", box_w, box_h, l + wall);
+    		G4Box* TagVacBox = new G4Box("TagVacBox", vac_w, vac_h, l);
+
+		G4RotationMatrix* rot_Tag = new G4RotationMatrix();
+    		rot_Tag->rotateY(-theta); // opposite to eic-shell
+
+    		// Extend the beam vacuum around the taggers
+    		if(extend_vacuum[iMod]) 
+		{
+      			Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, TagVacBox, 
+				rot_Tag, G4ThreeVector(vacoffsetx, 0, vacoffsetz));
+    		}
+  	}
+
+	//- Cut off any vacuum right of the main beamline
+	G4double xbox = 10 * m;
+	G4double ybox = 10 * m;
+	G4double zbox = 50 * m;
+	G4Box* Cut_Box = new G4Box("Cut_Box",xbox, ybox, zbox);
+	Vacuum_Box = new G4IntersectionSolid("Vacuum_Box",Vacuum_Box, Cut_Box, 0, G4ThreeVector(-xbox + Width, 0, 0)); 
+
+	//- Luminosity connecting box
+	if(addLumi)
+	{
+    		G4Box* Entry_Vacuum_Box = new G4Box("Entry_Vacuum_Box",ED_X, ED_Y, ED_Z - wall);
+    		G4Tubs* Lumi_Exit = new G4Tubs("Lumi_Exit", 0, Lumi_R, ED_Z, 0, 2.0 * M_PI);
+
+		// Add entry boxes to the main beamline volume
+		G4RotationMatrix* rot_Lumi = new G4RotationMatrix();
+		rot_Lumi->rotateY(Beam_Theta); // opposite to eic-shell
+		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Entry_Vacuum_Box, rot_Lumi, G4ThreeVector(0,0,0));
+		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Lumi_Exit, rot_Lumi, G4ThreeVector(0,0,0));
+	}
+
+  	//- Restrict tagger boxes into region defined by exitTheta from the dipole magnet
+  	G4double cutX     = (ED_X - exitDist * tan(-Beam_Theta)) * cos(Beam_Theta);
+  	G4double cutZ     = (ED_X - exitDist * tan(-Beam_Theta)) * sin(Beam_Theta) + exitDist * cos(Beam_Theta);
+  	G4double cutXwall = (ED_X - wall - exitDist * tan(-Beam_Theta)) * cos(Beam_Theta);
+  	G4double cutZwall = (ED_X - wall - exitDist * tan(-Beam_Theta)) * sin(Beam_Theta) + exitDist * cos(Beam_Theta);
+
+	G4RotationMatrix* rot_Restrict = new G4RotationMatrix();
+	rot_Restrict->rotateY(-exitTheta); // opposite to eic-shell
+  	Vacuum_Box = new G4IntersectionSolid("Vacuum_Box", Vacuum_Box, Cut_Box, 
+		rot_Restrict, G4ThreeVector(xbox - cutXwall, 0, cutZwall));
+
+	//- Cut solids so they are only in the far backwards box 
+	G4Box* Far_Backwards_Box = new G4Box("Far_Backwards_Box", BB_X, BB_Y, BB_Z);
+
+	G4RotationMatrix* rotate2 = new G4RotationMatrix();
+	rotate2->rotateY(Beam_Theta); // opposite to eic-shell
+	G4ThreeVector position(0, 0, (exitDist - BB_Z) / cos(Beam_Theta)); 
+	G4VSolid* Vacuum_Box_solid = new G4IntersectionSolid("Vacuum_Box_Sub",Vacuum_Box, Far_Backwards_Box, 
+		rotate2, position);
+
+	//- Vacuum (subtract the far-backward volume)
+
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+		beampipeVac_solid,Far_Backwards_Box,0,G4ThreeVector(0,0,-(Vacuum_BB_MinZ - BB_Z)));
+	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
+		beampipeUni_solid,Far_Backwards_Box,0,G4ThreeVector(0,0,-(Vacuum_BB_MinZ - BB_Z)));
+
+	//- Place the far-beamline volume
+	G4RotationMatrix* xyRot = new G4RotationMatrix();
+	xyRot->rotateX(M_PI); // flip from eic-sheel to Geant4 coordinate system
+	xyRot->rotateZ(M_PI); // flip from eic-sheel to Geant4 coordinate system
+	xyRot->rotateY(-Beam_Theta); // opposite to eic-shell
+
+	G4LogicalVolume* Vacuum_Box_log = new G4LogicalVolume(Vacuum_Box_solid,mat_vac, "Vacuum_Box_log");
+	// set tracking time limit in the volume
+	Vacuum_Box_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
+
+	new G4PVPlacement(xyRot,G4ThreeVector(-Dipole_Focus_X,Dipole_Focus_Y,-Dipole_Focus_Z),
+		Vacuum_Box_log,"vac_Box",world_log,false,0,true);
+	G4VisAttributes* Vacuum_Box_vis = new G4VisAttributes(G4Color::Red());
+	Vacuum_Box_vis->SetVisibility(visibility);
+	Vacuum_Box_log->SetVisAttributes(Vacuum_Box_vis);
+
+	return;
+}
+
+void DetectorConstruction::BuildMaterials()
+{
+	G4NistManager* nistManager = G4NistManager::Instance();
+	//- Vacuum
+	mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic");
+
+	return;	
+}
+
 
 void DetectorConstruction::BuildAbsorbers()
 {
