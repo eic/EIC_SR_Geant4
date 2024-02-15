@@ -606,7 +606,7 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	Vacuum_Box = new G4IntersectionSolid("Vacuum_Box",Vacuum_Box, Cut_Box, 0, G4ThreeVector(-xbox + Width, 0, 0)); 
 
 	//- Luminosity connecting box
-	if(!addLumi)
+	if(addLumi)
 	{
     		G4Box* Entry_Vacuum_Box = new G4Box("Entry_Vacuum_Box",ED_X, ED_Y, ED_Z - wall);
     		G4Tubs* Lumi_Exit = new G4Tubs("Lumi_Exit", 0, Lumi_R, ED_Z, 0, 2.0 * M_PI);
