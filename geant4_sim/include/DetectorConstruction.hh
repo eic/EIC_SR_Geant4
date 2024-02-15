@@ -21,6 +21,7 @@ private:
 	SimParameters* simPar;
 	G4bool visibility; // components visibility
 	G4Material* mat_vac; // vacuum material
+	G4Material* mat_cop; // copper material
 	G4LogicalVolume* world_log; // world LV
 	G4VPhysicalVolume* world_phys; // world PV
 	G4VSolid* beampipeUni_solid; // beam pipe SV = original beam pipe + extension

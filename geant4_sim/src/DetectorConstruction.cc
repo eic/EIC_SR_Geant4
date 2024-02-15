@@ -62,10 +62,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildWorld();
 	CreateBeamPipeSolid();
 //	CreateSrMask();
-	BuildIpBeamPipe();
+//	BuildIpBeamPipe();
 	BuildFarBackwardBeamPipe();
-	BuildMagnets();
-	BuildIrBeamPipe();
+//	BuildMagnets();
+//	BuildIrBeamPipe();
 //	BuildAbsorbers();
 
 	return world_phys;
@@ -516,6 +516,15 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
     	// Overlap left beyond theta setting
 	G4double overlap[] = {0.0 * mm,Backwards_Box_Wall};
 
+	G4double tag_w[] = {Tagger1_Width/2,Tagger2_Width/2};
+	G4double tag_h[] = {Tagger1_Height/2,Tagger2_Height/2};
+	G4double layerZ[] = {0 * mm, 0 * mm};
+	G4double layerRot[] = {70 * deg, 70 * deg};
+	G4double layerThickness[] = {100 * um, 100 * um};
+
+	G4LogicalVolume* Foil_Box_log[100];
+
+	//- Loop over taggers 
 	for(G4int iMod = 0; iMod < nModules; iMod++)
 	{
     		// Offset from the electron beam
@@ -558,18 +567,35 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
       			tagoffsetz = vacoffsetz - (l) * cos(theta);
     		}
 
-    		G4Box* TagWallBox = new G4Box("TagWallBox", box_w, box_h, l + wall);
     		G4Box* TagVacBox = new G4Box("TagVacBox", vac_w, vac_h, l);
 
 		G4RotationMatrix* rot_Tag = new G4RotationMatrix();
     		rot_Tag->rotateY(-theta); // opposite to eic-shell
 
-    		// Extend the beam vacuum around the taggers
+    		//- Extend the beam vacuum around the taggers
     		if(extend_vacuum[iMod]) 
 		{
       			Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, TagVacBox, 
 				rot_Tag, G4ThreeVector(vacoffsetx, 0, vacoffsetz));
     		}
+
+		//- Make the tagger solid and subtract it from the vacuum solid
+		G4Box* Foil_Box = new G4Box("Foil_Box",
+			tag_w[iMod] / cos(layerRot[iMod]) - 0.5 * layerThickness[iMod] * tan(layerRot[iMod]), 
+			tag_h[iMod], 
+			layerThickness[iMod] / 2);
+		
+		G4RotationMatrix* rotation = new G4RotationMatrix();
+		rotation->rotateY(-layerRot[iMod]); // opposite to eic-shell
+
+		G4VSolid* Foil_Box_Sub = new G4IntersectionSolid("Foil_Box_Sub",TagVacBox,Foil_Box,
+			rotation,G4ThreeVector(0,0,-l + tagboxL[iMod] + tag_w[iMod] * tan(layerRot[iMod])));
+		G4VSolid* Foil_Box_Solid = new G4IntersectionSolid("Foil_Box_Solid",Vacuum_Box,Foil_Box_Sub,
+			rot_Tag,G4ThreeVector(vacoffsetx, 0, vacoffsetz));
+		Vacuum_Box = new G4SubtractionSolid("Vacuum_Box",Vacuum_Box,Foil_Box_Solid,0,G4ThreeVector(0,0,0));
+
+		Foil_Box_log[iMod] = new G4LogicalVolume(Foil_Box_Solid,mat_cop,
+			"TaggerFoil_" + std::to_string(iMod));
   	}
 
 	//- Cut off any vacuum right of the main beamline
@@ -580,7 +606,7 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	Vacuum_Box = new G4IntersectionSolid("Vacuum_Box",Vacuum_Box, Cut_Box, 0, G4ThreeVector(-xbox + Width, 0, 0)); 
 
 	//- Luminosity connecting box
-	if(addLumi)
+	if(!addLumi)
 	{
     		G4Box* Entry_Vacuum_Box = new G4Box("Entry_Vacuum_Box",ED_X, ED_Y, ED_Z - wall);
     		G4Tubs* Lumi_Exit = new G4Tubs("Lumi_Exit", 0, Lumi_R, ED_Z, 0, 2.0 * M_PI);
@@ -613,7 +639,6 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 		rotate2, position);
 
 	//- Vacuum (subtract the far-backward volume)
-
 	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
 		beampipeVac_solid,Far_Backwards_Box,0,G4ThreeVector(0,0,-(Vacuum_BB_MinZ - BB_Z)));
 	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
@@ -635,6 +660,13 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	Vacuum_Box_vis->SetVisibility(visibility);
 	Vacuum_Box_log->SetVisAttributes(Vacuum_Box_vis);
 
+	//- Place tagger
+	for(G4int iMod = 0; iMod < nModules; iMod++)
+	{
+		new G4PVPlacement(xyRot,G4ThreeVector(-Dipole_Focus_X,Dipole_Focus_Y,-Dipole_Focus_Z),Foil_Box_log[iMod],
+			"TaggerFoil_" + std::to_string(iMod),world_log,false,0,true);
+	}
+
 	return;
 }
 
@@ -643,6 +675,8 @@ void DetectorConstruction::BuildMaterials()
 	G4NistManager* nistManager = G4NistManager::Instance();
 	//- Vacuum
 	mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic");
+	//- Copper
+	mat_cop = nistManager->FindOrBuildMaterial("G4_Cu");
 
 	return;	
 }
