@@ -421,7 +421,7 @@ void DetectorConstruction::BuildIrBeamPipe()
 
 void DetectorConstruction::BuildFarBackwardBeamPipe()
 {
-	if(!mat_vac || !mat_cop || !beampipeVac_solid || !beampipeUni_solid || !world_box || !world_log)
+	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_box || !world_log)
 	{
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::BuildFarBackwardBeamPipe ==> Materials, beam pipe/world solids, or world LV are not created\n");
@@ -611,8 +611,10 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 		//- Add entry boxes to the main beamline volume
 		G4RotationMatrix* rot_Lumi = new G4RotationMatrix();
 		rot_Lumi->rotateY(Beam_Theta); // opposite to eic-shell
-		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Entry_Vacuum_Box, rot_Lumi, G4ThreeVector(0,0,0));
-		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Lumi_Exit, rot_Lumi, G4ThreeVector(0,0,0));
+		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Entry_Vacuum_Box, 
+			rot_Lumi, G4ThreeVector(0,0,0));
+		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Lumi_Exit, 
+			rot_Lumi, G4ThreeVector(0,0,0));
 	}
 
   	//- Restrict tagger boxes into region defined by exitTheta from the dipole magnet
@@ -660,10 +662,10 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	//- Place tagger inside the vacuum (mother volume)
 	for(G4int iMod = 0; iMod < nModules; iMod++)
 	{
-		G4LogicalVolume* Foil_Box_log = new G4LogicalVolume(Foil_Box_Solid[iMod],mat_cop,
+		G4LogicalVolume* Foil_Box_log = new G4LogicalVolume(Foil_Box_Solid[iMod],mat_vac,
 			"TaggerFoil_" + std::to_string(iMod));
 		new G4PVPlacement(0,G4ThreeVector(0,0,0),Foil_Box_log,
-			"TaggerFoil_" + std::to_string(iMod),Vacuum_Box_log,false,0,true);
+			"vac_TaggerFoil_" + std::to_string(iMod),Vacuum_Box_log,false,0,true);
 		G4VisAttributes* Foil_Box_vis = new G4VisAttributes(G4Color::Yellow());
 		Foil_Box_vis->SetVisibility(visibility);
 		Foil_Box_log->SetVisAttributes(Foil_Box_vis);
@@ -672,12 +674,26 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	//- Place Lumi Exit Window
 	if(addLumi)
 	{
-		G4Box* LumiExitWindow_tub = new G4Box("LumiExitWindow_tub", Lumi_R * 1.1, Lumi_R * 1.1, 10 * mm); 
-		auto LumiExitWindow_Solid = new G4SubtractionSolid("LumiExitWindow_Solid",LumiExitWindow_tub,Vacuum_Box_solid,
-			xyzRot,G4ThreeVector(0,0,-(ED_Z + 10 * mm - 1 * mm)));
-		G4LogicalVolume* LumiExitWindow_log = new G4LogicalVolume(LumiExitWindow_Solid,mat_alu,"LumiExitWindow_log");
-		new G4PVPlacement(0,G4ThreeVector(-Dipole_Focus_X,Dipole_Focus_Y,-Dipole_Focus_Z + (ED_Z + 10 * mm - 1 * mm)),
-			LumiExitWindow_log,"LumiExitWindow_log",world_log,false,0,true);
+		G4double LumiExitWindowVac_thickness = 10.0 * mm;
+		G4double LumiExitWindowVac_width = 100.0 * mm;
+    		G4Box* LumiExitWindow_Solid = new G4Box("LumiExitWindow_Solid", 
+			LumiExitWindowVac_width/2.,
+			LumiExitWindowVac_width/2., 
+			LumiExitWindowVac_thickness/2.);
+		G4LogicalVolume* LumiExitWindow_log = new G4LogicalVolume(LumiExitWindow_Solid,mat_vac,
+			"LumiExitWindow_log");
+		// set tracking time limit in the volume
+		LumiExitWindow_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
+
+		new G4PVPlacement(0,
+			G4ThreeVector(	-Dipole_Focus_X,
+					 Dipole_Focus_Y,
+					-Dipole_Focus_Z + (ED_Z + LumiExitWindowVac_thickness/2.)),
+			LumiExitWindow_log,"vac_LumiExitWindow",world_log,false,0,true);
+
+		G4VisAttributes* LumiExitWindow_vis = new G4VisAttributes(G4Color::Yellow());
+		LumiExitWindow_vis->SetVisibility(visibility);
+		LumiExitWindow_log->SetVisAttributes(LumiExitWindow_vis);
 	}
 
 	return;
@@ -688,10 +704,6 @@ void DetectorConstruction::BuildMaterials()
 	G4NistManager* nistManager = G4NistManager::Instance();
 	//- Vacuum
 	mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic");
-	//- Copper
-	mat_cop = nistManager->FindOrBuildMaterial("G4_Cu");
-	//- Aluminum
-	mat_alu = nistManager->FindOrBuildMaterial("G4_Al");
 
 	return;	
 }

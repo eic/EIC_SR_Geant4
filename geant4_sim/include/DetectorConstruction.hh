@@ -21,8 +21,6 @@ private:
 	SimParameters* simPar;
 	G4bool visibility; // components visibility
 	G4Material* mat_vac; // vacuum material
-	G4Material* mat_cop; // copper material
-	G4Material* mat_alu; // aluminum material
 	G4VSolid* world_box; // world SV
 	G4LogicalVolume* world_log; // world LV
 	G4VPhysicalVolume* world_phys; // world PV
