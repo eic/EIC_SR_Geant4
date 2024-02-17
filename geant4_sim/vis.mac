@@ -39,6 +39,9 @@
 #/vis/set/volumeForField mag_MARCO
 #/vis/scene/add/magneticField 20 fullArrow #lightArrow
 ##-----------------------------------------##
+#- Draws logical volume with additional components
+#/vis/drawLogicalVolume LumiExitWindow_log
+##-----------------------------------------##
 #- Material scan
 #/control/matScan/scan
 ##-----------------------------------------##

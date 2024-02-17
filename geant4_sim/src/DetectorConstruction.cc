@@ -603,22 +603,16 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	Vacuum_Box = new G4IntersectionSolid("Vacuum_Box",Vacuum_Box, Cut_Box, 0, G4ThreeVector(-xbox + Width, 0, 0)); 
 
 	//- Luminosity connecting box
-	G4VSolid* LumiExitWindow_Solid;
 	if(addLumi)
 	{
     		G4Box* Entry_Vacuum_Box = new G4Box("Entry_Vacuum_Box",ED_X, ED_Y, ED_Z - wall);
-    		G4Tubs* Lumi_Exit = new G4Tubs("Lumi_Exit", 0, Lumi_R, ED_Z + 5 * mm, 0, 2.0 * M_PI);
+    		G4Tubs* Lumi_Exit = new G4Tubs("Lumi_Exit", 0, Lumi_R, ED_Z, 0, 2.0 * M_PI);
 
 		//- Add entry boxes to the main beamline volume
 		G4RotationMatrix* rot_Lumi = new G4RotationMatrix();
 		rot_Lumi->rotateY(Beam_Theta); // opposite to eic-shell
 		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Entry_Vacuum_Box, rot_Lumi, G4ThreeVector(0,0,0));
 		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Lumi_Exit, rot_Lumi, G4ThreeVector(0,0,0));
-
- 		//G4Tubs* LumiExitWindow_tub = new G4Tubs("LumiExitWindow_tub", 0, Lumi_R * 0.8, 1 * mm, 0, 2.0 * M_PI); 
- 		G4Box* LumiExitWindow_tub = new G4Box("LumiExitWindow_tub", Lumi_R * 1.1, Lumi_R * 1.1, 1 * mm); 
-		LumiExitWindow_Solid = new G4IntersectionSolid("LumiExitWindow_Solid",Vacuum_Box,LumiExitWindow_tub,
-			rot_Lumi,G4ThreeVector((ED_Z + 1 * mm)*sin(Beam_Theta),0,-(ED_Z + 1 * mm)));
 	}
 
   	//- Restrict tagger boxes into region defined by exitTheta from the dipole magnet
@@ -676,9 +670,15 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	}
 
 	//- Place Lumi Exit Window
-	G4LogicalVolume* LumiExitWindow_log = new G4LogicalVolume(LumiExitWindow_Solid,mat_alu,"LumiExitWindow_log");
-	new G4PVPlacement(0,G4ThreeVector(0,0,0),
-		LumiExitWindow_log,"LumiExitWindow_log",Vacuum_Box_log,false,0,true);
+	if(addLumi)
+	{
+		G4Box* LumiExitWindow_tub = new G4Box("LumiExitWindow_tub", Lumi_R * 1.1, Lumi_R * 1.1, 10 * mm); 
+		auto LumiExitWindow_Solid = new G4SubtractionSolid("LumiExitWindow_Solid",LumiExitWindow_tub,Vacuum_Box_solid,
+			xyzRot,G4ThreeVector(0,0,-(ED_Z + 10 * mm - 1 * mm)));
+		G4LogicalVolume* LumiExitWindow_log = new G4LogicalVolume(LumiExitWindow_Solid,mat_alu,"LumiExitWindow_log");
+		new G4PVPlacement(0,G4ThreeVector(-Dipole_Focus_X,Dipole_Focus_Y,-Dipole_Focus_Z + (ED_Z + 10 * mm - 1 * mm)),
+			LumiExitWindow_log,"LumiExitWindow_log",world_log,false,0,true);
+	}
 
 	return;
 }
