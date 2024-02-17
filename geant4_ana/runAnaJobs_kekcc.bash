@@ -2,14 +2,14 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_srmask1_ultrahighstat' # input directory
+mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_nosrmask_ultrahighstat' # input directory
 treeName='tree'
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_srmask1_ultrahighstat' # output directory
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_nosrmask_ultrahighstat' # output directory
 buildDir='./build' # build directory
-nJobs=20000 # number of jobs
-queue='s'
-minZ=-67.0 # [cm] minimum Z
-maxZ=68.7 # [cm] maximum Z
+nJobs=100000 # number of jobs
+queue='l'
+minZ=-65.0 # [cm] minimum Z
+maxZ=65.0 # [cm] maximum Z
 #--------------------------------------------------#
 #--------------------------------------------------#
 

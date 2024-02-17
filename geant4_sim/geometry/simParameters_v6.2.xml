@@ -119,7 +119,7 @@
 		</absorber>
 	</absorbers>
 
-	<!-- magnet parameters: from survey_ir_6m.tfs and ir6forward.18GeV.twi (Sep. 2023) -->
+	<!-- magnet parameters: from esr-survey-doug.tfs and esr-ring-norad.tfs (2IR, 18 GeV, Jan. 2024) -->
 	<!-- for the start position of the magnets use the end position for the previous element in the lattice -->
 	<!-- TWISS ANGLE < 0 -> GEANT4 ANGLE > 0  and TWISS K1L < 0 -> GEANT4 K1L > 0 -->
 	<!-- detector solenoid data based on: https://wiki.bnl.gov/EPIC/index.php?title=Experimental_Solenoid -->

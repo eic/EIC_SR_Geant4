@@ -31,10 +31,10 @@ void drawHistograms(const string filename);
 
 vector<string> _fileNames;
 
-void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3/", 
+void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_ultrahighstat/", 
 			const string pattern = ".podio", 
 			const string extension = ".root", 
-			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_plotVertices.root")
+			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_ultrahighstat_plotVertices.root")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 

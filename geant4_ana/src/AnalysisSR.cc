@@ -136,14 +136,17 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	h1_posy = new TH1D("h1_posy_g4","SR photon position Y; Y_{#gamma} [cm];Flux [ph/s]",20000,-10,10);
 	h1_posz = new TH1D("h1_posz_g4","SR photon position Z; Z_{#gamma} [cm];Flux [ph/s]",20000,-100,100);
 	h1_ene_dirx = 
-	new TH2D("h1_ene_dirx_g4","SR photon energy vs momDir X;Px_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
-	4e3,-2,2,4e3,0,40e3);
+		new TH2D("h1_ene_dirx_g4",
+		"SR photon energy vs momDir X;Px_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
+		4e3,-2,2,4e3,0,40e3);
 	h1_ene_diry = 
-	new TH2D("h1_ene_diry_g4","SR photon energy vs momDir Y;Py_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
-	4e3,-2,2,4e3,0,40e3);
+		new TH2D("h1_ene_diry_g4",
+		"SR photon energy vs momDir Y;Py_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
+		4e3,-2,2,4e3,0,40e3);
 	h1_ene_dirz = 
-	new TH2D("h1_ene_dirz_g4","SR photon energy vs momDir Z;Pz_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
-	4e3,-2,2,4e3,0,40e3);
+		new TH2D("h1_ene_dirz_g4",
+		"SR photon energy vs momDir Z;Pz_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
+		4e3,-2,2,4e3,0,40e3);
 
 	return;
 }
@@ -191,8 +194,13 @@ void AnalysisSR::Loop()
 		{
 			// for benchmark/debug
 //			if(	-3350.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < -2350.0 &&
-//				gammaPosX_cm->at(i) < -4.925)
-			if(	-67.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < 68.69231	)
+//				gammaPosX_cm->at(i) < -4.925) // two facets 28755 28756
+//			if(	-67.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < 68.69231 &&
+//				2.684679 < gammaPosX_cm->at(i) && gammaPosX_cm->at(i) < 2.913047 &&
+//				-1.55 < gammaPosY_cm->at(i) && gammaPosY_cm->at(i) < -1.060262 &&
+//				gammaEnergy_eV->at(i) > 10000.0) // IP facet 26455
+//			if(	-67.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < 68.69231	) // IP beam pipe
+			if(	-65.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < 65.0	) // around the IP
 			{
 				h1_ene->Fill(gammaEnergy_eV->at(i));
 				h1_dirx->Fill(gammaMomX_eV->at(i)/gammaEnergy_eV->at(i));
@@ -211,6 +219,7 @@ void AnalysisSR::Loop()
 			
 			// geometry cut for SR photons
 			if(gammaPosZ_cm->at(i) < _minZ || _maxZ < gammaPosZ_cm->at(i)){continue;} 
+
 			//---------------------------------------------------------------------------
 			// fill histograms
 
@@ -239,19 +248,18 @@ void AnalysisSR::Loop()
 			energy = gammaEnergy_eV->at(i)/1e9; // eV -> GeV
 			pdg = 22; // gamma
 
-			// flip PxPz coordinates from Geant4 to EIC
-			pinx = (-1)*energy*x/TMath::Sqrt(x*x+y*y+z*z);
-			piny = ( 1)*energy*y/TMath::Sqrt(x*x+y*y+z*z);
-			pinz = (-1)*energy*z/TMath::Sqrt(x*x+y*y+z*z);
+			pinx = energy*x/TMath::Sqrt(x*x+y*y+z*z);
+			piny = energy*y/TMath::Sqrt(x*x+y*y+z*z);
+			pinz = energy*z/TMath::Sqrt(x*x+y*y+z*z);
 
-		    	// particles going into the vertex: 
+			// particles going into the vertex: 
 			// (px,py,pz,e),pdgid,status [https://arxiv.org/pdf/1912.08005.pdf]
 			GenParticlePtr pin = make_shared<GenParticle>( 
 					FourVector(pinx,piny,pinz,energy),pdg,4);	
 			pin->set_generated_mass(0.);
 			event.add_particle(pin);
 
-		    	// particles coming out of the vertex
+			// particles coming out of the vertex
 			GenParticlePtr pout = make_shared<GenParticle>( 
 					FourVector(px,py,pz,energy),pdg,1);	
 			pout->set_generated_mass(0.);
@@ -260,7 +268,7 @@ void AnalysisSR::Loop()
 			// generate the vertex
 			GenVertexPtr vertex = make_shared<GenVertex>(FourVector(x,y,z,0.));
 			vertex->add_particle_in(pin);
-    			vertex->add_particle_out(pout);
+			vertex->add_particle_out(pout);
 
 			// add the vertex to the event
 			event.add_vertex(vertex);

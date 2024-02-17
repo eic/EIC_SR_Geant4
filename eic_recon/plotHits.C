@@ -33,13 +33,13 @@ Double_t getBeamCoreTailRatio(TString type = "core");
 vector<string> _fileNames;
 
 const Double_t BeamCurrent_A = 0.227; // [A]
-const Double_t nElectrons_geant4 = 1e8;
+const Double_t nElectrons_geant4 = 100000.0 * 10000.0;
 const Int_t subDetNum = 11;
 
-void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3/",
+void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_ultrahighstat_tmp/",
 		const string pattern = ".hist",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_3_plotHits.root")
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_ultrahighstat_tmp_plotHits.root")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-- get data from eic-shell output data 
