@@ -40,6 +40,7 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 
 	visibility = true;
 	mat_vac = nullptr;
+	world_box = nullptr;
 	world_log = nullptr;
 	world_phys = nullptr;
 	beampipeUni_solid = nullptr;
@@ -79,7 +80,7 @@ void DetectorConstruction::BuildWorld()
 		"[ERROR] DetectorConstruction::BuildWorld ==> Materials are not created\n");
 	}
 
-   	G4Box* world_box = new G4Box("world",
+   	world_box = new G4Box("world",
                                  simPar->GetWorldSizeX()/2,
                                  simPar->GetWorldSizeY()/2,
                                  simPar->GetWorldSizeZ()/2);
@@ -120,10 +121,10 @@ void DetectorConstruction::CreateBeamPipeSolid()
 
 void DetectorConstruction::CreateSrMask()
 {
-	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid)
+	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_log)
 	{
 		throw runtime_error(
-		"[ERROR] DetectorConstruction::CreateSrMask ==> Materials or beam pipe solids are not created\n");
+		"[ERROR] DetectorConstruction::CreateSrMask ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
 
 	//- mask-0
@@ -172,10 +173,10 @@ void DetectorConstruction::CreateSrMask()
 
 void DetectorConstruction::BuildMagnets()
 {
-	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid)
+	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_log)
 	{
 		throw runtime_error(
-		"[ERROR] DetectorConstruction::BuildMagnets ==> Materials or beam pipe solids are not created\n");
+		"[ERROR] DetectorConstruction::BuildMagnets ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
 	// Particles
 	BuildParticles();
@@ -371,10 +372,10 @@ void DetectorConstruction::BuildParticles()
 
 void DetectorConstruction::BuildIpBeamPipe()
 {
-	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid)
+	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_log)
 	{
 		throw runtime_error(
-		"[ERROR] DetectorConstruction::BuildIpBeamPipe ==> Materials or beam pipe solids are not created\n");
+		"[ERROR] DetectorConstruction::BuildIpBeamPipe ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
 
 	//- IP beam pipe
@@ -399,10 +400,10 @@ void DetectorConstruction::BuildIpBeamPipe()
 
 void DetectorConstruction::BuildIrBeamPipe()
 {
-	if(!mat_vac || !beampipeVac_solid)
+	if(!mat_vac || !beampipeVac_solid || !world_log)
 	{
 		throw runtime_error(
-		"[ERROR] DetectorConstruction::BuildIrBeamPipe ==> Materials or beam pipe solids are not created\n");
+		"[ERROR] DetectorConstruction::BuildIrBeamPipe ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
 
 	//- Vacuum (place the beam pipe without magnet and IP volumes) 
@@ -420,10 +421,10 @@ void DetectorConstruction::BuildIrBeamPipe()
 
 void DetectorConstruction::BuildFarBackwardBeamPipe()
 {
-	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid)
+	if(!mat_vac || !mat_cop || !beampipeVac_solid || !beampipeUni_solid || !world_box || !world_log)
 	{
 		throw runtime_error(
-		"[ERROR] DetectorConstruction::BuildFarBackwardBeamPipe ==> Materials or beam pipe solids are not created\n");
+		"[ERROR] DetectorConstruction::BuildFarBackwardBeamPipe ==> Materials, beam pipe/world solids, or world LV are not created\n");
 	}
 
 	//- Feb 13, 2024
@@ -522,7 +523,7 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	G4double layerRot[] = {70 * deg, 70 * deg};
 	G4double layerThickness[] = {100 * um, 100 * um};
 
-	G4LogicalVolume* Foil_Box_log[100];
+	G4VSolid* Foil_Box_Solid[100];
 
 	//- Loop over taggers 
 	for(G4int iMod = 0; iMod < nModules; iMod++)
@@ -590,13 +591,9 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 
 		G4VSolid* Foil_Box_Sub = new G4IntersectionSolid("Foil_Box_Sub",TagVacBox,Foil_Box,
 			rotation,G4ThreeVector(0,0,-l + tagboxL[iMod] + tag_w[iMod] * tan(layerRot[iMod])));
-		G4VSolid* Foil_Box_Solid = new G4IntersectionSolid("Foil_Box_Solid",Vacuum_Box,Foil_Box_Sub,
-			rot_Tag,G4ThreeVector(vacoffsetx, 0, vacoffsetz));
-		Vacuum_Box = new G4SubtractionSolid("Vacuum_Box",Vacuum_Box,Foil_Box_Solid,0,G4ThreeVector(0,0,0));
-
-		Foil_Box_log[iMod] = new G4LogicalVolume(Foil_Box_Solid,mat_cop,
-			"TaggerFoil_" + std::to_string(iMod));
-  	}
+		Foil_Box_Solid[iMod] = new G4IntersectionSolid("Foil_Box_Solid_" + std::to_string(iMod),
+			Vacuum_Box,Foil_Box_Sub, rot_Tag,G4ThreeVector(vacoffsetx, 0, vacoffsetz));
+	}
 
 	//- Cut off any vacuum right of the main beamline
 	G4double xbox = 10 * m;
@@ -606,16 +603,22 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	Vacuum_Box = new G4IntersectionSolid("Vacuum_Box",Vacuum_Box, Cut_Box, 0, G4ThreeVector(-xbox + Width, 0, 0)); 
 
 	//- Luminosity connecting box
+	G4VSolid* LumiExitWindow_Solid;
 	if(addLumi)
 	{
     		G4Box* Entry_Vacuum_Box = new G4Box("Entry_Vacuum_Box",ED_X, ED_Y, ED_Z - wall);
-    		G4Tubs* Lumi_Exit = new G4Tubs("Lumi_Exit", 0, Lumi_R, ED_Z, 0, 2.0 * M_PI);
+    		G4Tubs* Lumi_Exit = new G4Tubs("Lumi_Exit", 0, Lumi_R, ED_Z + 5 * mm, 0, 2.0 * M_PI);
 
-		// Add entry boxes to the main beamline volume
+		//- Add entry boxes to the main beamline volume
 		G4RotationMatrix* rot_Lumi = new G4RotationMatrix();
 		rot_Lumi->rotateY(Beam_Theta); // opposite to eic-shell
 		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Entry_Vacuum_Box, rot_Lumi, G4ThreeVector(0,0,0));
 		Vacuum_Box = new G4UnionSolid("Vacuum_Box", Vacuum_Box, Lumi_Exit, rot_Lumi, G4ThreeVector(0,0,0));
+
+ 		//G4Tubs* LumiExitWindow_tub = new G4Tubs("LumiExitWindow_tub", 0, Lumi_R * 0.8, 1 * mm, 0, 2.0 * M_PI); 
+ 		G4Box* LumiExitWindow_tub = new G4Box("LumiExitWindow_tub", Lumi_R * 1.1, Lumi_R * 1.1, 1 * mm); 
+		LumiExitWindow_Solid = new G4IntersectionSolid("LumiExitWindow_Solid",Vacuum_Box,LumiExitWindow_tub,
+			rot_Lumi,G4ThreeVector((ED_Z + 1 * mm)*sin(Beam_Theta),0,-(ED_Z + 1 * mm)));
 	}
 
   	//- Restrict tagger boxes into region defined by exitTheta from the dipole magnet
@@ -645,27 +648,37 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 		beampipeUni_solid,Far_Backwards_Box,0,G4ThreeVector(0,0,-(Vacuum_BB_MinZ - BB_Z)));
 
 	//- Place the far-beamline volume
-	G4RotationMatrix* xyRot = new G4RotationMatrix();
-	xyRot->rotateX(M_PI); // flip from eic-sheel to Geant4 coordinate system
-	xyRot->rotateZ(M_PI); // flip from eic-sheel to Geant4 coordinate system
-	xyRot->rotateY(-Beam_Theta); // opposite to eic-shell
+	G4RotationMatrix* xyzRot = new G4RotationMatrix();
+	xyzRot->rotateX(M_PI); // flip from eic-sheel to Geant4 coordinate system
+	xyzRot->rotateZ(M_PI); // flip from eic-sheel to Geant4 coordinate system
+	xyzRot->rotateY(-Beam_Theta); // opposite to eic-shell
 
 	G4LogicalVolume* Vacuum_Box_log = new G4LogicalVolume(Vacuum_Box_solid,mat_vac, "Vacuum_Box_log");
 	// set tracking time limit in the volume
 	Vacuum_Box_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
 
-	new G4PVPlacement(xyRot,G4ThreeVector(-Dipole_Focus_X,Dipole_Focus_Y,-Dipole_Focus_Z),
-		Vacuum_Box_log,"vac_Box",world_log,false,0,true);
+	new G4PVPlacement(xyzRot,G4ThreeVector(-Dipole_Focus_X,Dipole_Focus_Y,-Dipole_Focus_Z),
+		Vacuum_Box_log,"vac_FarBackwardBeampipe",world_log,false,0,true);
 	G4VisAttributes* Vacuum_Box_vis = new G4VisAttributes(G4Color::Red());
 	Vacuum_Box_vis->SetVisibility(visibility);
 	Vacuum_Box_log->SetVisAttributes(Vacuum_Box_vis);
 
-	//- Place tagger
+	//- Place tagger inside the vacuum (mother volume)
 	for(G4int iMod = 0; iMod < nModules; iMod++)
 	{
-		new G4PVPlacement(xyRot,G4ThreeVector(-Dipole_Focus_X,Dipole_Focus_Y,-Dipole_Focus_Z),Foil_Box_log[iMod],
-			"TaggerFoil_" + std::to_string(iMod),world_log,false,0,true);
+		G4LogicalVolume* Foil_Box_log = new G4LogicalVolume(Foil_Box_Solid[iMod],mat_cop,
+			"TaggerFoil_" + std::to_string(iMod));
+		new G4PVPlacement(0,G4ThreeVector(0,0,0),Foil_Box_log,
+			"TaggerFoil_" + std::to_string(iMod),Vacuum_Box_log,false,0,true);
+		G4VisAttributes* Foil_Box_vis = new G4VisAttributes(G4Color::Yellow());
+		Foil_Box_vis->SetVisibility(visibility);
+		Foil_Box_log->SetVisAttributes(Foil_Box_vis);
 	}
+
+	//- Place Lumi Exit Window
+	G4LogicalVolume* LumiExitWindow_log = new G4LogicalVolume(LumiExitWindow_Solid,mat_alu,"LumiExitWindow_log");
+	new G4PVPlacement(0,G4ThreeVector(0,0,0),
+		LumiExitWindow_log,"LumiExitWindow_log",Vacuum_Box_log,false,0,true);
 
 	return;
 }
@@ -677,6 +690,8 @@ void DetectorConstruction::BuildMaterials()
 	mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic");
 	//- Copper
 	mat_cop = nistManager->FindOrBuildMaterial("G4_Cu");
+	//- Aluminum
+	mat_alu = nistManager->FindOrBuildMaterial("G4_Al");
 
 	return;	
 }
@@ -684,10 +699,10 @@ void DetectorConstruction::BuildMaterials()
 
 void DetectorConstruction::BuildAbsorbers()
 {
-	if(!mat_vac || !beampipeUni_solid)
+	if(!mat_vac || !beampipeUni_solid || !world_log)
 	{
 		throw runtime_error(
-		"[ERROR] DetectorConstruction::BuildAbsorbers ==> Materials or beam pipe solids are not created\n");
+		"[ERROR] DetectorConstruction::BuildAbsorbers ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
 
 	//- Absorbers
