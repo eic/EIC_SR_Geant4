@@ -439,6 +439,9 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	G4double Q3eR_Theta = 0.0180766389 * rad; 
 	G4bool addLumi = true;
 	G4double B2BeR_InnerRadius = 100.0 * mm;
+	G4double B2BeR_Edge = 5.0 * mm; // to avoid overlap between B2BeR and far-backward beampipe
+	G4double B2BeR_Length = 5.500075391000 * m;
+	G4double B2BeR_CenterPosition = -15.000075390000 * m + B2BeR_Length / 2;
 	G4double LumiWin_Zstart = -18.5 * m;
 	G4double LumiWin_R = 4.0 * cm;
 
@@ -464,7 +467,7 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	G4double Vacuum_BB_MaxX = 0.5 * m;
 	G4double Vacuum_BB_MinY = -1.5 * m;
 	G4double Vacuum_BB_MaxY = 1.5 * m;
-	G4double Vacuum_BB_MinZ = -15 * m; //B2BeR_CenterPosition-B2BeR_Length/2;
+	G4double Vacuum_BB_MinZ = B2BeR_CenterPosition - B2BeR_Length/2 - B2BeR_Edge;
 	G4double Vacuum_BB_MaxZ = Q3eR_EndZ;
 
 	G4double BB_MinX = Vacuum_BB_MinX;
@@ -640,8 +643,6 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	//- Vacuum (subtract the far-backward volume)
 	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
 		beampipeVac_solid,Far_Backwards_Box,0,G4ThreeVector(0,0,-(Vacuum_BB_MinZ - BB_Z)));
-	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
-		beampipeUni_solid,Far_Backwards_Box,0,G4ThreeVector(0,0,-(Vacuum_BB_MinZ - BB_Z)));
 
 	//- Place the far-beamline volume
 	G4RotationMatrix* xyzRot = new G4RotationMatrix();

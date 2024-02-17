@@ -123,7 +123,7 @@
 	<!-- for the start position of the magnets use the end position for the previous element in the lattice -->
 	<!-- TWISS ANGLE < 0 -> GEANT4 ANGLE > 0  and TWISS K1L < 0 -> GEANT4 K1L > 0 -->
 	<!-- detector solenoid data based on: https://wiki.bnl.gov/EPIC/index.php?title=Experimental_Solenoid -->
-	<!-- list the magnets, starting with the farthest element w.r.t. the IP -->
+	<!-- list the magnets, then solenoid, and IP -->
 	<magnets>
 		<magnet>
 			<sec desc="magnet name" name="name">D2EF1</sec>
@@ -189,6 +189,45 @@
 			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">5.801989950473</sec>
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
 			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.261830778000</sec>
+		</magnet>
+		<magnet>
+			<sec desc="magnet name" name="name">Q1ER</sec>
+			<sec desc="magnet type" name="type">Q-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">1.800000000000</sec>
+			<sec desc="start position X in a global ref. system" name="posx1" unit="m">-589.814037851650</sec>
+			<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0</sec>
+			<sec desc="start position Z in a global ref. system" name="posz1" unit="m">-5.299830400904</sec>
+			<sec desc="end position X in a global ref. system" name="posx2" unit="m">-589.828437698050</sec>
+			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
+			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-7.099772801212</sec>
+			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.410193679000</sec>
+		</magnet>
+		<magnet>
+			<sec desc="magnet name" name="name">Q2ER</sec>
+			<sec desc="magnet type" name="type">Q-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">1.400000000000</sec>
+			<sec desc="start position X in a global ref. system" name="posx1" unit="m">-589.832437655380</sec>
+			<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0</sec>
+			<sec desc="start position Z in a global ref. system" name="posz1" unit="m">-7.599756801297</sec>
+			<sec desc="end position X in a global ref. system" name="posx2" unit="m">-589.843637535920</sec>
+			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
+			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-8.999712001536</sec>
+			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.308161907900</sec>
+		</magnet>
+		<magnet>
+			<sec desc="magnet name" name="name">D2ER</sec>
+			<sec desc="magnet type" name="type">D-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">5.500075391030</sec>
+			<sec desc="start position X in a global ref. system" name="posx1" unit="m">-589.847637493250</sec>
+			<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0</sec>
+			<sec desc="start position Z in a global ref. system" name="posz1" unit="m">-9.499696001621</sec>
+			<sec desc="end position X in a global ref. system" name="posx2" unit="m">-589.941511588720</sec>
+			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
+			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-14.998894820922</sec>
+			<sec desc="deflection angle" name="angle" unit="rad">0.018137692335</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0</sec>
 		</magnet>
 		<solenoid>
 			<sec desc="magnet name" name="name">MARCO</sec>
