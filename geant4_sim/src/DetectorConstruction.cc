@@ -38,6 +38,8 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	simPar->PrintMagParameters();
 	simPar->PrintAbsParameters();
 
+
+	addAbsorber = true;
 	visibility = true;
 	mat_vac = nullptr;
 	world_box = nullptr;
@@ -46,6 +48,7 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	beampipeUni_solid = nullptr;
 	beampipeVac_solid = nullptr;
 	beampipeVac_log = nullptr;
+	farbwd_beampipeVac_solid = nullptr;
 	ip_box = nullptr;
 	ip_log = nullptr;
 	mass = -1;
@@ -67,7 +70,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildFarBackwardBeamPipe();
 	BuildMagnets();
 	BuildIrBeamPipe();
-//	BuildAbsorbers();
+	if(addAbsorber) BuildAbsorbers();
 
 	return world_phys;
 }
@@ -583,7 +586,7 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 				rot_Tag, G4ThreeVector(vacoffsetx, 0, vacoffsetz));
     		}
 
-		//- Make the tagger solid and subtract it from the vacuum solid
+		//- Make the tagger solid
 		G4Box* Foil_Box = new G4Box("Foil_Box",
 			tag_w[iMod] / cos(layerRot[iMod]) - 0.5 * layerThickness[iMod] * tan(layerRot[iMod]), 
 			tag_h[iMod], 
@@ -637,12 +640,8 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	G4RotationMatrix* rotate2 = new G4RotationMatrix();
 	rotate2->rotateY(Beam_Theta); // opposite to eic-shell
 	G4ThreeVector position(0, 0, (exitDist - BB_Z) / cos(Beam_Theta)); 
-	G4VSolid* Vacuum_Box_solid = new G4IntersectionSolid("Vacuum_Box_Sub",Vacuum_Box, Far_Backwards_Box, 
+	farbwd_beampipeVac_solid = new G4IntersectionSolid("Vacuum_Box_Sub",Vacuum_Box, Far_Backwards_Box, 
 		rotate2, position);
-
-	//- Vacuum (subtract the far-backward volume)
-	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
-		beampipeVac_solid,Far_Backwards_Box,0,G4ThreeVector(0,0,-(Vacuum_BB_MinZ - BB_Z)));
 
 	//- Place the far-beamline volume
 	G4RotationMatrix* xyzRot = new G4RotationMatrix();
@@ -650,7 +649,7 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 	xyzRot->rotateZ(M_PI); // flip from eic-sheel to Geant4 coordinate system
 	xyzRot->rotateY(-Beam_Theta); // opposite to eic-shell
 
-	G4LogicalVolume* Vacuum_Box_log = new G4LogicalVolume(Vacuum_Box_solid,mat_vac, "Vacuum_Box_log");
+	G4LogicalVolume* Vacuum_Box_log = new G4LogicalVolume(farbwd_beampipeVac_solid,mat_vac, "Vacuum_Box_log");
 	// set tracking time limit in the volume
 	Vacuum_Box_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
 
@@ -697,6 +696,30 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 		LumiExitWindow_log->SetVisAttributes(LumiExitWindow_vis);
 	}
 
+	//- Place Absorber at the end of the far-bwd vacuum beamline
+	if(addAbsorber)
+	{
+		G4double absSizeX = 30.0 * cm;
+		G4double absSizeY = 30.0 * cm;
+		G4double absSizeZ = 5.0 * cm;
+		G4Box* abs_box = new G4Box("abs_box_far-bwd",absSizeX/2,absSizeY/2,absSizeZ/2);
+		//- Subtract vacuum far-bwd beam pipe
+		G4VSolid* abs_solid = new G4IntersectionSolid("abs_solid_far-bwd",
+			abs_box,Extended_Vacuum_Box,0,G4ThreeVector(0,0,Thickness));
+
+		G4LogicalVolume* abs_log = new G4LogicalVolume(abs_solid,mat_vac, "abs_log_far-bwd");
+		new G4PVPlacement(0,G4ThreeVector(0,0,-Thickness),abs_log,"abs_far-bwd",Vacuum_Box_log,false,0,true);
+
+		//- Visualization
+		G4VisAttributes* abs_vis = new G4VisAttributes(G4Color::Magenta());
+		abs_vis->SetVisibility(visibility);
+		if(abs_log) abs_log->SetVisAttributes(abs_vis);
+	}
+
+	//- Vacuum (subtract the far-backward volume)
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+		beampipeVac_solid,Far_Backwards_Box,0,G4ThreeVector(0,0,-(Vacuum_BB_MinZ - BB_Z)));
+
 	return;
 }
 
@@ -722,20 +745,37 @@ void DetectorConstruction::BuildAbsorbers()
 	for(int iAbs = 0; iAbs < simPar->GetAbsNum(); iAbs++)
 	{
 		G4Box* abs_box = new G4Box("abs_box_"+to_string(iAbs),
-		simPar->GetAbsSizeX(iAbs)/2,simPar->GetAbsSizeY(iAbs)/2,simPar->GetAbsSizeZ(iAbs)/2); 
+			simPar->GetAbsSizeX(iAbs)/2,
+			simPar->GetAbsSizeY(iAbs)/2,
+			simPar->GetAbsSizeZ(iAbs)/2); 
+		G4LogicalVolume* abs_log;
 
-		G4VSolid* abs_solid = new G4SubtractionSolid("abs_solid_"+to_string(iAbs),abs_box,beampipeUni_solid,0,
-		G4ThreeVector(-simPar->GetAbsPosX(iAbs),-simPar->GetAbsPosY(iAbs),-simPar->GetAbsPosZ(iAbs)));
+		if(farbwd_beampipeVac_solid && iAbs == simPar->GetAbsNum() - 1) // skip the last absorber
+		{
+			// see DetectorConstruction::BuildFarBackwardBeamPipe()
+			continue;
+		}
+		else
+		{
+			//- Subtract vacuum beam pipe
+			G4VSolid* abs_solid = new G4SubtractionSolid("abs_solid_"+to_string(iAbs),
+				abs_box,beampipeUni_solid,
+				0,G4ThreeVector(-simPar->GetAbsPosX(iAbs),
+						-simPar->GetAbsPosY(iAbs),
+						-simPar->GetAbsPosZ(iAbs)));
 
-		G4LogicalVolume* abs_log = new G4LogicalVolume(abs_solid,mat_vac, "abs_log_"+to_string(iAbs));
+			abs_log = new G4LogicalVolume(abs_solid,mat_vac, "abs_log_"+to_string(iAbs));
 
-		new G4PVPlacement(0,
-			G4ThreeVector(simPar->GetAbsPosX(iAbs),simPar->GetAbsPosY(iAbs),simPar->GetAbsPosZ(iAbs)),
-			abs_log,"abs_"+to_string(iAbs),world_log,false,0,true);
+			new G4PVPlacement(0,G4ThreeVector(	simPar->GetAbsPosX(iAbs),
+								simPar->GetAbsPosY(iAbs),
+								simPar->GetAbsPosZ(iAbs)),
+				abs_log,"abs_"+to_string(iAbs),world_log,false,0,true);
+		}
+
 		//- Visualization
 		G4VisAttributes* abs_vis = new G4VisAttributes(G4Color::Magenta());
 		abs_vis->SetVisibility(visibility);
-		abs_log->SetVisAttributes(abs_vis);
+		if(abs_log) abs_log->SetVisAttributes(abs_vis);
 	}
 
 	return;

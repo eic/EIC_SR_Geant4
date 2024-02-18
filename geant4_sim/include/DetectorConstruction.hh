@@ -20,6 +20,7 @@ public:
 private:
 	SimParameters* simPar;
 	G4bool visibility; // components visibility
+	G4bool addAbsorber; // build SR photon absorber
 	G4Material* mat_vac; // vacuum material
 	G4VSolid* world_box; // world SV
 	G4LogicalVolume* world_log; // world LV
@@ -29,6 +30,8 @@ private:
 	G4LogicalVolume* beampipeVac_log; // beam pipe LV
 	G4VSolid* ip_box; // IP beam pipe virtual volume
 	G4LogicalVolume* ip_log; // IP beam pipe LV
+	G4VSolid* farbwd_beampipeVac_solid; // far-backward SV
+
 	G4double mass;
 	G4double gamma;
 

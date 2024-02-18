@@ -84,15 +84,8 @@
 	</beam>
 
 	<!-- gamma absorbers attached to the vacuum beam pipe ends -->
+	<!-- the last absorber is built only if there is no far-bwd beam pipe -->
 	<absorbers>
-		<absorber>
-			<sec desc="size X" name="x" unit="cm">30</sec>
-			<sec desc="size Y" name="y" unit="cm">30</sec>
-			<sec desc="size Z" name="z" unit="cm">5</sec>
-			<sec desc="position X" name="posx" unit="cm">0</sec>
-			<sec desc="position Y" name="posy" unit="cm">0</sec>
-			<sec desc="position Z" name="posz" unit="cm">1527</sec>
-		</absorber>
 		<absorber>
 			<sec desc="size X" name="x" unit="cm">10</sec>
 			<sec desc="size Y" name="y" unit="cm">10</sec>
@@ -116,6 +109,14 @@
 			<sec desc="position X" name="posx" unit="cm">0</sec>
 			<sec desc="position Y" name="posy" unit="cm">0</sec>
 			<sec desc="position Z" name="posz" unit="cm">-3720</sec>
+		</absorber>
+		<absorber>
+			<sec desc="size X" name="x" unit="cm">30</sec>
+			<sec desc="size Y" name="y" unit="cm">30</sec>
+			<sec desc="size Z" name="z" unit="cm">5</sec>
+			<sec desc="position X" name="posx" unit="cm">0</sec>
+			<sec desc="position Y" name="posy" unit="cm">0</sec>
+			<sec desc="position Z" name="posz" unit="cm">1527</sec>
 		</absorber>
 	</absorbers>
 
