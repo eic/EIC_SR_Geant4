@@ -81,6 +81,8 @@ public:
 	vector<G4float> _trackEne_GeV;
 	G4int _trackEvent;
 
+	vector<string> _gammaPostPV;
+	vector<string> _gammaPrePV;
 	vector<G4float> _gammaPosX;
 	vector<G4float> _gammaPosY;
 	vector<G4float> _gammaPosZ;

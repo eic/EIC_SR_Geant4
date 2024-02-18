@@ -55,6 +55,8 @@ void EventAction::EndOfEventAction(const G4Event*)
 	runAction->_gammaVtxDirY.clear();
 	runAction->_gammaVtxDirZ.clear();
 
+	runAction->_gammaPostPV.clear();
+	runAction->_gammaPrePV.clear();
 	runAction->_gammaPosX.clear();
 	runAction->_gammaPosY.clear();
 	runAction->_gammaPosZ.clear();

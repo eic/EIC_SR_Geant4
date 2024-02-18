@@ -57,6 +57,8 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("gammaVtxDirY",		&_gammaVtxDirY);
     	_tree->Branch("gammaVtxDirZ",		&_gammaVtxDirZ);
 
+    	_tree->Branch("gammaPostPV",	&_gammaPostPV);
+    	_tree->Branch("gammaPrePV",	&_gammaPrePV);
     	_tree->Branch("gammaPosX_cm",	&_gammaPosX);
     	_tree->Branch("gammaPosY_cm",	&_gammaPosY);
     	_tree->Branch("gammaPosZ_cm",	&_gammaPosZ);

@@ -141,6 +141,8 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		runAction->_gammaVtxDirY.push_back(track->GetVertexMomentumDirection().getY());
 		runAction->_gammaVtxDirZ.push_back(track->GetVertexMomentumDirection().getZ());
 
+		runAction->_gammaPostPV.push_back(step->GetPostStepPoint()->GetPhysicalVolume()->GetName());
+		runAction->_gammaPrePV.push_back(step->GetPreStepPoint()->GetPhysicalVolume()->GetName());
 		runAction->_gammaPosX.push_back(step->GetPostStepPoint()->GetPosition().getX()/cm);
 		runAction->_gammaPosY.push_back(step->GetPostStepPoint()->GetPosition().getY()/cm);
 		runAction->_gammaPosZ.push_back(step->GetPostStepPoint()->GetPosition().getZ()/cm);
