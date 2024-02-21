@@ -18,11 +18,20 @@ private:
     	PrefetchT<edm4hep::SimTrackerHit> 		raw_SiBarrelHits 	= {this, "SiBarrelHits"};
     	PrefetchT<edm4hep::SimTrackerHit> 		raw_MPGDBarrelHits 	= {this, "MPGDBarrelHits"};
     	PrefetchT<edm4hep::SimTrackerHit> 		raw_B0TrackerHits 	= {this, "B0TrackerHits"};
+	PrefetchT<edm4hep::SimTrackerHit>               raw_TaggerTrackerHits	= {this, "TaggerTrackerHits"};
+	PrefetchT<edm4hep::SimTrackerHit>               raw_PFRICHHits		= {this, "PFRICHHits"};
+	PrefetchT<edm4hep::SimTrackerHit>               raw_LumiSpecTrackerHits	= {this, "LumiSpecTrackerHits"};
+
     	PrefetchT<edm4hep::SimCalorimeterHit> 		raw_HcalBarrelHits   	= {this, "HcalBarrelHits"};
     	PrefetchT<edm4hep::SimCalorimeterHit> 		raw_HcalEndcapNHits   	= {this, "HcalEndcapNHits"};
     	PrefetchT<edm4hep::SimCalorimeterHit>       	raw_EcalEndcapNHits     = {this, "EcalEndcapNHits"};
     	PrefetchT<edm4hep::SimCalorimeterHit>       	raw_EcalEndcapPHits     = {this, "EcalEndcapPHits"};
     	PrefetchT<edm4hep::SimCalorimeterHit>       	raw_LumiSpecCALHits     = {this, "LumiSpecCALHits"};
+	PrefetchT<edm4hep::SimCalorimeterHit>           raw_LumiDirectPCALHits	= {this, "LumiDirectPCALHits"};
+	PrefetchT<edm4hep::SimCalorimeterHit>           raw_ZDCEcalHits		= {this, "ZDCEcalHits"};
+	PrefetchT<edm4hep::SimCalorimeterHit>           raw_LFHCALHits		= {this, "LFHCALHits"};
+
+	Float_t nHits[100];
 
     	// Declare histograms and ntuples
 /*
@@ -38,7 +47,7 @@ private:
     	TNtuple *ntraw_EcalEndcapPHits = nullptr;
     	TNtuple *ntraw_LumiSpecCALHits = nullptr;
 */
-    	TNtuple *ntraw_nHits = nullptr;
+    	TTree *ntraw_nHits = nullptr;
 
 
 public:

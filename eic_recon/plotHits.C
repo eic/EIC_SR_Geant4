@@ -27,27 +27,28 @@ namespace fs = filesystem;
 
 void getFileNames(const string directory, const string pattern, const string extension);
 void readDataFromFiles(const string outputfile); 
-void drawHistograms(const string filename);
+void drawHistograms(const string filename, const string outputdir);
 Double_t getBeamCoreTailRatio(TString type = "core");
 
 vector<string> _fileNames;
 
 const Double_t BeamCurrent_A = 0.227; // [A]
-const Double_t nElectrons_geant4 = 100000.0 * 10000.0;
-const Int_t subDetNum = 11;
+const Double_t nElectrons_geant4 = 10000.0 * 10000.0;
+const Int_t subDetNum = 17;
 
-void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_ultrahighstat_tmp/",
+void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD/",
 		const string pattern = ".hist",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_ultrahighstat_tmp_plotHits.root")
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_plotHits.root",
+		const string outputdir = "./pics_nosrmask_farBWD/")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-- get data from eic-shell output data 
-	getFileNames(directory, pattern, extension);
-	readDataFromFiles(outputfile);
+//	getFileNames(directory, pattern, extension);
+//	readDataFromFiles(outputfile);
 
 	//-- draw histograms from above
-	drawHistograms(outputfile);
+	drawHistograms(outputfile,outputdir);
 
 	return;
 
@@ -86,10 +87,13 @@ void readDataFromFiles(const string outputfile)
 	const TString bName[subDetNum] = {	"TrackerEndcapHits","HcalEndcapNHits","EcalEndcapNHits",
 						"VertexBarrelHits","TOFBarrelHits","SiBarrelHits",
 						"MPGDBarrelHits","EcalEndcapPHits","B0TrackerHits",
-						"HcalBarrelHits","LumiSpecCALHits"};
+						"HcalBarrelHits","LumiSpecCALHits","TaggerTrackerHits",
+						"ZDCEcalHits","PFRICHHits","LumiSpecTrackerHits","LumiDirectPCALHits",
+						"LFHCALHits"};
 
 	//-----------------------------------------------------------//
-	Float_t nHits[subDetNum], nHitsSum[subDetNum];
+	Float_t nHits[100], nHitsSum[100];
+	TTree* ntraw_nHits;
 
 	// empty array
 	for(Int_t i = 0; i < subDetNum; i++){nHitsSum[i] = 0;}
@@ -99,17 +103,15 @@ void readDataFromFiles(const string outputfile)
 	{
 		cout<<iFile+1<<"/"<<_fileNames.size()<<" : "<<_fileNames.at(iFile)<<endl;
 
-		TFile* file = new TFile(_fileNames.at(iFile).c_str());
-		TDirectory* dir = file->GetDirectory("analysisPlugin");
+		TFile *file = (TFile*)gROOT->GetListOfFiles()->FindObject(_fileNames.at(iFile).c_str());
+		if(!file || !file->IsOpen())
+			file = new TFile(_fileNames.at(iFile).c_str());
+		TDirectory* dir = (TDirectory*)file->GetDirectory("analysisPlugin");
 		// dir->ls();
-	
-		TNtuple* ntraw_nHits = (TNtuple*)dir->Get("ntraw_nHits");	
-		Int_t nEntries_nHits = ntraw_nHits->GetEntries();
+		dir->GetObject("ntraw_nHits",ntraw_nHits);
+		ntraw_nHits->SetBranchAddress("nHits", nHits); 
 
-		for(Int_t i = 0; i < subDetNum; i++)
-		{
-			ntraw_nHits->SetBranchAddress(Form("nHits_%s",bName[i].Data()),&nHits[i]);
-		}
+		Int_t nEntries_nHits = ntraw_nHits->GetEntries();
 
 		// loop over events in the ntuple
 		for(Int_t i = 0; i < nEntries_nHits; i++)
@@ -121,7 +123,7 @@ void readDataFromFiles(const string outputfile)
 			}
 		}
 
-		file->Close();
+		delete ntraw_nHits->GetCurrentFile();
 	}
 	//-----------------------------------------------------------//
 
@@ -170,7 +172,7 @@ Double_t getBeamCoreTailRatio(TString type = "core")
 	return (type == "core") ? (Rc /*core*/) : (1.0 - Rc /*tail*/);
 }
 
-void drawHistograms(const string filename)
+void drawHistograms(const string filename, const string outputdir)
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 
@@ -202,8 +204,8 @@ void drawHistograms(const string filename)
 	hHits->SetLineWidth(2);
 	hHits->SetLineColor(kBlack);
 	hHits->SetBarWidth(0.8);
-//	hHits->SetMinimum(1e3);
-//	hHits->SetMaximum(1e8);
+	hHits->SetMinimum(1e9);
+	hHits->SetMaximum(1e16);
 	hHits->GetYaxis()->SetTitleOffset(1.2);
 	hHits->GetXaxis()->SetTitleOffset(3.0);
 	hHits->GetXaxis()->CenterTitle(true);
@@ -214,7 +216,7 @@ void drawHistograms(const string filename)
 	hHits->LabelsOption("v");
 	gPad->SetLogy();
 
-	c1->SaveAs("./pics/c1_hits.png");
+	c1->SaveAs(Form("%s/c1_hits.png",outputdir.c_str()));
 
 	return;
 }

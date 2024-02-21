@@ -2,11 +2,11 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_nosrmask_ultrahighstat' # input directory
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_ultrahighstat' # output directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_nosrmask_farBWD' # input directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD' # output directory
 buildDir='./build' # build directory
-nJobs=100000 # number of jobs
-queue='l'
+nJobs=10000 # number of jobs
+queue='s'
 eicshell='/home/belle2/anatochi/eic/eic-shell'
 # eicsetup='/opt/detector/setup.sh'
 eicsetup='/home/belle2/anatochi/eic/epic/install/setup.sh'

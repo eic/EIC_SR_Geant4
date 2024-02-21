@@ -27,14 +27,15 @@ namespace fs = filesystem;
 
 void getFileNames(const string directory, const string pattern, const string extension);
 void readDataFromFiles(const string outputfile);
-void drawHistograms(const string filename);
+void drawHistograms(const string filename, const string outputdir);
 
 vector<string> _fileNames;
 
-void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_ultrahighstat/", 
+void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD/", 
 			const string pattern = ".podio", 
 			const string extension = ".root", 
-			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_ultrahighstat_plotVertices.root")
+			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_plotVertices.root",
+			const string outputdir = "./pics_nosrmask_farBWD/")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 
@@ -43,12 +44,12 @@ void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic
 	readDataFromFiles(outputfile);
 
 	//-- draw histograms from above
-	drawHistograms(outputfile);
+	drawHistograms(outputfile,outputdir);
 
 	return;
 }
 
-void drawHistograms(const string filename)
+void drawHistograms(const string filename, const string outputdir)
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 
@@ -82,22 +83,22 @@ void drawHistograms(const string filename)
 	cMcPrim_xz->cd();
 	hMcPrim_xz->Draw("colz");
 	gPad->SetLogz();
-	cMcPrim_xz->SaveAs("./pics/cMcPrim_xz.png");
-	cMcPrim_xz->SaveAs("./pics/cMcPrim_xz.root");
+	cMcPrim_xz->SaveAs(Form("%s/cMcPrim_xz.png",outputdir.c_str()));
+	cMcPrim_xz->SaveAs(Form("%s/cMcPrim_xz.root",outputdir.c_str()));
 
 	TCanvas* cMcPrim_yz = new TCanvas("cMcPrim_yz","cMcPrim_yz",1800,900);
 	cMcPrim_yz->cd();
 	hMcPrim_yz->Draw("colz");
 	gPad->SetLogz();
-	cMcPrim_yz->SaveAs("./pics/cMcPrim_yz.png");
-	cMcPrim_yz->SaveAs("./pics/cMcPrim_yz.root");
+	cMcPrim_yz->SaveAs(Form("%s/cMcPrim_yz.png",outputdir.c_str()));
+	cMcPrim_yz->SaveAs(Form("%s/cMcPrim_yz.root",outputdir.c_str()));
 
 	TCanvas* cMcPrim_yx = new TCanvas("cMcPrim_yx","cMcPrim_yx",900,900);
 	cMcPrim_yx->cd();
 	hMcPrim_yx->Draw("colz");
 	gPad->SetLogz();
-	cMcPrim_yx->SaveAs("./pics/cMcPrim_yx.png");
-	cMcPrim_yx->SaveAs("./pics/cMcPrim_yx.root");
+	cMcPrim_yx->SaveAs(Form("%s/cMcPrim_yx.png",outputdir.c_str()));
+	cMcPrim_yx->SaveAs(Form("%s/cMcPrim_yx.root",outputdir.c_str()));
 
 	TCanvas* cMcPrim_ene = new TCanvas("cMcPrim_ene","cMcPrim_ene",900,900);
 	cMcPrim_ene->cd();
@@ -105,8 +106,8 @@ void drawHistograms(const string filename)
 	hMcPrim_ene->Draw("hist");
 	hMcPrim_ene->GetXaxis()->SetRangeUser(0,40e-6);
 	gPad->SetLogy();
-	cMcPrim_ene->SaveAs("./pics/cMcPrim_ene.png");
-	cMcPrim_ene->SaveAs("./pics/cMcPrim_ene.root");
+	cMcPrim_ene->SaveAs(Form("%s/cMcPrim_ene.png",outputdir.c_str()));
+	cMcPrim_ene->SaveAs(Form("%s/cMcPrim_ene.root",outputdir.c_str()));
 
 	TCanvas* cVertexBarrel = new TCanvas("cVertexBarrel","cVertexBarrel",1800,900);
 	cVertexBarrel->Divide(4,2);
@@ -226,8 +227,8 @@ void drawHistograms(const string filename)
 	hMcPrim_VertexBarrel_ene->Draw("hist");
 	gPad->SetLogy();
 
-	cVertexBarrel->SaveAs("./pics/cVertexBarrel.png");
-	cVertexBarrel->SaveAs("./pics/cVertexBarrel.root");
+	cVertexBarrel->SaveAs(Form("%s/cVertexBarrel.png",outputdir.c_str()));
+	cVertexBarrel->SaveAs(Form("%s/cVertexBarrel.root",outputdir.c_str()));
 
 	TCanvas* cTrackerEndcap = new TCanvas("cTrackerEndcap","cTrackerEndcap",1800,900);
 	cTrackerEndcap->Divide(4,2);
@@ -278,8 +279,8 @@ void drawHistograms(const string filename)
 	hMcPrim_TrackerEndcap_ene->Draw("hist");
 	gPad->SetLogy();
 
-	cTrackerEndcap->SaveAs("./pics/cTrackerEndcap.png");
-	cTrackerEndcap->SaveAs("./pics/cTrackerEndcap.root");
+	cTrackerEndcap->SaveAs(Form("%s/cTrackerEndcap.png",outputdir.c_str()));
+	cTrackerEndcap->SaveAs(Form("%s/cTrackerEndcap.root",outputdir.c_str()));
 
 	return;
 }
@@ -312,9 +313,9 @@ void readDataFromFiles(const string outputfile)
 
 	TFile* f = new TFile(outputfile.c_str(),"recreate");
 
-	TH2F* hMcPrim_xz = new TH2F("hMcPrim_xz","MCparticle prim. XZ;Z [mm];X [mm]",2000,-10000,10000,1000,-500,500);
-	TH2F* hMcPrim_yz = new TH2F("hMcPrim_yz","MCparticle prim. YZ;Z [mm];Y [mm]",2000,-10000,10000,1000,-500,500);
-	TH2F* hMcPrim_yx = new TH2F("hMcPrim_yx","MCparticle prim. YX;X [mm];Y [mm]",1000,-500,500,1000,-500,500);
+	TH2F* hMcPrim_xz = new TH2F("hMcPrim_xz","MCparticle prim. XZ;Z [mm];X [mm]",5000,-40000,10000,1000,-800,200);
+	TH2F* hMcPrim_yz = new TH2F("hMcPrim_yz","MCparticle prim. YZ;Z [mm];Y [mm]",5000,-40000,10000,1000,-800,200);
+	TH2F* hMcPrim_yx = new TH2F("hMcPrim_yx","MCparticle prim. YX;X [mm];Y [mm]",1000,-800,200,1000,-800,200);
 	TH1F* hMcPrim_ene = new TH1F("hMcPrim_ene","MCparticle prim. E;E [GeV]",1e6,0,1e-3);
 
 	TH2F* hVertexBarrel_xz 
