@@ -36,11 +36,11 @@ const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 10000.0 * 10000.0;
 const Int_t subDetNum = 17;
 
-void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD/",
+void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_srmask1_farBWD/",
 		const string pattern = ".hist",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_plotHits.root",
-		const string outputdir = "./pics_nosrmask_farBWD/")
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_srmask1_farBWD_plotHits.root",
+		const string outputdir = "./pics/")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-- get data from eic-shell output data 
@@ -190,16 +190,18 @@ void drawHistograms(const string filename, const string outputdir)
 	gStyle->SetErrorX(0);
 	gStyle->SetOptStat(0);
 
-	TCanvas* c1 = new TCanvas("c1","c1",2000,2000);
+	TCanvas* c1 = new TCanvas("c1","c1",900,900);
 	c1->cd();
 	TPad *pad1 = new TPad("pad1","pad1",0,0,1,1);
-	pad1->SetBottomMargin(0.25);
+	pad1->SetBottomMargin(0.3);
 	pad1->SetTopMargin(0.1);
 	pad1->SetRightMargin(0.1);
 	pad1->SetLeftMargin(0.12);
 	pad1->Draw();
 	pad1->cd();
 	hHits->Draw("bar1 & e");
+	hHits->SetTitle("");
+	hHits->GetYaxis()->SetTitle("Hit rate [Hz]");
 	hHits->SetFillColorAlpha(kBlue,0.4);
 	hHits->SetLineWidth(2);
 	hHits->SetLineColor(kBlack);
@@ -217,6 +219,7 @@ void drawHistograms(const string filename, const string outputdir)
 	gPad->SetLogy();
 
 	c1->SaveAs(Form("%s/c1_hits.png",outputdir.c_str()));
+	c1->SaveAs(Form("%s/c1_hits.root",outputdir.c_str()));
 
 	return;
 }
