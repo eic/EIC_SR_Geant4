@@ -1,0 +1,1 @@
+/home/belle2/anatochi/eic/EIC_SR_SynRad/eic_recon/EICrecon_MY/plugins/analysisPlugin.so
