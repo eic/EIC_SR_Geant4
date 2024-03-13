@@ -1,0 +1,55 @@
+##-----------------------------------------##
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+##-----------------------------------------##
+/output/filename ./output.root
+
+/stack/killsecondaries 0
+
+/run/initialize
+
+/vis/open OGL
+#/vis/open DAWNFILE # then: dawn g4_0000.prim; epstopdf g4_0000.eps
+#/vis/open HepRepFile # then: heprapp G4Data0.heprep
+
+/vis/drawVolume
+/vis/viewer/set/viewpointThetaPhi 90. 0.
+/vis/scene/add/trajectories
+/vis/scene/endOfEventAction accumulate 100
+/vis/scene/add/trajectories rich smooth
+/vis/modeling/trajectories/create/drawByCharge
+/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
+/vis/modeling/trajectories/drawByCharge-0/default/setDrawAuxPts true
+/vis/modeling/trajectories/drawByCharge-0/default/setAuxPtsSize 2
+/vis/modeling/trajectories/drawByCharge-0/default/setTimeSliceInterval 0.001 ns
+
+#- Axes, scale, etc.
+/vis/scene/add/axes 0 0 0 2 m # Simple axes: x=red, y=green, z=blue.
+/vis/scene/add/date    # Date stamp
+
+##-----------------------------------------##
+#- Visualize magnetic field
+#/vis/set/volumeForField vac_IP
+#/vis/set/volumeForField mag_D2EF1
+#/vis/set/volumeForField mag_D2EF2
+#/vis/set/volumeForField mag_D1EF
+#/vis/set/volumeForField mag_Q1EF
+#/vis/set/volumeForField mag_Q0EF
+#/vis/set/volumeForField mag_MARCO
+#/vis/scene/add/magneticField 20 fullArrow #lightArrow
+##-----------------------------------------##
+#- Draws logical volume with additional components
+#/vis/drawLogicalVolume LumiExitWindow_log
+##-----------------------------------------##
+#- Material scan
+#/control/matScan/scan
+##-----------------------------------------##
+
+/vis/scene/list
+/vis/drawTree
+#- Built-in Commands:  https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_.html
+##-----------------------------------------##
+/run/beamOn 10
+##-----------------------------------------##

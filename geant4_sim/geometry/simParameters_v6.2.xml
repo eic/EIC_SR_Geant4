@@ -7,8 +7,9 @@
 	</world>
 
 	<!-- beam pipe vacuum -->
+		<!-- sec desc="beam pipe file" name="fname">../geometry/beam_pipe_20231011_Zup.obj</sec -->
 	<beampipe>
-		<sec desc="beam pipe file" name="fname">../geometry/beam_pipe_20231011_Zup.obj</sec>
+		<sec desc="beam pipe file" name="fname">../geometry/beam_pipe_20231011_saw_tooth_mask.obj</sec>
 	</beampipe>
 
 	<!-- beam pipe extension -->

@@ -101,17 +101,29 @@ int main(int argc, char** argv)
 
     	// Initialize visualization
     	//
-    	G4VisManager* visManager = new G4VisExecutive;
+    	auto visManager = new G4VisExecutive;
     	// G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
     	// G4VisManager* visManager = new G4VisExecutive("Quiet");
     	visManager->Initialize();
 
     	// Get the pointer to the User Interface manager
-    	G4UImanager* UImanager = G4UImanager::GetUIpointer();
+    	auto UImanager = G4UImanager::GetUIpointer();
 
-    	// Process macro
-       	// batch mode
-       	UImanager->ApplyCommand("/control/execute " + macFileName);
+    	// Process macro or start session
+	if(G4StrUtil::contains(macFileName,"vis"))
+	{
+		// interactive mode
+		G4UIExecutive* ui = new G4UIExecutive(argc,argv);
+
+		UImanager->ApplyCommand("/control/execute " + macFileName);
+		ui->SessionStart();
+		delete ui;
+	}
+	else
+	{
+       		// batch mode
+       		UImanager->ApplyCommand("/control/execute " + macFileName);
+	}
 
     	// Job termination
     	// Free the store: user actions, physics_list and detector_description are
