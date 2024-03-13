@@ -110,7 +110,7 @@ int main(int argc, char** argv)
     	auto UImanager = G4UImanager::GetUIpointer();
 
     	// Process macro or start session
-	if(G4StrUtil::contains(macFileName,"vis"))
+	if(G4StrUtil::contains(macFileName,"ogl"))
 	{
 		// interactive mode
 		G4UIExecutive* ui = new G4UIExecutive(argc,argv);
