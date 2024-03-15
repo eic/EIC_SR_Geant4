@@ -65,6 +65,7 @@ target_link_libraries(exe ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 set(exe_SCRIPTS
   run.mac
   vis.mac
+  vis_ogl.mac
   runAll.bash
   )
 
