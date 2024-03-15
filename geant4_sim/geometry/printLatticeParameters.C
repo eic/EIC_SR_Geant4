@@ -1,17 +1,43 @@
 void printSurveyParameters(TString surveyFileName, TString startElementName, TString endElementName);
 void printOpticsParameters(TString opticsFileName, TString startElementName, TString endElementName);
+void printOpticsParameters_old(TString opticsFileName, TString startElementName, TString endElementName);
 
 void printLatticeParameters()
 {
 	TString surveyFileName, opticsFileName;
+	Bool_t oldLattice;
 
-	//- old lattice (Sep. 2023)
+	//_______________________________ OLD LATTICE ______________________________________//
+	oldLattice = true;
+
+	//- Aug. 2022 - v5.6 lattice
+	surveyFileName = "./lattice_v5.6/esr-survey-elke.tfs";
+	opticsFileName = "./lattice_v5.6/esr-twiss-elke.tfs";
+
+	//- lists of elements (FWD)
+//	const Int_t nElements = 5;
+//	TString startElementName[nElements] = {	
+//		"\"Q2EF_6\"", "\"OWW\"", "\"O2EF_6\"", "\"O1EF_6\"","\"O0EF_6\""};
+//	TString stopElementName[nElements] = {
+//		"\"OWW\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
+
+	//- lists of elements (BWD)
+	const Int_t nElements = 4;
+	TString startElementName[nElements] = {	
+		"\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
+	TString stopElementName[nElements] = {
+		"\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
+
+	//_______________________________ NEW LATTICE ______________________________________//
+	// oldLattice = false;
+
+	//- Sep. 2023 - so-called new lattice
 	// surveyFileName = "./lattice_v6.X/survey_ir_6m.tfs";
 	// opticsFileName = "./lattice_v6.X/ir6forward.18GeV.twi";
 
-	//- new lattice v6.2 (Jan. 2024)
-	surveyFileName = "./lattice_v6.2/esr-survey-doug.tfs";
-	opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
+	//- Jan. 2024 - v6.2 lattice
+	// surveyFileName = "./lattice_v6.2/esr-survey-doug.tfs";
+	// opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
 
 	//- lists of elements (FWD)
 //	const Int_t nElements = 7;
@@ -21,11 +47,11 @@ void printLatticeParameters()
 //		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
 
 	//- lists of elements (BWD)
-	const Int_t nElements = 4;
-	TString startElementName[nElements] = {	
-		"\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
-	TString stopElementName[nElements] = {
-		"\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
+//	const Int_t nElements = 4;
+//	TString startElementName[nElements] = {	
+//		"\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
+//	TString stopElementName[nElements] = {
+//		"\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
 
 	//- get parameters
 	for(Int_t i = 0; i < nElements; i++)
@@ -33,6 +59,9 @@ void printLatticeParameters()
 		cout<<"=============================================================="<<endl;
 		cout<<"> element: "<<i<<endl;
 		printSurveyParameters(surveyFileName,startElementName[i],stopElementName[i]);
+		if(oldLattice)
+			printOpticsParameters_old(opticsFileName,startElementName[i],stopElementName[i]);
+		else
 		printOpticsParameters(opticsFileName,startElementName[i],stopElementName[i]);
 		cout<<"=============================================================="<<endl;
 	}
@@ -85,6 +114,72 @@ void printOpticsParameters(TString opticsFileName, TString startElementName, TSt
 				wordsToSkip = 15; while (wordsToSkip-- > 0 && end_iss_IO >> word){/* skip */}
 				end_iss_IO >> length;	
 				wordsToSkip = 3; while (wordsToSkip-- > 0 && end_iss_IO >> word){/* skip */}
+				end_iss_IO >> k1l;
+				break;
+			}
+		}
+		start_line = end_line;
+	}
+	opticsFileName_IO.close();
+
+	printf("> s = %.12f\n",s);
+	printf("> length = %.12f\n",length);
+	printf("> betax = %.12f\n",betax);
+	printf("> alphax = %.12f\n",alphax);
+	printf("> betay = %.12f\n",betay);
+	printf("> alphay = %.12f\n",alphay);
+	printf("> etax = %.12e\n",etax);
+	printf("> etapx = %.12e\n",etapx);
+	printf("> etay = %.12e\n",etay);
+	printf("> etapy = %.12e\n",etapy);
+	printf("> k1l = %.12f\n",k1l);
+
+	return;
+}
+
+void printOpticsParameters_old(TString opticsFileName, TString startElementName, TString endElementName)
+{
+	cout<<endl<<"> function: "<<__FUNCTION__<<endl;
+	cout<<opticsFileName<<" : "<<startElementName<<" - "<<endElementName<<endl<<endl;
+
+	ifstream opticsFileName_IO(opticsFileName.Data());
+	Double_t alphax, alphay, betax, betay, etax, etay, etapx, etapy, k1l, s, length;	
+	Int_t wordsToSkip;
+
+	if (!opticsFileName_IO.is_open()) 
+	{
+		cerr << "Unable to open the file: " << opticsFileName << endl;
+		exit(-1);
+	}
+
+	string start_line, end_line;
+	getline(opticsFileName_IO, start_line);
+	while (getline(opticsFileName_IO, end_line)) 
+	{
+		istringstream start_iss_IO(start_line);
+		istringstream end_iss_IO(end_line);
+		string start_element, end_element, word;
+
+		if(start_iss_IO >> start_element && end_iss_IO >> end_element)
+		{
+			if(start_element == startElementName && end_element == endElementName)
+			{
+				// cout<<start_line<<endl;
+				// cout<<end_line<<endl;
+
+				wordsToSkip = 1; while (wordsToSkip-- > 0 && end_iss_IO >> word){/* skip */}
+				end_iss_IO >> s;
+				end_iss_IO >> length;	
+				end_iss_IO >> betax;
+				end_iss_IO >> alphax;
+				end_iss_IO >> betay;
+				end_iss_IO >> alphay;
+				wordsToSkip = 2; while (wordsToSkip-- > 0 && end_iss_IO >> word){/* skip */}
+				end_iss_IO >> etax;
+				end_iss_IO >> etapx;
+				etay = 0;
+				etapy = 0;
+				wordsToSkip = 2; while (wordsToSkip-- > 0 && end_iss_IO >> word){/* skip */}
 				end_iss_IO >> k1l;
 				break;
 			}
