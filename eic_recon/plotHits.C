@@ -36,16 +36,16 @@ const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 10000.0 * 10000.0;
 const Int_t subDetNum = 17;
 
-void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_srmask1_farBWD/",
+void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v5.6_nosrmask_farBWD_Cu/",
 		const string pattern = ".hist",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_srmask1_farBWD_plotHits.root",
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v5.6_nosrmask_farBWD_Cu_plotHits.root",
 		const string outputdir = "./pics/")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-- get data from eic-shell output data 
-//	getFileNames(directory, pattern, extension);
-//	readDataFromFiles(outputfile);
+	getFileNames(directory, pattern, extension);
+	readDataFromFiles(outputfile);
 
 	//-- draw histograms from above
 	drawHistograms(outputfile,outputdir);
@@ -181,14 +181,44 @@ void drawHistograms(const string filename, const string outputdir)
 
 	TH1D* hHits = (TH1D*)_file0->Get("hHits");
 
+	gStyle->SetErrorX(0);
+	gStyle->SetOptStat(0);
+
+	TCanvas* c0 = new TCanvas("c0","c0",900,900);
+	c0->cd();
+	TPad *pad0 = new TPad("pad0","pad0",0,0,1,1);
+	pad0->SetBottomMargin(0.3);
+	pad0->SetTopMargin(0.1);
+	pad0->SetRightMargin(0.1);
+	pad0->SetLeftMargin(0.12);
+	pad0->Draw();
+	pad0->cd();
+	hHits->Draw("bar1 & e");
+	hHits->SetTitle("");
+	hHits->GetYaxis()->SetTitle("Total num. of hits [counts]");
+	hHits->SetFillColorAlpha(kBlue,0.4);
+	hHits->SetLineWidth(2);
+	hHits->SetLineColor(kBlack);
+	hHits->SetBarWidth(0.8);
+	hHits->SetMinimum(1e-1);
+	hHits->SetMaximum(1e2);
+	hHits->GetYaxis()->SetTitleOffset(1.2);
+	hHits->GetXaxis()->SetTitleOffset(3.0);
+	hHits->GetXaxis()->CenterTitle(true);
+	hHits->GetYaxis()->CenterTitle(true);
+	hHits->GetXaxis()->SetLabelSize(0.04);
+	hHits->GetXaxis()->SetLabelOffset(0.01);
+	hHits->GetXaxis()->SetTitle("");
+	hHits->LabelsOption("v");
+	gPad->SetLogy();
+
+	c0->SaveAs(Form("%s/c0_hits.png",outputdir.c_str()));
+
 	/* core */	hHits->Scale(BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
 	/* tail */	// hHits->Scale(BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
 
 	/* core */	// hHits->Scale(getBeamCoreTailRatio("core")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
 	/* tail */	// hHits->Scale(getBeamCoreTailRatio("tail")*BeamCurrent_A/(nElectrons_geant4*TMath::Qe()));
-
-	gStyle->SetErrorX(0);
-	gStyle->SetOptStat(0);
 
 	TCanvas* c1 = new TCanvas("c1","c1",900,900);
 	c1->cd();
@@ -202,20 +232,8 @@ void drawHistograms(const string filename, const string outputdir)
 	hHits->Draw("bar1 & e");
 	hHits->SetTitle("");
 	hHits->GetYaxis()->SetTitle("Hit rate [Hz]");
-	hHits->SetFillColorAlpha(kBlue,0.4);
-	hHits->SetLineWidth(2);
-	hHits->SetLineColor(kBlack);
-	hHits->SetBarWidth(0.8);
 	hHits->SetMinimum(1e9);
 	hHits->SetMaximum(1e16);
-	hHits->GetYaxis()->SetTitleOffset(1.2);
-	hHits->GetXaxis()->SetTitleOffset(3.0);
-	hHits->GetXaxis()->CenterTitle(true);
-	hHits->GetYaxis()->CenterTitle(true);
-	hHits->GetXaxis()->SetLabelSize(0.04);
-	hHits->GetXaxis()->SetLabelOffset(0.01);
-	hHits->GetXaxis()->SetTitle("");
-	hHits->LabelsOption("v");
 	gPad->SetLogy();
 
 	c1->SaveAs(Form("%s/c1_hits.png",outputdir.c_str()));

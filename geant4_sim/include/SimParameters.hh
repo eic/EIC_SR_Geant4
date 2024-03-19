@@ -5,6 +5,8 @@
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
 
+#include <vector>
+
 using namespace std;
 
 class SimParameters

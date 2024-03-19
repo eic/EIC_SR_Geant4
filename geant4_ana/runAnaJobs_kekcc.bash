@@ -2,12 +2,12 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_nosrmask_farBWD' # input directory
+mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v5.6_nosrmask_farBWD' # input directory
 treeName='tree'
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_nosrmask_farBWD' # output directory
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_v5.6_nosrmask_farBWD' # output directory
 buildDir='./build' # build directory
 nJobs=10000 # number of jobs
-queue='s'
+queue='l'
 # in the custom-built Geant4 coordinate system
 minZ=-500.0 # [cm] minimum Z
 maxZ=4000.0 # [cm] maximum Z

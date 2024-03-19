@@ -31,9 +31,9 @@ void drawStoredTracks(const string fname);
 
 vector<string> _fileNames;
 
-void plotTracks(const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_g4sim_srmask1_farBWD/",
+void plotTracks(const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_g4sim_v5.6_nosrmask_farBWD/",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_g4sim_srmask1_farBWD_tracks.root")
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_g4sim_v5.6_nosrmask_farBWD_tracks.root")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-- get data from geant4 simulation output data
@@ -68,6 +68,8 @@ void drawStoredTracks(const string fname)
         pad11->Draw();
         pad11->cd();
 	gPad->SetGrid();
+	h1_xz->SetMinimum(1);
+	h1_xz->SetMaximum(1e4);
 	h1_xz->Draw("colz");
 	gPad->SetLogz();
 
@@ -80,6 +82,8 @@ void drawStoredTracks(const string fname)
         pad12->Draw();
         pad12->cd();
 	gPad->SetGrid();
+	h1_yz->SetMinimum(1);
+	h1_yz->SetMaximum(1e4);
 	h1_yz->Draw("colz");
 	gPad->SetLogz();
 

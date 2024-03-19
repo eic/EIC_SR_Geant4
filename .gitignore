@@ -65,6 +65,9 @@ eic_matscan/output*
 
 # benchmark
 benchmark/SolenoidFieldMap/*.png
+benchmark/HitRates/eic_recon/pics
+eic_matscan/detector_geometry/*
+!eic_matscan/detector_geometry/run.sh
 
 # Git
 !.gitignore
