@@ -6,9 +6,9 @@ date;
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-xmlFile="${PWD}/geometry/simParameters_v5.6.xml" # simulation geometry settings
+xmlFile="${PWD}/geometry/simParameters_v6.2_modif.xml" # simulation geometry settings
 nParticles=10000 # number of primary particles per job
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v5.6_nosrmask_farBWD' # output directory
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.2_modif_nosrmask_farBWD' # output directory
 buildDir='./build' # build directory
 nJobs=10000 # number of jobs
 queue='l'

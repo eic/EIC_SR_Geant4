@@ -36,10 +36,10 @@ const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 10000.0 * 10000.0;
 const Int_t subDetNum = 17;
 
-void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v5.6_nosrmask_farBWD_Cu/",
+void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.1/",
 		const string pattern = ".hist",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v5.6_nosrmask_farBWD_Cu_plotHits.root",
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.1_plotHits.root",
 		const string outputdir = "./pics/")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
