@@ -31,10 +31,10 @@ void drawHistograms(const string filename, const string outputdir);
 
 vector<string> _fileNames;
 
-void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_Cu/", 
+void plotVertices(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.1/", 
 			const string pattern = ".podio", 
 			const string extension = ".root", 
-			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_Cu_plotVertices.root",
+			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.1_plotVertices.root",
 			const string outputdir = "./pics_nosrmask_farBWD_Cu/")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;

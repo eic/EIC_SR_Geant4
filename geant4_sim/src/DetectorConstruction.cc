@@ -171,7 +171,7 @@ void DetectorConstruction::CreateSrMask()
 		posZ += dz;
 	}
 */
-	//- mask-2
+	//- mask-3
 	const G4double  zPlane[] = {-720.0 * cm, -710.0 * cm};
 	const G4double  rInner[] = {2.4 * cm, 2.7 * cm};
 	const G4double  rOuter[] = {3.0 * cm, 3.0 * cm};

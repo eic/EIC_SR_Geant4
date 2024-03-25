@@ -27,7 +27,7 @@ private:
 	PrefetchT<edm4hep::SimTrackerHit>	raw_ForwardMPGDEndcapHits = {this,"ForwardMPGDEndcapHits"};
 	PrefetchT<edm4hep::SimTrackerHit>	raw_ForwardOffMTrackerHits = {this,"ForwardOffMTrackerHits"};
 	PrefetchT<edm4hep::SimTrackerHit>	raw_ForwardRomanPotHits = {this,"ForwardRomanPotHits"};
-	PrefetchT<edm4hep::SimCalorimeterHit>	raw_HcalBarrelHits = {this,"HcalBarrelHits"};
+//	PrefetchT<edm4hep::SimCalorimeterHit>	raw_HcalBarrelHits = {this,"HcalBarrelHits"};
 	PrefetchT<edm4hep::SimCalorimeterHit>	raw_HcalEndcapNHits = {this,"HcalEndcapNHits"};
 	PrefetchT<edm4hep::SimCalorimeterHit>	raw_HcalEndcapPInsertHits = {this,"HcalEndcapPInsertHits"};
 	PrefetchT<edm4hep::SimCalorimeterHit>	raw_HcalFarForwardZDCHits = {this,"HcalFarForwardZDCHits"};

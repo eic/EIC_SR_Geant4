@@ -34,12 +34,12 @@ vector<string> _fileNames;
 
 const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 10000.0 * 10000.0;
-const Int_t subDetNum = 17;
+const Int_t subDetNum = 31;
 
-void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.1/",
+void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.2/",
 		const string pattern = ".hist",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.1_plotHits.root",
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.2_plotHits.root",
 		const string outputdir = "./pics/")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
@@ -84,12 +84,14 @@ void readDataFromFiles(const string outputfile)
 
 	TH1D* hHits = new TH1D("hHits","Hits;Sub-detector;Hits [counts]",subDetNum,0,subDetNum);
 
-	const TString bName[subDetNum] = {	"TrackerEndcapHits","HcalEndcapNHits","EcalEndcapNHits",
-						"VertexBarrelHits","TOFBarrelHits","SiBarrelHits",
-						"MPGDBarrelHits","EcalEndcapPHits","B0TrackerHits",
-						"HcalBarrelHits","LumiSpecCALHits","TaggerTrackerHits",
-						"ZDCEcalHits","PFRICHHits","LumiSpecTrackerHits","LumiDirectPCALHits",
-						"LFHCALHits"};
+	const TString bName[subDetNum] = {	"B0ECalHits","B0TrackerHits","BackwardMPGDEndcapHits","DIRCBarHits","DRICHHits",
+						"EcalBarrelImagingHits","EcalBarrelScFiHits","EcalEndcapNHits","EcalEndcapPHits",
+						"EcalEndcapPInsertHits","EcalFarForwardZDCHits","EcalLumiSpecHits",
+						"ForwardMPGDEndcapHits","ForwardOffMTrackerHits","ForwardRomanPotHits",
+						"HcalBarrelHits","HcalEndcapNHits","HcalEndcapPInsertHits","HcalFarForwardZDCHits",
+						"LFHCALHits","LumiDirectPCALHits","LumiSpecTrackerHits","MPGDBarrelHits",
+						"OuterMPGDBarrelHits","PFRICHHits","SiBarrelHits","TaggerTrackerHits",
+						"TOFBarrelHits","TOFEndcapHits","TrackerEndcapHits","VertexBarrelHits"};
 
 	//-----------------------------------------------------------//
 	Float_t nHits[100], nHitsSum[100];
@@ -109,7 +111,7 @@ void readDataFromFiles(const string outputfile)
 		TDirectory* dir = (TDirectory*)file->GetDirectory("analysisPlugin");
 		// dir->ls();
 		dir->GetObject("ntraw_nHits",ntraw_nHits);
-		ntraw_nHits->SetBranchAddress("nHits", nHits); 
+		ntraw_nHits->SetBranchAddress("nHits", nHits);
 
 		Int_t nEntries_nHits = ntraw_nHits->GetEntries();
 

@@ -53,7 +53,7 @@ void analysisPluginProcessor::ProcessSequential(const std::shared_ptr<const JEve
 	nHits[12] = raw_ForwardMPGDEndcapHits().size();
 	nHits[13] = raw_ForwardOffMTrackerHits().size();
 	nHits[14] = raw_ForwardRomanPotHits().size();
-	nHits[15] = raw_HcalBarrelHits().size();
+	nHits[15] = 0; //raw_HcalBarrelHits().size();
 	nHits[16] = raw_HcalEndcapNHits().size();
 	nHits[17] = raw_HcalEndcapPInsertHits().size();
 	nHits[18] = raw_HcalFarForwardZDCHits().size();
