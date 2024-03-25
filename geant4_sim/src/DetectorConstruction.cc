@@ -3,6 +3,7 @@
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4EllipticalTube.hh"
+#include "G4Polycone.hh"
 #include "G4LogicalVolume.hh"
 #include "G4ThreeVector.hh"
 #include "G4PVPlacement.hh"
@@ -38,7 +39,6 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	simPar->PrintMagParameters();
 	simPar->PrintAbsParameters();
 
-
 	addAbsorber = true;
 	visibility = true;
 	mat_vac = nullptr;
@@ -65,7 +65,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
-//	CreateSrMask();
+	CreateSrMask();
 	BuildIpBeamPipe();
 	BuildFarBackwardBeamPipe();
 	BuildMagnets();
@@ -129,7 +129,7 @@ void DetectorConstruction::CreateSrMask()
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::CreateSrMask ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
-
+/*
 	//- mask-0
 	G4VSolid* mask0_vol = new G4Box("mask0_vol",1.0 * m/2,1.0 * m/2,1.0 * cm /2);
 	G4VSolid* mask0_ring = new G4Tubs("mask0_ring", 0, 5.0 * cm, 1.0 * cm/2, 0, 2.0 * M_PI);
@@ -170,6 +170,25 @@ void DetectorConstruction::CreateSrMask()
 
 		posZ += dz;
 	}
+*/
+	//- mask-2
+	const G4double  zPlane[] = {-720.0 * cm, -710.0 * cm};
+	const G4double  rInner[] = {2.4 * cm, 2.7 * cm};
+	const G4double  rOuter[] = {3.0 * cm, 3.0 * cm};
+	G4VSolid* mask2_polycone = new G4Polycone("mask2_polycone", 0, 2.0 * M_PI, 2, zPlane, rInner, rOuter); 
+
+	//- Vacuum (subtract the mask ring from the beam pipe)
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+		beampipeVac_solid,mask2_polycone,0,G4ThreeVector(0,0,0));
+	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
+		beampipeUni_solid,mask2_polycone,0,G4ThreeVector(0,0,0));
+
+	//- Visualization
+//	G4LogicalVolume* mask2_log = new G4LogicalVolume(mask2_polycone, mat_vac, "mask2_log");
+//	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),mask2_log,"mask2",world_log,false,0,true);
+//	G4VisAttributes* mask2_vis = new G4VisAttributes(G4Colour::Red());
+//	mask2_log->SetVisAttributes(mask2_vis);
+
 
 	return;
 }
