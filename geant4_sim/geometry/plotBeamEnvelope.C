@@ -8,8 +8,8 @@ void plotBeamEnvelope()
 	const Float_t emitY = 2.0e-9; // m
 	const Float_t max_gr_beamX = 100; // mm
 	const Float_t max_gr_beamY = 100; // mm
-	Float_t nSigmaX = (0.054/2.)/TMath::Sqrt(emitX*57.60814524); // nSigma = BeamPipeRx_Q0EF_6/sqrt(EmitX * betaX_Q0EF_6)
-	Float_t nSigmaY = 10;
+	const Float_t nSigmaX = 15; 
+	const Float_t nSigmaY = 10;
 	cout<<"--> nSigmaX = "<<nSigmaX<<endl;
 	cout<<"--> nSigmaY = "<<nSigmaY<<endl;
 
@@ -80,11 +80,12 @@ void plotBeamEnvelope()
 	gr_beamX2->Draw("SAME & PL");
 
 	//- draw beam pipe
+	const Int_t nAp = 21;
 	Double_t ss[] = {-15.270,-11.414,-11.364,-9.364,-9.2880,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.450, 4.460, 4.660, 7.200, 10.50, 23.00, 23.50, 33.50}; // m
 	Double_t dx[] = { 0.1960, 0.1960, 0.1540, 0.154, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.044, 0.044, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
 	TGraph* gr_rx1 = new TGraph();
 	TGraph* gr_rx2 = new TGraph();
-	for(Int_t i = 0; i < 21; i++)
+	for(Int_t i = 0; i < nAp; i++)
 	{
 		gr_rx1->SetPoint(i,ss[i],+dx[i]/2*1000);
 		gr_rx2->SetPoint(i,ss[i],-dx[i]/2*1000);
@@ -93,6 +94,15 @@ void plotBeamEnvelope()
 	gr_rx2->SetLineWidth(2);
 	gr_rx1->Draw("SAME & L");
 	gr_rx2->Draw("SAME & L");
+
+	//- get minimum aperture
+	Double_t nSigmaMinX = 1e9, nSigmaMinXs = 0;
+	for(Int_t i = 0; i < nAp; i++)
+	{
+		Double_t nSigma = (dx[i]/2.)/TMath::Sqrt(emitX * gr_betaX->Eval(ss[i]));
+		if(nSigma < nSigmaMinX)	{nSigmaMinX = nSigma; nSigmaMinXs = ss[i];}
+	}
+	cout<<"--> nSigmaMinX = "<<nSigmaMinX<<" at s = "<<nSigmaMinXs<<" [m]"<<endl;
 
 	return;
 }
