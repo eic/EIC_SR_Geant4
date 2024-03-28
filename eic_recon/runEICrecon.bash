@@ -2,8 +2,8 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_nosrmask_farBWD_updated_ePIC_calibration_2' # input directory
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.2' # output directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_nosrmask_farBWD_updated_ePIC_calibration_2_LumiExitWind' # input directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicreco_nosrmask_farBWD_updated_ePIC_calibration_2_LumiExitWind_2' # output directory
 buildDir='./build' # build directory
 nJobs=10000 # number of jobs
 queue='l'
@@ -19,27 +19,6 @@ echo "[INFO] buildDir = ${buildDir}"
 echo "[INFO] nJobs = ${nJobs}"
 echo "[INFO] queue = ${queue}"
 
-#-------------------------------------------------------------#
-#---------- Compile the custom analysis plugin ---------------#
-#<<COMMENT
-	rm -rf analysisPlugin/build
-	rm -rf EICrecon_MY
-	mkdir -pv EICrecon_MY
-
-	compileScript='compileAnalysisPlugin.bash'
-	echo "#!/bin/bash" > ${compileScript}
-	echo "source ${eicsetup}" >> ${compileScript}
-	echo "export EICrecon_MY=${PWD}/EICrecon_MY" >> ${compileScript}
-	echo "cmake -S analysisPlugin -B analysisPlugin/build" >> ${compileScript}
-	echo "cmake --build analysisPlugin/build --target install" >> ${compileScript}
-
-	chmod 777 ${compileScript}
-	. $eicshell -- ./${compileScript}
-	rm -rf ${compileScript}
-#COMMENT
-#-------------------------------------------------------------#
-#-------------------------------------------------------------#
-
 # output directory
 mkdir -pv ${outputDirName}
 
@@ -51,18 +30,41 @@ runID=0
 runFile="runEICrecon_${runID}.sh"
 echo "#!/bin/bash" > ${runFile}
 echo "source ${eicsetup}" >> ${runFile} 
-echo "export EICrecon_MY=${PWD}/../EICrecon_MY" >> ${runFile}
+
+nHitsArray=("B0ECalHits" "B0TrackerHits" "BackwardMPGDEndcapHits" "DIRCBarHits" "DRICHHits" "EcalBarrelImagingHits" "EcalBarrelScFiHits" "EcalEndcapNHits" "EcalEndcapPHits" "EcalEndcapPInsertHits" "EcalFarForwardZDCHits" "EcalLumiSpecHits" "ForwardMPGDEndcapHits" "ForwardOffMTrackerHits" "ForwardRomanPotHits" "HcalBarrelHits" "HcalEndcapNHits" "HcalEndcapPInsertHits" "HcalFarForwardZDCHits" "LFHCALHits" "LumiDirectPCALHits" "LumiSpecTrackerHits" "MPGDBarrelHits" "OuterMPGDBarrelHits" "PFRICHHits" "SiBarrelHits" "TaggerTrackerHits" "TOFBarrelHits" "TOFEndcapHits" "TrackerEndcapHits" "VertexBarrelHits")
+
+nRawHitsArray=("B0ECalRawHits" "B0TrackerRawHits" "BackwardMPGDEndcapRawHits" "DIRCRawHits" "DRICHRawHits" "EcalBarrelImagingRawHits" "EcalBarrelScFiRawHits" "EcalEndcapNRawHits" "EcalEndcapPRawHits" "EcalEndcapPInsertRawHits" "EcalFarForwardZDCRawHits" "EcalLumiSpecRawHits" "ForwardMPGDEndcapRawHits" "ForwardOffMTrackerRawHits" "ForwardRomanPotRawHits" "HcalBarrelRawHits" "HcalEndcapNRawHits" "HcalEndcapPInsertRawHits" "HcalFarForwardZDCRawHits" "LFHCALRawHits" "LumiDirectPCALRawHits" "LumiSpecTrackerRawHits" "MPGDBarrelRawHits" "OuterMPGDBarrelRawHits" "PFRICHRawHits" "SiBarrelRawHits" "TaggerTrackerRawHits" "TOFBarrelRawHit" "TOFEndcapRawHits" "SiEndcapTrackerRawHits" "SiBarrelVertexRawHits")
+
+nRecHitsArray=("B0ECalRecHits" "B0TrackerRecHits" "BackwardMPGDEndcapRecHits" "DIRCBarRecHits" "DRICHRecHits" "EcalBarrelImagingRecHits" "EcalBarrelScFiRecHits" "EcalEndcapNRecHits" "EcalEndcapPRecHits" "EcalEndcapPInsertRecHits" "EcalFarForwardZDCRecHits" "EcalLumiSpecRecHits" "ForwardMPGDEndcapRecHits" "ForwardOffMTrackerRecHits" "ForwardRomanPotRecHits" "HcalBarrelRecHits" "HcalEndcapNRecHits" "HcalEndcapPInsertRecHits" "HcalFarForwardZDCRecHits" "LFHCALRecHits" "LumiDirectPCALRecHits" "LumiSpecTrackerRecHits" "MPGDBarrelRecHits" "OuterMPGDBarrelRecHits" "PFRICHRecHits" "SiBarrelTrackerRecHits" "TaggerTrackerRecHits" "TOFBarrelRecHits" "TOFEndcapRecHits" "SiEndcapTrackerRecHits" "SiBarrelVertexRecHits")
 
 # loop over all jobs
 for jobID in $(seq 1 1 ${nJobs})
 do
 	# submit a job
-	echo -ne "time eicrecon -Pplugins=analysisPlugin -Ppodio:output_include_collections=\"MCParticles,VertexBarrelHits,TrackerEndcapHits,SiBarrelHits\" " >> ${runFile} 
+	echo -ne "time eicrecon -Ppodio:output_include_collections=\"" >> ${runFile}
+	echo -ne "MCParticles,LumiWindowCALHits" >> ${runFile}
+	#- Sim Hits
+	for str in ${nHitsArray[@]}
+	do
+		echo -ne ",${str}" >> ${runFile} 
+	done
+	#- Raw (Digi) Hits
+	for str in ${nRawHitsArray[@]}
+	do
+		echo -ne ",${str}" >> ${runFile} 
+	done
+	#- Rec Hits
+	for str in ${nRecHitsArray[@]}
+	do
+		echo -ne ",${str}" >> ${runFile} 
+	done
+
+	echo -ne "\" " >> ${runFile} 
 	echo -ne "-Ppodio:output_file=${outputDirName}/output_eicrecon_${jobID}.podio.root " >> ${runFile} 
 	echo "-Phistsfile=${outputDirName}/output_eicrecon_${jobID}.hist.root ${inputDirName}/output_eicsim_${jobID}.edm4hep.root" >> ${runFile}
 	# -Pjana:nevents=1000 <-- to limit the number of events
 
-	jobID_tmp=$(($jobID % 100))
+	jobID_tmp=$(($jobID % 10))
 	if [ $jobID_tmp -eq 0 ]; then
 		# make the file executable
 		chmod 777 ${runFile}

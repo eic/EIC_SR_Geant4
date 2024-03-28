@@ -23,7 +23,7 @@
 using namespace std;
 namespace fs = filesystem;
 
-#define NMAXFILES INT_MAX // maximum number of file to r aximum number of file to read
+#define NMAXFILES INT_MAX // maximum number of file to read
 
 void getFileNames(const string directory, const string pattern, const string extension);
 void readDataFromFiles(const string outputfile); 
@@ -36,10 +36,10 @@ const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 10000.0 * 10000.0;
 const Int_t subDetNum = 31;
 
-void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.2/",
+void plotHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v6.2_srmask3_farBWD_updated_ePIC_calibration_2_LumiExitWind/",
 		const string pattern = ".hist",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_nosrmask_farBWD_updated_ePIC_calibration_2.2_plotHits.root",
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v6.2_srmask3_farBWD_updated_ePIC_calibration_2_LumiExitWind_plotHits.root",
 		const string outputdir = "./pics/")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;

@@ -12,7 +12,7 @@
 		<!-- sec desc="beam pipe file [srmask3]" name="fname">../geometry/beam_pipe_211004_saw_tooth_mask_inc_q0.obj</sec -->
 		<!-- sec desc="beam pipe file [srmask3]" name="fname">../geometry/beam_pipe_211004_saw_tooth_mask_entire_len.obj</sec -->
 	<beampipe>
-		<sec desc="beam pipe file [nosrmask]" name="fname">../geometry/beam_pipe_211004_Zup.obj</sec>
+		<sec desc="beam pipe file [nosrmask]" name="fname">../geometry/beam_pipe_211004_1_mask_in_q0.obj</sec>
 	</beampipe>
 
 	<!-- beam pipe extension -->
