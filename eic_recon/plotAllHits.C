@@ -34,17 +34,17 @@ vector<string> _fileNames;
 const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectrons_geant4 = 10000.0 * 10000.0;
 
-void plotAllHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v6.2_nosrmask_farBWD/", 
+void plotAllHits(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v5.6_nosrmask_farBWD/", 
 			const string pattern = ".podio", 
 			const string extension = ".root", 
-			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicreco_nosrmask_farBWD_updated_ePIC_calibration_2_LumiExitWind_2_plotHits_2.root",
+			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v5.6_nosrmask_farBWD_plotAllHits.root",
 			const string outputdir = "./pics/")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 
 	//-- get data from eic-shell output data
-//	getFileNames(directory, pattern, extension);
-//	readDataFromFiles(outputfile);
+	getFileNames(directory, pattern, extension);
+	readDataFromFiles(outputfile);
 
 	//-- draw histograms from above
 	drawHistograms(outputfile,"hSimHits","SimHits",outputdir);
