@@ -51,18 +51,18 @@ public:
     	G4int _event;
 	G4long _seed;
 
-	G4int _beamPdg;
-	G4float _beamPosX;
-	G4float _beamPosY;
-	G4float _beamPosZ;
-	G4float _beamMomX;
-	G4float _beamMomY;
-	G4float _beamMomZ;
-	G4float _beamEnergy;
-	G4float _beamRefPosX;
-	G4float _beamRefPosY;
-	G4float _beamRefPosZ;
-	G4float _beamRefAngle;	
+	vector<G4int> _beamPdg;
+	vector<G4float> _beamPosX;
+	vector<G4float> _beamPosY;
+	vector<G4float> _beamPosZ;
+	vector<G4float> _beamMomX;
+	vector<G4float> _beamMomY;
+	vector<G4float> _beamMomZ;
+	vector<G4float> _beamEnergy;
+	vector<G4float> _beamRefPosX;
+	vector<G4float> _beamRefPosY;
+	vector<G4float> _beamRefPosZ;
+	vector<G4float> _beamRefAngle;	
 	
 	vector<string> _magName; // magnet name where SP photons are generated
 	vector<G4int> _magNph; // number of generated SR photons per event
@@ -79,7 +79,6 @@ public:
 	vector<G4float> _trackPosY_cm;
 	vector<G4float> _trackPosZ_cm;
 	vector<G4float> _trackEne_GeV;
-	G4int _trackEvent;
 
 	vector<string> _gammaPostPV;
 	vector<string> _gammaPrePV;

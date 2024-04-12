@@ -29,6 +29,17 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
+	// generate multiple particles per event
+	for(G4int iPart = 0; iPart < simPar->GetBeamPartPerEvent(); iPart++)
+	{
+		GenerateOnePrimary(anEvent);
+	}
+
+	return;
+}
+
+void PrimaryGeneratorAction::GenerateOnePrimary(G4Event* anEvent)
+{
     	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
     	G4ParticleDefinition* particleDef;
     	particleDef = particleTable->FindParticle(simPar->GetBeamName().c_str());
@@ -117,18 +128,18 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		G4ThreeVector(Xprime_real,Yprime_real,sqrt(1.0 - (pow(Xprime_real,2) + pow(Yprime_real,2))));
 
 	// store beam coordinates
-    	runAction->_beamPdg = particleDef->GetPDGEncoding();
-	runAction->_beamPosX = posXYZrot.x()/cm;
-	runAction->_beamPosY = posXYZrot.y()/cm;
-	runAction->_beamPosZ = posXYZrot.z()/cm;
-	runAction->_beamMomX = Mom*dirXYZrot.x()/eV;
-	runAction->_beamMomY = Mom*dirXYZrot.y()/eV;
-	runAction->_beamMomZ = Mom*dirXYZrot.z()/eV;
-	runAction->_beamEnergy = (Ekin + mass)/eV;
-	runAction->_beamRefPosX = magVector2.x()/cm;
-	runAction->_beamRefPosY = magVector2.y()/cm;
-	runAction->_beamRefPosZ = (Float_t)magVector2.z()/cm;
-	runAction->_beamRefAngle = angle/rad;
+    	runAction->_beamPdg.push_back(particleDef->GetPDGEncoding());
+	runAction->_beamPosX.push_back(posXYZrot.x()/cm);
+	runAction->_beamPosY.push_back(posXYZrot.y()/cm);
+	runAction->_beamPosZ.push_back(posXYZrot.z()/cm);
+	runAction->_beamMomX.push_back(Mom*dirXYZrot.x()/eV);
+	runAction->_beamMomY.push_back(Mom*dirXYZrot.y()/eV);
+	runAction->_beamMomZ.push_back(Mom*dirXYZrot.z()/eV);
+	runAction->_beamEnergy.push_back((Ekin + mass)/eV);
+	runAction->_beamRefPosX.push_back(magVector2.x()/cm);
+	runAction->_beamRefPosY.push_back(magVector2.y()/cm);
+	runAction->_beamRefPosZ.push_back((Float_t)magVector2.z()/cm);
+	runAction->_beamRefAngle.push_back(angle/rad);
 
 	// generate the primary beam 
     	fParticleGun->SetParticleDefinition(particleDef);

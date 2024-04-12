@@ -34,6 +34,7 @@ public:
     	virtual ~PrimaryGeneratorAction();
 
     	void GeneratePrimaries(G4Event* anEvent);
+	void GenerateOnePrimary(G4Event* anEvent);
 
 private:
     	G4ParticleGun* fParticleGun;

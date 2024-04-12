@@ -81,7 +81,6 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("monRefAngle_rad",	&_monRefAngle);
 
     	_tracks = new TTree("tracks", "Collected SR Track Data");
-    	_tracks->Branch("trackEvent",	&_trackEvent);
     	_tracks->Branch("trackPosX_cm",	&_trackPosX_cm);
     	_tracks->Branch("trackPosY_cm",	&_trackPosY_cm);
     	_tracks->Branch("trackPosZ_cm",	&_trackPosZ_cm);

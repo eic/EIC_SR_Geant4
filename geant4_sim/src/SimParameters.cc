@@ -153,6 +153,8 @@ void SimParameters::ReadXML(G4String fName)
         	// The data function is used to access the data stored in a node.
 		if(child_node.second.get<string>("<xmlattr>.name") == "part")
 			SetBeamName(child_node.second.data());
+		else if(child_node.second.get<string>("<xmlattr>.name") == "num")
+			SetBeamPartPerEvent(stoi(child_node.second.data()));
 		else if(child_node.second.get<string>("<xmlattr>.name") == "posx1" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "m")
 			SetBeamStartPosX(stod(child_node.second.data())*m); 
@@ -553,6 +555,7 @@ void SimParameters::InitDefault()
 	_beamMomSpread = 0.109e-2;
 	_beamGamma = 34924.26476;
 	_beamName = "e-";
+	_beamPartPerEvent = 1;
 	_beamType = "core";
 	_beamTailKx = 0;
 	_beamTailKy = 0;
@@ -612,6 +615,7 @@ void SimParameters::PrintBeamParameters()
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintBeamParameters ==> Beam parameters"<<G4endl;
 	G4cout<<"Beam particles = "<<GetBeamName()<<G4endl;
+	G4cout<<"Beam particles per event = "<<GetBeamPartPerEvent()<<endl;
 	G4cout<<"Start position X = "<<GetBeamStartPosX()/m<<" [m]"<<G4endl;
 	G4cout<<"Start position Y = "<<GetBeamStartPosY()/m<<" [m]"<<G4endl;
 	G4cout<<"Start position Z = "<<GetBeamStartPosZ()/m<<" [m]"<<G4endl;

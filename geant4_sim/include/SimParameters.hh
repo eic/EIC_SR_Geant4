@@ -62,6 +62,7 @@ private:
 	vector<G4double> _absPosY;
 	vector<G4double> _absPosZ;
 
+	G4int _beamPartPerEvent;
     	G4double _beamStartPosX;
     	G4double _beamStartPosY;
     	G4double _beamStartPosZ;
@@ -176,6 +177,7 @@ public:
 	G4double GetAbsPosZ(G4int i){return _absPosZ.at(i);}
 
     	G4String GetBeamName(){return _beamName;}
+	G4int GetBeamPartPerEvent(){return _beamPartPerEvent;}
     	G4String GetBeamType(){return _beamType;}
 	G4double GetBeamTailKx(){return _beamTailKx;}
 	G4double GetBeamTailKy(){return _beamTailKy;}
@@ -255,6 +257,7 @@ private:
 	G4double absPosX, G4double absPosY, G4double absPosZ);
 
     	void SetBeamName(G4String val){_beamName = val; return;}
+    	void SetBeamPartPerEvent(G4int val){_beamPartPerEvent = val; return;}
     	void SetBeamType(G4String val){_beamType = val; return;}
 	void SetBeamTailKx(G4double val){_beamTailKx = val; return;}
 	void SetBeamTailKy(G4double val){_beamTailKy = val; return;}

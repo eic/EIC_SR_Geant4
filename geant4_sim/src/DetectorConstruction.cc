@@ -67,7 +67,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	CreateBeamPipeSolid();
 //	CreateSrMask();
 	BuildIpBeamPipe();
-	BuildFarBackwardBeamPipe();
+//	BuildFarBackwardBeamPipe();
 	BuildMagnets();
 	BuildIrBeamPipe();
 	if(addAbsorber) BuildAbsorbers();

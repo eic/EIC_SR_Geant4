@@ -28,7 +28,6 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 {
 	_timer->Start();
     	runAction->_event = event->GetEventID();
-	runAction->_trackEvent = event->GetEventID();
 
 	// clean magnet data vectors
 	for(G4int iMag = 0; iMag < runAction->_magName.size(); iMag++)
@@ -48,6 +47,19 @@ void EventAction::EndOfEventAction(const G4Event*)
     	runAction->_tree->Fill();
 
 	// clean variables
+	runAction->_beamPdg.clear();
+	runAction->_beamPosX.clear();
+	runAction->_beamPosY.clear();
+	runAction->_beamPosZ.clear();
+	runAction->_beamMomX.clear();
+	runAction->_beamMomY.clear();
+	runAction->_beamMomZ.clear();
+	runAction->_beamEnergy.clear();
+	runAction->_beamRefPosX.clear();
+	runAction->_beamRefPosY.clear();
+	runAction->_beamRefPosZ.clear();
+	runAction->_beamRefAngle.clear();
+
 	runAction->_gammaVtxPosX.clear();
 	runAction->_gammaVtxPosY.clear();
 	runAction->_gammaVtxPosZ.clear();

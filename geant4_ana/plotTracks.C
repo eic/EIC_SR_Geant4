@@ -116,7 +116,6 @@ void getStoredTracks(const string outputfile)
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	// Declaration of leaf types
-	Int_t           trackEvent;
 	vector<float>   *trackPosX_cm = 0;
 	vector<float>   *trackPosY_cm = 0;
 	vector<float>   *trackPosZ_cm = 0;
@@ -129,7 +128,6 @@ void getStoredTracks(const string outputfile)
 		fChain->AddFile(_fileNames.at(i).c_str());
 	}
 
-	fChain->SetBranchAddress("trackEvent", &trackEvent);
 	fChain->SetBranchAddress("trackPosX_cm", &trackPosX_cm);
 	fChain->SetBranchAddress("trackPosY_cm", &trackPosY_cm);
 	fChain->SetBranchAddress("trackPosZ_cm", &trackPosZ_cm);
