@@ -67,6 +67,7 @@ set(exe_SCRIPTS
   vis.mac
   vis_ogl.mac
   runAll.bash
+  runAll_sdcc.bash
   )
 
 foreach(_script ${exe_SCRIPTS})

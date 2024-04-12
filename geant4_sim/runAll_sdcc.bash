@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# get input parameters
+jobID=$1
+nParticles=$2
+xmlFile=$3
+eicshell=$4
+outputDir=$5
+
+seed=$RANDOM
+
+mkdir -pv ${outputDir}
+
+date > ${outputDir}/logExe.${jobID}.txt
+
+# create mac file directory if it was not done before
+mkdir -pv macFiles
+mkdir -pv exeFiles
+
+# create a mac file
+echo "##-----------------------------------------##"		> ./macFiles/run_${jobID}.mac
+echo "/run/verbose 1"						>> ./macFiles/run_${jobID}.mac
+echo "/event/verbose 0"						>> ./macFiles/run_${jobID}.mac
+echo "/tracking/verbose 0"					>> ./macFiles/run_${jobID}.mac
+echo "##-----------------------------------------##"		>> ./macFiles/run_${jobID}.mac
+echo "/output/filename ${outputDir}/output_${jobID}.root"	>> ./macFiles/run_${jobID}.mac
+echo ""								>> ./macFiles/run_${jobID}.mac
+echo "/stack/killsecondaries 0"					>> ./macFiles/run_${jobID}.mac
+echo ""								>> ./macFiles/run_${jobID}.mac
+echo "/run/initialize"						>> ./macFiles/run_${jobID}.mac
+echo "##-----------------------------------------##"		>> ./macFiles/run_${jobID}.mac
+echo "/run/beamOn ${nParticles}"				>> ./macFiles/run_${jobID}.mac
+echo "##-----------------------------------------##"		>> ./macFiles/run_${jobID}.mac 
+
+# dump the mac file content to the log file
+cat ./macFiles/run_${jobID}.mac >> ${outputDir}/logExe.${jobID}.txt
+
+# run the simulation
+echo "./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} >> ${outputDir}/logExe.${jobID}.txt" > ./exeFiles/exe_${jobID}.bash
+chmod a+x ./exeFiles/exe_${jobID}.bash
+. ${eicshell} -- ./exeFiles/exe_${jobID}.bash
