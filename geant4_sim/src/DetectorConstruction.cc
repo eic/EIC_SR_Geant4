@@ -65,7 +65,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
-//	CreateSrMask();
+	CreateSrMask();
 	BuildIpBeamPipe();
 //	BuildFarBackwardBeamPipe();
 	BuildMagnets();
@@ -190,6 +190,25 @@ void DetectorConstruction::CreateSrMask()
 //	G4VisAttributes* mask3_vis = new G4VisAttributes(G4Colour::Red());
 //	mask3_log->SetVisAttributes(mask3_vis);
 */
+
+	//- mask-5
+	const G4double  zPlane[] = {-4660.0 * mm, -4453.0 * mm, -4300.0 * mm};
+	const G4double  rInner[] = {54/2. * mm, 43/2. * mm, 62/2. * mm};
+	const G4double  rOuter[] = {(62+1)/2. * mm, (62+1)/2. * mm, (62+1)/2. * mm};
+	G4VSolid* mask5_polycone = new G4Polycone("mask5_polycone", 0, 2.0 * M_PI, 3, zPlane, rInner, rOuter); 
+
+	//- Vacuum (subtract the mask ring from the beam pipe)
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+		beampipeVac_solid,mask5_polycone,0,G4ThreeVector(0,0,0));
+	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
+		beampipeUni_solid,mask5_polycone,0,G4ThreeVector(0,0,0));
+
+	//- Visualization
+//	G4LogicalVolume* mask5_log = new G4LogicalVolume(mask5_polycone, mat_vac, "mask5_log");
+//	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),mask5_log,"mask5",world_log,false,0,true);
+//	G4VisAttributes* mask5_vis = new G4VisAttributes(G4Colour::Red());
+//	mask5_log->SetVisAttributes(mask5_vis);
+
 
 
 	return;
