@@ -31,10 +31,10 @@ void readDataFromFiles(const string outputfile);
 
 vector<string> _fileNames;
 
-void plotEdepLumiWind(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v5.6_nosrmask_farBWD/", 
+void plotEdepLumiWind(	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v6.2_nosrmask_farBWD_newMaterialsAndCoating/", 
 			const string pattern = ".podio", 
 			const string extension = ".root", 
-			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v5.6_nosrmask_farBWD_plotEdepLumiWind.root")
+			const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v6.2_nosrmask_farBWD_newMaterialsAndCoating_plotEdepLumiWind.root")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 

@@ -2,8 +2,8 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_v5.6_nosrmask_farBWD' # input directory
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v5.6_nosrmask_farBWD' # output directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicsim_v6.2_nosrmask_farBWD_newMaterialsAndCoating' # input directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/output_eicrecon_v6.2_nosrmask_farBWD_newMaterialsAndCoating' # output directory
 buildDir='./build' # build directory
 nJobs=10000 # number of jobs
 queue='l'

@@ -69,5 +69,8 @@ benchmark/HitRates/eic_recon/pics
 eic_matscan/detector_geometry/*
 !eic_matscan/detector_geometry/run.sh
 
+# folders with trash
+delete
+
 # Git
 !.gitignore
