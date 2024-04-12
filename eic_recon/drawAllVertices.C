@@ -313,22 +313,16 @@ void drawHistograms(const string outputdir)
 	cVertexBarrel->cd(5);
 	hMcPrim_VertexBarrelAll_xz->SetMarkerStyle(21);
 	hMcPrim_VertexBarrelAll_xz->SetMarkerSize(0.4);
-	hMcPrim_VertexBarrelAll_xz->GetXaxis()->SetRangeUser(-2000,2000);
-	hMcPrim_VertexBarrelAll_xz->GetYaxis()->SetRangeUser(-200,200);
 	hMcPrim_VertexBarrelAll_xz->Draw("box");
 
 	cVertexBarrel->cd(6);
 	hMcPrim_VertexBarrelAll_yz->SetMarkerStyle(21);
 	hMcPrim_VertexBarrelAll_yz->SetMarkerSize(0.4);
-	hMcPrim_VertexBarrelAll_yz->GetXaxis()->SetRangeUser(-2000,2000);
-	hMcPrim_VertexBarrelAll_yz->GetYaxis()->SetRangeUser(-200,200);
 	hMcPrim_VertexBarrelAll_yz->Draw("box");
 
 	cVertexBarrel->cd(7);
 	hMcPrim_VertexBarrelAll_yx->SetMarkerStyle(21);
 	hMcPrim_VertexBarrelAll_yx->SetMarkerSize(0.4);
-	hMcPrim_VertexBarrelAll_yx->GetYaxis()->SetRangeUser(-200,200);
-	hMcPrim_VertexBarrelAll_yx->GetYaxis()->SetRangeUser(-200,200);
 	hMcPrim_VertexBarrelAll_yx->Draw("box");
 
 	cVertexBarrel->cd(8);
@@ -369,13 +363,11 @@ void drawHistograms(const string outputdir)
 	cTrackerEndcap->cd(5);
 	hMcPrim_TrackerEndcapAll_xz->SetMarkerStyle(21);
 	hMcPrim_TrackerEndcapAll_xz->SetMarkerSize(0.4);
-	hMcPrim_TrackerEndcapAll_xz->GetXaxis()->SetRangeUser(-2000,2000);
 	hMcPrim_TrackerEndcapAll_xz->Draw("box");
 
 	cTrackerEndcap->cd(6);
 	hMcPrim_TrackerEndcapAll_yz->SetMarkerStyle(21);
 	hMcPrim_TrackerEndcapAll_yz->SetMarkerSize(0.4);
-	hMcPrim_TrackerEndcapAll_yz->GetXaxis()->SetRangeUser(-2000,2000);
 	hMcPrim_TrackerEndcapAll_yz->Draw("box");
 
 	cTrackerEndcap->cd(7);
