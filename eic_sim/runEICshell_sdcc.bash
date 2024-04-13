@@ -16,10 +16,10 @@ echo "[INFO] inputDirName = ${inputDirName}"
 echo "[INFO] outputDirName = ${outputDirName}"
 echo "[INFO] buildDir = ${buildDir}"
 echo "[INFO] nJobs = ${nJobs}"
-echo "[INFO] queue = ${queue}"
 
 # output directory
 mkdir -pv ${outputDirName}
+
 # build directory
 rm -rf ${buildDir}
 mkdir -pv ${buildDir}
