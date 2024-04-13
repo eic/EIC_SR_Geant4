@@ -11,7 +11,7 @@ seed=$RANDOM
 
 mkdir -pv ${outputDir}
 
-date > ${outputDir}/logExe.${jobID}.txt
+date > ${outputDir}/logExe_${jobID}.txt
 
 # create mac file directory if it was not done before
 mkdir -pv macFiles
@@ -33,9 +33,9 @@ echo "/run/beamOn ${nParticles}"				>> ./macFiles/run_${jobID}.mac
 echo "##-----------------------------------------##"		>> ./macFiles/run_${jobID}.mac 
 
 # dump the mac file content to the log file
-cat ./macFiles/run_${jobID}.mac >> ${outputDir}/logExe.${jobID}.txt
+cat ./macFiles/run_${jobID}.mac >> ${outputDir}/logExe_${jobID}.txt
 
 # run the simulation
-echo "./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} >> ${outputDir}/logExe.${jobID}.txt" > ./exeFiles/exe_${jobID}.bash
-chmod a+x ./exeFiles/exe_${jobID}.bash
+echo "./exe ./macFiles/run_${jobID}.mac ${xmlFile} ${seed} >> ${outputDir}/logExe_${jobID}.txt" > ./exeFiles/exe_${jobID}.bash
+chmod 777 ./exeFiles/exe_${jobID}.bash
 . ${eicshell} -- ./exeFiles/exe_${jobID}.bash

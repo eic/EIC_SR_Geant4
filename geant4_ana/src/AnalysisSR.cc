@@ -28,6 +28,19 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	cout<<"==================================================================\n\n"<<endl;
 
    	// set object pointer
+	beamPdg = nullptr;
+	beamPosX_cm = nullptr;
+	beamPosY_cm = nullptr;
+	beamPosZ_cm = nullptr;
+	beamMomX_eV = nullptr;
+	beamMomY_eV = nullptr;
+	beamMomZ_eV = nullptr;
+	beamEnergy_eV = nullptr;
+	beamRefPosX_cm = nullptr;
+	beamRefPosY_cm = nullptr;
+	beamRefPosZ_cm = nullptr;
+	beamRefAngle_rad = nullptr;
+
 	monName = new string();
 	gammaVtxPosX_cm = nullptr;
 	gammaVtxPosY_cm = nullptr;
@@ -288,14 +301,19 @@ void AnalysisSR::Loop()
 		_h6->Fill(monMom.Mag()/1e9); // eV --> GeV
 
 		// primary beam data
-		TVector3 beamMom(beamMomX_eV,beamMomY_eV,beamMomZ_eV);
-		TVector3 beamPos(beamPosX_cm-beamRefPosX_cm,beamPosY_cm-beamRefPosY_cm,beamPosZ_cm-beamRefPosZ_cm);
-		beamMom.RotateY(-beamRefAngle_rad);
-		beamPos.RotateY(-beamRefAngle_rad);
+		for(Int_t iBeam = 0; iBeam < beamPdg->size(); iBeam++)
+		{
+			TVector3 beamMom(beamMomX_eV->at(iBeam),beamMomY_eV->at(iBeam),beamMomZ_eV->at(iBeam));
+			TVector3 beamPos(	beamPosX_cm->at(iBeam)-beamRefPosX_cm->at(iBeam),
+						beamPosY_cm->at(iBeam)-beamRefPosY_cm->at(iBeam),
+						beamPosZ_cm->at(iBeam)-beamRefPosZ_cm->at(iBeam));
+			beamMom.RotateY(-beamRefAngle_rad->at(iBeam));
+			beamPos.RotateY(-beamRefAngle_rad->at(iBeam));
 
-		_h7->Fill(beamPos.x(),beamMom.x()/beamMom.Mag());
-		_h8->Fill(beamPos.y(),beamMom.y()/beamMom.Mag());
-		_h9->Fill(beamMom.Mag()/1e9); // eV --> GeV
+			_h7->Fill(beamPos.x(),beamMom.x()/beamMom.Mag());
+			_h8->Fill(beamPos.y(),beamMom.y()/beamMom.Mag());
+			_h9->Fill(beamMom.Mag()/1e9); // eV --> GeV
+		}
 
 		// loop over magnets
 		for(Int_t iMag = 0; iMag < magName->size(); iMag++) 

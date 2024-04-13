@@ -10,9 +10,8 @@ xmlFile="/direct/eic+u/anatochii/EIC_SR_Geant4/geant4_sim/geometry/simParameters
 nParticles=100000 # number of primary particles per job
 outputDir='/gpfs02/eic/anatochii/highstat_output_g4sim_v6.2_srmask5_1' # output directory
 buildDir='./build' # build directory
-nJobs=10000 # number of jobs
+nJobs=100000 # number of jobs
 eicshell='/direct/eic+u/anatochii/eic/eic-shell'
-eicsetup='/direct/eic+u/anatochii/eic/epic/install/setup.sh'
 #--------------------------------------------------#
 #--------------------------------------------------#
 
@@ -56,9 +55,9 @@ mkdir -pv ./macFiles
 instructionFile="instr.sub"
 
 echo "executable = runAll_sdcc.bash" > ${instructionFile}
-echo "arguments  = \$(ClusterID)_\$(ProcId) $nParticles $xmlFile $eicshell $outputDir" >> ${instructionFile}
-echo "log        = ${outputDir}/logJob.\$(ClusterID)_\$(ProcId).log" >> ${instructionFile}
-echo "error      = ${outputDir}/logErr.\$(ClusterID)_\$(ProcId).err" >> ${instructionFile}
+echo "arguments  = \$(ProcId) $nParticles $xmlFile $eicshell $outputDir" >> ${instructionFile}
+echo "log        = ${outputDir}/logJob_\$(ProcId).log" >> ${instructionFile}
+echo "error      = ${outputDir}/logErr_\$(ProcId).err" >> ${instructionFile}
 echo "queue ${nJobs}" >> ${instructionFile}
 
 condor_submit ${instructionFile}

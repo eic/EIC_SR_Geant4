@@ -36,19 +36,19 @@ public :
 	virtual ~AnalysisSR();
 
    	// Declaration of leaf types
-	Int_t           event;
-	Int_t           beamPdg;
-	Float_t         beamPosX_cm;
-	Float_t         beamPosY_cm;
-	Float_t         beamPosZ_cm;
-	Float_t         beamMomX_eV;
-	Float_t         beamMomY_eV;
-	Float_t         beamMomZ_eV;
-	Float_t         beamEnergy_eV;
-	Float_t 	beamRefPosX_cm;
-	Float_t 	beamRefPosY_cm;
-	Float_t 	beamRefPosZ_cm;
-	Float_t 	beamRefAngle_rad;
+	int             event;
+	vector<int>     *beamPdg;
+	vector<float>   *beamPosX_cm;
+	vector<float>   *beamPosY_cm;
+	vector<float>   *beamPosZ_cm;
+	vector<float>   *beamMomX_eV;
+	vector<float>   *beamMomY_eV;
+	vector<float>   *beamMomZ_eV;
+	vector<float>   *beamEnergy_eV;
+	vector<float> 	*beamRefPosX_cm;
+	vector<float> 	*beamRefPosY_cm;
+	vector<float> 	*beamRefPosZ_cm;
+	vector<float> 	*beamRefAngle_rad;
 
 	vector<string>	*magName;
 	vector<int>	*magNph;
