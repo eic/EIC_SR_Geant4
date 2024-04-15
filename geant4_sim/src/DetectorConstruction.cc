@@ -421,6 +421,21 @@ void DetectorConstruction::BuildIpBeamPipe()
 		"[ERROR] DetectorConstruction::BuildIpBeamPipe ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
 
+	//- ip_cut
+	G4VSolid* ip_cut = new G4Tubs("ip_cut",62.0/2 * mm, 80.0/2 * mm, 300.0/2 * mm, 0, 2.0 * M_PI);
+
+	//- Vacuum (subtract ip_cut from the beam pipe)
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+		beampipeVac_solid,ip_cut,0,G4ThreeVector(0.0 * cm,0.0 * cm,65.0 * cm));
+	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
+		beampipeUni_solid,ip_cut,0,G4ThreeVector(0.0 * cm,0.0 * cm,65.0 * cm));
+
+	//- Visualization
+//	G4LogicalVolume* ip_cut_log = new G4LogicalVolume(ip_cut, mat_vac, "ip_cut_log");
+//	new G4PVPlacement(0,G4ThreeVector(0.0 * cm,0.0 * cm,65.0 * cm),ip_cut_log,"ip_cut",world_log,false,0,true);
+//	G4VisAttributes* ip_cut_vis = new G4VisAttributes(G4Colour::Red());
+//	ip_cut_log->SetVisAttributes(ip_cut_vis);
+
 	//- IP beam pipe
 	ip_box = new G4Box("ip_box",1*m/2,1*m/2,(simPar->GetIpBeampipeZmax()-simPar->GetIpBeampipeZmin())/2); 
 	G4VSolid* ip_solid = new G4IntersectionSolid("ip_solid", beampipeUni_solid, ip_box,0,
