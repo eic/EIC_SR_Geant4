@@ -8,9 +8,9 @@ date;
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="/direct/eic+u/anatochii/EIC_SR_Geant4/geant4_sim/geometry/simParameters_v6.2.xml" # simulation geometry settings
 nParticles=100000 # number of primary particles per job
-outputDir='/gpfs02/eic/anatochii/highstat_output_g4sim_v6.2_srmask5_1' # output directory
-buildDir='./build' # build directory
-nJobs=100000 # number of jobs
+outputDir='/gpfs02/eic/anatochii/19_highstat_output_g4sim_v6.2_srmask5_1' # output directory
+buildDir='./build_19' # build directory
+nJobs=10000 # number of jobs
 eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 #--------------------------------------------------#
 #--------------------------------------------------#
