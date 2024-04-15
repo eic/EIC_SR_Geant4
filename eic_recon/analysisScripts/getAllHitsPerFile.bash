@@ -2,8 +2,8 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask4_1_farBWD_newMaterialsAndCoating' # output directory
-buildDir='./build_srmask4_1' # build directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask5_1' # output directory
+buildDir='./build' # build directory
 nJobs=10000 # number of jobs
 queue='s'
 eicshell='/home/belle2/anatochi/eic/eic-shell'
