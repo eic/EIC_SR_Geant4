@@ -2,14 +2,14 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask5_1' # output directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask5_1_ip_cut' # output directory
 buildDir='./build' # build directory
 nJobs=10000 # number of jobs
 queue='s'
 eicshell='/home/belle2/anatochi/eic/eic-shell'
 # eicsetup='/opt/detector/setup.sh'
 eicsetup='/home/belle2/anatochi/eic/epic/install/setup.sh'
-scriptName='getAllHitsPerFile.C'
+scriptName='getAllVerticesPerFile.C'
 #--------------------------------------------------#
 #--------------------------------------------------#
 
@@ -25,7 +25,7 @@ cd ${buildDir}
 cp ../${scriptName} ./
 
 runID=0
-runFile="runGetAllHits_${runID}.sh"
+runFile="runGetAllVertices_${runID}.sh"
 echo "#!/bin/bash" > ${runFile}
 echo "source ${eicsetup}" >> ${runFile} 
 
@@ -36,7 +36,7 @@ do
 	echo -ne "time root -l -b -q ${scriptName}\(" >> ${runFile}
 	echo -ne "\\\"${inputDirName}/output_eicrecon_${jobID}.podio.root\\\"" >> ${runFile}
 	echo -ne "," >> ${runFile}
-	echo -ne "\\\"${inputDirName}/output_eicrecon_${jobID}.hist.root\\\"" >> ${runFile}
+	echo -ne "\\\"${inputDirName}/output_eicrecon_${jobID}.vertex.root\\\"" >> ${runFile}
 	echo     "\)" >> ${runFile}
 
 	jobID_tmp=$(($jobID % 10))
@@ -46,7 +46,7 @@ do
 		
 		# submit a job
 		echo -ne "Run = ${runID} (last job = ${jobID}/${nJobs}): "
-		bsub -q $queue -o ${inputDirName}/logJob_hist_${jobID}.txt ". ${eicshell} -- ./${runFile}"
+		bsub -q $queue -o ${inputDirName}/logJob_vertex_${jobID}.txt ". ${eicshell} -- ./${runFile}"
 
 		# move to another run
 		runID=$(($runID+1))
@@ -58,5 +58,5 @@ done
 
 cd -
 
-echo "When '${queue}' jobs finished, run in eic-shell: root -l -b -q drawAllHits.C\\(\\\"${inputDirName}\\\",\\\".hist\\\",\\\".root\\\",\\\"./pics\\\"\\)"
+echo "When '${queue}' jobs finished, run in eic-shell: root -l -b -q drawAllVertices.C\\(\\\"${inputDirName}\\\",\\\".vertex\\\",\\\".root\\\",\\\"./pics\\\"\\)"
 

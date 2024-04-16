@@ -2,9 +2,9 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir='/group/belle2/TMP/anatochi/eic/highstat_output_g4sim_v6.2_srmask5_1' # input directory
+mainInDir='/group/belle2/TMP/anatochi/eic/highstat_output_g4sim_v6.2_srmask5_1_ip_cut' # input directory
 treeName='tree'
-outputDir='/group/belle2/TMP/anatochi/eic/highstat_output_g4ana_v6.2_srmask5_1' # output directory
+outputDir='/group/belle2/TMP/anatochi/eic/highstat_output_g4ana_v6.2_srmask5_1_ip_cut' # output directory
 buildDir='./build' # build directory
 nJobs=10000 # number of jobs
 queue='l'
@@ -45,7 +45,7 @@ do
 	com="./exe ${mainInDir} output_${jobID}.root ${outputDir} output_ana_${jobID} ${treeName} ${minZ} ${maxZ}"
 	com="${com} &> ${outputDir}/logExe_ana_${jobID}.txt"
 	echo "$com" >> run_${runID}.sh
-	jobID_tmp=$(($jobID % 100))
+	jobID_tmp=$(($jobID % 10))
 	if [ $jobID_tmp -eq 0 ]; then
 		echo -ne "Run = ${runID} (last job = ${jobID}/${nJobs}): "
 		chmod a+x run_${runID}.sh
