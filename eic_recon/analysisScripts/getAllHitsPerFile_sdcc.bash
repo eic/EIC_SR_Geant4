@@ -2,9 +2,9 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs02/eic/anatochii/highstat_output_eicrecon_v6.2_srmask5_1' # output directory
-buildDir='./build' # build directory
-nJobs=10000 # number of jobs
+inputDirName="/gpfs02/eic/anatochii/${1}_highstat_output_eicrecon_v6.2_srmask5_1" # output directory
+buildDir="./build_${1}" # build directory
+nJobs=20000 # number of jobs
 eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 eicsetup='/direct/eic+u/anatochii/eic/epic/install/setup.sh'
 scriptName='getAllHitsPerFile.C'
