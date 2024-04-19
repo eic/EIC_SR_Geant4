@@ -27,7 +27,6 @@ echo "[INFO] maxZ = ${maxZ} [cm]"
 mkdir -pv ${outputDir}
 
 # build directory
-rm -rf ${buildDir}
 mkdir -pv ${buildDir}
 cd ${buildDir}
 

@@ -2,11 +2,11 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir='/gpfs02/eic/anatochii/highstat_output_g4sim_v6.2_srmask5_1' # input directory
+mainInDir="/gpfs02/eic/anatochii/${1}_highstat_output_g4sim_v6.2_srmask5_1" # input directory
 treeName='tree'
-outputDir='/gpfs02/eic/anatochii/highstat_output_g4ana_v6.2_srmask5_1' # output directory
-buildDir='./build' # build directory
-nJobs=10000 # number of jobs
+outputDir="/gpfs02/eic/anatochii/${1}_highstat_output_g4ana_v6.2_srmask5_1" # output directory
+buildDir="./build_${1}" # build directory
+nJobs=20000 # number of jobs
 # in the custom-built Geant4 coordinate system
 minZ=-500.0 # [cm] minimum Z
 maxZ=4000.0 # [cm] maximum Z
@@ -26,7 +26,6 @@ echo "[INFO] maxZ = ${maxZ} [cm]"
 mkdir -pv ${outputDir}
 
 # build directory
-rm -rf ${buildDir}
 mkdir -pv ${buildDir}
 cd ${buildDir}
 
@@ -51,7 +50,7 @@ echo ". ${eicshell} -- ./exe_\${4}.bash" >> run.bash
 chmod 777 run.bash
 
 echo "executable = run.bash" > ${instructionFile}
-echo "arguments  = ${mainInDir} output_519666_\$(ProcId).root ${outputDir} \$(ProcId) ${treeName} ${minZ} ${maxZ}" >> ${instructionFile}
+echo "arguments  = ${mainInDir} output_\$(ProcId).root ${outputDir} \$(ProcId) ${treeName} ${minZ} ${maxZ}" >> ${instructionFile}
 echo "log        = ${outputDir}/logJob_\$(ProcId).log" >> ${instructionFile}
 echo "error      = ${outputDir}/logErr_\$(ProcId).err" >> ${instructionFile}
 echo "queue ${nJobs}" >> ${instructionFile}
