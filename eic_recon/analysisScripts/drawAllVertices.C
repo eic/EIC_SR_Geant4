@@ -31,7 +31,7 @@ void drawHistograms(const string outputdir);
 vector<string> _fileNames;
 
 void drawAllVertices(	
-	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask4_2_farBWD_newMaterialsAndCoating/", 
+	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask5_1_ip_cut2/", 
 	const string pattern = ".vertex", 
 	const string extension = ".root", 
 	const string outputdir = "./pics")

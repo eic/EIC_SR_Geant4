@@ -2,12 +2,12 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir='/group/belle2/TMP/anatochi/eic/highstat_output_g4sim_v6.2_srmask5_1_ip_cut' # input directory
+mainInDir='/group/belle2/TMP/anatochi/eic/highstat_output_g4sim_v6.2_srmask5_1_ip_cut2' # input directory
 treeName='tree'
-outputDir='/group/belle2/TMP/anatochi/eic/highstat_output_g4ana_v6.2_srmask5_1_ip_cut' # output directory
-buildDir='./build' # build directory
+outputDir='/group/belle2/TMP/anatochi/eic/highstat_output_g4ana_v6.2_srmask5_1_ip_cut2' # output directory
+buildDir='./build2' # build directory
 nJobs=10000 # number of jobs
-queue='l'
+queue='s'
 # in the custom-built Geant4 coordinate system
 minZ=-500.0 # [cm] minimum Z
 maxZ=4000.0 # [cm] maximum Z
@@ -27,7 +27,6 @@ echo "[INFO] maxZ = ${maxZ} [cm]"
 mkdir -pv ${outputDir}
 
 # build directory
-rm -rf ${buildDir}
 mkdir -pv ${buildDir}
 cd ${buildDir}
 

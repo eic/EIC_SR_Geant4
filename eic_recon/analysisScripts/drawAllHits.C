@@ -34,7 +34,7 @@ const Double_t BeamCurrent_A = 0.227; // [A]
 const Double_t nElectronsPerFile = 100000.0;
 
 void drawAllHits(
-	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask5_1_ip_cut/",
+	const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask5_1_ip_cut2/",
 	const string pattern = ".hist", 
 	const string extension = ".root",
 	const string outputdir = "./pics")
