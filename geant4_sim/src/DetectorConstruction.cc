@@ -422,7 +422,7 @@ void DetectorConstruction::BuildIpBeamPipe()
 	}
 
 	//- ip_cut
-	G4VSolid* ip_cut = new G4Tubs("ip_cut",62.0/2 * mm, 80.0/2 * mm, (150.0 + 22.1) * mm, 0, 2.0 * M_PI);
+	G4VSolid* ip_cut = new G4Tubs("ip_cut",62.0/2 * mm, 80.0/2 * mm, (150.0 + 20.1) * mm, 0, 2.0 * M_PI);
 
 	//- Vacuum (subtract ip_cut from the beam pipe)
 	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
