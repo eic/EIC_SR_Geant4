@@ -2,9 +2,9 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicsim_v6.2_srmask5_1_ip_cut3' # input directory
-outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask5_1_ip_cut3' # output directory
-buildDir='./build' # build directory
+inputDirName='/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicsim_v6.2_srmask5_1_ip_cut4' # input directory
+outputDirName='/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_eicrecon_v6.2_srmask5_1_ip_cut4' # output directory
+buildDir='./build4' # build directory
 nJobs=10000 # number of jobs
 queue='s'
 eicshell='/home/belle2/anatochi/eic/eic-shell'
