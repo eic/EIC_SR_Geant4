@@ -131,10 +131,10 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	for(Int_t iMag = 0; iMag < magName->size(); iMag++)
 	{
 		_h10[iMag] = new TH1F(Form("h10_%d",iMag),
-			Form("Number of generated SR photons per event in %s",magName->at(iMag).c_str()),1000,0,1000);
+			Form("Number of generated SR photons per event in %s",magName->at(iMag).c_str()),10000,0,10000);
 		_h11[iMag] = new TH1F(Form("h11_%d",iMag),
 			Form("Energy sum of generated SR photons per event in %s;#Sigma_{#gamma} [eV]",
-			magName->at(iMag).c_str()),1e5,0,1e6);
+			magName->at(iMag).c_str()),1e6,0,100e6);
 	}	
 
 	// ascii file to store generated events

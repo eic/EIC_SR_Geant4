@@ -26,6 +26,7 @@
 #include "G4hPairProduction.hh"
 
 #include "G4SynchrotronRadiation.hh"
+#include "SynchrotronRadiation.hh"
 #include "G4SynchrotronRadiationInMat.hh"
 
 #include "G4StepLimiter.hh"
@@ -109,7 +110,8 @@ void PhysicsList::ConstructEM()
 			{ 
 				case 1:
 					// G4SynchrotronRadiation
-        				pmanager->AddProcess(new G4SynchrotronRadiation,	-1,-1, 3);
+        				// pmanager->AddProcess(new G4SynchrotronRadiation,	-1,-1, 3);
+        				pmanager->AddProcess(new SynchrotronRadiation,	-1,-1, 3);
 					break;
 				case 2:
 					// G4SynchrotronRadiationInMat
@@ -133,7 +135,8 @@ void PhysicsList::ConstructEM()
 			{ 
 				case 1:
 					// G4SynchrotronRadiation
-        				pmanager->AddProcess(new G4SynchrotronRadiation,	-1,-1, 4);
+        				// pmanager->AddProcess(new G4SynchrotronRadiation,	-1,-1, 4);
+        				pmanager->AddProcess(new SynchrotronRadiation,	-1,-1, 4);
 					break;
 				case 2:
 					// G4SynchrotronRadiationInMat
