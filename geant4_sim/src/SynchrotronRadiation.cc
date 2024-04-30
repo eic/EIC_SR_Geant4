@@ -51,10 +51,11 @@
 
 ///////////////////////////////////////////////////////////////////////
 //  Constructor
-SynchrotronRadiation::SynchrotronRadiation(const G4String& processName,
-                                               G4ProcessType type)
+SynchrotronRadiation::SynchrotronRadiation(	const G4String& processName,
+                                          	G4ProcessType type,
+						const G4double pMeanFreePathFactor)
   : G4VDiscreteProcess(processName, type)
-  , theGamma(G4Gamma::Gamma())
+  , theGamma(G4Gamma::Gamma()), fMeanFreePathFactor(pMeanFreePathFactor)
 {
   G4TransportationManager* transportMgr =
     G4TransportationManager::GetTransportationManager();
@@ -161,7 +162,7 @@ G4double SynchrotronRadiation::GetMeanFreePath(const G4Track& trackData,
 
       if(perpB > 0.0)
       {
-        MeanFreePath = fLambdaConst *
+        MeanFreePath = (1.0/fMeanFreePathFactor) * fLambdaConst *
                        aDynamicParticle->GetDefinition()->GetPDGMass() /
                        (perpB * particleCharge * particleCharge);
       }

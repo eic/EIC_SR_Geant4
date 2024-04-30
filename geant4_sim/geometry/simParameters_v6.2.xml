@@ -53,6 +53,11 @@
 		<sec desc="gamma energy cut" name="ecut" unit="eV">1000</sec>
 	</genecut>
 
+	<!-- scale the number of SR gammas per electron -->
+	<meanfreepath>
+		<sec desc="gamma production scale factor to modify MeanFreePath" name="MeanFreePathFactor" unit="">1</sec>
+	</meanfreepath>
+
 	<!-- tracking time cut -->
 	<timecut>
 		<sec desc="simulation time cut" name="tcut" unit="s">1e-6</sec>

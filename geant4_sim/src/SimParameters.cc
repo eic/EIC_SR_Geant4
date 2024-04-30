@@ -136,6 +136,17 @@ void SimParameters::ReadXML(G4String fName)
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
 
+	// mean free path factor 
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.meanfreepath"))
+	{
+		// The data function is used to access the data stored in a node.
+		if(child_node.second.get<string>("<xmlattr>.name") == "MeanFreePathFactor" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetMeanFreePathFactor(stod(child_node.second.data()));
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+
 	// tracking time cut
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.timecut"))
 	{
@@ -577,6 +588,8 @@ void SimParameters::InitDefault()
 	_storeTrjZmax =  68.7*cm;
 	_storeTrjEmin = 10e-6*GeV;
 
+	_meanFreePathFactor = 1.0;
+
 	return;
 }
 
@@ -746,6 +759,15 @@ void SimParameters::PrintGammaEcut()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintGammaEcut ==> Ecut = "<<GetGammaEcut()/eV<<" [eV]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	return;
+}
+
+void SimParameters::PrintMeanFreePathFactor()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintMeanFreePathFactor ==> MeanFreePathFactor = "<<GetMeanFreePathFactor()<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

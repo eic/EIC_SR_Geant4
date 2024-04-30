@@ -45,6 +45,7 @@ PhysicsList::PhysicsList(G4String xmlFileName): G4VUserPhysicsList()
 	simPar->InitDefault();
 	simPar->ReadXML(xmlFileName);
 	simPar->PrintSRprocParameters();
+	simPar->PrintMeanFreePathFactor();
 }
 
 PhysicsList::~PhysicsList()
@@ -110,12 +111,15 @@ void PhysicsList::ConstructEM()
 			{ 
 				case 1:
 					// G4SynchrotronRadiation
-        				// pmanager->AddProcess(new G4SynchrotronRadiation,	-1,-1, 3);
-        				pmanager->AddProcess(new SynchrotronRadiation,	-1,-1, 3);
+        				// pmanager->AddProcess(new G4SynchrotronRadiation,	-1,-1, 3); // Geant4
+        				pmanager->AddProcess(
+						new SynchrotronRadiation("SynRad",fElectromagnetic,
+							simPar->GetMeanFreePathFactor()), // Geant4-biased
+						-1,-1, 3);
 					break;
 				case 2:
 					// G4SynchrotronRadiationInMat
-        				pmanager->AddProcess(new G4SynchrotronRadiationInMat,	-1,-1, 3); 
+        				pmanager->AddProcess(new G4SynchrotronRadiationInMat,	-1,-1, 3);
 					break;
 				default:
 					throw runtime_error("[ERROR] PhysicsList::ConstructEM ==> Wrong SR model\n"); 
@@ -135,8 +139,11 @@ void PhysicsList::ConstructEM()
 			{ 
 				case 1:
 					// G4SynchrotronRadiation
-        				// pmanager->AddProcess(new G4SynchrotronRadiation,	-1,-1, 4);
-        				pmanager->AddProcess(new SynchrotronRadiation,	-1,-1, 4);
+        				// pmanager->AddProcess(new G4SynchrotronRadiation,	-1,-1, 4); // Geant4
+        				pmanager->AddProcess(
+						new SynchrotronRadiation("SynRad",fElectromagnetic,
+							simPar->GetMeanFreePathFactor()), // Geant4-biased
+						-1,-1, 4);
 					break;
 				case 2:
 					// G4SynchrotronRadiationInMat

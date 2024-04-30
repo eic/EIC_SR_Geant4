@@ -51,7 +51,8 @@ class SynchrotronRadiation : public G4VDiscreteProcess
 {
  public:
   explicit SynchrotronRadiation(const G4String& pName = "SynRad",
-                                  G4ProcessType type    = fElectromagnetic);
+                                G4ProcessType type    = fElectromagnetic,
+				const G4double pMeanFreePathFactor = 1.0);
 
   virtual ~SynchrotronRadiation();
 
@@ -87,6 +88,7 @@ class SynchrotronRadiation : public G4VDiscreteProcess
   G4VEmAngularDistribution* genAngle;
   G4ParticleDefinition* theGamma;
   G4PropagatorInField* fFieldPropagator;
+  G4double fMeanFreePathFactor;
 
   G4bool FirstTime;
   G4bool FirstTime1;
