@@ -18,7 +18,7 @@ SteppingAction::SteppingAction(RunAction* runAct, G4String xmlFileName) : runAct
 	simPar = new SimParameters();
 	simPar->InitDefault();
 	simPar->ReadXML(xmlFileName);
-	simPar->PrintTrackTcut();
+	simPar->PrintGammaCut();
 }
 
 SteppingAction::~SteppingAction()

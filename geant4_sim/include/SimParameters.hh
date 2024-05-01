@@ -103,6 +103,9 @@ private:
 
 	G4double _gammaEcut;
 	G4double _trackTcut;
+	G4bool _straightTracksKillStatus;
+	G4double _gammaDmin;
+	G4double _gammaZend;
 
 	G4double _ipBeampipeZmin;
 	G4double _ipBeampipeZmax;
@@ -121,9 +124,8 @@ public:
 	void PrintIpBeampipeParameters();
 	void CleanAbsParameters();
 	void PrintSRprocParameters();
-	void PrintGammaEcut();
+	void PrintGammaCut();
 	void PrintMeanFreePathFactor();
-	void PrintTrackTcut();
 	void ReadXML(G4String fName);
 	void PrintStoreTrajectories();
 
@@ -212,8 +214,10 @@ public:
 	G4double GetAutoCorrLength(){return _autoCorrLength;}
 
 	G4double GetGammaEcut(){return _gammaEcut;}
-
 	G4double GetTrackTcut(){return _trackTcut;}
+	G4bool GetStraightTracksKillStatus(){return _straightTracksKillStatus;}
+	G4double GetStraightTracksDmin(){return _gammaDmin;}
+	G4double GetStraightTracksZend(){return _gammaZend;}
 
 	G4bool GetStoreTrajectories(){return _storeTrj;}
 	G4double GetStoreTrajectoriesZmin(){return _storeTrjZmin;}
@@ -294,8 +298,15 @@ private:
 	void SetAutoCorrLength(G4double val){_autoCorrLength = val; return;}
 
 	void SetGammaEcut(G4double val){_gammaEcut = val; return;}
-
 	void SetTrackTcut(G4double val){_trackTcut = val; return;}
+	void SetStraightTracksKillStatus(G4int val)
+	{
+		if(val == 1){_straightTracksKillStatus=true;}
+		else{_straightTracksKillStatus=false;} 
+		return;
+	}
+	void SetStraightTracksDmin(G4double val){_gammaDmin = val; return;}
+	void SetStraightTracksZend(G4double val){_gammaZend = val; return;}
 
 	G4bool FileExists(const G4String& fName);
 

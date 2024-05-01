@@ -48,14 +48,17 @@
 		<sec desc="Emin for the tracked photon" name="Emin" unit="GeV">10e-6</sec>
 	</storetrj>
 
-	<!-- tracked gamma energy cut -->
-	<genecut>
+	<!-- tracked gamma cuts -->
+	<gammacut>
 		<sec desc="gamma energy cut" name="ecut" unit="eV">1000</sec>
-	</genecut>
+		<sec desc="gamma straight track kill: 1 - true; 0 - false" name="trackkill">1</sec>
+		<sec desc="gamma straight track Dmin" name="Dmin" unit="mm">43.0</sec>
+		<sec desc="gamma straight track Zend" name="Zend" unit="cm">1527.0</sec>
+	</gammacut>
 
 	<!-- scale the number of SR gammas per electron -->
 	<meanfreepath>
-		<sec desc="gamma production scale factor to modify MeanFreePath" name="MeanFreePathFactor" unit="">1</sec>
+		<sec desc="gamma production scale factor to modify MeanFreePath" name="MeanFreePathFactor" unit="">10</sec>
 	</meanfreepath>
 
 	<!-- tracking time cut -->

@@ -125,13 +125,21 @@ void SimParameters::ReadXML(G4String fName)
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
 
-	// gamma energy cut
-	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.genecut"))
+	// gamma cuts
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.gammacut"))
 	{
 		// The data function is used to access the data stored in a node.
 		if(child_node.second.get<string>("<xmlattr>.name") == "ecut" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "eV")
 			SetGammaEcut(stod(child_node.second.data())*eV);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "trackkill")
+			SetStraightTracksKillStatus(stoi(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "Dmin" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "mm")
+			SetStraightTracksDmin(stod(child_node.second.data())*mm);
+		else if(child_node.second.get<string>("<xmlattr>.name") == "Zend" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "cm")
+			SetStraightTracksZend(stod(child_node.second.data())*cm);
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
@@ -582,6 +590,9 @@ void SimParameters::InitDefault()
 
 	_gammaEcut = -1*keV;
 	_trackTcut =  1*s;
+	_straightTracksKillStatus = false;
+	_gammaDmin = 0;
+	_gammaZend = 0;
 
 	_storeTrj = false;
 	_storeTrjZmin = -67.0*cm;
@@ -755,10 +766,15 @@ void SimParameters::PrintSRprocParameters()
 	return;
 }
 
-void SimParameters::PrintGammaEcut()
+void SimParameters::PrintGammaCut()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
-	G4cout<<"[INFO] SimParameters::PrintGammaEcut ==> Ecut = "<<GetGammaEcut()/eV<<" [eV]"<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintGammaCut:"<<G4endl;
+	G4cout<<" Ecut = "<<GetGammaEcut()/eV<<" [eV]"<<G4endl;
+	G4cout<<" Tcut = "<<GetTrackTcut()/s<<" [s]"<<G4endl;
+	G4cout<<" StraightTracksKillStatus = "<<GetStraightTracksKillStatus()<<G4endl;
+	G4cout<<"  - Dmin = "<<GetStraightTracksDmin()/mm<<" [mm]"<<G4endl;
+	G4cout<<"  - Zend = "<<GetStraightTracksZend()/cm<<" [cm]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
@@ -768,15 +784,6 @@ void SimParameters::PrintMeanFreePathFactor()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintMeanFreePathFactor ==> MeanFreePathFactor = "<<GetMeanFreePathFactor()<<G4endl;
-	G4cout<<"==================================================================\n\n"<<G4endl;
-
-	return;
-}
-
-void SimParameters::PrintTrackTcut()
-{
-	G4cout<<"\n\n=================================================================="<<G4endl;
-	G4cout<<"[INFO] SimParameters::PrintTrackTcut ==> Tcut = "<<GetTrackTcut()/s<<" [s]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

@@ -10,7 +10,7 @@ StackingAction::StackingAction(RunAction* runAct, G4String xmlFileName) : runAct
         simPar = new SimParameters();
         simPar->InitDefault();
 	simPar->ReadXML(xmlFileName);
-        simPar->PrintGammaEcut();
+        simPar->PrintGammaCut();
 }
 
 StackingAction::~StackingAction()
@@ -49,6 +49,25 @@ StackingAction::ClassifyNewTrack(const G4Track* track)
 			G4cout<<"[WARNING] StackingAction::ClassifyNewTrack ==> ";
 			G4cout<<"Cannot find the SR creation magnet"<<G4endl;
 			G4cout<<"==================================================================\n"<<G4endl;
+		}
+
+		// kill straight tracks
+		if(simPar->GetStraightTracksKillStatus())
+		{
+			G4double x0 = track->GetPosition().getX();
+			G4double y0 = track->GetPosition().getY();
+			G4double r_min = simPar->GetStraightTracksDmin()/2; // minimum radius of the beam pipe
+			// select only the photons inside the minimum radius cylinder
+			if(sqrt(x0*x0 + y0*y0) <= r_min)
+			{
+				G4double z0 = track->GetPosition().getZ();
+				G4double dirx = track->GetMomentumDirection().getX();
+				G4double diry = track->GetMomentumDirection().getY();
+				G4double z = simPar->GetStraightTracksZend();
+				G4double x = x0 + (z - z0) * dirx;
+				G4double y = y0 + (z - z0) * diry;
+				if(sqrt(x*x + y*y) <= r_min){status = fKill;}
+			}
 		}
 	}
 
