@@ -166,6 +166,17 @@ void SimParameters::ReadXML(G4String fName)
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
 
+	// tracking geometry cut on the BWD side
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.bwdgeocut"))
+	{
+		// The data function is used to access the data stored in a node.
+		if(child_node.second.get<string>("<xmlattr>.name") == "bwdTrkCutZ" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetTrackBwdGeoCut(stod(child_node.second.data())*m);
+		else
+			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
+	}
+
 	// beam
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.beam"))
 	{
@@ -600,6 +611,17 @@ void SimParameters::InitDefault()
 	_storeTrjEmin = 10e-6*GeV;
 
 	_meanFreePathFactor = 1.0;
+	_bwdTrkCutZ = 1e9*m;
+
+	return;
+}
+
+void SimParameters::PrintTrkGeoCut()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintTrkGeoCut ==> Tracking geometry cut"<<G4endl;
+	G4cout<<" BWD cut Z = "<<GetTrackBwdGeoCut()/m<<" [m]"<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
 }
@@ -608,12 +630,12 @@ void SimParameters::PrintGeoParameters()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
 	G4cout<<"[INFO] SimParameters::PrintGeoParameters ==> Geometry parameters"<<G4endl;
-	G4cout<<"World size X = "<<GetWorldSizeX()/m<<" [m]"<<G4endl;
-	G4cout<<"World size Y = "<<GetWorldSizeY()/m<<" [m]"<<G4endl;
-	G4cout<<"World size Z = "<<GetWorldSizeZ()/m<<" [m]"<<G4endl;
-	G4cout<<"Extension length = "<<GetExtL()/cm<<" [cm]"<<G4endl;
-	G4cout<<"Extension radius = "<<GetExtR()/cm<<" [cm]"<<G4endl;
-	G4cout<<"Extension end position = "<<GetExtE()/cm<<" [cm]"<<G4endl;
+	G4cout<<" World size X = "<<GetWorldSizeX()/m<<" [m]"<<G4endl;
+	G4cout<<" World size Y = "<<GetWorldSizeY()/m<<" [m]"<<G4endl;
+	G4cout<<" World size Z = "<<GetWorldSizeZ()/m<<" [m]"<<G4endl;
+	G4cout<<" Extension length = "<<GetExtL()/cm<<" [cm]"<<G4endl;
+	G4cout<<" Extension radius = "<<GetExtR()/cm<<" [cm]"<<G4endl;
+	G4cout<<" Extension end position = "<<GetExtE()/cm<<" [cm]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

@@ -19,6 +19,7 @@ SteppingAction::SteppingAction(RunAction* runAct, G4String xmlFileName) : runAct
 	simPar->InitDefault();
 	simPar->ReadXML(xmlFileName);
 	simPar->PrintGammaCut();
+	simPar->PrintTrkGeoCut();
 }
 
 SteppingAction::~SteppingAction()
@@ -26,12 +27,20 @@ SteppingAction::~SteppingAction()
 
 void SteppingAction::UserSteppingAction(const G4Step *step)
 {
-	const G4Track* track = step->GetTrack();
+	G4Track* track = step->GetTrack();
 
 	G4StepPoint*            preStep         = step->GetPreStepPoint();
 	G4StepPoint*            postStep        = step->GetPostStepPoint();
 	G4VPhysicalVolume*      prePV           = preStep->GetPhysicalVolume();
 	G4VPhysicalVolume*      postPV          = postStep->GetPhysicalVolume();
+
+	//- Stop tracking on the backward side
+	if(postStep->GetPosition().getZ() > simPar->GetTrackBwdGeoCut())
+	{
+		track->SetTrackStatus(fStopAndKill);
+		return;
+	}
+
 
 	// the monitor is associated with one of the magnets
 	G4String prePV_name = prePV->GetName();

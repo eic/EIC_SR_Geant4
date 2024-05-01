@@ -111,6 +111,7 @@ private:
 	G4double _ipBeampipeZmax;
 
 	G4double _meanFreePathFactor;
+	G4double _bwdTrkCutZ;
 public:
 	// print functions
 	void InitDefault();	
@@ -128,6 +129,7 @@ public:
 	void PrintMeanFreePathFactor();
 	void ReadXML(G4String fName);
 	void PrintStoreTrajectories();
+	void PrintTrkGeoCut();
 
 	// get functions
 	G4double GetWorldSizeX(){return _world_dim_x;}
@@ -225,6 +227,7 @@ public:
 	G4double GetStoreTrajectoriesEmin(){return _storeTrjEmin;}
 
 	G4double GetMeanFreePathFactor(){return _meanFreePathFactor;}
+	G4double GetTrackBwdGeoCut(){return _bwdTrkCutZ ;}
 
 private:
 	// set functions
@@ -316,6 +319,7 @@ private:
 	void SetStoreTrajectoriesEmin(G4double val){_storeTrjEmin = val;return;}
 
 	void SetMeanFreePathFactor(G4double val){_meanFreePathFactor = val; return;}
+	void SetTrackBwdGeoCut(G4double val){_bwdTrkCutZ = val; return;}
 };
 
 #endif

@@ -66,6 +66,11 @@
 		<sec desc="simulation time cut" name="tcut" unit="s">1e-6</sec>
 	</timecut>
 
+	<!-- stop tracking on the backward side -->
+	<bwdgeocut>
+		<sec desc="tracking geometry cut on the bwd side" name="bwdTrkCutZ" unit="m">5</sec>
+	</bwdgeocut>
+
 	<!-- beam parameters: from esr-survey-doug.tfs and esr-ring-norad.tfs (2IR, 18 GeV, Jan. 2024) -->
 	<!-- for the start position of the beam use the end position for the previous element in the lattice -->
 	<!-- here, 'start position' means at the beginning of the previous element (SQ2EF_6), -->
