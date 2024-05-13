@@ -42,11 +42,17 @@ void plotBeamEnvelope()
 	c1->Divide(1,2);
 
 	c1->cd(1);
+	// X
 	gr_betaX->SetLineColor(kBlue);
 	gr_betaX->SetLineWidth(2);
 	gr_betaX->SetMarkerStyle(20);
 	gr_betaX->GetXaxis()->SetLimits(minS,maxS);
 	gr_betaX->Draw("APL");
+	// Y
+	gr_betaY->SetLineColor(kRed);
+	gr_betaY->SetLineWidth(2);
+	gr_betaY->SetMarkerStyle(21);
+	gr_betaY->Draw("SAME & PL");
 
 	//- get beam envelope
 	TGraph* gr_beamX1 = new TGraph();
@@ -67,6 +73,7 @@ void plotBeamEnvelope()
 
 	//- draw envelope
 	c1->cd(2);
+	// X
 	gr_beamX1->SetLineColor(kBlue);
 	gr_beamX2->SetLineColor(kBlue);
 	gr_beamX1->SetLineWidth(2);
@@ -79,6 +86,15 @@ void plotBeamEnvelope()
 	gr_beamX1->SetMinimum(-1.2*max_gr_beamX);
 	gr_beamX1->Draw("APL");
 	gr_beamX2->Draw("SAME & PL");
+	// Y
+	gr_beamY1->SetLineColor(kRed);
+	gr_beamY2->SetLineColor(kRed);
+	gr_beamY1->SetLineWidth(2);
+	gr_beamY2->SetLineWidth(2);
+	gr_beamY1->SetMarkerStyle(21);
+	gr_beamY2->SetMarkerStyle(21);
+	gr_beamY1->Draw("SAME & PL");
+	gr_beamY2->Draw("SAME & PL");
 
 	//- draw beam pipe
 	const Int_t nAp = 20;
@@ -120,7 +136,7 @@ void getOpticsParameters(TString opticsFileName, TGraph* gr_betaX, TGraph* gr_be
 
 	ifstream opticsFileName_IO(opticsFileName.Data());
 	Double_t alphax, alphay, betax, betay, etax, etay, etapx, etapy, k1l, s, length;	
-	Int_t wordsToSkip;
+	Int_t wordsToSkip, linesToSkip;
 
 	if (!opticsFileName_IO.is_open()) 
 	{
@@ -131,6 +147,8 @@ void getOpticsParameters(TString opticsFileName, TGraph* gr_betaX, TGraph* gr_be
 	Float_t maxS = 0, circ = 3834.0;
 	string line;
 	getline(opticsFileName_IO, line);
+	linesToSkip = 52; while (linesToSkip-- > 0 && getline(opticsFileName_IO, line)){/* skip */}
+	
 	while (getline(opticsFileName_IO, line)) 
 	{
 		istringstream iss_IO(line);
