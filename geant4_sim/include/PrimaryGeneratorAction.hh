@@ -35,6 +35,7 @@ public:
 
     	void GeneratePrimaries(G4Event* anEvent);
 	void GenerateOnePrimary(G4Event* anEvent);
+	void GenerateOnePrimaryForTaggers(G4Event* anEvent, G4int ID);
 
 private:
     	G4ParticleGun* fParticleGun;

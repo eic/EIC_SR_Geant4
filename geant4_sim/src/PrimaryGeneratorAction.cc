@@ -29,11 +29,8 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-	// generate multiple particles per event
-	for(G4int iPart = 0; iPart < simPar->GetBeamPartPerEvent(); iPart++)
-	{
-		GenerateOnePrimary(anEvent);
-	}
+	GenerateOnePrimary(anEvent);
+	// GenerateOnePrimaryForTaggers(anEvent,anEvent->GetEventID()); // use it if you want to study low-q2 taggers
 
 	return;
 }
@@ -148,6 +145,52 @@ void PrimaryGeneratorAction::GenerateOnePrimary(G4Event* anEvent)
     	fParticleGun->SetParticlePosition(posXYZrot);
 
     	fParticleGun->GeneratePrimaryVertex(anEvent);
+
+	return;
+}
+
+void PrimaryGeneratorAction::GenerateOnePrimaryForTaggers(G4Event* anEvent, G4int ID)
+{
+    	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+    	G4ParticleDefinition* particleDef;
+    	particleDef = particleTable->FindParticle(simPar->GetBeamName().c_str());
+
+	// Generate electrons for Low-Q^2 taggers
+	G4ThreeVector Tag_vec;
+
+	if(ID == 0)
+	{
+		// Tag1 max theta
+		fParticleGun->SetParticleDefinition(particleDef);
+		fParticleGun->SetParticleEnergy(1*TeV);
+		Tag_vec = G4ThreeVector(0,0,1);
+		Tag_vec.rotateY(39.4e-3 * rad);
+		fParticleGun->SetParticleMomentumDirection(Tag_vec);
+		fParticleGun->SetParticlePosition(G4ThreeVector(0,0,12513.8 * mm)); // focal point
+		fParticleGun->GeneratePrimaryVertex(anEvent);	
+	}
+	else if(ID == 1)
+	{
+		// Tag2 max theta
+		fParticleGun->SetParticleDefinition(particleDef);
+		fParticleGun->SetParticleEnergy(1*TeV);
+		Tag_vec = G4ThreeVector(0,0,1);
+		Tag_vec.rotateY(27.6e-3 * rad);
+		fParticleGun->SetParticleMomentumDirection(Tag_vec);
+		fParticleGun->SetParticlePosition(G4ThreeVector(0,0,12513.8 * mm)); // focal point
+		fParticleGun->GeneratePrimaryVertex(anEvent);	
+	}
+	else if(ID == 2)
+	{
+		// Tag2 min theta
+		fParticleGun->SetParticleDefinition(particleDef);
+		fParticleGun->SetParticleEnergy(1*TeV);
+		Tag_vec = G4ThreeVector(0,0,1);
+		Tag_vec.rotateY(22.3e-3 * rad);
+		fParticleGun->SetParticleMomentumDirection(Tag_vec);
+		fParticleGun->SetParticlePosition(G4ThreeVector(0,0,12513.8 * mm)); // focal point
+		fParticleGun->GeneratePrimaryVertex(anEvent);	
+	}
 
 	return;
 }

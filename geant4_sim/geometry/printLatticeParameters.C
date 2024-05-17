@@ -8,11 +8,11 @@ void printLatticeParameters()
 	Bool_t oldLattice;
 
 	//_______________________________ OLD LATTICE ______________________________________//
-	oldLattice = true;
+//	oldLattice = true;
 
 	//- Aug. 2022 - v5.6 lattice
-	surveyFileName = "./lattice_v5.6/esr-survey-elke.tfs";
-	opticsFileName = "./lattice_v5.6/esr-twiss-elke.tfs";
+//	surveyFileName = "./lattice_v5.6/esr-survey-elke.tfs";
+//	opticsFileName = "./lattice_v5.6/esr-twiss-elke.tfs";
 
 	//- lists of elements (FWD)
 //	const Int_t nElements = 5;
@@ -22,22 +22,22 @@ void printLatticeParameters()
 //		"\"OWW\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
 
 	//- lists of elements (BWD)
-	const Int_t nElements = 4;
-	TString startElementName[nElements] = {	
-		"\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
-	TString stopElementName[nElements] = {
-		"\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
+//	const Int_t nElements = 4;
+//	TString startElementName[nElements] = {	
+//		"\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
+//	TString stopElementName[nElements] = {
+//		"\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
 
 	//_______________________________ NEW LATTICE ______________________________________//
-	// oldLattice = false;
+	oldLattice = false;
 
 	//- Sep. 2023 - so-called new lattice
 	// surveyFileName = "./lattice_v6.X/survey_ir_6m.tfs";
 	// opticsFileName = "./lattice_v6.X/ir6forward.18GeV.twi";
 
 	//- Jan. 2024 - v6.2 lattice
-	// surveyFileName = "./lattice_v6.2/esr-survey-doug.tfs";
-	// opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
+	surveyFileName = "./lattice_v6.2/esr-survey-doug.tfs";
+	opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
 
 	//- lists of elements (FWD)
 //	const Int_t nElements = 7;
@@ -47,11 +47,11 @@ void printLatticeParameters()
 //		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
 
 	//- lists of elements (BWD)
-//	const Int_t nElements = 4;
-//	TString startElementName[nElements] = {	
-//		"\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
-//	TString stopElementName[nElements] = {
-//		"\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
+	const Int_t nElements = 5;
+	TString startElementName[nElements] = {	
+		"\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
+	TString stopElementName[nElements] = {
+		"\"Q3ER_6\"","\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
 
 	//- get parameters
 	for(Int_t i = 0; i < nElements; i++)

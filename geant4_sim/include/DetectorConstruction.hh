@@ -1,6 +1,12 @@
 #ifndef DetectorConstruction_h
 #define DetectorConstruction_h 1
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#include "TROOT.h"
+#include "TGraph.h"
+#pragma GCC diagnostic pop
+
 #include "G4VUserDetectorConstruction.hh"
 #include "SimParameters.hh"
 #include "G4Material.hh"
@@ -44,6 +50,7 @@ private:
 	void BuildIrBeamPipe();
 	void BuildIpBeamPipe();
 	void BuildFarBackwardBeamPipe();
+	void BuildFarBackwardBeamPipe2();
 	void BuildAbsorbers();
 
 	G4MagneticField* GetMagField(G4int,G4LogicalVolume*);

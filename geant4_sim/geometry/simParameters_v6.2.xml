@@ -13,6 +13,20 @@
 		<!-- sec desc="beam pipe file [srmask3]" name="fname">../geometry/beam_pipe_211004_saw_tooth_mask_entire_len.obj</sec -->
 		<!-- sec desc="beam pipe file [srmask4_1]" name="fname">../geometry/beam_pipe_211004_1_mask_in_q0.obj</sec -->
 		<!-- sec desc="beam pipe file [srmask4_2]" name="fname">../geometry/beam_pipe_211004_2_masks_in_q0.obj</sec -->
+		<!-- magnet>
+			<sec desc="magnet name" name="name">Q3ER</sec>
+			<sec desc="magnet type" name="type">Q-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">0.60</sec>
+			<sec desc="start position X in a global ref. system" name="posx1" unit="m">-590.531416564990</sec>
+			<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0</sec>
+			<sec desc="start position Z in a global ref. system" name="posz1" unit="m">-37.562885004597</sec>
+			<sec desc="end position X in a global ref. system" name="posx2" unit="m">-590.547097394780</sec>
+			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
+			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-38.162680062577</sec>
+			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.107295583600</sec>
+		</magnet -->
+
 	<beampipe>
 		<sec desc="beam pipe file [nosrmask]" name="fname">../geometry/beam_pipe_211004_1_mask_in_q0.obj</sec>
 	</beampipe>
@@ -77,7 +91,6 @@
 	<!-- while 'end position' means at the beginning of the current element (OWW_SH, same for optics functions) -->
 	<beam>
 		<sec desc="particle" name="part">e-</sec>
-		<sec desc="particles per event" name="num">1</sec>
 		<sec desc="start position X in a global ref. system" name="posx1" unit="m">-589.562388424850</sec>
 		<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0.0</sec>
 		<sec desc="start position Z in a global ref. system" name="posz1" unit="m">37.302451752716</sec>

@@ -27,7 +27,6 @@
 #include "CADMesh.hh" // https://github.com/christopherpoole/CADMesh
 #include "SolenoidMagField.hh"
 
-
 DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetectorConstruction()
 {
 	simPar = new SimParameters();
@@ -65,10 +64,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
-	CreateSrMask();
+// 	CreateSrMask();
 	BuildIpBeamPipe();
-//	BuildFarBackwardBeamPipe();
 	BuildMagnets();
+//	BuildFarBackwardBeamPipe();
+//	BuildFarBackwardBeamPipe2();
 	BuildIrBeamPipe();
 	if(addAbsorber) BuildAbsorbers();
 
@@ -421,7 +421,7 @@ void DetectorConstruction::BuildIpBeamPipe()
 		"[ERROR] DetectorConstruction::BuildIpBeamPipe ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
 
-	//- ip_cut
+/*TMP	//- ip_cut
 	G4VSolid* ip_cut = new G4Tubs("ip_cut",62.0/2 * mm, 80.0/2 * mm, (150.0 + 20.1) * mm, 0, 2.0 * M_PI);
 
 	//- Vacuum (subtract ip_cut from the beam pipe)
@@ -429,7 +429,7 @@ void DetectorConstruction::BuildIpBeamPipe()
 		beampipeVac_solid,ip_cut,0,G4ThreeVector(0.0 * cm,0.0 * cm,65.0 * cm));
 	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
 		beampipeUni_solid,ip_cut,0,G4ThreeVector(0.0 * cm,0.0 * cm,65.0 * cm));
-
+TMP*/
 	//- Visualization
 //	G4LogicalVolume* ip_cut_log = new G4LogicalVolume(ip_cut, mat_vac, "ip_cut_log");
 //	new G4PVPlacement(0,G4ThreeVector(0.0 * cm,0.0 * cm,65.0 * cm),ip_cut_log,"ip_cut",world_log,false,0,true);
@@ -473,6 +473,170 @@ void DetectorConstruction::BuildIrBeamPipe()
 	G4VisAttributes* beampipeVac_vis = new G4VisAttributes(G4Color::Grey());
 	beampipeVac_vis->SetVisibility(visibility);
 	beampipeVac_log->SetVisAttributes(beampipeVac_vis);
+
+	return;
+}
+
+void DetectorConstruction::BuildFarBackwardBeamPipe2()
+{
+
+	G4double Q3eR_Theta = 0.018137692 * rad;
+	G4double Q3eR_StartX = 45.451 * cm;
+	G4double Q3eR_StartZ = 3756.99 * cm;
+	G4double B2eR_FocX = 0.0 * cm;
+	G4double B2eR_FocZ = Q3eR_StartZ - (Q3eR_StartX - B2eR_FocX)/tan(Q3eR_Theta);
+	G4double Drift_Len = sqrt(pow((Q3eR_StartX - B2eR_FocX),2) + pow(Q3eR_StartZ - B2eR_FocZ,2));
+	G4double Drift_Rad = 196.0/2 * mm;
+	G4double Drift_CenterX = Q3eR_StartX - Drift_Len * sin(Q3eR_Theta)/2;
+	G4double Drift_CenterZ = Q3eR_StartZ - Drift_Len * cos(Q3eR_Theta)/2;  
+	G4double Drift_CenterY = 0.0 * mm;
+	G4double Vac_EndZ = 1527.0 * cm;
+	G4double B2eR_EndZ = 1500.0 * cm;
+	G4double B2eR_FocL = B2eR_EndZ-B2eR_FocZ;
+	G4double Tag1_ThetaMax = atan(Drift_Rad/B2eR_FocL);
+	G4double Tag2_ThetaMax = 0;
+	G4double TaggerSens_Depth = 13.0 * cm;
+	G4double TaggerBox_Width = 16.0 * cm;
+	G4double TaggerBox_Height = 18.0 * cm;
+	G4double TaggerBox_Length = 10.0 * 3 * cm;
+	G4double BeamPipe_Thickness = 3.0 * mm;
+	G4double TaggerBox_Limit = Drift_Rad + BeamPipe_Thickness;
+	
+	// to found the tagger 2 max theta we have to solve the equition that does not have an analytical solution
+	// so, to solve it, we can follow a numerical method: find the function's value atthe given point
+	TGraph* gr_Tag2_ThetaMax = new TGraph();
+	for(G4double theta = Q3eR_Theta; theta < Tag1_ThetaMax; theta += 1e-6)
+	{
+		gr_Tag2_ThetaMax->SetPoint(	gr_Tag2_ThetaMax->GetN(),
+						(TaggerSens_Depth/tan(Tag1_ThetaMax - theta) - TaggerBox_Length) * 
+							sin(theta-Q3eR_Theta)/TaggerBox_Limit,
+						theta);
+	}
+	Tag2_ThetaMax = gr_Tag2_ThetaMax->Eval(1);
+	delete gr_Tag2_ThetaMax;
+	// the tagger 2 min theta
+	G4double Tag2_ThetaMin = atan(sin(Tag2_ThetaMax-Q3eR_Theta)/(TaggerSens_Depth/TaggerBox_Limit + cos(Tag2_ThetaMax-Q3eR_Theta))) + Q3eR_Theta;
+
+	//-------------------------------------------------------------------------------------------------//
+	//- Tagger 1
+	// coordinates of the tagger 1 box center 
+	G4double Tag1_BoxCenterL = 
+		sqrt(	
+			pow(TaggerBox_Length/2. + TaggerBox_Limit/sin(Tag2_ThetaMax-Q3eR_Theta),2) + 
+			pow(TaggerBox_Width/2.,2)
+			);
+	G4double Tag1_BoxCenterTheta = 
+		atan(TaggerBox_Width/2./(TaggerBox_Length/2. + TaggerBox_Limit/sin(Tag2_ThetaMax-Q3eR_Theta))) + 
+		Tag2_ThetaMax;
+	G4double Tag1_BoxCenterX = B2eR_FocX + Tag1_BoxCenterL * sin(Tag1_BoxCenterTheta); 
+	G4double Tag1_BoxCenterZ = B2eR_FocZ + Tag1_BoxCenterL * cos(Tag1_BoxCenterTheta); 
+	//-------------------------------------------------------------------------------------------------//
+	//- Tagger 2
+	// coordinates of the tagger 2 box center
+	G4double Tag2_BoxNearL = TaggerBox_Limit/sin(Tag2_ThetaMin-Q3eR_Theta);
+	G4double Tag2_BoxDiagL = sqrt(pow(TaggerBox_Length/2.,2) + pow(TaggerBox_Width/2.,2));
+	// c^2 = a^2 + b^2 - 2*a*b*cos(c)
+	G4double Tag2_BoxCenterL = sqrt(
+					pow(Tag2_BoxNearL,2) + 
+					pow(Tag2_BoxDiagL,2) -
+					2. * Tag2_BoxNearL*Tag2_BoxDiagL * 
+						cos(
+							M_PI_2 - (Tag2_ThetaMax-Tag2_ThetaMin) + 
+							atan(TaggerBox_Length/TaggerBox_Width)
+							)
+					);
+	// sin(b)/b = sin(c)/c
+	G4double Tag2_BoxCenterTheta = 
+		asin(
+			(Tag2_BoxDiagL/Tag2_BoxCenterL) * 
+			sin(M_PI_2 - (Tag2_ThetaMax-Tag2_ThetaMin) + atan(TaggerBox_Length/TaggerBox_Width))
+		) + Tag2_ThetaMin;
+	G4double Tag2_BoxCenterX = B2eR_FocX + Tag2_BoxCenterL * sin(Tag2_BoxCenterTheta); 
+	G4double Tag2_BoxCenterZ = B2eR_FocZ + Tag2_BoxCenterL * cos(Tag2_BoxCenterTheta); 
+	//-------------------------------------------------------------------------------------------------//
+	// Place taggers
+	G4Box* Tag_box = new G4Box("Tag_box",TaggerBox_Width/2.,TaggerBox_Height/2.,TaggerBox_Length/2.);
+	G4LogicalVolume* Tag1_log = new G4LogicalVolume(Tag_box,mat_vac,"Tag1_log");
+	G4LogicalVolume* Tag2_log = new G4LogicalVolume(Tag_box,mat_vac,"Tag2_log");
+	G4RotationMatrix* Tag_rot = new G4RotationMatrix();
+	Tag_rot->rotateY(-Tag2_ThetaMax);
+	new G4PVPlacement(Tag_rot,G4ThreeVector(Tag1_BoxCenterX,0,Tag1_BoxCenterZ),
+		Tag1_log,"Tag1",world_log,false,0,true);
+	new G4PVPlacement(Tag_rot,G4ThreeVector(Tag2_BoxCenterX,0,Tag2_BoxCenterZ),
+		Tag2_log,"Tag2",world_log,false,0,true);
+	//-------------------------------------------------------------------------------------------------//
+	// Place sensor planes
+	G4double Sens_Thickness = 1.0 * cm;
+	G4Box* Sens_box = new G4Box("Sens_box",TaggerBox_Width/2.,TaggerBox_Height/2.,Sens_Thickness/2.);
+	G4LogicalVolume* Sens_log = new G4LogicalVolume(Sens_box,mat_vac,"Sens_log");
+	new G4PVPlacement(0,G4ThreeVector(0,0,-TaggerBox_Length/2.+Sens_Thickness/2.),Sens_log,"tag1_sens1",Tag1_log,false,0,true);
+	new G4PVPlacement(0,G4ThreeVector(0,0,-TaggerBox_Length/6.+Sens_Thickness/2.),Sens_log,"tag1_sens1",Tag1_log,false,0,true);
+	new G4PVPlacement(0,G4ThreeVector(0,0,+TaggerBox_Length/2.-Sens_Thickness/2.),Sens_log,"tag1_sens2",Tag1_log,false,0,true);
+	new G4PVPlacement(0,G4ThreeVector(0,0,+TaggerBox_Length/6.-Sens_Thickness/2.),Sens_log,"tag1_sens2",Tag1_log,false,0,true);
+	new G4PVPlacement(0,G4ThreeVector(0,0,-TaggerBox_Length/2.+Sens_Thickness/2.),Sens_log,"tag2_sens1",Tag2_log,false,0,true);
+	new G4PVPlacement(0,G4ThreeVector(0,0,-TaggerBox_Length/6.+Sens_Thickness/2.),Sens_log,"tag2_sens1",Tag2_log,false,0,true);
+	new G4PVPlacement(0,G4ThreeVector(0,0,+TaggerBox_Length/2.-Sens_Thickness/2.),Sens_log,"tag2_sens2",Tag2_log,false,0,true);
+	new G4PVPlacement(0,G4ThreeVector(0,0,+TaggerBox_Length/6.-Sens_Thickness/2.),Sens_log,"tag2_sens2",Tag2_log,false,0,true);
+	G4VisAttributes* Sens_vis = new G4VisAttributes(G4Color::Blue());
+	Sens_vis->SetVisibility(visibility);
+	Sens_log->SetVisAttributes(Sens_vis);
+	//-------------------------------------------------------------------------------------------------//
+	// Place an interface beam pipe
+	// length of the interface beam pipe
+	G4double InterfaceBeamPipe_Length = TaggerBox_Limit/tan(Tag2_ThetaMin-Q3eR_Theta) - TaggerBox_Limit/tan(Tag1_ThetaMax-Q3eR_Theta);	
+	// center position of the interface beam pipe
+	G4double InterfaceBeamPipe_CenterL = (TaggerBox_Limit/tan(Tag1_ThetaMax-Q3eR_Theta) + InterfaceBeamPipe_Length/2.);
+	G4double InterfaceBeamPipe_CenterX = B2eR_FocX + InterfaceBeamPipe_CenterL * sin(Q3eR_Theta); 
+	G4double InterfaceBeamPipe_CenterZ = B2eR_FocZ + InterfaceBeamPipe_CenterL * cos(Q3eR_Theta); 
+
+	G4Tubs* Interface_tube = new G4Tubs("Interface_tube", 0, Drift_Rad, InterfaceBeamPipe_Length/2., 0, 2.0 * M_PI);
+	G4LogicalVolume* Interface_log = new G4LogicalVolume(Interface_tube, mat_vac,"Interface");
+	G4RotationMatrix* Interface_rot = new G4RotationMatrix();
+	Interface_rot->rotateY(-Q3eR_Theta);
+	new G4PVPlacement(Interface_rot,G4ThreeVector(InterfaceBeamPipe_CenterX,0,InterfaceBeamPipe_CenterZ),
+		Interface_log,"vac_interface",world_log,false,0,true);
+	G4VisAttributes* Interface_vis = new G4VisAttributes(G4Color::Cyan());
+	Interface_vis->SetVisibility(visibility);
+	Interface_log->SetVisAttributes(Interface_vis);
+	//-------------------------------------------------------------------------------------------------//
+	// Print geometry parameters
+	G4cout<<" B2eR_FocX = "<<B2eR_FocX/mm<<" [mm]; B2eR_FocZ = "<<B2eR_FocZ/mm<<" [mm]"<<G4endl;
+	G4cout<<" Tag1_ThetaMax = "<<Tag1_ThetaMax/rad<<" [rad]; Tag2_ThetaMax = "<<Tag2_ThetaMax/rad<<" [rad]; Tag2_ThetaMin = "<<Tag2_ThetaMin/rad<<" [rad]"<<G4endl;
+	G4cout<<" Tag1_BoxCenterX = "<<Tag1_BoxCenterX/mm<<" [mm]; Tag1_BoxCenterZ = "<<Tag1_BoxCenterZ/mm<<" [mm]"<<G4endl;
+	G4cout<<" Tag2_BoxCenterX = "<<Tag2_BoxCenterX/mm<<" [mm]; Tag2_BoxCenterZ = "<<Tag2_BoxCenterZ/mm<<" [mm]"<<G4endl;
+	G4cout<<" InterfaceBeamPipe_Length = "<<InterfaceBeamPipe_Length/mm<<" [mm]"<<G4endl;
+	G4cout<<" InterfaceBeamPipe_CenterX = "<<InterfaceBeamPipe_CenterX/mm<<" [mm]; InterfaceBeamPipe_CenterZ = "<<InterfaceBeamPipe_CenterZ/mm<<" [mm]"<<G4endl;
+	//-------------------------------------------------------------------------------------------------//
+
+	G4VSolid* Drift_chamber = new G4Tubs("Drift_chamber", 0, Drift_Rad, Drift_Len/2, 0, 2.0 * M_PI);
+	G4Box* Drift_cut1 = new G4Box("Drift_cut1",10 * m, 10 * m, 10 * m);
+	G4Box* Drift_cut2 = new G4Box("Drift_cut2",10 * m, 10 * m, InterfaceBeamPipe_Length/2.);
+
+	G4RotationMatrix* Cut_rot = new G4RotationMatrix();
+	Cut_rot->rotateY(Q3eR_Theta);
+	// subtract the central beam pipe 
+	Drift_chamber = new G4SubtractionSolid("Drift_chamber",Drift_chamber,beampipeVac_solid,
+		Cut_rot,G4ThreeVector(-Drift_CenterX,-Drift_CenterY,-Drift_CenterZ));
+	// cut along the beam axis
+	Drift_chamber = new G4SubtractionSolid("Drift_chamber",Drift_chamber,Drift_cut1,
+		Cut_rot,G4ThreeVector(0,0,-(Drift_CenterZ - (B2eR_EndZ + 5 * mm) + 10 * m) / cos(Q3eR_Theta)));
+	G4RotationMatrix* Drift_rot = new G4RotationMatrix();
+	Drift_rot->rotateY(-Q3eR_Theta);
+
+	// cut the fwd side of the central beam pipe 
+	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
+		beampipeUni_solid,Drift_cut1,0,G4ThreeVector(0,0,B2eR_EndZ + 5 * mm + 10 * m));
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+		beampipeVac_solid,Drift_cut1,0,G4ThreeVector(0,0,B2eR_EndZ + 5 * mm + 10 * m));
+
+	// subtract the interface beam pipe from the far-bwd chamber
+	Drift_chamber = new G4SubtractionSolid("Drift_chamber",Drift_chamber,Drift_cut2,
+		0,G4ThreeVector(0,0,InterfaceBeamPipe_CenterL - Drift_Len/2.));
+	// place the chamber
+	G4LogicalVolume* Drift_log = new G4LogicalVolume(Drift_chamber, mat_vac,"Drift");   
+
+	new G4PVPlacement(Drift_rot,G4ThreeVector(Drift_CenterX,Drift_CenterY,Drift_CenterZ),
+		Drift_log,"vac_farbeamline",world_log,false,0,true);
 
 	return;
 }
