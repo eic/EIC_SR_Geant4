@@ -109,12 +109,38 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	G4LogicalVolume* beampipeOrig_log = new G4LogicalVolume(beampipeOrig_solid, mat_vac,"beampipeOrig");
 
 	//- Extention
-	G4VSolid* beampipeExt_solid = new G4Tubs("beampipeExt_solid", 0, 
+	G4VSolid* beampipeExtFwd_solid = new G4Tubs("beampipeExtFwd_solid", 0, 
 		simPar->GetExtR(), simPar->GetExtL()/2, 0, 2.0 * M_PI);
 
 	//- Union (beam pipe with an extention)
 	beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", 
-		beampipeOrig_solid, beampipeExt_solid, 0, G4ThreeVector(0, 0, simPar->GetExtE()-simPar->GetExtL()/2));
+		beampipeOrig_solid, beampipeExtFwd_solid, 0, G4ThreeVector(0, 0, simPar->GetExtE()-simPar->GetExtL()/2));
+
+	G4Box* beampipe_cut = new G4Box("beampipe_cut",2*m, 2*m, 10*m);
+
+	//- Cut the vacuum on the BWD side 
+	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
+		beampipeUni_solid,beampipe_cut,0,G4ThreeVector(0,0,9280.0 * mm + 10*m));
+
+	//- Build an extended bwd beam pipe
+	const G4int numZPlanes = 6;
+	const G4double zPlane[numZPlanes] = {
+		9280.0 * mm, 9288.0 * mm, 9364.0 * mm, 11364.0 * mm, 11414.0 * mm, 22270.0 * mm};
+	const G4double rInner[numZPlanes] = {0,0,0,0,0,0};
+	const G4double rOuter[numZPlanes] = {
+		128.6/2 * mm, 128.6/2 * mm, 154.0/2 * mm, 154.0/2 * mm, 196.0/2 * mm, 196.0/2 * mm};
+	G4Polycone* beampipeExtBwd_solid = new G4Polycone("beampipeExtBwd_solid",
+		0, 2.0 * M_PI, numZPlanes, zPlane, rInner, rOuter);
+
+	beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", 
+		beampipeUni_solid, beampipeExtBwd_solid, 0, G4ThreeVector(0.,0.,0.));
+
+	//- Visualization
+//	G4LogicalVolume* beampipeExtBwd_log = new G4LogicalVolume(beampipeExtBwd_solid, mat_vac, "beampipeExtBwd_log");
+//	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),
+//		beampipeExtBwd_log,"beampipeExtBwd",world_log,false,0,true);
+//	G4VisAttributes* beampipeExtBwd_vis = new G4VisAttributes(G4Colour::Red());
+//	beampipeExtBwd_log->SetVisAttributes(beampipeExtBwd_vis);
 
 	//- Copy
 	beampipeVac_solid = beampipeUni_solid;
@@ -420,8 +446,8 @@ void DetectorConstruction::BuildIpBeamPipe()
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::BuildIpBeamPipe ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
-
-/*TMP	//- ip_cut
+/* TMP
+	//- ip_cut
 	G4VSolid* ip_cut = new G4Tubs("ip_cut",62.0/2 * mm, 80.0/2 * mm, (150.0 + 20.1) * mm, 0, 2.0 * M_PI);
 
 	//- Vacuum (subtract ip_cut from the beam pipe)
@@ -429,7 +455,7 @@ void DetectorConstruction::BuildIpBeamPipe()
 		beampipeVac_solid,ip_cut,0,G4ThreeVector(0.0 * cm,0.0 * cm,65.0 * cm));
 	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
 		beampipeUni_solid,ip_cut,0,G4ThreeVector(0.0 * cm,0.0 * cm,65.0 * cm));
-TMP*/
+TMP */
 	//- Visualization
 //	G4LogicalVolume* ip_cut_log = new G4LogicalVolume(ip_cut, mat_vac, "ip_cut_log");
 //	new G4PVPlacement(0,G4ThreeVector(0.0 * cm,0.0 * cm,65.0 * cm),ip_cut_log,"ip_cut",world_log,false,0,true);

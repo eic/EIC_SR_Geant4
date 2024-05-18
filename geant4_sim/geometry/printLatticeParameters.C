@@ -36,8 +36,12 @@ void printLatticeParameters()
 	// opticsFileName = "./lattice_v6.X/ir6forward.18GeV.twi";
 
 	//- Jan. 2024 - v6.2 lattice
-	surveyFileName = "./lattice_v6.2/esr-survey-doug.tfs";
-	opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
+	// surveyFileName = "./lattice_v6.2/esr-survey-doug.tfs";
+	// opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
+
+	//- Apr. 2024 - v6.3 lattice
+	surveyFileName = "./lattice_v6.3/esr-survey-doug.tfs";
+	opticsFileName = "./lattice_v6.3/esr-ring-norad.tfs";
 
 	//- lists of elements (FWD)
 //	const Int_t nElements = 7;
