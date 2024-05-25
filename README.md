@@ -66,3 +66,9 @@ Geant4 stand-alone simulation of synchrotron radiation in the EIC interaction re
 #
 #-- To run EIC reconstruction on the simulated data file with only defined branches
 # eicrecon -Ppodio:output_include_collections=ReconstructedParticles,MCParticles,EcalEndcapNRawHits pythia8NCDIS_10x100.edm4hep.root
+
+
+
+
+# Copy HEPMC3 files from gpfs:
+# for runID in {1..50}; do sftp anatochii@sftp.sdcc.bnl.gov:/gpfs02/eic/bpage/home/EPIC/officialSimu/pythia6/sidis_minbias/HEPMCFILES/pythia_ep_noradcor_18x275_q2_0.000000001_1.0_run${runID}.ab.hepmc.gz

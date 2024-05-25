@@ -178,10 +178,12 @@ void SimParameters::ReadXML(G4String fName)
 	}
 
 	// beam
-	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.beam"))
+	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.generator"))
 	{
         	// The data function is used to access the data stored in a node.
-		if(child_node.second.get<string>("<xmlattr>.name") == "part")
+		if(child_node.second.get<string>("<xmlattr>.name") == "genname")
+			SetGenerator(child_node.second.data());
+		else if(child_node.second.get<string>("<xmlattr>.name") == "part")
 			SetBeamName(child_node.second.data());
 		else if(child_node.second.get<string>("<xmlattr>.name") == "posx1" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "m")
@@ -251,6 +253,8 @@ void SimParameters::ReadXML(G4String fName)
 		else if(child_node.second.get<string>("<xmlattr>.name") == "tailmax" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
 			SetBeamTailMax(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "hepmcfilename")
+			SetHepMcFileName(child_node.second.data());
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n"); 
     	}
@@ -589,6 +593,9 @@ void SimParameters::InitDefault()
 	_beamTailMin = 0;
 	_beamTailMax = 0;
 
+	_generator = "Beam";
+	_hepmcFileName = "";
+
 	_SRtype = 1;
 	_reflType = 3;
 	_reflPrint = true;
@@ -650,6 +657,20 @@ void SimParameters::PrintStoreTrajectories()
 	G4cout<<"Emin = "<<GetStoreTrajectoriesEmin()/GeV<<" [GeV]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
+	return;
+}
+
+void SimParameters::PrintGenerator()
+{
+	G4cout<<"\n\n=================================================================="<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintGenerator ==> Particle Geneator: "<<GetGenerator()<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;
+
+	if(GetGenerator() == "Beam")
+		PrintBeamParameters();
+	else
+		G4cout<<"[INFO] HepMC file name: "<<GetHepMcFileName()<<G4endl;
+	G4cout<<"==================================================================\n\n"<<G4endl;		
 	return;
 }
 

@@ -38,11 +38,16 @@ if(ROOT_FOUND)
 endif()
 
 #----------------------------------------------------------------------------
+# Find HEPMC3
+find_package(HepMC3 REQUIRED)
+
+#----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
 include_directories(${PROJECT_SOURCE_DIR}/include 
                     ${Geant4_INCLUDE_DIR}
-                    ${ROOT_INCLUDE_DIR})
+                    ${ROOT_INCLUDE_DIR}
+                    ${HEPMC3_INCLUDE_DIR})
                     
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
@@ -55,7 +60,7 @@ add_executable(exe main.cc ${sources} ${headers})
 EXECUTE_PROCESS(COMMAND root-config --libs OUTPUT_VARIABLE ROOT_LD_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 set(CMAKE_EXE_LINKER_FLAGS ${ROOT_LD_FLAGS})
 
-target_link_libraries(exe ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
+target_link_libraries(exe ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${HEPMC3_LIB})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we

@@ -45,6 +45,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("beamRefPosY_cm",	&_beamRefPosY);
     	_tree->Branch("beamRefPosZ_cm",	&_beamRefPosZ);
     	_tree->Branch("beamRefAngle_rad",	&_beamRefAngle);
+    	_tree->Branch("beamTransfMomSqr_GeV2",	&_beamTransfMomSqr);
 	
 	_tree->Branch("magName",	&_magName);
 	_tree->Branch("magNph",		&_magNph);

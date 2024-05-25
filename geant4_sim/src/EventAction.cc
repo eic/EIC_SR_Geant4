@@ -59,6 +59,7 @@ void EventAction::EndOfEventAction(const G4Event*)
 	runAction->_beamRefPosY.clear();
 	runAction->_beamRefPosZ.clear();
 	runAction->_beamRefAngle.clear();
+	runAction->_beamTransfMomSqr.clear();
 
 	runAction->_gammaVtxPosX.clear();
 	runAction->_gammaVtxPosY.clear();

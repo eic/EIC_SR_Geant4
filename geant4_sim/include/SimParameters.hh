@@ -88,6 +88,9 @@ private:
 	G4double _beamTailMin;
 	G4double _beamTailMax;
 
+	G4String _generator;
+	G4String _hepmcFileName;
+
 	G4bool _storeTrj;
 	G4double _storeTrjZmin;
 	G4double _storeTrjZmax;
@@ -129,6 +132,7 @@ public:
 	void ReadXML(G4String fName);
 	void PrintStoreTrajectories();
 	void PrintTrkGeoCut();
+	void PrintGenerator();
 
 	// get functions
 	G4double GetWorldSizeX(){return _world_dim_x;}
@@ -205,6 +209,9 @@ public:
 	G4double GetBeamEtaPrimeY(){return _beamEtaPrimeY;}
 	G4double GetBeamEmitX(){return _beamEmitX;}
 	G4double GetBeamEmitY(){return _beamEmitY;}
+
+	G4String GetGenerator(){return _generator;}
+	G4String GetHepMcFileName(){return _hepmcFileName;}
 
 	G4int GetSRtype(){return _SRtype;}
 	G4int GetReflType(){return _reflType;}
@@ -289,6 +296,9 @@ private:
 	void SetBeamEtaPrimeY(G4double val){_beamEtaPrimeY = val; return;}
 	void SetBeamEmitX(G4double val){_beamEmitX = val; return;}
 	void SetBeamEmitY(G4double val){_beamEmitY = val; return;}
+
+	void SetGenerator(G4String val){_generator = val; return;}
+	void SetHepMcFileName(G4String val){_hepmcFileName = val; return;}
 
 	void SetSrType(G4int val){_SRtype = val; return;}
 	void SetReflType(G4int val){_reflType = val; return;}
