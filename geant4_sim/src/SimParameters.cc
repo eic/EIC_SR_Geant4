@@ -419,8 +419,6 @@ void SimParameters::ReadXML(G4String fName)
 			// fill vectors with the new numbers
 			SetMagParameters(magName,magType,0,0,0,0,0,0,0,0,0);
 		}
-		else
-			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
 	
 	return;

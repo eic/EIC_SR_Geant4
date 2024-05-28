@@ -132,7 +132,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 			// Select only electrons
 			if (!particle->end_vertex() && particle->status() == 1 && particle->pid() == 11) 
 			{
-				// Select the particle from the beam only
+				// Select the particle from the beam only (find a grandparent)
 				bool fromBeam = false;
 				HepMC3::FourVector momBeam;
 				G4double massBeam;
@@ -153,7 +153,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 
 				// Create G4PrimaryVertex and associated G4PrimaryParticles
 				g4vtx = new G4PrimaryVertex(
-					xvtx.x()*mm, xvtx.y()*mm, xvtx.z()*mm,xvtx.t()*mm/c_light);
+					-xvtx.x()*mm, xvtx.y()*mm, -xvtx.z()*mm,xvtx.t()*mm/c_light);
 
 				G4int pdgcode = particle->pid();
 				HepMC3::FourVector mom = particle->momentum();
@@ -171,13 +171,15 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 				Q2 = -q.m2();
 
 				g4prim = new G4PrimaryParticle(
-					pdgcode, k_f.x()*GeV, k_f.y()*GeV, k_f.z()*GeV);
+					pdgcode, -k_f.x()*GeV, k_f.y()*GeV, -k_f.z()*GeV);
 				g4vtx->SetPrimary(g4prim);
 
 				gotParticle = true;
       			}
+			// we need only one scattered electron, skip the rest of particles
 			if(gotParticle){break;}
     		}
+		// we need only one scattered electron, skip the rest of vertices
 		if(gotParticle){break;}
 	}
 

@@ -137,7 +137,7 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	//-- Store killed photon info
 
 	// check if the track (=gamma) is killed
-	if(track->GetTrackStatus() == fStopAndKill && 
+	if(postPV && track->GetTrackStatus() == fStopAndKill && 
 		track->GetParticleDefinition()->GetPDGEncoding() == G4Gamma::Gamma()->GetPDGEncoding())
 	{	
 		// do not store in absorbers
