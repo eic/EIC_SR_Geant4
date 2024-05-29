@@ -135,11 +135,20 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 
 	//--------------------------------------------------------------------------//
 	//-- Store killed photon info
-
 	// check if the track (=gamma) is killed
-	if(postPV && track->GetTrackStatus() == fStopAndKill && 
+	if(/*postPV && */track->GetTrackStatus() == fStopAndKill && 
 		track->GetParticleDefinition()->GetPDGEncoding() == G4Gamma::Gamma()->GetPDGEncoding())
 	{	
+		if(!postPV)
+		{
+			G4cout<<"\n\n=================================================================="<<G4endl;
+			G4cout<<"[WARNING] SteppingAction::UserSteppingAction"<<G4endl;
+			G4cout<<" No postStep volume is assigned. Please check your geometry."<<G4endl;
+			G4cout<<" All vacuum volumes where SR should propagate must have the 'vac_' prefix."<<G4endl;
+			G4cout<<" The SR photon is skipped!"<<G4endl;
+			G4cout<<"==================================================================\n"<<G4endl;
+			return;
+		}
 		// do not store in absorbers
 		if(G4StrUtil::contains(step->GetPostStepPoint()->GetPhysicalVolume()->GetName(),"abs_")){return;}
 

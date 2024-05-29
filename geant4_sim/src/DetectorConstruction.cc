@@ -124,9 +124,14 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
 		beampipeUni_solid,beampipe_cut,0,G4ThreeVector(0,0,9280.0 * mm + 10*m));
 
+	//- Copy
+	beampipeVac_solid = beampipeUni_solid;
+
+	//---------------------------------------------------------------------------------------------------------------//
 	//- Build an extended bwd beam pipe
-	G4double B2eR_bend = 0.020 * rad;
-	G4double B2eR_len = 5.5 * m;
+	const G4double B2eR_bend = 0.020 * rad;
+	const G4double B2eR_len = 5.5 * m;
+	const G4double B2eR_cut_offset = 1 * cm;
 	G4ThreeVector B2eR_start(0*cm,0*cm,1675*cm);
 	G4double torus_radius = (0.5*B2eR_len/sin(B2eR_bend/2.)); 
 
@@ -138,7 +143,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	const G4double rOuter[numZPlanes] = {
 		128.6/2 * mm, 128.6/2 * mm, 154.0/2 * mm, 154.0/2 * mm, 196.0/2 * mm, 
 		196.0/2 * mm, 100.0/2 * mm, 100.0/2 * mm};
-	bwd_beampipeVac_solid = new G4Polycone("bwd_beampipeVac_solid",
+	G4Polycone* polycone = new G4Polycone("polycone",
 		0, 2.0 * M_PI, numZPlanes, zPlane, rInner, rOuter);
 
 	// Torus - bent beam pipe
@@ -149,10 +154,11 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	G4VSolid* torus_solid = new G4Torus("torus_solid",0,5 * cm,
 		torus_radius,0,B2eR_bend);
 	bwd_beampipeVac_solid = new G4UnionSolid("bwd_beampipeVac_solid",
-		bwd_beampipeVac_solid,torus_solid,
+		polycone,torus_solid,
 		torus_rot,G4ThreeVector(torus_radius, 0, B2eR_start.z()));
 
-	//  
+	//---------------------------------------------------------------------------------------------------------------//
+	// B2eR beam pipe extension
 	G4ThreeVector B2eR_end = B2eR_start - G4ThreeVector(torus_radius,0,B2eR_start.z());	
 	B2eR_end.rotateY(B2eR_bend);
 	B2eR_end += G4ThreeVector(torus_radius,0,B2eR_start.z());  
@@ -160,18 +166,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	G4RotationMatrix* torus_ext_rot = new G4RotationMatrix();
 	torus_ext_rot->rotateY(-B2eR_bend);
 
-	//---------------------------------------------------------------------------------------------------------------//
-	// For B2eR magnet solid only
-	G4double torus_ext_len2 = 1 * cm;
-	G4VSolid* torus_ext_solid2 = new G4Tubs("torus_ext_solid2",0,5 * cm, torus_ext_len2/2.0, 0, 2.0 * M_PI * rad);
-	farbwd_beampipeVac_solid = new G4UnionSolid("farbwd_beampipeVac_solid",
-		bwd_beampipeVac_solid,torus_ext_solid2,
-		torus_ext_rot,G4ThreeVector(	B2eR_end.x() + 0.5*torus_ext_len2*sin(B2eR_bend),
-						B2eR_end.y(),
-						B2eR_end.z() + 0.5*torus_ext_len2*cos(B2eR_bend)));
-	//---------------------------------------------------------------------------------------------------------------//
-
-	G4double torus_ext_len = 20 * m;
+	G4double torus_ext_len = 10 * cm;
 	G4VSolid* torus_ext_solid = new G4Tubs("torus_ext_solid",0,5 * cm, torus_ext_len/2.0, 0, 2.0 * M_PI * rad);
 	bwd_beampipeVac_solid = new G4UnionSolid("bwd_beampipeVac_solid",
 		bwd_beampipeVac_solid,torus_ext_solid,
@@ -179,15 +174,31 @@ void DetectorConstruction::CreateBeamPipeSolid()
 						B2eR_end.y(),
 						B2eR_end.z() + 0.5*torus_ext_len*cos(B2eR_bend)));
 
+	// Cut the BWD beam pipe at the end of B2eR
+	bwd_beampipeVac_solid = new G4SubtractionSolid("bwd_beampipeVac_solid",
+		bwd_beampipeVac_solid,beampipe_cut,0,G4ThreeVector(0,0,B2eR_end.z() + B2eR_cut_offset + 10*m));
+	//---------------------------------------------------------------------------------------------------------------//
+	// FarBWD beam pipe
+	G4double farbwd_len = 20 * m;
+	G4RotationMatrix* farbwd_rot = new G4RotationMatrix();
+	farbwd_rot->rotateY(-B2eR_bend);
 
-	G4Box* ante_chmbr_box = new G4Box("ante_chmbr_box",22*cm/2.,5*cm/2.,torus_ext_len/2.);
-	bwd_beampipeVac_solid = new G4UnionSolid("bwd_beampipeVac_solid",
-		bwd_beampipeVac_solid,ante_chmbr_box,
-		torus_ext_rot,G4ThreeVector(	B2eR_end.x() + 0.5*torus_ext_len*sin(B2eR_bend) + 22*cm/2.*cos(B2eR_bend/2),
-						B2eR_end.y(),
-						B2eR_end.z() + 0.5*torus_ext_len*cos(B2eR_bend) - 22*cm/2.*sin(B2eR_bend/2)));
-	//- Copy
-	beampipeVac_solid = beampipeUni_solid;
+	G4VSolid* farbwd_tube = new G4Tubs("farbwd_tube", 0, 5 * cm, farbwd_len/2., 0, 2.0 * M_PI * rad);
+	G4Box* ante_chmbr_box = new G4Box("ante_chmbr_box",22*cm/2.,5*cm/2.,farbwd_len/2.);
+	farbwd_tube = new G4UnionSolid("farbwd_tube",
+		farbwd_tube,ante_chmbr_box,0,G4ThreeVector(22*cm/2.,0,0));
+
+	farbwd_beampipeVac_solid = new G4UnionSolid("farbwd_beampipeVac_solid",
+		polycone,farbwd_tube,farbwd_rot,
+		G4ThreeVector(	B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend),
+				B2eR_end.y(),
+				B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend)));
+
+
+	// Cut the FarBWD beam pipe at the end of B2eR
+	farbwd_beampipeVac_solid = new G4SubtractionSolid("farbwd_beampipeVac_solid",
+		farbwd_beampipeVac_solid,beampipe_cut,0,G4ThreeVector(0,0,B2eR_end.z() + B2eR_cut_offset - 10*m));
+
 
 	return;
 }
@@ -286,7 +297,7 @@ void DetectorConstruction::CreateSrMask()
 
 void DetectorConstruction::BuildMagnets()
 {
-	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_log || !bwd_beampipeVac_solid/* || !farbwd_beampipeVac_solid*/)
+	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_log || !bwd_beampipeVac_solid)
 	{
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::BuildMagnets ==> Materials, beam pipe solids, or world LV are not created\n");
@@ -346,12 +357,7 @@ void DetectorConstruction::BuildMagnets()
 			if(simPar->GetMagName(iMag) == "D2ER")
 			{
 				mag_solid = new G4IntersectionSolid(simPar->GetMagName(iMag)+"_solid",
-					farbwd_beampipeVac_solid, mag_vol,mag_rot,mag_center);
-			}
-			else if(simPar->GetMagName(iMag) == "Q3ER")
-			{
-				mag_solid = new G4Tubs(simPar->GetMagName(iMag)+"_solid",
-					0,10 * cm /2., L/2, 0.,2*M_PI*rad);
+					bwd_beampipeVac_solid, mag_vol,mag_rot,mag_center);
 			}
 			else
 			{
@@ -572,7 +578,7 @@ void DetectorConstruction::BuildIpBeamPipe()
 
 void DetectorConstruction::BuildIrBeamPipe()
 {
-	if(!mat_vac || !beampipeVac_solid || !world_log || !bwd_beampipeVac_solid/* || !farbwd_beampipeVac_solid*/)
+	if(!mat_vac || !beampipeVac_solid || !world_log)
 	{
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::BuildIrBeamPipe ==> Materials, beam pipe solids, or world LV are not created\n");
@@ -599,6 +605,17 @@ void DetectorConstruction::BuildIrBeamPipe()
 	G4VisAttributes* bwd_beampipeVac_vis = new G4VisAttributes(G4Color::Red());
 	bwd_beampipeVac_vis->SetVisibility(visibility);
 	bwd_beampipeVac_log->SetVisAttributes(bwd_beampipeVac_vis);
+
+	//- Vacuum FarBWD beam pipe vacuum
+	G4LogicalVolume* farbwd_beampipeVac_log = new G4LogicalVolume(
+		farbwd_beampipeVac_solid, mat_vac, "farbwd_beampipeVac");
+	farbwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
+	new G4PVPlacement(0,G4ThreeVector(0,0,0),
+		farbwd_beampipeVac_log,"vac_farbwd_beampipeVac",world_log,false,0,true);
+	//- Visualization
+	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Red());
+	farbwd_beampipeVac_vis->SetVisibility(visibility);
+	farbwd_beampipeVac_log->SetVisAttributes(farbwd_beampipeVac_vis);
 
 	return;
 }

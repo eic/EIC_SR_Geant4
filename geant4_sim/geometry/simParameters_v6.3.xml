@@ -3,7 +3,7 @@
 	<world>
 		<sec desc="size X" name="x" unit="m">20.0</sec>
 		<sec desc="size Y" name="y" unit="m">20.0</sec>
-		<sec desc="size Z" name="z" unit="m">150.0</sec>
+		<sec desc="size Z" name="z" unit="m">200.0</sec>
 	</world>
 
 	<!-- beam pipe vacuum -->
