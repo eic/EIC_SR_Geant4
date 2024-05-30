@@ -79,6 +79,15 @@ void EventAction::EndOfEventAction(const G4Event*)
 	runAction->_gammaEnergy.clear();
 	runAction->_gammaTime.clear();
 
+	runAction->_lumiPosX.clear();
+	runAction->_lumiPosY.clear();
+	runAction->_lumiPosZ.clear();
+	runAction->_lumiMomX.clear();
+	runAction->_lumiMomY.clear();
+	runAction->_lumiMomZ.clear();
+	runAction->_lumiEnergy.clear();
+	runAction->_lumiTime.clear();
+
     	_timer->Stop();
 	// 'real' is wall clock time - time from start to finish of the call. This is all elapsed time 
 	// including time slices used by other processes and time the process spends blocked (for example 

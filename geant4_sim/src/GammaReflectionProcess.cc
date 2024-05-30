@@ -149,7 +149,7 @@ GammaReflectionProcess::PostStepDoIt(const G4Track& track, const G4Step & step)
 	// only when leaving the magnet or vacuum and entering the world, tagger, or lumi exit window
 	if(	postStep->GetStepStatus() == fGeomBoundary && 
 		(postPV->GetName() == "world" || G4StrUtil::contains(postPV->GetName(),"vac_TaggerFoil_") ||
-		postPV->GetName() == "vac_LumiExitWindow") &&
+		postPV->GetName() == "lumiWind") &&
 		(G4StrUtil::contains(prePV->GetName(),"mag_") || G4StrUtil::contains(prePV->GetName(),"vac_")))
 	{
 		const G4DynamicParticle* aParticle = track.GetDynamicParticle(); // get the photon
@@ -253,7 +253,7 @@ void GammaReflectionProcess::DoXrayReflection(	const G4double GamEner,
 		prob = Reflectivity(GamEner, SinIncidentAngle, theMatIP);
 	else if(G4StrUtil::contains(volName,"vac_TaggerFoil_")) // Cu tagger foil
 		prob = Reflectivity(GamEner, SinIncidentAngle, theMatTaggerFoil);
-	else if(volName == "vac_LumiExitWindow") // Al lumi exit window
+	else if(volName == "lumiWind") // Al lumi exit window
 		prob = Reflectivity(GamEner, SinIncidentAngle, theMatLumiExitWindow);
 	else // Cu beam pipe
 		prob = Reflectivity(GamEner, SinIncidentAngle, theMatIR);
@@ -341,7 +341,7 @@ void GammaReflectionProcess::DoGammaReflection1(const G4double GamEner,
 	else if(G4StrUtil::contains(volName,"vac_TaggerFoil_")) // Cu tagger foil
 		prob = FindReflectionProbability(_reflectDataMap["Cu"],
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
-	else if(volName == "vac_LumiExitWindow") // Al lumi exit window
+	else if(volName == "lumiWind") // Al lumi exit window
 		prob = FindReflectionProbability(_reflectDataMap["Al"],
 			_grazingAngleMap["Al"],_photonEnergyMap["Al"],grazingPhotonAngle/rad,GamEner/eV);
 	else // Cu beam pipe
@@ -500,7 +500,7 @@ void GammaReflectionProcess::DoGammaReflection2(const G4double GamEner,
 	else if(G4StrUtil::contains(volName,"vac_TaggerFoil_")) // Cu tagger foil
 		prob = FindReflectionProbability(_reflectDataMap["Cu"],
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
-	else if(volName == "vac_LumiExitWindow") // Al lumi exit window
+	else if(volName == "lumiWind") // Al lumi exit window
 		prob = FindReflectionProbability(_reflectDataMap["Al"],
 			_grazingAngleMap["Al"],_photonEnergyMap["Al"],grazingPhotonAngle/rad,GamEner/eV);
 	else // Cu beam pipe
@@ -590,7 +590,7 @@ void GammaReflectionProcess::DoGammaReflection3(const G4double GamEner,
 	else if(G4StrUtil::contains(volName,"vac_TaggerFoil_")) // Cu tagger foil
 		prob = FindReflectionProbability(_reflectDataMap["Cu"],
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
-	else if(volName == "vac_LumiExitWindow") // Al lumi exit window
+	else if(volName == "lumiWind") // Al lumi exit window
 		prob = FindReflectionProbability(_reflectDataMap["Al"],
 			_grazingAngleMap["Al"],_photonEnergyMap["Al"],grazingPhotonAngle/rad,GamEner/eV);
 	else // Cu beam pipe

@@ -169,6 +169,19 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		runAction->_gammaMomZ.push_back(step->GetPostStepPoint()->GetMomentum().getZ()/eV);
 		runAction->_gammaEnergy.push_back(track->GetTotalEnergy()/eV);
 		runAction->_gammaTime.push_back(track->GetGlobalTime()/ms); // time from the start of the event
+
+		// lumi window
+		if(step->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "lumiWind")
+		{
+			runAction->_lumiPosX.push_back(step->GetPostStepPoint()->GetPosition().getX()/cm);
+			runAction->_lumiPosY.push_back(step->GetPostStepPoint()->GetPosition().getY()/cm);
+			runAction->_lumiPosZ.push_back(step->GetPostStepPoint()->GetPosition().getZ()/cm);
+			runAction->_lumiMomX.push_back(step->GetPostStepPoint()->GetMomentum().getX()/eV);
+			runAction->_lumiMomY.push_back(step->GetPostStepPoint()->GetMomentum().getY()/eV);
+			runAction->_lumiMomZ.push_back(step->GetPostStepPoint()->GetMomentum().getZ()/eV);
+			runAction->_lumiEnergy.push_back(track->GetTotalEnergy()/eV);
+			runAction->_lumiTime.push_back(track->GetGlobalTime()/ms); // time from the start of the event
+		}
 	}
 
 	return;

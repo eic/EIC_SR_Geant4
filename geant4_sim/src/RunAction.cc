@@ -81,6 +81,15 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("monRefPosZ_cm",	&_monRefPosZ);
     	_tree->Branch("monRefAngle_rad",	&_monRefAngle);
 
+    	_tree->Branch("lumiPosX_cm",	&_lumiPosX);
+    	_tree->Branch("lumiPosY_cm",	&_lumiPosY);
+    	_tree->Branch("lumiPosZ_cm",	&_lumiPosZ);
+    	_tree->Branch("lumiMomX_eV",	&_lumiMomX);
+    	_tree->Branch("lumiMomY_eV",	&_lumiMomY);
+    	_tree->Branch("lumiMomZ_eV",	&_lumiMomZ);
+    	_tree->Branch("lumiEnergy_eV",	&_lumiEnergy);
+    	_tree->Branch("lumiTime_ms",	&_lumiTime);
+
     	_tracks = new TTree("tracks", "Collected SR Track Data");
     	_tracks->Branch("trackPosX_cm",	&_trackPosX_cm);
     	_tracks->Branch("trackPosY_cm",	&_trackPosY_cm);

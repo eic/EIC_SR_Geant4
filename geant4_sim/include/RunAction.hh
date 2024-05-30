@@ -92,6 +92,15 @@ public:
 	vector<G4float> _gammaEnergy;
 	vector<G4float> _gammaTime;
 
+	vector<G4float> _lumiPosX;
+	vector<G4float> _lumiPosY;
+	vector<G4float> _lumiPosZ;
+	vector<G4float> _lumiMomX;
+	vector<G4float> _lumiMomY;
+	vector<G4float> _lumiMomZ;
+	vector<G4float> _lumiEnergy;
+	vector<G4float> _lumiTime;
+
 	string _monName;
 	G4float _monPosX;
 	G4float _monPosY;

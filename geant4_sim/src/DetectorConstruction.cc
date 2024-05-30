@@ -48,6 +48,7 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	beampipeUni_solid = nullptr;
 	beampipeVac_solid = nullptr;
 	bwd_beampipeVac_solid = nullptr;
+	farbwd_beampipeVac_solid = nullptr;
 	beampipeVac_log = nullptr;
 	ip_box = nullptr;
 	ip_log = nullptr;
@@ -71,7 +72,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 //	BuildFarBackwardBeamPipe();
 //	BuildFarBackwardBeamPipe2();
 	BuildIrBeamPipe();
-//	if(addAbsorber) BuildAbsorbers();
+	if(addAbsorber) BuildAbsorbers();
 
 	return world_phys;
 }
@@ -131,6 +132,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	const G4double B2eR_bend = 0.020 * rad;
 	const G4double B2eR_len = 5.5 * m;
 	const G4double B2eR_cut_offset = 1 * cm;
+	const G4double B2eR_beampipe_radius = 5 * cm;
 	G4ThreeVector B2eR_start(0*cm,0*cm,1675*cm);
 	G4double torus_radius = (0.5*B2eR_len/sin(B2eR_bend/2.)); 
 	G4ThreeVector B2eR_end = B2eR_start - G4ThreeVector(torus_radius,0,B2eR_start.z());	
@@ -144,7 +146,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	const G4double rInner[numZPlanes] = {0,0,0,0,0,0,0,0};
 	const G4double rOuter[numZPlanes] = {
 		128.6/2 * mm, 128.6/2 * mm, 154.0/2 * mm, 154.0/2 * mm, 196.0/2 * mm, 
-		196.0/2 * mm, 100.0/2 * mm, 100.0/2 * mm};
+		196.0/2 * mm, B2eR_beampipe_radius, B2eR_beampipe_radius};
 	G4Polycone* polycone = new G4Polycone("polycone",
 		0, 2.0 * M_PI, numZPlanes, zPlane, rInner, rOuter);
 
@@ -153,7 +155,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	torus_rot->rotateX(-M_PI * 0.5 * rad);
 	torus_rot->rotateY(M_PI * rad);
 	
-	G4VSolid* torus_solid = new G4Torus("torus_solid",0,5 * cm,
+	G4VSolid* torus_solid = new G4Torus("torus_solid",0,B2eR_beampipe_radius,
 		torus_radius,0,B2eR_bend);
 	bwd_beampipeVac_solid = new G4UnionSolid("bwd_beampipeVac_solid",
 		polycone,torus_solid,
@@ -165,7 +167,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	torus_ext_rot->rotateY(-B2eR_bend);
 
 	G4double torus_ext_len = 10 * cm;
-	G4VSolid* torus_ext_solid = new G4Tubs("torus_ext_solid",0,5 * cm, torus_ext_len/2.0, 0, 2.0 * M_PI * rad);
+	G4VSolid* torus_ext_solid = new G4Tubs("torus_ext_solid",0,B2eR_beampipe_radius, torus_ext_len/2.0, 0, 2.0 * M_PI * rad);
 	bwd_beampipeVac_solid = new G4UnionSolid("bwd_beampipeVac_solid",
 		bwd_beampipeVac_solid,torus_ext_solid,
 		torus_ext_rot,G4ThreeVector(	B2eR_end.x() + 0.5*torus_ext_len*sin(B2eR_bend),
@@ -179,6 +181,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	//---------------------------------------------------------------------------------------------------------------//
 	// FarBWD beam pipe
 	G4double farbwd_len = 20 * m;
+	G4double farbwd_ext = 5 * m;
 	G4double lumi_halflen = 2.25 * m;
 	G4RotationMatrix* farbwd_rot = new G4RotationMatrix();
 	farbwd_rot->rotateY(-B2eR_bend);
@@ -188,9 +191,9 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	cut_rot->rotateY(B2eR_bend);
 
 	// main beam pipe
-	G4VSolid* farbwd_tube = new G4Tubs("farbwd_tube", 0, 5 * cm, farbwd_len/2., 0, 2.0 * M_PI * rad);
+	G4VSolid* farbwd_tube = new G4Tubs("farbwd_tube", 0,B2eR_beampipe_radius, (farbwd_len+farbwd_ext)/2., 0, 2.0 * M_PI * rad);
 	// luminosity beam pipe
-	G4VSolid* lumi_tube = new G4Tubs("farbwd_tube", 0, 5 * cm, lumi_halflen, 0, 2.0 * M_PI * rad);
+	G4VSolid* lumi_tube = new G4Tubs("farbwd_tube", 0,B2eR_beampipe_radius, lumi_halflen, 0, 2.0 * M_PI * rad);
 	// ante-chamber
 	G4Box* ante_chmbr_box = new G4Box("ante_chmbr_box",22*cm/2.,5*cm/2.,farbwd_len/2.);
 	// unite main and ante-chamber
@@ -207,11 +210,12 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	farbwd_tube = new G4UnionSolid("farbwd_tube",farbwd_tube,lumi_tube,lumi_rot,G4ThreeVector(-dK,0,-L-dL));
 
 	// Cut the FarBWD beam pipe at the end of B2eR
-	G4VSolid* farbwd_beampipeVac_solid = new G4SubtractionSolid("farbwd_beampipeVac_solid",
+	farbwd_beampipeVac_solid = new G4SubtractionSolid("farbwd_beampipeVac_solid",
 		farbwd_tube,beampipe_cut,cut_rot,G4ThreeVector(0,0,-(L+(10*m)/cos(B2eR_bend))));
 
 	// Place the assembly
 	G4LogicalVolume* farbwd_beampipeVac_log = new G4LogicalVolume(farbwd_beampipeVac_solid,mat_vac,"farbwd_beampipeVac_log");
+	farbwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
 	new G4PVPlacement(farbwd_rot, 
 		G4ThreeVector(	B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend),
 				B2eR_end.y(),
@@ -222,7 +226,28 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Red());
 	farbwd_beampipeVac_vis->SetVisibility(visibility);
 	farbwd_beampipeVac_log->SetVisAttributes(farbwd_beampipeVac_vis);
+	//---------------------------------------------------------------------------------------------------------------//
+	// Place an absorber inside the FarBWD vacuum
+	if(addAbsorber && farbwd_beampipeVac_log)
+	{
+		G4Tubs* abs_tube = new G4Tubs("abs_tube_farbwd",0,B2eR_beampipe_radius,1*cm,0, 2.0 * M_PI * rad);
+		G4LogicalVolume* abs_log = new G4LogicalVolume(abs_tube,mat_vac, "abs_log_farbwd");
+		new G4PVPlacement(0,G4ThreeVector(0,0,(farbwd_len+farbwd_ext)/2. - 1 * cm),
+			abs_log,"abs_farbwd",farbwd_beampipeVac_log,false,0,true);
 
+		//- Visualization
+		G4VisAttributes* abs_vis = new G4VisAttributes(G4Color::Magenta());
+		abs_vis->SetVisibility(visibility);
+		abs_log->SetVisAttributes(abs_vis);
+	}
+	//---------------------------------------------------------------------------------------------------------------//
+	// Place a lumi window
+	G4double lumiWindStart_posz = B2eR_end.z() + B2eR_cut_offset + lumi_halflen;
+	G4cout<<"[INFO] lumiWindStart_posz = "<<lumiWindStart_posz/cm<<" [cm]"<<G4endl;
+	G4Box* lumiWind_box = new G4Box("lumiWind_box",B2eR_beampipe_radius,B2eR_beampipe_radius,1 * cm);
+	G4LogicalVolume* lumiWind_log = new G4LogicalVolume(lumiWind_box,mat_vac,"lumiWind_log");
+	new G4PVPlacement(0,G4ThreeVector(0,0,lumiWindStart_posz+ 1*cm),lumiWind_log,"lumiWind",world_log,false,0,true);
+	
 	return;
 }
 
@@ -1124,9 +1149,8 @@ void DetectorConstruction::BuildAbsorbers()
 			simPar->GetAbsSizeZ(iAbs)/2); 
 		G4LogicalVolume* abs_log;
 
-		if(bwd_beampipeVac_solid && iAbs == simPar->GetAbsNum() - 1) // skip the last absorber
+		if((bwd_beampipeVac_solid || farbwd_beampipeVac_solid) && iAbs == simPar->GetAbsNum() - 1) // skip the last absorber
 		{
-			// see DetectorConstruction::BuildFarBackwardBeamPipe()
 			continue;
 		}
 		else
