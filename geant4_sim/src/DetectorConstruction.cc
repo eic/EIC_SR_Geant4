@@ -48,7 +48,6 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	beampipeUni_solid = nullptr;
 	beampipeVac_solid = nullptr;
 	bwd_beampipeVac_solid = nullptr;
-	farbwd_beampipeVac_solid = nullptr;
 	beampipeVac_log = nullptr;
 	ip_box = nullptr;
 	ip_log = nullptr;
@@ -134,11 +133,14 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	const G4double B2eR_cut_offset = 1 * cm;
 	G4ThreeVector B2eR_start(0*cm,0*cm,1675*cm);
 	G4double torus_radius = (0.5*B2eR_len/sin(B2eR_bend/2.)); 
+	G4ThreeVector B2eR_end = B2eR_start - G4ThreeVector(torus_radius,0,B2eR_start.z());	
+	B2eR_end.rotateY(B2eR_bend);
+	B2eR_end += G4ThreeVector(torus_radius,0,B2eR_start.z());  
 
 	const G4int numZPlanes = 8;
 	const G4double zPlane[numZPlanes] = {
 		9280.0 * mm, 9288.0 * mm, 9364.0 * mm, 11364.0 * mm, 11414.0 * mm, 
-		15000.0 * mm, 16000.0 * mm, 24500.0 * mm};
+		15000.0 * mm, 16000.0 * mm, 25000.0 * mm};
 	const G4double rInner[numZPlanes] = {0,0,0,0,0,0,0,0};
 	const G4double rOuter[numZPlanes] = {
 		128.6/2 * mm, 128.6/2 * mm, 154.0/2 * mm, 154.0/2 * mm, 196.0/2 * mm, 
@@ -159,10 +161,6 @@ void DetectorConstruction::CreateBeamPipeSolid()
 
 	//---------------------------------------------------------------------------------------------------------------//
 	// B2eR beam pipe extension
-	G4ThreeVector B2eR_end = B2eR_start - G4ThreeVector(torus_radius,0,B2eR_start.z());	
-	B2eR_end.rotateY(B2eR_bend);
-	B2eR_end += G4ThreeVector(torus_radius,0,B2eR_start.z());  
-
 	G4RotationMatrix* torus_ext_rot = new G4RotationMatrix();
 	torus_ext_rot->rotateY(-B2eR_bend);
 
@@ -174,31 +172,56 @@ void DetectorConstruction::CreateBeamPipeSolid()
 						B2eR_end.y(),
 						B2eR_end.z() + 0.5*torus_ext_len*cos(B2eR_bend)));
 
+
 	// Cut the BWD beam pipe at the end of B2eR
 	bwd_beampipeVac_solid = new G4SubtractionSolid("bwd_beampipeVac_solid",
 		bwd_beampipeVac_solid,beampipe_cut,0,G4ThreeVector(0,0,B2eR_end.z() + B2eR_cut_offset + 10*m));
 	//---------------------------------------------------------------------------------------------------------------//
 	// FarBWD beam pipe
 	G4double farbwd_len = 20 * m;
+	G4double lumi_halflen = 2.25 * m;
 	G4RotationMatrix* farbwd_rot = new G4RotationMatrix();
 	farbwd_rot->rotateY(-B2eR_bend);
+	G4RotationMatrix* lumi_rot = new G4RotationMatrix();
+	lumi_rot->rotateY(B2eR_bend);
+	G4RotationMatrix* cut_rot = new G4RotationMatrix();
+	cut_rot->rotateY(B2eR_bend);
 
+	// main beam pipe
 	G4VSolid* farbwd_tube = new G4Tubs("farbwd_tube", 0, 5 * cm, farbwd_len/2., 0, 2.0 * M_PI * rad);
+	// luminosity beam pipe
+	G4VSolid* lumi_tube = new G4Tubs("farbwd_tube", 0, 5 * cm, lumi_halflen, 0, 2.0 * M_PI * rad);
+	// ante-chamber
 	G4Box* ante_chmbr_box = new G4Box("ante_chmbr_box",22*cm/2.,5*cm/2.,farbwd_len/2.);
+	// unite main and ante-chamber
 	farbwd_tube = new G4UnionSolid("farbwd_tube",
 		farbwd_tube,ante_chmbr_box,0,G4ThreeVector(22*cm/2.,0,0));
-
-	farbwd_beampipeVac_solid = new G4UnionSolid("farbwd_beampipeVac_solid",
-		polycone,farbwd_tube,farbwd_rot,
-		G4ThreeVector(	B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend),
-				B2eR_end.y(),
-				B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend)));
-
+	// distance between the main beam pipe center (placement coordinates) and the cut
+	G4double L = (B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend)-(B2eR_end.z() + B2eR_cut_offset))/cos(B2eR_bend);
+	// half-width of the cut in the main beam pipe
+	G4double M = B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend) - L*sin(B2eR_bend);
+	// displacement of the lumi pipe w.r.t. the main beam pipe
+	G4double dL = M * sin(B2eR_bend); // along main beam pipe Z-axis
+	G4double dK = M * cos(B2eR_bend); // along main beam pipe X-axis
+	// unite lumi and main+ante-chamber in the main beam pipe coordinate system
+	farbwd_tube = new G4UnionSolid("farbwd_tube",farbwd_tube,lumi_tube,lumi_rot,G4ThreeVector(-dK,0,-L-dL));
 
 	// Cut the FarBWD beam pipe at the end of B2eR
-	farbwd_beampipeVac_solid = new G4SubtractionSolid("farbwd_beampipeVac_solid",
-		farbwd_beampipeVac_solid,beampipe_cut,0,G4ThreeVector(0,0,B2eR_end.z() + B2eR_cut_offset - 10*m));
+	G4VSolid* farbwd_beampipeVac_solid = new G4SubtractionSolid("farbwd_beampipeVac_solid",
+		farbwd_tube,beampipe_cut,cut_rot,G4ThreeVector(0,0,-(L+(10*m)/cos(B2eR_bend))));
 
+	// Place the assembly
+	G4LogicalVolume* farbwd_beampipeVac_log = new G4LogicalVolume(farbwd_beampipeVac_solid,mat_vac,"farbwd_beampipeVac_log");
+	new G4PVPlacement(farbwd_rot, 
+		G4ThreeVector(	B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend),
+				B2eR_end.y(),
+				B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend)),
+		farbwd_beampipeVac_log,"vac_farbwd_beampipeVac",world_log,false,0,true);
+
+	// Visualization
+	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Red());
+	farbwd_beampipeVac_vis->SetVisibility(visibility);
+	farbwd_beampipeVac_log->SetVisAttributes(farbwd_beampipeVac_vis);
 
 	return;
 }
@@ -578,7 +601,7 @@ void DetectorConstruction::BuildIpBeamPipe()
 
 void DetectorConstruction::BuildIrBeamPipe()
 {
-	if(!mat_vac || !beampipeVac_solid || !world_log)
+	if(!mat_vac || !beampipeVac_solid || !world_log || !bwd_beampipeVac_solid)
 	{
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::BuildIrBeamPipe ==> Materials, beam pipe solids, or world LV are not created\n");
@@ -605,17 +628,6 @@ void DetectorConstruction::BuildIrBeamPipe()
 	G4VisAttributes* bwd_beampipeVac_vis = new G4VisAttributes(G4Color::Red());
 	bwd_beampipeVac_vis->SetVisibility(visibility);
 	bwd_beampipeVac_log->SetVisAttributes(bwd_beampipeVac_vis);
-
-	//- Vacuum FarBWD beam pipe vacuum
-	G4LogicalVolume* farbwd_beampipeVac_log = new G4LogicalVolume(
-		farbwd_beampipeVac_solid, mat_vac, "farbwd_beampipeVac");
-	farbwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
-	new G4PVPlacement(0,G4ThreeVector(0,0,0),
-		farbwd_beampipeVac_log,"vac_farbwd_beampipeVac",world_log,false,0,true);
-	//- Visualization
-	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Red());
-	farbwd_beampipeVac_vis->SetVisibility(visibility);
-	farbwd_beampipeVac_log->SetVisAttributes(farbwd_beampipeVac_vis);
 
 	return;
 }
