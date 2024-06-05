@@ -39,21 +39,26 @@ void printLatticeParameters()
 	// surveyFileName = "./lattice_v6.2/esr-survey-doug.tfs";
 	// opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
 
-	//- Apr. 2024 - v6.3 lattice
-	surveyFileName = "./lattice_v6.3/esr-survey-doug.tfs";
-	opticsFileName = "./lattice_v6.3/esr-ring-norad.tfs";
+	//- Apr. 2024 - v6.3 lattice - not closed orbit
+	// surveyFileName = "./lattice_v6.3_notClosedOrbit/esr-survey-doug.tfs";
+	// opticsFileName = "./lattice_v6.3_notClosedOrbit/esr-ring-norad.tfs";
 
+	//- May. 2024 - v6.3 lattice - closed orbit
+	surveyFileName = "./lattice_v6.3/ir6survey.tfs";
+	opticsFileName = "./lattice_v6.3/ir6twiss.tfs";
+/*
 	//- lists of elements (FWD)
-//	const Int_t nElements = 7;
-//	TString startElementName[nElements] = {	
-//		"\"SQ2EF_6\"", "\"OWW_SH\"", "\"ODB23\"", "\"ODB23\"", "\"MCOLL_MASK\"", "\"O1EF_6\"","\"O0EF_6\""};
-//	TString stopElementName[nElements] = {
-//		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
-
+	const Int_t nElements = 7;
+	TString startElementName[nElements] = {	
+		"\"SQ2EF_6\"", "\"OWW_SH\"", "\"ODB23\"", "\"ODB23\"", "\"MCOLL_MASK\"", "\"O1EF_6\"","\"O0EF_6\""};
+	TString stopElementName[nElements] = {
+		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
+*/
 	//- lists of elements (BWD)
 	const Int_t nElements = 5;
 	TString startElementName[nElements] = {	
-		"\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
+		"\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"O0EF_6\""};
+//		"\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
 	TString stopElementName[nElements] = {
 		"\"Q3ER_6\"","\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
 

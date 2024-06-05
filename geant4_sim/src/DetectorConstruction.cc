@@ -223,7 +223,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 		farbwd_beampipeVac_log,"vac_farbwd_beampipeVac",world_log,false,0,true);
 
 	// Visualization
-	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Red());
+	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Gray());
 	farbwd_beampipeVac_vis->SetVisibility(visibility);
 	farbwd_beampipeVac_log->SetVisAttributes(farbwd_beampipeVac_vis);
 	//---------------------------------------------------------------------------------------------------------------//
@@ -650,7 +650,7 @@ void DetectorConstruction::BuildIrBeamPipe()
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),
 		bwd_beampipeVac_log,"vac_bwd_beampipeVac",world_log,false,0,true);
 	//- Visualization
-	G4VisAttributes* bwd_beampipeVac_vis = new G4VisAttributes(G4Color::Red());
+	G4VisAttributes* bwd_beampipeVac_vis = new G4VisAttributes(G4Color::Gray());
 	bwd_beampipeVac_vis->SetVisibility(visibility);
 	bwd_beampipeVac_log->SetVisAttributes(bwd_beampipeVac_vis);
 
