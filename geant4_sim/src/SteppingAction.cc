@@ -48,6 +48,17 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	if(prePV_name == "vac_IP" && simPar->IsBuildSolenoid()){prePV_name = "mag_MARCO";}
 
 	//--------------------------------------------------------------------------//
+	//- Kill primaries leaving the vacuum
+	if(	track->GetTrackID() == 1 && // primary particle
+		postStep->GetStepStatus() == fGeomBoundary && // at boundary
+		postPV->GetName() == "world" && // entering world
+		(G4StrUtil::contains(prePV_name,"vac_") || // leaving vacuum
+		G4StrUtil::contains(prePV_name,"mag_"))) // leaving magnet
+	{
+		track->SetTrackStatus(fStopAndKill); 
+		return;
+	}
+	//--------------------------------------------------------------------------//
 	//- Beam monitor at the last magnet
 
 	// check the track

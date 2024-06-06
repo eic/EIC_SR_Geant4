@@ -28,6 +28,11 @@
 #include "SolenoidMagField.hh"
 #include "G4Torus.hh"
 
+
+const G4double ante_chmbr_H = 10.0 * cm;
+const G4double farbwd_len = 20 * m;
+const G4double B2eR_beampipe_radius = 5 * cm;
+
 DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetectorConstruction()
 {
 	simPar = new SimParameters();
@@ -49,6 +54,7 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	beampipeVac_solid = nullptr;
 	bwd_beampipeVac_solid = nullptr;
 	farbwd_beampipeVac_solid = nullptr;
+	farbwd_beampipeVac_log = nullptr;
 	beampipeVac_log = nullptr;
 	ip_box = nullptr;
 	ip_log = nullptr;
@@ -71,6 +77,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildMagnets();
 //	BuildFarBackwardBeamPipe();
 //	BuildFarBackwardBeamPipe2();
+	BuildTaggers();
 	BuildIrBeamPipe();
 	if(addAbsorber) BuildAbsorbers();
 
@@ -130,9 +137,9 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	//---------------------------------------------------------------------------------------------------------------//
 	//- Build an extended bwd beam pipe
 	const G4double B2eR_bend = 0.020 * rad;
-	const G4double B2eR_len = 5.5 * m;
+	const G4double B2eR_bend_eps = 0.0001 * rad; // a small eps for the torus, otherwise the geo builder fails
+	const G4double B2eR_len = 5.500091667736 * m;
 	const G4double B2eR_cut_offset = 1 * cm;
-	const G4double B2eR_beampipe_radius = 5 * cm;
 	G4ThreeVector B2eR_start(0*cm,0*cm,1675*cm);
 	G4double torus_radius = (0.5*B2eR_len/sin(B2eR_bend/2.)); 
 	G4ThreeVector B2eR_end = B2eR_start - G4ThreeVector(torus_radius,0,B2eR_start.z());	
@@ -156,17 +163,18 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	torus_rot->rotateY(M_PI * rad);
 	
 	G4VSolid* torus_solid = new G4Torus("torus_solid",0,B2eR_beampipe_radius,
-		torus_radius,0,B2eR_bend);
+		torus_radius,0,B2eR_bend + B2eR_bend_eps);
 	bwd_beampipeVac_solid = new G4UnionSolid("bwd_beampipeVac_solid",
 		polycone,torus_solid,
 		torus_rot,G4ThreeVector(torus_radius, 0, B2eR_start.z()));
 
 	//---------------------------------------------------------------------------------------------------------------//
+/*
 	// B2eR beam pipe extension
 	G4RotationMatrix* torus_ext_rot = new G4RotationMatrix();
 	torus_ext_rot->rotateY(-B2eR_bend);
 
-	G4double torus_ext_len = 10 * cm;
+	G4double torus_ext_len = 2 * cm;
 	G4VSolid* torus_ext_solid = new G4Tubs("torus_ext_solid",0,B2eR_beampipe_radius, torus_ext_len/2.0, 0, 2.0 * M_PI * rad);
 	bwd_beampipeVac_solid = new G4UnionSolid("bwd_beampipeVac_solid",
 		bwd_beampipeVac_solid,torus_ext_solid,
@@ -174,13 +182,13 @@ void DetectorConstruction::CreateBeamPipeSolid()
 						B2eR_end.y(),
 						B2eR_end.z() + 0.5*torus_ext_len*cos(B2eR_bend)));
 
-
+*/
+	//---------------------------------------------------------------------------------------------------------------//
 	// Cut the BWD beam pipe at the end of B2eR
 	bwd_beampipeVac_solid = new G4SubtractionSolid("bwd_beampipeVac_solid",
 		bwd_beampipeVac_solid,beampipe_cut,0,G4ThreeVector(0,0,B2eR_end.z() + B2eR_cut_offset + 10*m));
 	//---------------------------------------------------------------------------------------------------------------//
 	// FarBWD beam pipe
-	G4double farbwd_len = 20 * m;
 	G4double farbwd_ext = 5 * m;
 	G4double lumi_halflen = 2.25 * m;
 	G4RotationMatrix* farbwd_rot = new G4RotationMatrix();
@@ -195,10 +203,10 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	// luminosity beam pipe
 	G4VSolid* lumi_tube = new G4Tubs("farbwd_tube", 0,B2eR_beampipe_radius, lumi_halflen, 0, 2.0 * M_PI * rad);
 	// ante-chamber
-	G4Box* ante_chmbr_box = new G4Box("ante_chmbr_box",22*cm/2.,5*cm/2.,farbwd_len/2.);
+	G4Box* ante_chmbr_box = new G4Box("ante_chmbr_box",25*cm/2.,ante_chmbr_H/2.,farbwd_len/2.);
 	// unite main and ante-chamber
 	farbwd_tube = new G4UnionSolid("farbwd_tube",
-		farbwd_tube,ante_chmbr_box,0,G4ThreeVector(22*cm/2.,0,0));
+		farbwd_tube,ante_chmbr_box,0,G4ThreeVector(25*cm/2.,0,0));
 	// distance between the main beam pipe center (placement coordinates) and the cut
 	G4double L = (B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend)-(B2eR_end.z() + B2eR_cut_offset))/cos(B2eR_bend);
 	// half-width of the cut in the main beam pipe
@@ -214,7 +222,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 		farbwd_tube,beampipe_cut,cut_rot,G4ThreeVector(0,0,-(L+(10*m)/cos(B2eR_bend))));
 
 	// Place the assembly
-	G4LogicalVolume* farbwd_beampipeVac_log = new G4LogicalVolume(farbwd_beampipeVac_solid,mat_vac,"farbwd_beampipeVac_log");
+	farbwd_beampipeVac_log = new G4LogicalVolume(farbwd_beampipeVac_solid,mat_vac,"farbwd_beampipeVac_log");
 	farbwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
 	new G4PVPlacement(farbwd_rot, 
 		G4ThreeVector(	B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend),
@@ -248,6 +256,32 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	G4LogicalVolume* lumiWind_log = new G4LogicalVolume(lumiWind_box,mat_vac,"lumiWind_log");
 	new G4PVPlacement(0,G4ThreeVector(0,0,lumiWindStart_posz+ 1*cm),lumiWind_log,"lumiWind",world_log,false,0,true);
 	
+	return;
+}
+
+void DetectorConstruction::BuildTaggers()
+{
+	if(!farbwd_beampipeVac_log)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::BuildTaggers ==> far-bwd beam pipe LV is not created\n");
+	}
+
+	//- Visualization
+	G4VisAttributes* tag_vis = new G4VisAttributes(G4Color::Yellow());
+	tag_vis->SetVisibility(visibility);
+	G4Box* tag_box = new G4Box("tag_box",18.0 * cm /2, ante_chmbr_H/2., 1 * mm);
+	G4LogicalVolume* tag_log = new G4LogicalVolume(tag_box,mat_vac,"tag_log");
+	tag_log->SetVisAttributes(tag_vis);
+
+	// Tagger 1
+	new G4PVPlacement(0,G4ThreeVector(B2eR_beampipe_radius+18.0 * cm /2,0,-farbwd_len/2. + 5*cm),
+		tag_log,"sens_tag1",farbwd_beampipeVac_log,false,0,true);
+
+	// Tagger 2
+	new G4PVPlacement(0,G4ThreeVector(B2eR_beampipe_radius+18.0 * cm /2,0,farbwd_len/2. - 1*mm),
+		tag_log,"sens_tag2",farbwd_beampipeVac_log,false,0,true);
+
 	return;
 }
 
@@ -407,6 +441,14 @@ void DetectorConstruction::BuildMagnets()
 				mag_solid = new G4IntersectionSolid(simPar->GetMagName(iMag)+"_solid",
 					bwd_beampipeVac_solid, mag_vol,mag_rot,mag_center);
 			}
+			else if(simPar->GetMagName(iMag) == "Q3ER")
+			{
+				mag_solid = mag_vol;
+				G4Tubs* mag_tube = new G4Tubs("tube",0.0,20*cm,10*m,0.,2*M_PI*rad); 
+			
+				mag_solid = new G4SubtractionSolid(simPar->GetMagName(iMag)+"_solid",
+					mag_solid,mag_tube,0,G4ThreeVector(0,0,0));
+			}
 			else
 			{
 				mag_solid = new G4IntersectionSolid(simPar->GetMagName(iMag)+"_solid",
@@ -482,11 +524,12 @@ void DetectorConstruction::BuildMagnets()
 		//- Vacuum (subtract the magnet volume from the beam pipe volume)
 		if(mag_center.z() > 15 * m) // Far-BWD side 
 		{
-			bwd_beampipeVac_solid = new G4SubtractionSolid("bwd_beampipeVac_solid",
-				bwd_beampipeVac_solid,mag_vol,mag_rot,mag_center);
-
 			if(simPar->GetMagName(iMag) == "D2ER")
 			{
+				bwd_beampipeVac_solid = new G4SubtractionSolid("bwd_beampipeVac_solid",
+					bwd_beampipeVac_solid,mag_vol,mag_rot,mag_center);
+
+				// Place B2eR yoke
 				G4VSolid* yoke_solid = new G4Box("yoke_solid",
 					80 * cm / 2., 40 * cm / 2., simPar->GetMagLength(iMag)/2);
 				G4Box* yoke_cut = new G4Box("yoke_cut",
@@ -502,8 +545,6 @@ void DetectorConstruction::BuildMagnets()
 				yoke_solid = new G4SubtractionSolid(simPar->GetMagName(iMag)+"_yoke",
 					yoke_solid, yoke_cut, 0, 
 					G4ThreeVector(-30 * cm / 2. - 20 * cm / 2.,0,0)); 
-
-				
 
 				G4LogicalVolume* yoke_log = new G4LogicalVolume(yoke_solid,mat_vac,
 					simPar->GetMagName(iMag)+"_yoke_log");

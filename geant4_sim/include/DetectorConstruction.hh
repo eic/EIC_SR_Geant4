@@ -39,6 +39,7 @@ private:
 	G4LogicalVolume* ip_log; // IP beam pipe LV
 	G4VSolid* bwd_beampipeVac_solid; // backward SV
 	G4VSolid* farbwd_beampipeVac_solid; // far-backward SV
+	G4LogicalVolume* farbwd_beampipeVac_log; // far-backward LV
 
 	G4double mass;
 	G4double gamma;
@@ -54,6 +55,7 @@ private:
 	void BuildFarBackwardBeamPipe();
 	void BuildFarBackwardBeamPipe2();
 	void BuildAbsorbers();
+	void BuildTaggers();
 
 	G4MagneticField* GetMagField(G4int,G4LogicalVolume*);
 };

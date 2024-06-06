@@ -247,7 +247,7 @@
 			<sec desc="deflection angle" name="angle" unit="rad">0.020000000000</sec>
 			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0</sec>
 		</magnet>
-		<ignore_magnet>
+		<magnet>
 			<sec desc="magnet name" name="name">Q3ER</sec>
 			<sec desc="magnet type" name="type">Q-pole</sec>
 			<sec desc="magnet length" name="length" unit="m">0.600000000000</sec>
@@ -259,7 +259,7 @@
 			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-43.055014236777</sec>
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
 			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.092420910960</sec>
-		</ignore_magnet>
+		</magnet>
 		<solenoid>
 			<sec desc="magnet name" name="name">MARCO</sec>
 			<sec desc="magnet type" name="type">SOL</sec>
