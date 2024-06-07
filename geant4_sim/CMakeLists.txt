@@ -73,6 +73,7 @@ set(exe_SCRIPTS
   vis_ogl.mac
   runAll.bash
   runAll_sdcc.bash
+  runAll_TaggerScan1.bash
   )
 
 foreach(_script ${exe_SCRIPTS})

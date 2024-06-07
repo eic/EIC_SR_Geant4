@@ -61,7 +61,14 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName, G4double tag1_p
 	gamma = -1;
 
 	tag1_posZ = tag1_posZ_cm * cm;
-	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> tag1_posZ = "<<tag1_posZ/cm<<" [cm]"<<G4endl;
+	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> tag1_posZ = "
+		<<tag1_posZ/cm<<" [cm]"<<G4endl;
+	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> ante_chmbr_H = "
+		<<ante_chmbr_H/cm<<" [cm]"<<G4endl;
+	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> farbwd_len = "
+		<<farbwd_len/m<<" [m]"<<G4endl;
+	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> B2eR_beampipe_radius = "
+		<<B2eR_beampipe_radius/cm<<" [cm]"<<G4endl;
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -231,6 +238,10 @@ void DetectorConstruction::CreateBeamPipeSolid()
 				B2eR_end.y(),
 				B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend)),
 		farbwd_beampipeVac_log,"vac_farbwd_beampipeVac",world_log,false,0,true);
+	printf("[INFO] Far-BWD center: (%.10f,%.10f,%.10f) [cm]",
+		(B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend))/cm,
+		(B2eR_end.y())/cm,
+		(B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend))/cm);
 
 	// Visualization
 	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Gray());

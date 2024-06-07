@@ -36,7 +36,7 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 		runAction->_magSumEph.at(iMag) = 0;
 	}
 
-    	if((runAction->_event)%100 == 0)
+    	if((runAction->_event)%1000 == 0)
         	printf("[INFO] EventAction::BeginOfEventAction ==> BeginOfEvent: %12d\n",runAction->_event);
 
 	return;
