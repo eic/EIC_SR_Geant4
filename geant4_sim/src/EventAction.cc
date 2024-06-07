@@ -59,6 +59,7 @@ void EventAction::EndOfEventAction(const G4Event*)
 	runAction->_beamRefPosY.clear();
 	runAction->_beamRefPosZ.clear();
 	runAction->_beamRefAngle.clear();
+	runAction->_beamTransfMomSqr.clear();
 
 	runAction->_gammaVtxPosX.clear();
 	runAction->_gammaVtxPosY.clear();
@@ -77,6 +78,26 @@ void EventAction::EndOfEventAction(const G4Event*)
 	runAction->_gammaMomZ.clear();
 	runAction->_gammaEnergy.clear();
 	runAction->_gammaTime.clear();
+
+	runAction->_sensName.clear();
+	runAction->_sensPDG.clear();
+	runAction->_sensPosX.clear();
+	runAction->_sensPosY.clear();
+	runAction->_sensPosZ.clear();
+	runAction->_sensMomX.clear();
+	runAction->_sensMomY.clear();
+	runAction->_sensMomZ.clear();
+	runAction->_sensEnergy.clear();
+	runAction->_sensTime.clear();
+
+	runAction->_lumiPosX.clear();
+	runAction->_lumiPosY.clear();
+	runAction->_lumiPosZ.clear();
+	runAction->_lumiMomX.clear();
+	runAction->_lumiMomY.clear();
+	runAction->_lumiMomZ.clear();
+	runAction->_lumiEnergy.clear();
+	runAction->_lumiTime.clear();
 
     	_timer->Stop();
 	// 'real' is wall clock time - time from start to finish of the call. This is all elapsed time 

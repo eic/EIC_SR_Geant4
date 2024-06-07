@@ -34,26 +34,29 @@ int main(int argc, char** argv)
 	G4String macFileName;
 	G4String xmlFileName;
 	G4long randomSeed;
+	G4double tag1_posZ_cm;
 
 	// check input parameters
-	if( argc == 4 )
+	if( argc == 5 )
 	{
        		macFileName = argv[1];
 		xmlFileName = argv[2];
 		randomSeed = time(NULL)+atoi(argv[3]);
+		tag1_posZ_cm = atof(argv[4]); 
 		
 		G4cout<<"\n\n=================================================================="<<G4endl;
 		G4cout<<"[INFO] main ==> Input parameters"<<G4endl;
 		G4cout<<"argv[1] macFileName = "<<macFileName<<G4endl;
 		G4cout<<"argv[2] xmlFileName = "<<xmlFileName<<G4endl;
 		G4cout<<"argv[3] randomSeed = "<<randomSeed<<G4endl;
+		G4cout<<"argv[4] tagger1 posZ = "<<tag1_posZ_cm<<G4endl;
 		G4cout<<"==================================================================\n"<<G4endl;
 	}
 	else
 	{
 		G4cout<<"\n\n=================================================================="<<G4endl;
 		G4cout<<"[ERROR] main ==> Wrong number of input parameters: argc = "<<argc<<G4endl;
-		G4cout<<"Usage: ./exe run.mac ../geometry/simParameters.xml 21011993"<<G4endl;
+		G4cout<<"Usage: ./exe run.mac ../geometry/simParameters.xml 21011993 -995"<<G4endl;
 		G4cout<<"==================================================================\n"<<G4endl;
 
 		return -1;
@@ -74,7 +77,7 @@ int main(int argc, char** argv)
 	PhysicsList* phys = new PhysicsList(xmlFileName);
     	runManager->SetUserInitialization(phys);
 
-    	DetectorConstruction* detConstr = new DetectorConstruction(xmlFileName);
+    	DetectorConstruction* detConstr = new DetectorConstruction(xmlFileName,tag1_posZ_cm);
     	runManager->SetUserInitialization(detConstr);
 
     	RunAction* runAction = new RunAction(xmlFileName,randomSeed);

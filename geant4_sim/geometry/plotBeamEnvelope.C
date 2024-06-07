@@ -1,15 +1,17 @@
 void getOpticsParameters(TString opticsFileName, TGraph* gr_betaX, TGraph* gr_betaY, Bool_t oldLattice);
 
+const Float_t IP_posS = 43.301534723896; // m
+
 void plotBeamEnvelope()
 {
-	const Float_t minS = -15; // m
+	const Float_t minS = -43; // m
 	const Float_t maxS = +33; // m
 	const Float_t emitX = 24.0e-9; // m
 	const Float_t emitY = 2.0e-9; // m
 	const Float_t max_gr_beamX = 100; // mm
 	const Float_t max_gr_beamY = 100; // mm
 	const Float_t nSigmaX = 15; 
-	const Float_t nSigmaY = 10;
+	const Float_t nSigmaY = 23;
 	cout<<"--> nSigmaX = "<<nSigmaX<<endl;
 	cout<<"--> nSigmaY = "<<nSigmaY<<endl;
 
@@ -31,7 +33,11 @@ void plotBeamEnvelope()
 	// opticsFileName = "./lattice_v6.X/ir6forward.18GeV.twi";
 
 	//- Jan. 2024 - v6.2 lattice
-	opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
+	// opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
+
+	//- May. 2024 - v6.3 lattice
+	opticsFileName = "./lattice_v6.3/ir6twiss.tfs";
+
 	//__________________________________________________________________________________//
 
 	//- get parameters
@@ -97,13 +103,17 @@ void plotBeamEnvelope()
 	gr_beamY2->Draw("SAME & PL");
 
 	//- draw beam pipe
-	const Int_t nAp = 20;
+	const Int_t nAp = 23;
 	//- original aperture
 //	Double_t ss[] = {-15.270,-11.414,-11.364,-9.364,-9.2880,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.450, 4.460, 4.660, 7.200, 10.50, 23.00, 23.50, 33.50}; // m
 //	Double_t dx[] = { 0.1960, 0.1960, 0.1540, 0.154, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.044, 0.044, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
 	//- srmask5
-	Double_t ss[] = {-15.270,-11.414,-11.364,-9.364,-9.2880,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.453, 4.660, 7.200, 10.50, 23.00, 23.50, 33.50}; // m
-	Double_t dx[] = { 0.1960, 0.1960, 0.1540, 0.154, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.043, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
+//	Double_t ss[] = {-15.270,-11.414,-11.364,-9.364,-9.2880,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.453, 4.660, 7.200, 10.50, 23.00, 23.50, 33.50}; // m
+//	Double_t dx[] = { 0.1960, 0.1960, 0.1540, 0.154, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.043, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
+
+	//- srmask5 + narrower B2eR beam pipe
+	Double_t ss[] = {-50.0000,-16.0000,-15.0000,-11.4140,-11.3640,-9.3640,-9.2880,-9.2800,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.453, 4.660, 7.200, 10.50, 23.00, 23.50, 33.50}; // m
+	Double_t dx[] = {  0.1000,  0.1000,  0.1960,  0.1960,  0.1540, 0.1540, 0.1286, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.043, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
 
 	TGraph* gr_rx1 = new TGraph();
 	TGraph* gr_rx2 = new TGraph();
@@ -196,8 +206,8 @@ void getOpticsParameters(TString opticsFileName, TGraph* gr_betaX, TGraph* gr_be
 			if(maxS < s) maxS = s;
 			if(s < circ/2) s *= -1;
 			else s = circ - s;
-			gr_betaX->SetPoint(gr_betaX->GetN(),s,betax);
-			gr_betaY->SetPoint(gr_betaY->GetN(),s,betay);
+			gr_betaX->SetPoint(gr_betaX->GetN(),s+IP_posS,betax);
+			gr_betaY->SetPoint(gr_betaY->GetN(),s+IP_posS,betay);
 		}
 	}
 	opticsFileName_IO.close();

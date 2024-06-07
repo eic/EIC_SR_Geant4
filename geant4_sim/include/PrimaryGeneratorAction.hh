@@ -18,6 +18,12 @@
 #include "globals.hh"
 #include "TROOT.h"
 #include "TF1.h"
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/ReaderAscii.h"
+#include "HepMC3/Print.h"
+#include "G4Navigator.hh"
+#include "G4TransportationManager.hh"
+#include "G4RunManager.hh"
 
 using namespace std;
 
@@ -34,16 +40,25 @@ public:
     	virtual ~PrimaryGeneratorAction();
 
     	void GeneratePrimaries(G4Event* anEvent);
-	void GenerateOnePrimary(G4Event* anEvent);
-	void GenerateOnePrimaryForTaggers(G4Event* anEvent, G4int ID);
+	void GenerateBeamPrimaries(G4Event* anEvent);
+	void GenerateHepMcPrimaries(G4Event* anEvent);
+	void StorePrimaryCoordinates(const G4Event* anEvent);
+	void StorePrimaryCoordinates(	const G4Event* anEvent, 
+					const G4ThreeVector magVector, 
+					const G4double angle,
+					const G4double Q2);
 
 private:
+	G4bool CheckVertexInsideWorld(const G4ThreeVector& pos) const;
     	G4ParticleGun* fParticleGun;
 	SimParameters* simPar;
 	RunAction* runAction;	
 
 	TF1* fBeamTailX;
 	TF1* fBeamTailY;
+
+protected:
+	HepMC3::ReaderAscii* fHepMcAsciiInput;
 };
 
 #endif

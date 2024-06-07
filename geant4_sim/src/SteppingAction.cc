@@ -48,8 +48,40 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	if(prePV_name == "vac_IP" && simPar->IsBuildSolenoid()){prePV_name = "mag_MARCO";}
 
 	//--------------------------------------------------------------------------//
-	//- Beam monitor at the last magnet
+	//- Store taggers' info 
+	if(	postPV &&
+		postStep->GetStepStatus() == fGeomBoundary && // at boundary
+		G4StrUtil::contains(postPV->GetName(),"sens_")) // entering the tagger
+	{
+		runAction->_sensName.push_back(postPV->GetName());
+		runAction->_sensPDG.push_back(track->GetParticleDefinition()->GetPDGEncoding());
+		runAction->_sensPosX.push_back(postStep->GetPosition().getX()/cm);
+		runAction->_sensPosY.push_back(postStep->GetPosition().getY()/cm);
+		runAction->_sensPosZ.push_back(postStep->GetPosition().getZ()/cm);
+		runAction->_sensMomX.push_back(postStep->GetMomentum().getX()/eV);
+		runAction->_sensMomY.push_back(postStep->GetMomentum().getY()/eV);
+		runAction->_sensMomZ.push_back(postStep->GetMomentum().getZ()/eV);
+		runAction->_sensEnergy.push_back(track->GetTotalEnergy()/eV);
+		runAction->_sensTime.push_back(track->GetGlobalTime()/ms); // time from the start of the event
 
+		// absorb the particle
+		track->SetTrackStatus(fStopAndKill); 
+		return;
+	}
+
+	//--------------------------------------------------------------------------//
+	//- Kill primaries leaving the vacuum
+	if(	track->GetTrackID() == 1 && // primary particle
+		postStep->GetStepStatus() == fGeomBoundary && // at boundary
+		postPV->GetName() == "world" && // entering world
+		(G4StrUtil::contains(prePV_name,"vac_") || // leaving vacuum
+		G4StrUtil::contains(prePV_name,"mag_"))) // leaving magnet
+	{
+		track->SetTrackStatus(fStopAndKill); 
+		return;
+	}
+	//--------------------------------------------------------------------------//
+	//- Beam monitor at the last magnet
 	// check the track
 	if(     track->GetTrackID() == 1 && // primary particle 
 		postStep->GetStepStatus() == fGeomBoundary && // at boundary
@@ -135,13 +167,22 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 
 	//--------------------------------------------------------------------------//
 	//-- Store killed photon info
-
 	// check if the track (=gamma) is killed
-	if(track->GetTrackStatus() == fStopAndKill && 
+	if(/*postPV && */track->GetTrackStatus() == fStopAndKill && 
 		track->GetParticleDefinition()->GetPDGEncoding() == G4Gamma::Gamma()->GetPDGEncoding())
 	{	
+		if(!postPV)
+		{
+			G4cout<<"\n\n=================================================================="<<G4endl;
+			G4cout<<"[WARNING] SteppingAction::UserSteppingAction"<<G4endl;
+			G4cout<<" No postStep volume is assigned. Please check your geometry."<<G4endl;
+			G4cout<<" All vacuum volumes where SR should propagate must have the 'vac_' prefix."<<G4endl;
+			G4cout<<" The SR photon is skipped!"<<G4endl;
+			G4cout<<"==================================================================\n"<<G4endl;
+			return;
+		}
 		// do not store in absorbers
-		if(G4StrUtil::contains(step->GetPostStepPoint()->GetPhysicalVolume()->GetName(),"abs_")){return;}
+		if(G4StrUtil::contains(postStep->GetPhysicalVolume()->GetName(),"abs_")){return;}
 
 		runAction->_gammaVtxPosX.push_back(track->GetVertexPosition().getX()/cm);
 		runAction->_gammaVtxPosY.push_back(track->GetVertexPosition().getY()/cm);
@@ -150,16 +191,29 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		runAction->_gammaVtxDirY.push_back(track->GetVertexMomentumDirection().getY());
 		runAction->_gammaVtxDirZ.push_back(track->GetVertexMomentumDirection().getZ());
 
-		runAction->_gammaPostPV.push_back(step->GetPostStepPoint()->GetPhysicalVolume()->GetName());
-		runAction->_gammaPrePV.push_back(step->GetPreStepPoint()->GetPhysicalVolume()->GetName());
-		runAction->_gammaPosX.push_back(step->GetPostStepPoint()->GetPosition().getX()/cm);
-		runAction->_gammaPosY.push_back(step->GetPostStepPoint()->GetPosition().getY()/cm);
-		runAction->_gammaPosZ.push_back(step->GetPostStepPoint()->GetPosition().getZ()/cm);
-		runAction->_gammaMomX.push_back(step->GetPostStepPoint()->GetMomentum().getX()/eV);
-		runAction->_gammaMomY.push_back(step->GetPostStepPoint()->GetMomentum().getY()/eV);
-		runAction->_gammaMomZ.push_back(step->GetPostStepPoint()->GetMomentum().getZ()/eV);
+		runAction->_gammaPostPV.push_back(postStep->GetPhysicalVolume()->GetName());
+		runAction->_gammaPrePV.push_back(preStep->GetPhysicalVolume()->GetName());
+		runAction->_gammaPosX.push_back(postStep->GetPosition().getX()/cm);
+		runAction->_gammaPosY.push_back(postStep->GetPosition().getY()/cm);
+		runAction->_gammaPosZ.push_back(postStep->GetPosition().getZ()/cm);
+		runAction->_gammaMomX.push_back(postStep->GetMomentum().getX()/eV);
+		runAction->_gammaMomY.push_back(postStep->GetMomentum().getY()/eV);
+		runAction->_gammaMomZ.push_back(postStep->GetMomentum().getZ()/eV);
 		runAction->_gammaEnergy.push_back(track->GetTotalEnergy()/eV);
 		runAction->_gammaTime.push_back(track->GetGlobalTime()/ms); // time from the start of the event
+
+		// lumi window
+		if(postStep->GetPhysicalVolume()->GetName() == "lumiWind")
+		{
+			runAction->_lumiPosX.push_back(postStep->GetPosition().getX()/cm);
+			runAction->_lumiPosY.push_back(postStep->GetPosition().getY()/cm);
+			runAction->_lumiPosZ.push_back(postStep->GetPosition().getZ()/cm);
+			runAction->_lumiMomX.push_back(postStep->GetMomentum().getX()/eV);
+			runAction->_lumiMomY.push_back(postStep->GetMomentum().getY()/eV);
+			runAction->_lumiMomZ.push_back(postStep->GetMomentum().getZ()/eV);
+			runAction->_lumiEnergy.push_back(track->GetTotalEnergy()/eV);
+			runAction->_lumiTime.push_back(track->GetGlobalTime()/ms); // time from the start of the event
+		}
 	}
 
 	return;

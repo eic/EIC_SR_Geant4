@@ -45,6 +45,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("beamRefPosY_cm",	&_beamRefPosY);
     	_tree->Branch("beamRefPosZ_cm",	&_beamRefPosZ);
     	_tree->Branch("beamRefAngle_rad",	&_beamRefAngle);
+    	_tree->Branch("beamTransfMomSqr_GeV2",	&_beamTransfMomSqr);
 	
 	_tree->Branch("magName",	&_magName);
 	_tree->Branch("magNph",		&_magNph);
@@ -79,6 +80,26 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("monRefPosY_cm",	&_monRefPosY);
     	_tree->Branch("monRefPosZ_cm",	&_monRefPosZ);
     	_tree->Branch("monRefAngle_rad",	&_monRefAngle);
+
+    	_tree->Branch("sensName",	&_sensName);
+    	_tree->Branch("sensPDG",	&_sensPDG);
+    	_tree->Branch("sensPosX_cm",	&_sensPosX);
+    	_tree->Branch("sensPosY_cm",	&_sensPosY);
+    	_tree->Branch("sensPosZ_cm",	&_sensPosZ);
+    	_tree->Branch("sensMomX_eV",	&_sensMomX);
+    	_tree->Branch("sensMomY_eV",	&_sensMomY);
+    	_tree->Branch("sensMomZ_eV",	&_sensMomZ);
+    	_tree->Branch("sensEnergy_eV",	&_sensEnergy);
+    	_tree->Branch("sensTime_ms",	&_sensTime);
+
+    	_tree->Branch("lumiPosX_cm",	&_lumiPosX);
+    	_tree->Branch("lumiPosY_cm",	&_lumiPosY);
+    	_tree->Branch("lumiPosZ_cm",	&_lumiPosZ);
+    	_tree->Branch("lumiMomX_eV",	&_lumiMomX);
+    	_tree->Branch("lumiMomY_eV",	&_lumiMomY);
+    	_tree->Branch("lumiMomZ_eV",	&_lumiMomZ);
+    	_tree->Branch("lumiEnergy_eV",	&_lumiEnergy);
+    	_tree->Branch("lumiTime_ms",	&_lumiTime);
 
     	_tracks = new TTree("tracks", "Collected SR Track Data");
     	_tracks->Branch("trackPosX_cm",	&_trackPosX_cm);
