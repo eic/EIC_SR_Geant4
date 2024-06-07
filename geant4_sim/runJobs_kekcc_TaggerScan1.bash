@@ -46,7 +46,7 @@ chmod 777 runAll_TaggerScan1.bash;
 mkdir -pv ./macFiles
 
 # Scan tagger2 position along the ante-chamber
-for PosZ in {-495..495..5}
+for PosZ in {-995..995..5}
 do
 	# count how many jobs are pending, the maximum is 20000 jobs
 	nPend=$(bjobs | grep "PEND" | wc -l);

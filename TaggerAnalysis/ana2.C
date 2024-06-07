@@ -5,7 +5,7 @@ void ana2()
 	TGraph* gr1_tag1 = new TGraph();
 	TGraph* gr1_tag2 = new TGraph();
 
-	for(Int_t PosZ = -495; PosZ <= 495; PosZ += 5)
+	for(Int_t PosZ = -995; PosZ <= 995; PosZ += 5)
 	{
 		TString fName = Form("/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_TaggerScan1_ChamberH_10cm/ana1_output_%d.root",PosZ);
 		cout<<fName<<endl;
@@ -29,6 +29,7 @@ void ana2()
 
 	gr1_tag1->Draw("APL");
 	gr1_tag2->Draw("SAME & PL");
+	gPad->SetGrid();
 
 	return;
 }
