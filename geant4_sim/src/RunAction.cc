@@ -81,6 +81,17 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("monRefPosZ_cm",	&_monRefPosZ);
     	_tree->Branch("monRefAngle_rad",	&_monRefAngle);
 
+    	_tree->Branch("sensName",	&_sensName);
+    	_tree->Branch("sensPDG",	&_sensPDG);
+    	_tree->Branch("sensPosX_cm",	&_sensPosX);
+    	_tree->Branch("sensPosY_cm",	&_sensPosY);
+    	_tree->Branch("sensPosZ_cm",	&_sensPosZ);
+    	_tree->Branch("sensMomX_eV",	&_sensMomX);
+    	_tree->Branch("sensMomY_eV",	&_sensMomY);
+    	_tree->Branch("sensMomZ_eV",	&_sensMomZ);
+    	_tree->Branch("sensEnergy_eV",	&_sensEnergy);
+    	_tree->Branch("sensTime_ms",	&_sensTime);
+
     	_tree->Branch("lumiPosX_cm",	&_lumiPosX);
     	_tree->Branch("lumiPosY_cm",	&_lumiPosY);
     	_tree->Branch("lumiPosZ_cm",	&_lumiPosZ);

@@ -101,6 +101,17 @@ public:
 	vector<G4float> _lumiEnergy;
 	vector<G4float> _lumiTime;
 
+	vector<string> _sensName;
+	vector<G4int> _sensPDG;
+	vector<G4float> _sensPosX;
+	vector<G4float> _sensPosY;
+	vector<G4float> _sensPosZ;
+	vector<G4float> _sensMomX;
+	vector<G4float> _sensMomY;
+	vector<G4float> _sensMomZ;
+	vector<G4float> _sensEnergy;
+	vector<G4float> _sensTime;
+
 	string _monName;
 	G4float _monPosX;
 	G4float _monPosY;

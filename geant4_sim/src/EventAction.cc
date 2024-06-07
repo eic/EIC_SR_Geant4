@@ -79,6 +79,17 @@ void EventAction::EndOfEventAction(const G4Event*)
 	runAction->_gammaEnergy.clear();
 	runAction->_gammaTime.clear();
 
+	runAction->_sensName.clear();
+	runAction->_sensPDG.clear();
+	runAction->_sensPosX.clear();
+	runAction->_sensPosY.clear();
+	runAction->_sensPosZ.clear();
+	runAction->_sensMomX.clear();
+	runAction->_sensMomY.clear();
+	runAction->_sensMomZ.clear();
+	runAction->_sensEnergy.clear();
+	runAction->_sensTime.clear();
+
 	runAction->_lumiPosX.clear();
 	runAction->_lumiPosY.clear();
 	runAction->_lumiPosZ.clear();

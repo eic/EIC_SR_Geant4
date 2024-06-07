@@ -18,7 +18,7 @@ class SimParameters;
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
-    	DetectorConstruction(G4String);
+    	DetectorConstruction(G4String,G4double);
     	~DetectorConstruction();
 
     	G4VPhysicalVolume* Construct();
@@ -58,6 +58,7 @@ private:
 	void BuildTaggers();
 
 	G4MagneticField* GetMagField(G4int,G4LogicalVolume*);
+	G4double tag1_posZ;
 };
 
 #endif

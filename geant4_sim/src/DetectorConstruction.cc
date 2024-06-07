@@ -28,12 +28,11 @@
 #include "SolenoidMagField.hh"
 #include "G4Torus.hh"
 
-
 const G4double ante_chmbr_H = 10.0 * cm;
 const G4double farbwd_len = 20 * m;
 const G4double B2eR_beampipe_radius = 5 * cm;
 
-DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetectorConstruction()
+DetectorConstruction::DetectorConstruction(G4String xmlFileName, G4double tag1_posZ_cm) : G4VUserDetectorConstruction()
 {
 	simPar = new SimParameters();
 	simPar->InitDefault();
@@ -60,6 +59,9 @@ DetectorConstruction::DetectorConstruction(G4String xmlFileName) : G4VUserDetect
 	ip_log = nullptr;
 	mass = -1;
 	gamma = -1;
+
+	tag1_posZ = tag1_posZ_cm * cm;
+	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> tag1_posZ = "<<tag1_posZ/cm<<" [cm]"<<G4endl;
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -275,7 +277,7 @@ void DetectorConstruction::BuildTaggers()
 	tag_log->SetVisAttributes(tag_vis);
 
 	// Tagger 1
-	new G4PVPlacement(0,G4ThreeVector(B2eR_beampipe_radius+18.0 * cm /2,0,-farbwd_len/2. + 5*cm),
+	new G4PVPlacement(0,G4ThreeVector(B2eR_beampipe_radius+18.0 * cm /2,0,tag1_posZ),
 		tag_log,"sens_tag1",farbwd_beampipeVac_log,false,0,true);
 
 	// Tagger 2
