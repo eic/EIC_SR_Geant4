@@ -32,7 +32,8 @@ const G4double ante_chmbr_H = 10.0 * cm;
 const G4double farbwd_len = 20 * m;
 const G4double B2eR_beampipe_radius = 5 * cm;
 
-DetectorConstruction::DetectorConstruction(G4String xmlFileName, G4double tag1_posZ_cm) : G4VUserDetectorConstruction()
+DetectorConstruction::DetectorConstruction(RunAction* runAct, G4String xmlFileName, G4double tag1_posZ_cm) : 
+G4VUserDetectorConstruction(), runAction(runAct)
 {
 	simPar = new SimParameters();
 	simPar->InitDefault();
@@ -233,15 +234,22 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	// Place the assembly
 	farbwd_beampipeVac_log = new G4LogicalVolume(farbwd_beampipeVac_solid,mat_vac,"farbwd_beampipeVac_log");
 	farbwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
+	G4ThreeVector far_bwd_center(	B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend),
+					B2eR_end.y(),
+					B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend));
 	new G4PVPlacement(farbwd_rot, 
-		G4ThreeVector(	B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend),
-				B2eR_end.y(),
-				B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend)),
+		G4ThreeVector(far_bwd_center.x(),far_bwd_center.y(),far_bwd_center.z()),
 		farbwd_beampipeVac_log,"vac_farbwd_beampipeVac",world_log,false,0,true);
+	// print far-bwd center coordinates
 	printf("[INFO] Far-BWD center: (%.10f,%.10f,%.10f) [cm]",
-		(B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend))/cm,
-		(B2eR_end.y())/cm,
-		(B2eR_end.z() + 0.5*farbwd_len*cos(B2eR_bend))/cm);
+		far_bwd_center.x()/cm,
+		far_bwd_center.y()/cm,
+		far_bwd_center.z()/cm);
+	// store far-bwd coordinates for tagger reference
+	runAction->_sensRefPosX = far_bwd_center.x()/cm;
+	runAction->_sensRefPosY = far_bwd_center.y()/cm;
+	runAction->_sensRefPosZ = far_bwd_center.z()/cm;
+	runAction->_sensRefAngl = B2eR_bend/rad;
 
 	// Visualization
 	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Gray());

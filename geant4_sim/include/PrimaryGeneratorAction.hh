@@ -46,7 +46,8 @@ public:
 	void StorePrimaryCoordinates(	const G4Event* anEvent, 
 					const G4ThreeVector magVector, 
 					const G4double angle,
-					const G4double Q2);
+					const G4double Q2,
+					const G4double dE);
 
 private:
 	G4bool CheckVertexInsideWorld(const G4ThreeVector& pos) const;

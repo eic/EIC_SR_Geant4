@@ -12,19 +12,23 @@
 #include "G4Material.hh"
 #include "G4VSolid.hh"
 #include "G4MagneticField.hh"
+#include "RunAction.hh"
 
 class SimParameters;
+class RunAction;
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
-    	DetectorConstruction(G4String,G4double);
+    	DetectorConstruction(RunAction*,G4String,G4double);
     	~DetectorConstruction();
 
     	G4VPhysicalVolume* Construct();
 
 private:
 	SimParameters* simPar;
+	RunAction* runAction;
+
 	G4bool visibility; // components visibility
 	G4bool addAbsorber; // build SR photon absorber
 	G4Material* mat_vac; // vacuum material

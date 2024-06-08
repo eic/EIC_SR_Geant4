@@ -46,6 +46,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("beamRefPosZ_cm",	&_beamRefPosZ);
     	_tree->Branch("beamRefAngle_rad",	&_beamRefAngle);
     	_tree->Branch("beamTransfMomSqr_GeV2",	&_beamTransfMomSqr);
+    	_tree->Branch("beamTransfEnergy_GeV",	&_beamTransfEnergy);
 	
 	_tree->Branch("magName",	&_magName);
 	_tree->Branch("magNph",		&_magNph);
@@ -91,6 +92,10 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("sensMomZ_eV",	&_sensMomZ);
     	_tree->Branch("sensEnergy_eV",	&_sensEnergy);
     	_tree->Branch("sensTime_ms",	&_sensTime);
+    	_tree->Branch("sensRefPosX_cm",	&_sensRefPosX);
+    	_tree->Branch("sensRefPosY_cm",	&_sensRefPosY);
+    	_tree->Branch("sensRefPosZ_cm",	&_sensRefPosZ);
+    	_tree->Branch("sensRefAngl_rad",	&_sensRefAngl);
 
     	_tree->Branch("lumiPosX_cm",	&_lumiPosX);
     	_tree->Branch("lumiPosY_cm",	&_lumiPosY);

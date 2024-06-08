@@ -64,6 +64,7 @@ public:
 	vector<G4float> _beamRefPosZ;
 	vector<G4float> _beamRefAngle;	
 	vector<G4float> _beamTransfMomSqr;
+	vector<G4float> _beamTransfEnergy;
 	
 	vector<string> _magName; // magnet name where SP photons are generated
 	vector<G4int> _magNph; // number of generated SR photons per event
@@ -111,6 +112,10 @@ public:
 	vector<G4float> _sensMomZ;
 	vector<G4float> _sensEnergy;
 	vector<G4float> _sensTime;
+	G4float _sensRefPosX;
+	G4float _sensRefPosY;
+	G4float _sensRefPosZ;
+	G4float _sensRefAngl;
 
 	string _monName;
 	G4float _monPosX;

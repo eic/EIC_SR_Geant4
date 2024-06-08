@@ -77,11 +77,11 @@ int main(int argc, char** argv)
 	PhysicsList* phys = new PhysicsList(xmlFileName);
     	runManager->SetUserInitialization(phys);
 
-    	DetectorConstruction* detConstr = new DetectorConstruction(xmlFileName,tag1_posZ_cm);
-    	runManager->SetUserInitialization(detConstr);
-
     	RunAction* runAction = new RunAction(xmlFileName,randomSeed);
     	runManager->SetUserAction(runAction);
+
+    	DetectorConstruction* detConstr = new DetectorConstruction(runAction,xmlFileName,tag1_posZ_cm);
+    	runManager->SetUserInitialization(detConstr);
 
     	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(runAction,xmlFileName);
     	runManager->SetUserAction(primary);

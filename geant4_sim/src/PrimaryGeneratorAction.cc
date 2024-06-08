@@ -64,7 +64,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 }
 
 void PrimaryGeneratorAction::StorePrimaryCoordinates(
-	const G4Event* anEvent, const G4ThreeVector magVector, const G4double angle, const G4double Q2)
+	const G4Event* anEvent, const G4ThreeVector magVector, 
+	const G4double angle, const G4double Q2, const G4double dE)
 {
 	// Loop over vertices
 	for(G4int ivtx = 0; ivtx < anEvent->GetNumberOfPrimaryVertex(); ivtx++)
@@ -87,7 +88,8 @@ void PrimaryGeneratorAction::StorePrimaryCoordinates(
 			runAction->_beamRefPosY.push_back(magVector.y()/cm);
 			runAction->_beamRefPosZ.push_back(magVector.z()/cm);
 			runAction->_beamRefAngle.push_back(angle/rad);
-			runAction->_beamTransfMomSqr.push_back(Q2);
+			runAction->_beamTransfMomSqr.push_back(Q2/GeV/GeV);
+			runAction->_beamTransfEnergy.push_back(dE/GeV);
 		}
 	}
 
@@ -105,7 +107,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
     	particleDef = particleTable->FindParticle(simPar->GetBeamName().c_str());
 	G4PrimaryParticle* g4prim;
 	G4PrimaryVertex* g4vtx;
-	G4double Q2 = 0;
+	G4double Q2 = 0, E_i = 0, E_f = 0;
 
 	// Construct an event
 	HepMC3::GenEvent hepmcevt(HepMC3::Units::GEV,HepMC3::Units::MM);
@@ -157,21 +159,18 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 
 				G4int pdgcode = particle->pid();
 				HepMC3::FourVector mom = particle->momentum();
-				// Note the possible loss of precision in the calculation of E^2 - p^2; for particles the correct mass is stored separately to avoid such problems.
+				// Note the possible loss of precision in the calculation of E^2 - p^2;
+				// for particles the correct mass is stored separately to avoid such problems.
 				// [https://pythia.org/latest-manual/Welcome.html]
 				G4double mass = particle->generated_mass();
-
-				G4LorentzVector k_f(
-					mom.px(), mom.py(), mom.pz(), 
-					sqrt(pow(mom.x(),2) +pow(mom.y(),2) + pow(mom.z(),2) + pow(mass,2)));
-				G4LorentzVector k_i(
-					momBeam.px(), momBeam.py(), momBeam.pz(), 
-					sqrt(pow(momBeam.x(),2) + pow(momBeam.y(),2) + pow(momBeam.z(),2) + pow(massBeam,2)));
+				E_f = sqrt(pow(mom.x(),2) +pow(mom.y(),2) + pow(mom.z(),2) + pow(mass,2));
+				E_i = sqrt(pow(momBeam.x(),2) + pow(momBeam.y(),2) + pow(momBeam.z(),2) + pow(massBeam,2));
+				G4LorentzVector k_f(mom.px(), mom.py(), mom.pz(), E_f);
+				G4LorentzVector k_i(momBeam.px(), momBeam.py(), momBeam.pz(), E_i);
 				G4LorentzVector q = k_i - k_f;
 				Q2 = -q.m2();
 
-				g4prim = new G4PrimaryParticle(
-					pdgcode, -k_f.x()*GeV, k_f.y()*GeV, -k_f.z()*GeV);
+				g4prim = new G4PrimaryParticle(pdgcode, -k_f.x()*GeV, k_f.y()*GeV, -k_f.z()*GeV);
 				g4vtx->SetPrimary(g4prim);
 
 				gotParticle = true;
@@ -192,7 +191,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
     	fParticleGun->GeneratePrimaryVertex(g4event);
 
 	// Store Coordinates
-	StorePrimaryCoordinates(g4event,G4ThreeVector(0,0,0),0,Q2);
+	StorePrimaryCoordinates(g4event,G4ThreeVector(0,0,0),0,Q2*GeV*GeV,(E_i-E_f)*GeV);
 
 	return;
 }
@@ -307,7 +306,7 @@ void PrimaryGeneratorAction::GenerateBeamPrimaries(G4Event* anEvent)
     	fParticleGun->GeneratePrimaryVertex(anEvent);
 
 	// Store Coordinates
-	StorePrimaryCoordinates(anEvent,magVector2,angle,0);
+	StorePrimaryCoordinates(anEvent,magVector2,angle,0,0);
 
 	return;
 }
