@@ -4,7 +4,8 @@ void ana2()
 {
 	TGraph* gr1_tag1 = new TGraph();
 	TGraph* gr1_tag2 = new TGraph();
-
+/*
+	// TaggerScan1
 	for(Int_t PosZ = -995; PosZ <= 995; PosZ += 5)
 	{
 		TString fName = Form("/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_TaggerScan1_ChamberH_10cm/ana1_output_%d.root",PosZ);
@@ -14,6 +15,18 @@ void ana2()
 
 		gr1_tag1->SetPoint(gr1_tag1->GetN(),PosZ,acp_tag1);
 		gr1_tag2->SetPoint(gr1_tag2->GetN(),PosZ,acp_tag2);
+	}
+*/
+	// AnteChamberScan
+	for(Int_t aH = 1; aH <= 10; aH += 1)
+	{
+		TString fName = Form("/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_Tagger1_-197.2cm_ChamberHscan/ana1_output_%d.root",aH);
+		cout<<fName<<endl;
+		Double_t acp_tag1 = GetAcceptance(fName,"tag1");
+		Double_t acp_tag2 = GetAcceptance(fName,"tag2");
+
+		gr1_tag1->SetPoint(gr1_tag1->GetN(),aH,acp_tag1);
+		gr1_tag2->SetPoint(gr1_tag2->GetN(),aH,acp_tag2);
 	}
 
 	TCanvas* c1= new TCanvas("c1","c1",900,900);

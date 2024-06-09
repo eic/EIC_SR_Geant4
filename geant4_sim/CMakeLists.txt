@@ -74,6 +74,7 @@ set(exe_SCRIPTS
   runAll.bash
   runAll_sdcc.bash
   runAll_TaggerScan1.bash
+  runAll_AnteChamberScan.bash
   )
 
 foreach(_script ${exe_SCRIPTS})
