@@ -31,6 +31,9 @@ void ana2()
 	gr1_tag2->Draw("SAME & PL");
 	gPad->SetGrid();
 
+	c1->SaveAs("pics/c1.png");
+	c1->SaveAs("pics/c1.root");
+
 	return;
 }
 

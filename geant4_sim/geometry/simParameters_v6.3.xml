@@ -57,7 +57,7 @@
 
 	<!-- tracking time cut -->
 	<timecut>
-		<sec desc="simulation time cut" name="tcut" unit="s">1e-6</sec>
+		<sec desc="simulation time cut" name="tcut" unit="s">0.1e-3</sec>
 	</timecut>
 
 	<!-- stop tracking on the backward side -->

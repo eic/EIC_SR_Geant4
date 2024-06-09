@@ -7,7 +7,7 @@ date;
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="${PWD}/geometry/simParameters_v6.3.xml" # simulation geometry settings
-nParticles=100000 # number of primary particles per job
+nParticles=1000000 # number of primary particles per job
 outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_TaggerScan1_ChamberH_10cm' # output directory # default radius
 buildDir='./build1' # build directory
 queue='s'
