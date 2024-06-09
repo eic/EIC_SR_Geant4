@@ -20,7 +20,7 @@ class RunAction;
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
-    	DetectorConstruction(RunAction*,G4String,G4double);
+    	DetectorConstruction(RunAction*,G4String,G4double,G4double);
     	~DetectorConstruction();
 
     	G4VPhysicalVolume* Construct();
@@ -63,6 +63,7 @@ private:
 
 	G4MagneticField* GetMagField(G4int,G4LogicalVolume*);
 	G4double tag1_posZ;
+	G4double ante_chmbr_H;
 };
 
 #endif

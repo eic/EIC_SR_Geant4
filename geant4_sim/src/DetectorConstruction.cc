@@ -28,11 +28,10 @@
 #include "SolenoidMagField.hh"
 #include "G4Torus.hh"
 
-const G4double ante_chmbr_H = 10.0 * cm;
 const G4double farbwd_len = 20 * m;
 const G4double B2eR_beampipe_radius = 5 * cm;
 
-DetectorConstruction::DetectorConstruction(RunAction* runAct, G4String xmlFileName, G4double tag1_posZ_cm) : 
+DetectorConstruction::DetectorConstruction(RunAction* runAct, G4String xmlFileName, G4double tag1_posZ_cm, G4double ante_chmbr_H_cm) : 
 G4VUserDetectorConstruction(), runAction(runAct)
 {
 	simPar = new SimParameters();
@@ -62,6 +61,7 @@ G4VUserDetectorConstruction(), runAction(runAct)
 	gamma = -1;
 
 	tag1_posZ = tag1_posZ_cm * cm;
+	ante_chmbr_H = ante_chmbr_H_cm * cm;
 	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> tag1_posZ = "
 		<<tag1_posZ/cm<<" [cm]"<<G4endl;
 	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> ante_chmbr_H = "

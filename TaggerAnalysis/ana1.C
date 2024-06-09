@@ -32,6 +32,10 @@ TTree *_tree;
    vector<float>   *sensMomZ_eV;
    vector<float>   *sensEnergy_eV;
    vector<float>   *sensTime_ms;
+   Float_t sensRefPosX_cm;
+   Float_t sensRefPosY_cm;
+   Float_t sensRefPosZ_cm;
+   Float_t sensRefAngl_rad;
 
 void LoadTree(TString fName, TString tName);
 void AnaTree();
@@ -85,10 +89,6 @@ TH1F* _h5_gtag2;
 TH2F* _h6_gtag2;
 TH2F* _h7_gtag2;
 TH1F* _h8_gtag2;
-
-// Far-BWD trasformation coordinates
-const TVector3 center(25.4986666933,0.0000000000,3224.7816732110); // cm
-const Double_t angel = 0.020; // rad
 
 void ana1(TString fNameIn, TString fNameOut)
 {
@@ -161,6 +161,7 @@ void AnaTree()
 	{
 		// load an entry
 		_tree->GetEntry(iEntry);
+		TVector3 center(sensRefPosX_cm,sensRefPosY_cm,sensRefPosZ_cm);
 		// should be only one primary
 		if(beamPdg->size() != 1){cout<<endl<<"[ERROR] More than one primary!"<<endl;exit(-1);}
 		// loop over primaries
@@ -187,7 +188,7 @@ void AnaTree()
 			// translate to the origin
 			pos = pos - center;
 			// rotate around Y-axis: 20 mrad - B2eR bend angle
-			pos.RotateY(-angel);
+			pos.RotateY(-sensRefAngl_rad);
 			// fill histos
 			if(sensPDG->at(i) == 11) // electrons
 			{
@@ -368,6 +369,10 @@ void LoadTree(TString fName, TString tName)
    _tree->SetBranchAddress("sensMomZ_eV", &sensMomZ_eV);
    _tree->SetBranchAddress("sensEnergy_eV", &sensEnergy_eV);
    _tree->SetBranchAddress("sensTime_ms", &sensTime_ms);
+   _tree->SetBranchAddress("sensRefPosX_cm",&sensRefPosX_cm);
+   _tree->SetBranchAddress("sensRefPosY_cm",&sensRefPosY_cm);
+   _tree->SetBranchAddress("sensRefPosZ_cm",&sensRefPosZ_cm);
+   _tree->SetBranchAddress("sensRefAngl_rad",&sensRefAngl_rad);
 
 	return;
 }
