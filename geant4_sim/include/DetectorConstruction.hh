@@ -60,6 +60,7 @@ private:
 	void BuildFarBackwardBeamPipe2();
 	void BuildAbsorbers();
 	void BuildTaggers();
+	void BuildFwdAnteChamber();
 
 	G4MagneticField* GetMagField(G4int,G4LogicalVolume*);
 	G4double tag1_posZ;

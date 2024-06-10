@@ -27,6 +27,9 @@
 #include "CADMesh.hh" // https://github.com/christopherpoole/CADMesh
 #include "SolenoidMagField.hh"
 #include "G4Torus.hh"
+#include "G4EllipticalCone.hh"
+#include "G4EllipticalTube.hh"
+#include "G4ExtrudedSolid.hh"
 
 const G4double farbwd_len = 20 * m;
 const G4double B2eR_beampipe_radius = 5 * cm;
@@ -82,6 +85,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
+	BuildFwdAnteChamber();
 // 	CreateSrMask();
 	BuildIpBeamPipe();
 	BuildMagnets();
@@ -92,6 +96,70 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	if(addAbsorber) BuildAbsorbers();
 
 	return world_phys;
+}
+
+void DetectorConstruction::BuildFwdAnteChamber()
+{
+	if(!beampipeVac_solid || !beampipeUni_solid)
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::BuildFwdAnteChamber ==> beam pipe solids are not created\n");
+	}
+	G4Box* fwd_cut = new G4Box("fwd_cut",1 * m, 1 * m, (30.0-12.5) * m/2.);
+	// Cut the vacuum
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+		beampipeVac_solid,fwd_cut,0,G4ThreeVector(0,0,-30*m + (30.0-12.5) * m/2.));
+	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
+		beampipeUni_solid,fwd_cut,0,G4ThreeVector(0,0,-30*m + (30.0-12.5) * m/2.));
+
+	// fwd beam pipe	
+	G4VSolid* fwd_beampipeVac_solid = new G4Tubs("fwd_beampipeVac_solid",
+		0,10*cm/2,(30.0-12.5) * m/2.,0,2.0 * M_PI);
+	
+	G4EllipticalTube* ell_tube = new G4EllipticalTube("ell_tube",12.6*cm/2.,10*cm/2,(23.5-12.5) * m/2.);
+
+	fwd_beampipeVac_solid = new G4UnionSolid("fwd_beampipeVac_solid",
+		fwd_beampipeVac_solid,ell_tube,0,G4ThreeVector(0,0,(30.0-12.5) * m/2. - (23.5-12.5) * m/2.));
+
+	// Ante-chamber
+	const G4int nsect = 12;
+	std::vector<G4TwoVector> polygon(nsect);
+	// +X
+	polygon[0].set(70*mm,-5*mm);
+	polygon[1].set(140*mm,5*mm);
+	polygon[2].set(150*mm,5*mm);
+	polygon[3].set(150*mm,15*mm);
+	polygon[4].set(140*mm,15*mm);
+	polygon[5].set(70*mm,5*mm);
+	// -X                                                                                          
+	polygon[6].set(-70*mm,5*mm);
+	polygon[7].set(-140*mm,15*mm);
+	polygon[8].set(-150*mm,15*mm);
+	polygon[9].set(-150*mm,5*mm);
+	polygon[10].set(-140*mm,5*mm);
+	polygon[11].set(-70*mm,-5*mm);
+
+	G4TwoVector offsetA(0,0), offsetB(0,0);
+	G4double scaleA = 1, scaleB = 1;
+	G4double dz = (30.0-12.5) * m/2.;
+	G4VSolid* ante_chamber_solid = new G4ExtrudedSolid("ante_chamber_solid", 
+		polygon, dz, offsetA, scaleA, offsetB, scaleB);
+
+	fwd_beampipeVac_solid = new G4UnionSolid("fwd_beampipeVac_solid",
+		fwd_beampipeVac_solid,ante_chamber_solid,0,G4ThreeVector(0,0,0));
+
+	G4LogicalVolume* fwd_beampipeVac_log = new G4LogicalVolume(
+		fwd_beampipeVac_solid,mat_vac,"fwd_beampipeVac_log");
+	fwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
+	new G4PVPlacement(0,G4ThreeVector(0,0,-30*m + dz),
+		fwd_beampipeVac_log,"vac_fwd_beampipeVac",world_log,false,0,true);
+
+	// Visualization
+	G4VisAttributes* fwd_beampipeVac_vis = new G4VisAttributes(G4Color::White());
+	fwd_beampipeVac_vis->SetVisibility(visibility);
+	fwd_beampipeVac_log->SetVisAttributes(fwd_beampipeVac_vis);
+
+	return;
 }
 
 void DetectorConstruction::BuildWorld()
