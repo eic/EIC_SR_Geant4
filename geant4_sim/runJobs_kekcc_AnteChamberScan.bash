@@ -46,7 +46,7 @@ chmod 777 runAll_AnteChamberScan.bash;
 mkdir -pv ./macFiles
 
 # Scan tagger2 position along the ante-chamber
-PosZ=-197.2
+PosZ=-197.2 # cm
 for aH in {1..10..1}
 do
 	# count how many jobs are pending, the maximum is 20000 jobs
