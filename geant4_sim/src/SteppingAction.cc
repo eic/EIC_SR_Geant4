@@ -35,7 +35,7 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	G4VPhysicalVolume*      postPV          = postStep->GetPhysicalVolume();
 
 	//- Stop tracking on the backward side
-	if(postStep->GetPosition().getZ() > simPar->GetTrackBwdGeoCut())
+	if(postStep->GetPosition().getZ() < simPar->GetTrackBwdGeoCut())
 	{
 		track->SetTrackStatus(fStopAndKill);
 		return;

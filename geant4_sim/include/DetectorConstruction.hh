@@ -56,8 +56,6 @@ private:
 	void BuildParticles();
 	void BuildIrBeamPipe();
 	void BuildIpBeamPipe();
-	void BuildFarBackwardBeamPipe();
-	void BuildFarBackwardBeamPipe2();
 	void BuildAbsorbers();
 	void BuildTaggers();
 	void BuildFwdAnteChamber();

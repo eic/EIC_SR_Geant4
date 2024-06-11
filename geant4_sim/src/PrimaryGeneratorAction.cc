@@ -157,7 +157,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 
 				// Create G4PrimaryVertex and associated G4PrimaryParticles
 				g4vtx = new G4PrimaryVertex(
-					-xvtx.x()*mm, xvtx.y()*mm, -xvtx.z()*mm,xvtx.t()*mm/c_light);
+					xvtx.x()*mm, xvtx.y()*mm, xvtx.z()*mm,xvtx.t()*mm/c_light);
 
 				G4int pdgcode = particle->pid();
 				HepMC3::FourVector mom = particle->momentum();
@@ -172,7 +172,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 				G4LorentzVector q = k_i - k_f;
 				Q2 = -q.m2();
 
-				g4prim = new G4PrimaryParticle(pdgcode, -k_f.x()*GeV, k_f.y()*GeV, -k_f.z()*GeV);
+				g4prim = new G4PrimaryParticle(pdgcode, k_f.x()*GeV, k_f.y()*GeV, k_f.z()*GeV);
 				g4vtx->SetPrimary(g4prim);
 
 				gotParticle = true;
@@ -276,18 +276,18 @@ void PrimaryGeneratorAction::GenerateBeamPrimaries(G4Event* anEvent)
 		(1./sqrt(simPar->GetBeamBetaY()))*Yprime_norm;
 
 	// vector of start coordinates in the global ref. system shifted w.r.t. the ip
-	G4ThreeVector magVector1(	simPar->GetBeamStartPosX() - simPar->GetIpPosX(),
-					simPar->GetBeamStartPosY() - simPar->GetIpPosY(),
-					simPar->GetBeamStartPosZ() - simPar->GetIpPosZ());
+	G4ThreeVector magVector1(	-simPar->GetBeamStartPosX() + simPar->GetIpPosX(),
+					-simPar->GetBeamStartPosY() + simPar->GetIpPosY(),
+					-simPar->GetBeamStartPosZ() + simPar->GetIpPosZ());
 	// vector of end coordinates in the global ref. system shifted w.r.t. the ip
-	G4ThreeVector magVector2(	simPar->GetBeamEndPosX() - simPar->GetIpPosX(),
-					simPar->GetBeamEndPosY() - simPar->GetIpPosY(),
-					simPar->GetBeamEndPosZ() - simPar->GetIpPosZ());
+	G4ThreeVector magVector2(	-simPar->GetBeamEndPosX() + simPar->GetIpPosX(),
+					-simPar->GetBeamEndPosY() + simPar->GetIpPosY(),
+					-simPar->GetBeamEndPosZ() + simPar->GetIpPosZ());
 	// rotate coordinate vectors from global to local/ip system
 	magVector1.rotateY(-simPar->GetIpTheta());
 	magVector2.rotateY(-simPar->GetIpTheta());
 	// orientation angle of the incoming beam
-	G4double angle = atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z()))*rad;
+	G4double angle = M_PI*rad + atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z()))*rad;
 
   	// create rotation matrix and translation vector
   	G4RotationMatrix rotation = G4RotationMatrix();
@@ -297,7 +297,6 @@ void PrimaryGeneratorAction::GenerateBeamPrimaries(G4Event* anEvent)
 	G4ThreeVector posXYZrot = rotation * G4ThreeVector(X_real,Y_real,0.0) + translation;
 	G4ThreeVector dirXYZrot = rotation * 
 		G4ThreeVector(Xprime_real,Yprime_real,sqrt(1.0 - (pow(Xprime_real,2) + pow(Yprime_real,2))));
-
 
 	// generate the primary beam 
     	fParticleGun->SetParticleDefinition(particleDef);
