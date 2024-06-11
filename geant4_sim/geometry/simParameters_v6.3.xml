@@ -281,7 +281,7 @@
 			<sec desc="hor. angle in a global ref. system" name="theta" unit="rad">3.149592653590</sec>
 		</ip>
 		<monitor>
-			<sec desc="the name of the magnet in front of the beam monitor" name="magname">Q0EF</sec>
+			<sec desc="the name of the magnet in front of the beam monitor" name="magname">D2ER</sec>
 		</monitor>
 	</magnets>
 </xml>

@@ -1174,8 +1174,8 @@ void DetectorConstruction::BuildFarBackwardBeamPipe()
 
 	//- Place the far-beamline volume
 	G4RotationMatrix* xyzRot = new G4RotationMatrix();
-	xyzRot->rotateX(M_PI); // flip from eic-sheel to Geant4 coordinate system
-	xyzRot->rotateZ(M_PI); // flip from eic-sheel to Geant4 coordinate system
+	xyzRot->rotateX(M_PI); // flip from eic-shell to Geant4 coordinate system
+	xyzRot->rotateZ(M_PI); // flip from eic-shell to Geant4 coordinate system
 	xyzRot->rotateY(-Beam_Theta); // opposite to eic-shell
 
 	G4LogicalVolume* Vacuum_Box_log = new G4LogicalVolume(bwd_beampipeVac_solid,mat_vac, "Vacuum_Box_log");

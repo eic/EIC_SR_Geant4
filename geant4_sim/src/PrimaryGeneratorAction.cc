@@ -16,8 +16,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(RunAction* runAct, G4String xmlFi
 	{
 		if(simPar->GetBeamType() == "tail")
 		{
-			fBeamTailX = new TF1("fBeamTailX",getBeamTailDistribution,simPar->GetBeamTailMin(),simPar->GetBeamTailMax(),1);
-			fBeamTailY = new TF1("fBeamTailY",getBeamTailDistribution,simPar->GetBeamTailMin(),simPar->GetBeamTailMax(),1);
+			fBeamTailX = new TF1("fBeamTailX",getBeamTailDistribution,
+				simPar->GetBeamTailMin(),simPar->GetBeamTailMax(),1);
+			fBeamTailY = new TF1("fBeamTailY",getBeamTailDistribution,
+				simPar->GetBeamTailMin(),simPar->GetBeamTailMax(),1);
 			fBeamTailX->SetParameter(0,simPar->GetBeamTailKx());
 			fBeamTailY->SetParameter(0,simPar->GetBeamTailKy());
 		}

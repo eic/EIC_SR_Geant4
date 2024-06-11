@@ -83,9 +83,10 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	//--------------------------------------------------------------------------//
 	//- Beam monitor at the last magnet
 	// check the track
-	if(     track->GetTrackID() == 1 && // primary particle 
+	if(     postStep && // check for the entering volume
+		track->GetTrackID() == 1 && // primary particle 
 		postStep->GetStepStatus() == fGeomBoundary && // at boundary
-		postPV->GetName() == "vac_beampipe" && // entering vacuum
+		G4StrUtil::contains(postPV->GetName(),"vac_") && // entering vacuum
 		G4StrUtil::contains(prePV_name,simPar->GetBeamMonName())) // leaving the magnet
 	{
 		G4int iMag = simPar->GetMagNum() - 1;
