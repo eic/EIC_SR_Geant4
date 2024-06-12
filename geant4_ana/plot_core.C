@@ -231,7 +231,7 @@ void plot_core(TString fName = "output_ana_all.root")
 
 	//--------------------------------------------------------------------------------------------------------------------------//
 	// lattice v6.2 (Jan. 2024) ------------------------------------------------------------------------------------------------//
-
+/*
 	D2EF1_l_m = 2.726015431334;
 	D2EF2_l_m = 2.726015431334;
 	D1EF_l_m = 0.891400083569;
@@ -258,7 +258,52 @@ void plot_core(TString fName = "output_ana_all.root")
 	mon_alphaX = 9.830716909000;	mon_betaX = 57.608145240000;	mon_etaX =  9.272066198000e-05;	mon_etaPrimeX = -1.594020290000e-05;
 	mon_alphaY = 101.7529380000;	mon_betaY = 590.22402530000;	mon_etaY = -9.954373930000e-10;	mon_etaPrimeY =  1.742211955000e-10;
 	mon_minP = 17.5;	mon_maxP = 18.5;
+*/
+	//--------------------------------------------------------------------------------------------------------------------------//
+	// lattice v6.3 (May 2024)  closed orbit (IR) ------------------------------------------------------------------------------//
 
+	D2EF1_l_m = 2.726017320163;
+	D2EF2_l_m = 2.726017320163;
+	D1EF_l_m = 0.891400083569;
+	Q1EF_l_m = 1.610000000000;
+	Q0EF_l_m = 1.200000000000;
+	MARCO_l_m = 10.0;
+
+	D2EF1_theta_rad = 0.012348600000;
+	D2EF2_theta_rad = 0.012348600000;
+	D1EF_theta_rad = 0.001500000000;
+
+	// Beam
+	beam_name = "beam";
+	beam_minX = -1.0;	beam_maxX = 1.0;	beam_minXp = -0.5e-3;	beam_maxXp = 0.5e-3;
+	beam_minY = -0.4;	beam_maxY = 0.4;	beam_minYp = -0.4e-4;	beam_maxYp = 0.4e-4;
+	beam_alphaX = -7.031809489000;		beam_betaX = 161.794286000000;	
+	beam_etaX = -7.969464074000e-02;	beam_etaPrimeX =  2.621736904000e-02;
+	beam_alphaY = -1.228417153000;		beam_betaY = 121.630397700000;	
+	beam_etaY = 1.442910784000e-09;		beam_etaPrimeY = -1.297850364000e-11;
+	beam_minP = 17.5;			beam_maxP = 18.5;
+
+	// Q2ER
+	mon_name = "Q2ER";
+	mon_minX = -0.5;	mon_maxX = 0.5;		mon_minXp = -0.1e-2;	mon_maxXp = 0.1e-2;
+	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.1e-2;	mon_maxYp = 0.1e-2;
+	mon_alphaX = 7.010410649000;		mon_betaX = 333.076840600000;	
+	mon_etaX =  -6.214034083000e-04;	mon_etaPrimeX = 1.249027737000e-05;
+	mon_alphaY = 5.038141847000;		mon_betaY = 210.909690800000;	
+	mon_etaY = -1.125097655000e-09;		mon_etaPrimeY = 4.902222472000e-11;
+	mon_minP = 17.5;			mon_maxP = 18.5;
+
+/*
+	// Q0EF
+	mon_name = "Q0EF";
+	mon_minX = -0.5;	mon_maxX = 0.5;		mon_minXp = -0.1e-2;	mon_maxXp = 0.1e-2;
+	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.1e-2;	mon_maxYp = 0.1e-2;
+	mon_alphaX = 9.830638320000;		mon_betaX = 57.607698200000;	
+	mon_etaX =  2.688852007000e-04;		mon_etaPrimeX = -4.529977254000e-05;
+	mon_alphaY = 101.755172700000;		mon_betaY = 590.237006900000;	
+	mon_etaY = 1.801870636000e-09;		mon_etaPrimeY = -3.239077707000e-10;
+	mon_minP = 17.5;			mon_maxP = 18.5;
+*/
 	//------------------------------------------------------------------------------------------------//
 	//- Draw
 	// Beam

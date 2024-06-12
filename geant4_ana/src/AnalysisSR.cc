@@ -122,11 +122,11 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	_h6 = new TH1F("h6",Form("Monitor [%s]: Momentum;P [GeV/c]",monName->c_str()),20000,0,20);
 
 	_h7 = new TH2F("h7",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Px vs X;X [cm];X'",
-		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),1000,-4,4,1000,-1e-1,1e-1);
+		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),1000,-4,4,1000,-1e-1,1e-1);
 	_h8 = new TH2F("h8",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Py vs Y;Y [cm];Y'",
-		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),1000,-4,4,1000,-1e-2,1e-2);
+		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),1000,-4,4,1000,-1e-2,1e-2);
 	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV/c]",
-		beamRefPosX_cm,beamRefPosY_cm,beamRefPosZ_cm,beamRefAngle_rad),20000,0,20);
+		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),20000,0,20);
 
 	_h21 = new TH2F("h21","SR photon position vs energy;Z_{#gamma} [cm];X_{#gamma} [cm];E_{#gamma} [eV]",8000,-4000,4000,2000,-100,100);
 
@@ -208,14 +208,7 @@ void AnalysisSR::Loop()
 		for(Int_t i = 0; i < gammaEnergy_eV->size(); i++)
 		{
 			// for benchmark/debug
-//			if(	-3350.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < -2350.0 &&
-//				gammaPosX_cm->at(i) < -4.925) // two facets 28755 28756
-//			if(	-67.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < 68.69231 &&
-//				2.684679 < gammaPosX_cm->at(i) && gammaPosX_cm->at(i) < 2.913047 &&
-//				-1.55 < gammaPosY_cm->at(i) && gammaPosY_cm->at(i) < -1.060262 &&
-//				gammaEnergy_eV->at(i) > 10000.0) // IP facet 26455
-//			if(	-67.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < 68.69231	) // IP beam pipe
-			if(	-65.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < 65.0	) // around the IP
+			if(	-80.0 < gammaPosZ_cm->at(i) && gammaPosZ_cm->at(i) < 67.0	) // around the IP
 			{
 				h1_ene->Fill(gammaEnergy_eV->at(i));
 				h1_dirx->Fill(gammaMomX_eV->at(i)/gammaEnergy_eV->at(i));
@@ -251,15 +244,13 @@ void AnalysisSR::Loop()
 			//---------------------------------------------------------------------------
 			// generate a HEPMC event
 
-			// flip XZ coordinates from Geant4 to EIC
-			x = (-1)*gammaPosX_cm->at(i)*1e1; // cm -> mm
-			y = ( 1)*gammaPosY_cm->at(i)*1e1; // cm -> mm
-			z = (-1)*gammaPosZ_cm->at(i)*1e1; // cm -> mm
+			x = gammaPosX_cm->at(i)*1e1; // cm -> mm
+			y = gammaPosY_cm->at(i)*1e1; // cm -> mm
+			z = gammaPosZ_cm->at(i)*1e1; // cm -> mm
 
-			// flip PxPz coordinates from Geant4 to EIC
-			px = (-1)*gammaMomX_eV->at(i)/1e9; // eV -> GeV
-			py = ( 1)*gammaMomY_eV->at(i)/1e9; // eV -> GeV
-			pz = (-1)*gammaMomZ_eV->at(i)/1e9; // eV -> GeV
+			px = gammaMomX_eV->at(i)/1e9; // eV -> GeV
+			py = gammaMomY_eV->at(i)/1e9; // eV -> GeV
+			pz = gammaMomZ_eV->at(i)/1e9; // eV -> GeV
 
 			energy = gammaEnergy_eV->at(i)/1e9; // eV -> GeV
 			pdg = 22; // gamma

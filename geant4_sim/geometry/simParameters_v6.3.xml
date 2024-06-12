@@ -37,8 +37,8 @@
 	<!-- store photon trajectories -->
 	<storetrj>
 		<sec desc="Store trajectories: 1 - true; 0 - false" name="store">1</sec>
-		<sec desc="Zmin for the region of interest (where the photon stopped)" name="Zmin" unit="cm">-80</sec>
-		<sec desc="Zmax for the region of interest (where the photon stopped)" name="Zmax" unit="cm">60</sec>
+		<sec desc="Zmin for the region of interest (where the photon stopped)" name="Zmin" unit="cm">-200</sec>
+		<sec desc="Zmax for the region of interest (where the photon stopped)" name="Zmax" unit="cm">200</sec>
 		<sec desc="Emin for the tracked photon" name="Emin" unit="GeV">10e-6</sec>
 	</storetrj>
 
@@ -263,7 +263,7 @@
 		<solenoid>
 			<sec desc="magnet name" name="name">MARCO</sec>
 			<sec desc="magnet type" name="type">SOL</sec>
-			<sec desc="a flag to build the solenoid field: 1 - true; 0 - false" name="build">1</sec>
+			<sec desc="a flag to build the solenoid field: 1 - true; 0 - false (turned off since compensation skew-quads are not included)" name="build">0</sec>
 			<sec desc="solenoid field map file in the /geometry/ directory" name="fname">../geometry/MARCO_v.6.4.1.1.3_1.7T_Magnetic_Field_Map_2022_11_14_rad_coords_cm_T.txt</sec>
 			<sec desc="maximum radius of the fielf" name="rmax" unit="m">5.0</sec>
 			<sec desc="minimum position in z of the fielf" name="zmin" unit="m">-5.0</sec>
@@ -281,7 +281,7 @@
 			<sec desc="hor. angle in a global ref. system" name="theta" unit="rad">3.149592653590</sec>
 		</ip>
 		<monitor>
-			<sec desc="the name of the magnet in front of the beam monitor" name="magname">D2ER</sec>
+			<sec desc="the name of the magnet in front of the beam monitor" name="magname">Q2ER</sec>
 		</monitor>
 	</magnets>
 </xml>
