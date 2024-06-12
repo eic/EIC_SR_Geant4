@@ -46,14 +46,14 @@ void printLatticeParameters()
 	//- May. 2024 - v6.3 lattice - closed orbit
 	surveyFileName = "./lattice_v6.3/ir6survey.tfs";
 	opticsFileName = "./lattice_v6.3/ir6twiss.tfs";
-
+/*
 	//- lists of elements (FWD)
 	const Int_t nElements = 7;
 	TString startElementName[nElements] = {	
 		"\"SQ2EF_6\"", "\"OWW_SH\"", "\"ODB23\"", "\"ODB23\"", "\"MCOLL_MASK\"", "\"O1EF_6\"","\"O0EF_6\""};
 	TString stopElementName[nElements] = {
 		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
-/*
+*/
 	//- lists of elements (BWD)
 	const Int_t nElements = 5;
 	TString startElementName[nElements] = {	
@@ -61,7 +61,7 @@ void printLatticeParameters()
 //		"\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
 	TString stopElementName[nElements] = {
 		"\"Q3ER_6\"","\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
-*/
+
 	//- get parameters
 	for(Int_t i = 0; i < nElements; i++)
 	{

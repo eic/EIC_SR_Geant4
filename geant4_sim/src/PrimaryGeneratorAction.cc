@@ -165,8 +165,15 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 				// for particles the correct mass is stored separately to avoid such problems.
 				// [https://pythia.org/latest-manual/Welcome.html]
 				G4double mass = particle->generated_mass();
-				E_f = sqrt(pow(mom.x(),2) +pow(mom.y(),2) + pow(mom.z(),2) + pow(mass,2));
-				E_i = sqrt(pow(momBeam.x(),2) + pow(momBeam.y(),2) + pow(momBeam.z(),2) + pow(massBeam,2));
+				E_f = sqrt(
+						pow(mom.x(),2) +
+						pow(mom.y(),2) + 
+						pow(mom.z(),2) + 
+						pow(mass,2));
+				E_i = sqrt(	pow(momBeam.x(),2) + 
+						pow(momBeam.y(),2) + 
+						pow(momBeam.z(),2) + 
+						pow(massBeam,2));
 				G4LorentzVector k_f(mom.px(), mom.py(), mom.pz(), E_f);
 				G4LorentzVector k_i(momBeam.px(), momBeam.py(), momBeam.pz(), E_i);
 				G4LorentzVector q = k_i - k_f;
@@ -287,16 +294,19 @@ void PrimaryGeneratorAction::GenerateBeamPrimaries(G4Event* anEvent)
 	magVector1.rotateY(-simPar->GetIpTheta());
 	magVector2.rotateY(-simPar->GetIpTheta());
 	// orientation angle of the incoming beam
-	G4double angle = M_PI*rad + atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z()))*rad;
+	G4double angle = atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z()))*rad;
 
   	// create rotation matrix and translation vector
   	G4RotationMatrix rotation = G4RotationMatrix();
   	rotation.rotateY(angle);
 	G4ThreeVector translation = magVector2; 
 	// move initial coordinates to the new position
-	G4ThreeVector posXYZrot = rotation * G4ThreeVector(X_real,Y_real,0.0) + translation;
-	G4ThreeVector dirXYZrot = rotation * 
-		G4ThreeVector(Xprime_real,Yprime_real,sqrt(1.0 - (pow(Xprime_real,2) + pow(Yprime_real,2))));
+	G4ThreeVector posXYZrot = 
+		rotation * G4ThreeVector(-X_real,-Y_real,0.0) + translation;
+	G4ThreeVector dirXYZrot = 
+		rotation * G4ThreeVector(	-Xprime_real,
+						-Yprime_real,
+						-sqrt(1.0 - (pow(Xprime_real,2) + pow(Yprime_real,2))));
 
 	// generate the primary beam 
     	fParticleGun->SetParticleDefinition(particleDef);

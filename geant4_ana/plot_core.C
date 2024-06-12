@@ -285,14 +285,25 @@ void plot_core(TString fName = "output_ana_all.root")
 
 	// Q2ER
 	mon_name = "Q2ER";
-	mon_minX = -0.5;	mon_maxX = 0.5;		mon_minXp = -0.1e-2;	mon_maxXp = 0.1e-2;
-	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.1e-2;	mon_maxYp = 0.1e-2;
+	mon_minX = -1.5;	mon_maxX = 1.5;		mon_minXp = -0.5e-3;	mon_maxXp = 0.5e-3;
+	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.2e-3;	mon_maxYp = 0.2e-3;
 	mon_alphaX = 7.010410649000;		mon_betaX = 333.076840600000;	
 	mon_etaX =  -6.214034083000e-04;	mon_etaPrimeX = 1.249027737000e-05;
 	mon_alphaY = 5.038141847000;		mon_betaY = 210.909690800000;	
 	mon_etaY = -1.125097655000e-09;		mon_etaPrimeY = 4.902222472000e-11;
 	mon_minP = 17.5;			mon_maxP = 18.5;
 
+/*
+	// Q1ER
+	mon_name = "Q1ER";
+	mon_minX = -1.5;	mon_maxX = 1.5;		mon_minXp = -0.4e-2;	mon_maxXp = 0.4e-2;
+	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.2e-2;	mon_maxYp = 0.2e-2;
+	mon_alphaX = -62.310887520000;		mon_betaX = 151.953658400000;	
+	mon_etaX =  -4.187094072000e-04;	mon_etaPrimeX = -1.725903902000e-04;
+	mon_alphaY = 113.105553200000;		mon_betaY = 443.809648200000;	
+	mon_etaY = -1.678999041000e-09;		mon_etaPrimeY = 4.431364431000e-10;
+	mon_minP = 17.5;			mon_maxP = 18.5;
+*/
 /*
 	// Q0EF
 	mon_name = "Q0EF";
@@ -302,6 +313,17 @@ void plot_core(TString fName = "output_ana_all.root")
 	mon_etaX =  2.688852007000e-04;		mon_etaPrimeX = -4.529977254000e-05;
 	mon_alphaY = 101.755172700000;		mon_betaY = 590.237006900000;	
 	mon_etaY = 1.801870636000e-09;		mon_etaPrimeY = -3.239077707000e-10;
+	mon_minP = 17.5;			mon_maxP = 18.5;
+*/
+/*
+	// Q1EF
+	mon_name = "Q1EF";
+	mon_minX = -1.5;	mon_maxX = 1.5;		mon_minXp = -0.3e-2;	mon_maxXp = 0.3e-2;
+	mon_minY = -0.4;	mon_maxY = 0.4;		mon_minYp = -0.5e-3;	mon_maxYp = 0.5e-3;
+	mon_alphaX = 86.356403230000;		mon_betaX = 575.391008800000;	
+	mon_etaX =  8.460834915000e-04;		mon_etaPrimeX = -1.267520705000e-04;
+	mon_alphaY = -39.759932320000;		mon_betaY = 255.947224800000;	
+	mon_etaY = 1.243840204000e-09;		mon_etaPrimeY = 1.731240263000e-10;
 	mon_minP = 17.5;			mon_maxP = 18.5;
 */
 	//------------------------------------------------------------------------------------------------//

@@ -117,14 +117,14 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	_h3x = new TH2F("h3x","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",8000,-4000,4000,2000,-100,100);
 	_h3y = new TH2F("h3y","SR photon vertex position;Z_{vtx} [cm];Y_{vtx} [cm]",8000,-4000,4000,2000,-100,100);
 
-	_h4 = new TH2F("h4",Form("Monitor [%s]: Px vs X;X [cm];X'",monName->c_str()),1000,-4,4,1000,-1e-1,1e-1);
-	_h5 = new TH2F("h5",Form("Monitor [%s]: Py vs Y;Y [cm];Y'",monName->c_str()),1000,-4,4,1000,-1e-1,1e-1);
+	_h4 = new TH2F("h4",Form("Monitor [%s]: Px vs X;X [cm];X'",monName->c_str()),1000,-4,4,10000,-1e-2,1e-2);
+	_h5 = new TH2F("h5",Form("Monitor [%s]: Py vs Y;Y [cm];Y'",monName->c_str()),1000,-4,4,10000,-1e-2,1e-2);
 	_h6 = new TH1F("h6",Form("Monitor [%s]: Momentum;P [GeV/c]",monName->c_str()),20000,0,20);
 
 	_h7 = new TH2F("h7",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Px vs X;X [cm];X'",
-		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),1000,-4,4,1000,-1e-1,1e-1);
+		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),1000,-4,4,10000,-1e-2,1e-2);
 	_h8 = new TH2F("h8",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Py vs Y;Y [cm];Y'",
-		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),1000,-4,4,1000,-1e-2,1e-2);
+		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),1000,-4,4,10000,-1e-2,1e-2);
 	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV/c]",
 		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),20000,0,20);
 

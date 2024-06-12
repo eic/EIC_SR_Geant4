@@ -37,8 +37,8 @@
 	<!-- store photon trajectories -->
 	<storetrj>
 		<sec desc="Store trajectories: 1 - true; 0 - false" name="store">1</sec>
-		<sec desc="Zmin for the region of interest (where the photon stopped)" name="Zmin" unit="cm">-200</sec>
-		<sec desc="Zmax for the region of interest (where the photon stopped)" name="Zmax" unit="cm">200</sec>
+		<sec desc="Zmin for the region of interest (where the photon stopped)" name="Zmin" unit="cm">-500</sec>
+		<sec desc="Zmax for the region of interest (where the photon stopped)" name="Zmax" unit="cm">500</sec>
 		<sec desc="Emin for the tracked photon" name="Emin" unit="GeV">10e-6</sec>
 	</storetrj>
 
@@ -138,7 +138,7 @@
 
 	<!-- magnet parameters: from esr-survey-doug.tfs and esr-ring-norad.tfs (2IR, 18 GeV, Jan. 2024) -->
 	<!-- for the start position of the magnets use the end position for the previous element in the lattice -->
-	<!-- TWISS ANGLE < 0 -> GEANT4 ANGLE > 0  and TWISS K1L < 0 -> GEANT4 K1L > 0 -->
+	<!-- TWISS ANGLE < 0 -> GEANT4 ANGLE > 0  and TWISS K1L < 0 -> GEANT4 K1L < 0 -->
 	<!-- detector solenoid data based on: https://wiki.bnl.gov/EPIC/index.php?title=Experimental_Solenoid -->
 	<!-- list the magnets, then solenoid, and IP -->
 
@@ -193,7 +193,7 @@
 			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
 			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">10.759655681836</sec>
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
-			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.161138459200</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.161138459200</sec>
 		</magnet>
 		<magnet>
 			<sec desc="magnet name" name="name">Q0EF</sec>
@@ -206,7 +206,7 @@
 			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
 			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">5.799814400990</sec>
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
-			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.261830778000</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.261830778000</sec>
 		</magnet>
 		<magnet>
 			<sec desc="magnet name" name="name">Q1ER</sec>
@@ -219,7 +219,7 @@
 			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
 			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-7.099772801212</sec>
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
-			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.414000000000</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.414000000000</sec>
 		</magnet>
 		<magnet>
 			<sec desc="magnet name" name="name">Q2ER</sec>
@@ -232,7 +232,7 @@
 			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
 			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-8.999712001536</sec>
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
-			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.316400000000</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.316400000000</sec>
 		</magnet>
 		<magnet>
 			<sec desc="magnet name" name="name">D2ER</sec>
@@ -258,7 +258,7 @@
 			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
 			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-43.055014236777</sec>
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
-			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.092420910960</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.092420910960</sec>
 		</magnet>
 		<solenoid>
 			<sec desc="magnet name" name="name">MARCO</sec>
