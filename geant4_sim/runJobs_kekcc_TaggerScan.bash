@@ -10,7 +10,7 @@ xmlFile="${PWD}/geometry/simParameters_v6.3.xml" # simulation geometry settings
 nParticles=1000000 # number of primary particles per job
 outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_TaggerScan1_ChamberH_10cm' # output directory # default radius
 buildDir='./build1' # build directory
-queue='s'
+queue='l'
 #--------------------------------------------------#
 #--------------------------------------------------#
 
@@ -41,11 +41,12 @@ cmake ../
 # compile
 make -j4
 
-chmod 777 runAll_TaggerScan1.bash;
+chmod 777 runAll_TaggerScan.bash;
 
 mkdir -pv ./macFiles
 
 # Scan tagger2 position along the ante-chamber
+aH=10 # cm
 for PosZ in {-995..995..5}
 do
 	# count how many jobs are pending, the maximum is 20000 jobs
@@ -59,7 +60,7 @@ do
 	done
 	
 	# submit a job
-	com="./runAll_TaggerScan1.bash $PosZ $nParticles $xmlFile $RANDOM ${outputDir} ${PosZ}"
+	com="./runAll_TaggerScan.bash $PosZ $nParticles $xmlFile $RANDOM ${outputDir} ${PosZ} ${aH}"
 	echo -ne "[INFO] ${com} => "
 	bsub -q $queue -o ${outputDir}/logJob_${PosZ}.txt "${com}"
 done

@@ -35,8 +35,16 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	G4VPhysicalVolume*      postPV          = postStep->GetPhysicalVolume();
 
 	//- Stop tracking on the backward side
-	if(postStep->GetPosition().getZ() < simPar->GetTrackBwdGeoCut())
+	if(	postPV && 
+		postStep->GetPosition().getZ() < simPar->GetTrackBwdGeoCut())
 	{
+		if(track->GetTrackID() == 1) // primary particle
+		{
+			runAction->_beamKillPosX.push_back(postStep->GetPosition().getX()/cm);
+			runAction->_beamKillPosY.push_back(postStep->GetPosition().getY()/cm);
+			runAction->_beamKillPosZ.push_back(postStep->GetPosition().getZ()/cm);
+		}
+
 		track->SetTrackStatus(fStopAndKill);
 		return;
 	}
@@ -64,6 +72,13 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		runAction->_sensEnergy.push_back(track->GetTotalEnergy()/eV);
 		runAction->_sensTime.push_back(track->GetGlobalTime()/ms); // time from the start of the event
 
+		if(track->GetTrackID() == 1) // primary particle
+		{
+			runAction->_beamKillPosX.push_back(postStep->GetPosition().getX()/cm);
+			runAction->_beamKillPosY.push_back(postStep->GetPosition().getY()/cm);
+			runAction->_beamKillPosZ.push_back(postStep->GetPosition().getZ()/cm);
+		}
+
 		// absorb the particle
 		track->SetTrackStatus(fStopAndKill); 
 		return;
@@ -73,10 +88,14 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	//- Kill primaries leaving the vacuum
 	if(	track->GetTrackID() == 1 && // primary particle
 		postStep->GetStepStatus() == fGeomBoundary && // at boundary
-		postPV->GetName() == "world" && // entering world
-		(G4StrUtil::contains(prePV_name,"vac_") || // leaving vacuum
-		G4StrUtil::contains(prePV_name,"mag_"))) // leaving magnet
+		postPV->GetName() == "world") // entering world
+//		(G4StrUtil::contains(prePV_name,"vac_") || // leaving vacuum
+//		G4StrUtil::contains(prePV_name,"mag_"))) // leaving magnet
 	{
+		runAction->_beamKillPosX.push_back(postStep->GetPosition().getX()/cm);
+		runAction->_beamKillPosY.push_back(postStep->GetPosition().getY()/cm);
+		runAction->_beamKillPosZ.push_back(postStep->GetPosition().getZ()/cm);
+
 		track->SetTrackStatus(fStopAndKill); 
 		return;
 	}

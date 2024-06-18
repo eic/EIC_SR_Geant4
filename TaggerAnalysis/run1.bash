@@ -1,8 +1,8 @@
 #!/bin/bash 
 queue='s'
 
-# TaggerScan1
 <<CC
+# TaggerScan1
 outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_TaggerScan1_ChamberH_10cm'
 for PosZ in {-995..995..5}
 do
@@ -11,18 +11,16 @@ do
 	bsub -q $queue -o ${outputDir}/log_ana1_${PosZ}.txt "root -l -b -q ana1.C\(\\\"${fIn}\\\",\\\"${fOut}\\\"\)"
 done
 CC
-
-<<DD
+#<<DD
 # AnteChamberScan
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_Tagger1_-197.2cm_ChamberHscan'
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_Tagger1_-150.0cm_ChamberHscan'
 for aH in {1..10..1}
 do
 	fIn="${outputDir}/output_${aH}.root"
 	fOut="${outputDir}/ana1_output_${aH}.root"
 	bsub -q $queue -o ${outputDir}/log_ana1_${aH}.txt "root -l -b -q ana1.C\(\\\"${fIn}\\\",\\\"${fOut}\\\"\)"
 done
-DD
-
+#DD
 <<FF
 outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_TaggerScan2_ChamberH_4cm'
 for PosZ in {-995..995..5}
@@ -32,10 +30,10 @@ do
 	bsub -q $queue -o ${outputDir}/log_ana1_${PosZ}.txt "root -l -b -q ana1.C\(\\\"${fIn}\\\",\\\"${fOut}\\\"\)"
 done
 FF
-
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_Tagger1_-171.9cm_ChamberH_4cm'
-PosZ=-171.9 # cm
+<<KK
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_Tagger1_-171.8cm_ChamberH_4cm'
+PosZ=-171.8 # cm
 fIn="${outputDir}/output_${PosZ}.root"
 fOut="${outputDir}/ana1_output_${PosZ}.root"
 bsub -q $queue -o ${outputDir}/log_ana1_${PosZ}.txt "root -l -b -q ana1.C\(\\\"${fIn}\\\",\\\"${fOut}\\\"\)"
-
+KK

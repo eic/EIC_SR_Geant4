@@ -73,9 +73,8 @@ set(exe_SCRIPTS
   vis_ogl.mac
   runAll.bash
   runAll_sdcc.bash
-  runAll_TaggerScan1.bash
+  runAll_TaggerScan.bash
   runAll_AnteChamberScan.bash
-  runAll_TaggerScan2.bash
   runAll_TaggerData.bash
   )
 

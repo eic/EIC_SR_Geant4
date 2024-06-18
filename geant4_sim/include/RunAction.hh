@@ -65,6 +65,10 @@ public:
 	vector<G4float> _beamRefAngle;	
 	vector<G4float> _beamTransfMomSqr;
 	vector<G4float> _beamTransfEnergy;
+	vector<G4float> _beamTargetMass;
+	vector<G4float> _beamKillPosX;
+	vector<G4float> _beamKillPosY;
+	vector<G4float> _beamKillPosZ;
 	
 	vector<string> _magName; // magnet name where SP photons are generated
 	vector<G4int> _magNph; // number of generated SR photons per event
@@ -81,6 +85,8 @@ public:
 	vector<G4float> _trackPosY_cm;
 	vector<G4float> _trackPosZ_cm;
 	vector<G4float> _trackEne_GeV;
+	vector<G4int> _trackTrackID;
+	vector<G4int> _trackEventID;
 
 	vector<string> _gammaPostPV;
 	vector<string> _gammaPrePV;

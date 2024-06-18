@@ -69,7 +69,7 @@ void drawStoredTracks(const string fname)
         pad11->cd();
 	gPad->SetGrid();
 	h1_xz->SetMinimum(1);
-	h1_xz->SetMaximum(1e4);
+	h1_xz->SetMaximum(1e6);
 	h1_xz->Draw("colz");
 	gPad->SetLogz();
 
@@ -83,7 +83,7 @@ void drawStoredTracks(const string fname)
         pad12->cd();
 	gPad->SetGrid();
 	h1_yz->SetMinimum(1);
-	h1_yz->SetMaximum(1e4);
+	h1_yz->SetMaximum(1e6);
 	h1_yz->Draw("colz");
 	gPad->SetLogz();
 
@@ -136,9 +136,9 @@ void getStoredTracks(const string outputfile)
 	Long64_t nentries = fChain->GetEntries();
 	
 	Double_t x0, x1, y0, y1, z0, z1, Lx, Ly, dLx, dLy, sinThetaX, cosThetaX, sinThetaY, cosThetaY;
-	TH2F* h1_xz = new TH2F("h1_xz","XZ;Z [cm];X [cm]",1000,-4000,1000,1000,-10,10);
-	TH2F* h1_yz = new TH2F("h1_yz","YZ;Z [cm];Y [cm]",1000,-4000,1000,1000,-10,10);
-	TH1F* h1_en = new TH1F("h1_en","E_{#gamma};E_{#gamma} [keV]",100,0,100);
+	TH2F* h1_xz = new TH2F("h1_xz","XZ;Z [cm];X [cm]",5000,-5000,5000,4000,-40,40);
+	TH2F* h1_yz = new TH2F("h1_yz","YZ;Z [cm];Y [cm]",5000,-5000,5000,4000,-40,40);
+	TH1F* h1_en = new TH1F("h1_en","E_{#gamma};E_{#gamma} [keV]",1000,0,1000);
 	// loop over tracks
 	for(Long64_t i = 0; i < nentries; i++)
 	{

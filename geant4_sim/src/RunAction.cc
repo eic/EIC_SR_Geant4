@@ -47,7 +47,11 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("beamRefAngle_rad",	&_beamRefAngle);
     	_tree->Branch("beamTransfMomSqr_GeV2",	&_beamTransfMomSqr);
     	_tree->Branch("beamTransfEnergy_GeV",	&_beamTransfEnergy);
-	
+	_tree->Branch("beamTargetMass_GeV",	&_beamTargetMass);
+	_tree->Branch("beamKillPosX_cm",	&_beamKillPosX);
+    	_tree->Branch("beamKillPosY_cm",	&_beamKillPosY);
+    	_tree->Branch("beamKillPosZ_cm",	&_beamKillPosZ);
+
 	_tree->Branch("magName",	&_magName);
 	_tree->Branch("magNph",		&_magNph);
 	_tree->Branch("magSumEph_eV",	&_magSumEph);
@@ -111,6 +115,8 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tracks->Branch("trackPosY_cm",	&_trackPosY_cm);
     	_tracks->Branch("trackPosZ_cm",	&_trackPosZ_cm);
     	_tracks->Branch("trackEne_GeV", &_trackEne_GeV);
+    	_tracks->Branch("trackTrackID", &_trackTrackID);
+    	_tracks->Branch("trackEventID", &_trackEventID);
 
 	_avgEventTime = 0;
 

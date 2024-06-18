@@ -21,6 +21,7 @@ TTree *_tree;
    vector<float>   *beamMomZ_eV;
    vector<float>   *beamEnergy_eV;
    vector<float>   *beamTransfMomSqr_GeV2;
+   vector<float>   *beamTransfEnergy_GeV;
 	// Taggers
    vector<string>  *sensName;
    vector<int>     *sensPDG;
@@ -53,6 +54,8 @@ TH1F* _h8;
 TH2F* _h9;
 TH2F* _h10;
 TH2F* _h11;
+TH1F* _h12;
+TH2F* _h13;
 
 TH1F* _h1_etag1;
 TH1F* _h2_etag1;
@@ -62,6 +65,7 @@ TH1F* _h5_etag1;
 TH2F* _h6_etag1;
 TH2F* _h7_etag1;
 TH1F* _h8_etag1;
+TH2F* _h9_etag1;
 
 TH1F* _h1_etag2;
 TH1F* _h2_etag2;
@@ -71,6 +75,7 @@ TH1F* _h5_etag2;
 TH2F* _h6_etag2;
 TH2F* _h7_etag2;
 TH1F* _h8_etag2;
+TH2F* _h9_etag2;
 
 TH1F* _h1_gtag1;
 TH1F* _h2_gtag1;
@@ -80,6 +85,8 @@ TH1F* _h5_gtag1;
 TH2F* _h6_gtag1;
 TH2F* _h7_gtag1;
 TH1F* _h8_gtag1;
+TH2F* _h9_gtag1;
+TH2F* _h10_gtag1;
 
 TH1F* _h1_gtag2;
 TH1F* _h2_gtag2;
@@ -89,6 +96,10 @@ TH1F* _h5_gtag2;
 TH2F* _h6_gtag2;
 TH2F* _h7_gtag2;
 TH1F* _h8_gtag2;
+TH2F* _h9_gtag2;
+TH2F* _h10_gtag2;
+
+const Double_t protonMass_GeV = 9.3826997280120850e-01; // GeV/c^2
 
 void ana1(TString fNameIn, TString fNameOut)
 {
@@ -118,43 +129,51 @@ void AnaTree()
 	_h8 = new TH1F("h8","beamTransfMomSqr; GeV^2",4000,-2,2);
 	_h9 = new TH2F("h9","beamPosX vs beamPosZ;cm;cm",10000,-100,100,1000,-1,1);
 	_h10 = new TH2F("h10","beamPosY vs beamPosZ;cm;cm",10000,-100,100,1000,-0.1,0.1);
-	_h11 = new TH2F("h11","log(beamTransfMomSqr) vs beamEnergy; E_{f} [GeV]; log(Q^2) [GeV^2]",1000,-20,20,8000,-40,40);
+	_h11 = new TH2F("h11","log(beamTransfMomSqr) vs beamEnergy; E_{f} [GeV]; log_{10}(Q^2)",1000,-20,20,2000,-100,100);
+	_h12 = new TH1F("h12","Bjorken scaling variable; x",2000,-100,100);
+	_h13 = new TH2F("h13","Beam log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
 
 	_h1_etag1 = new TH1F("h1_etag1","Tagger1 electron posX; X [cm]",8000,-40,40);
 	_h2_etag1 = new TH1F("h2_etag1","Tagger1 electron posY; Y [cm]",8000,-40,40);
 	_h3_etag1 = new TH1F("h3_etag1","Tagger1 electron posZ; Z [cm]",50000,-5000,5000);
 	_h4_etag1 = new TH1F("h4_etag1","Tagger1 electron Energy; E_{e} [GeV]",20000,0,20);
 	_h5_etag1 = new TH1F("h5_etag1","Tagger1 electron Q^2; Q^2 [GeV^2]",4000,-2,2);
-	_h6_etag1 = new TH2F("h6_etag1","Tagger1 electron log(Q^2) vs Energy; E_{e} [GeV]; log(Q^2) [GeV^2]",2000,0,20,8000,-40,40);
+	_h6_etag1 = new TH2F("h6_etag1","Tagger1 electron log_{10}(Q^2) vs Energy; E_{e} [GeV]; log_{10}(Q^2)",2000,0,20,2000,-100,100);
 	_h7_etag1 = new TH2F("h7_etag1","Tagger1 electron posY vs posX; X [cm]; Y [cm]",8000,-40,40,8000,-40,40);
 	_h8_etag1 = new TH1F("h8_etag1","Tagger1 electron Time; t [#mus]",10000,0,1);
+	_h9_etag1 = new TH2F("h9_etag1","Tagger1 photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
 
 	_h1_etag2 = new TH1F("h1_etag2","Tagger2 electron posX; X [cm]",8000,-40,40);
 	_h2_etag2 = new TH1F("h2_etag2","Tagger2 electron posY; Y [cm]",8000,-40,40);
 	_h3_etag2 = new TH1F("h3_etag2","Tagger2 electron posZ; Z [cm]",50000,-5000,5000);
 	_h4_etag2 = new TH1F("h4_etag2","Tagger2 electron Energy; E_{e} [GeV]",20000,0,20);
 	_h5_etag2 = new TH1F("h5_etag2","Tagger2 electron Q^2; Q^2 [GeV^2]",4000,-2,2);
-	_h6_etag2 = new TH2F("h6_etag2","Tagger2 electron log(Q^2) vs Energy; E_{e} [GeV]; log(Q^2) [GeV^2]",2000,0,20,8000,-40,40);
+	_h6_etag2 = new TH2F("h6_etag2","Tagger2 electron log_{10}(Q^2) vs Energy; E_{e} [GeV]; log_{10}(Q^2)",2000,0,20,2000,-100,100);
 	_h7_etag2 = new TH2F("h7_etag2","Tagger2 electron posY vs posX; X [cm]; Y [cm]",8000,-40,40,8000,-40,40);
 	_h8_etag2 = new TH1F("h8_etag2","Tagger2 electron Time; t [#mus]",10000,0,1);
+	_h9_etag2 = new TH2F("h9_etag2","Tagger2 photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
 
 	_h1_gtag1 = new TH1F("h1_gtag1","Tagger1 photon posX; X [cm]",8000,-40,40);
 	_h2_gtag1 = new TH1F("h2_gtag1","Tagger1 photon posY; Y [cm]",8000,-40,40);
 	_h3_gtag1 = new TH1F("h3_gtag1","Tagger1 photon posZ; Z [cm]",50000,-5000,5000);
 	_h4_gtag1 = new TH1F("h4_gtag1","Tagger1 photon Energy; E_{ph} [keV]",10000,0,1000);
 	_h5_gtag1 = new TH1F("h5_gtag1","Tagger1 photon Q^2; Q^2 [GeV^2]",4000,-2,2);
-	_h6_gtag1 = new TH2F("h6_gtag1","Tagger1 photon log(Q^2) vs Energy; E_{f} [GeV]; log(Q^2) [GeV^2]",2000,0,20,8000,-40,40);
+	_h6_gtag1 = new TH2F("h6_gtag1","Tagger1 photon log_{10}(Q^2) vs Energy; E_{f} [GeV]; log_{10}(Q^2)",2000,0,20,2000,-100,100);
 	_h7_gtag1 = new TH2F("h7_gtag1","Tagger1 photon posY vs posX; X [cm]; Y [cm]",8000,-40,40,8000,-40,40);
 	_h8_gtag1 = new TH1F("h8_gtag1","Tagger1 photon Time; t [#mus]",10000,0,1);
+	_h9_gtag1 = new TH2F("h9_gtag1","Tagger1 photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
+	_h10_gtag1 = new TH2F("h10_gtag1","Tagger1 photon posY vs posX; X [cm]; Y [cm]; E_{#gamma} [GeV]",8000,-40,40,8000,-40,40);
 
 	_h1_gtag2 = new TH1F("h1_gtag2","Tagger2 photon posX; X [cm]",8000,-40,40);
 	_h2_gtag2 = new TH1F("h2_gtag2","Tagger2 photon posY; Y [cm]",8000,-40,40);
 	_h3_gtag2 = new TH1F("h3_gtag2","Tagger2 photon posZ; Z [cm]",50000,-5000,5000);
 	_h4_gtag2 = new TH1F("h4_gtag2","Tagger2 photon Energy; E_{ph} [keV]",10000,0,1000);
 	_h5_gtag2 = new TH1F("h5_gtag2","Tagger2 photon Q^2; Q^2 [GeV^2]",4000,-2,2);
-	_h6_gtag2 = new TH2F("h6_gtag2","Tagger2 photon log(Q^2) vs Energy; E_{f} [GeV]; log(Q^2) [GeV^2]",2000,0,20,8000,-40,40);
+	_h6_gtag2 = new TH2F("h6_gtag2","Tagger2 photon log_{10}(Q^2) vs Energy; E_{f} [GeV]; log_{10}(Q^2)",2000,0,20,2000,-100,100);
 	_h7_gtag2 = new TH2F("h7_gtag2","Tagger2 photon posY vs posX; X [cm]; Y [cm]",8000,-40,40,8000,-40,40);
 	_h8_gtag2 = new TH1F("h8_gtag2","Tagger2 photon Time; t [#mus]",10000,0,1);
+	_h9_gtag2 = new TH2F("h9_gtag2","Tagger2 photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
+	_h10_gtag2 = new TH2F("h10_gtag2","Tagger2 photon posY vs posX; X [cm]; Y [cm]; E_{#gamma} [GeV]",8000,-40,40,8000,-40,40);
 
 	// loop over entries
 	for(Int_t iEntry = 0; iEntry < nEntries; iEntry++)
@@ -167,6 +186,7 @@ void AnaTree()
 		// loop over primaries
 		for(Int_t i = 0; i < beamPdg->size(); i++)
 		{
+			if(beamTransfEnergy_GeV->at(i) <= 0){continue;}
 			// fill histos with primary coordinates
 			_h1->Fill(beamPosX_cm->at(i));
 			_h2->Fill(beamPosY_cm->at(i));
@@ -179,6 +199,10 @@ void AnaTree()
 			_h9->Fill(beamPosZ_cm->at(i),beamPosX_cm->at(i));
 			_h10->Fill(beamPosZ_cm->at(i),beamPosY_cm->at(i));
 			_h11->Fill(beamEnergy_eV->at(i)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(i)));
+			_h12->Fill(beamTransfMomSqr_GeV2->at(i)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(i)));
+			_h13->Fill(	TMath::Log10(beamTransfMomSqr_GeV2->at(i)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(i))),
+					TMath::Log10(beamTransfMomSqr_GeV2->at(i)));
+
 		}
 		// loop over all hits on the taggers
 		for(Int_t i = 0; i < sensName->size(); i++)
@@ -202,6 +226,9 @@ void AnaTree()
 					_h6_etag1->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 					_h7_etag1->Fill(pos.x(),pos.y());
 					_h8_etag1->Fill(sensTime_ms->at(i)*1e3);
+					_h9_etag1->Fill(
+						TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
+						TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 				}
 				else if(sensName->at(i) == "sens_tag2") // tagger2
 				{
@@ -213,6 +240,9 @@ void AnaTree()
 					_h6_etag2->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 					_h7_etag2->Fill(pos.x(),pos.y());
 					_h8_etag2->Fill(sensTime_ms->at(i)*1e3);
+					_h9_etag2->Fill(
+						TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
+						TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 				}
 				else
 				{
@@ -232,6 +262,10 @@ void AnaTree()
 					_h6_gtag1->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 					_h7_gtag1->Fill(pos.x(),pos.y());
 					_h8_gtag1->Fill(sensTime_ms->at(i)*1e3);
+					_h9_gtag1->Fill(
+						TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
+						TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
+					_h10_gtag1->Fill(pos.x(),pos.y(),sensEnergy_eV->at(i));
 				}
 				else if(sensName->at(i) == "sens_tag2") // tagger2
 				{
@@ -243,6 +277,10 @@ void AnaTree()
 					_h6_gtag2->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 					_h7_gtag2->Fill(pos.x(),pos.y());
 					_h8_gtag2->Fill(sensTime_ms->at(i)*1e3);
+					_h9_gtag2->Fill(
+						TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
+						TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
+					_h10_gtag2->Fill(pos.x(),pos.y(),sensEnergy_eV->at(i));
 				}
 				else
 				{
@@ -277,6 +315,9 @@ void SaveHisto(TString fName)
 	_h9->Write();
 	_h10->Write();
 	_h11->Write();
+	_h12->Write();
+	_h13->Write();
+
 	_h1_etag1->Write();
 	_h2_etag1->Write();
 	_h3_etag1->Write();
@@ -285,6 +326,8 @@ void SaveHisto(TString fName)
 	_h6_etag1->Write();
 	_h7_etag1->Write();
 	_h8_etag1->Write();
+	_h9_etag1->Write();
+
 	_h1_etag2->Write();
 	_h2_etag2->Write();
 	_h3_etag2->Write();
@@ -293,6 +336,8 @@ void SaveHisto(TString fName)
 	_h6_etag2->Write();
 	_h7_etag2->Write();
 	_h8_etag2->Write();
+	_h9_etag2->Write();
+
 	_h1_gtag1->Write();
 	_h2_gtag1->Write();
 	_h3_gtag1->Write();
@@ -301,6 +346,9 @@ void SaveHisto(TString fName)
 	_h6_gtag1->Write();
 	_h7_gtag1->Write();
 	_h8_gtag1->Write();
+	_h9_gtag1->Write();
+	_h10_gtag1->Write();
+
 	_h1_gtag2->Write();
 	_h2_gtag2->Write();
 	_h3_gtag2->Write();
@@ -309,6 +357,8 @@ void SaveHisto(TString fName)
 	_h6_gtag2->Write();
 	_h7_gtag2->Write();
 	_h8_gtag2->Write();
+	_h9_gtag2->Write();
+	_h10_gtag2->Write();
 
 	f->Close();
 	cout<<"--> Output file name: "<<f->GetName()<<endl;
@@ -358,6 +408,7 @@ void LoadTree(TString fName, TString tName)
    _tree->SetBranchAddress("beamMomZ_eV", &beamMomZ_eV);
    _tree->SetBranchAddress("beamEnergy_eV", &beamEnergy_eV);
    _tree->SetBranchAddress("beamTransfMomSqr_GeV2", &beamTransfMomSqr_GeV2);
+   _tree->SetBranchAddress("beamTransfEnergy_GeV", &beamTransfEnergy_GeV);
 
    _tree->SetBranchAddress("sensName", &sensName);
    _tree->SetBranchAddress("sensPDG", &sensPDG);

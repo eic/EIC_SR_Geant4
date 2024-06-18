@@ -8,8 +8,8 @@ date;
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="${PWD}/geometry/simParameters_v6.3.xml" # simulation geometry settings
 nParticles=1000000 # number of primary particles per job
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_Tagger1_-197.2cm_ChamberHscan' # output directory # default radius
-buildDir='./build2' # build directory
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_Tagger1_-150.0cm_ChamberHscan' # output directory # default radius
+buildDir='./build' # build directory
 queue='s'
 #--------------------------------------------------#
 #--------------------------------------------------#
@@ -46,7 +46,7 @@ chmod 777 runAll_AnteChamberScan.bash;
 mkdir -pv ./macFiles
 
 # Scan tagger2 position along the ante-chamber
-PosZ=-197.2 # cm
+PosZ=-150.0 # cm
 for aH in {1..10..1}
 do
 	# count how many jobs are pending, the maximum is 20000 jobs
