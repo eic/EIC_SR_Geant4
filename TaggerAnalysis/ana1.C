@@ -22,6 +22,10 @@ TTree *_tree;
    vector<float>   *beamEnergy_eV;
    vector<float>   *beamTransfMomSqr_GeV2;
    vector<float>   *beamTransfEnergy_GeV;
+   vector<float>   *beamKillPosX_cm;
+   vector<float>   *beamKillPosY_cm;
+   vector<float>   *beamKillPosZ_cm;
+
 	// Taggers
    vector<string>  *sensName;
    vector<int>     *sensPDG;
@@ -56,6 +60,11 @@ TH2F* _h10;
 TH2F* _h11;
 TH1F* _h12;
 TH2F* _h13;
+TH2F* _h14;
+TH2F* _h15;
+TH2F* _h16;
+TH2F* _h17;
+TH2F* _h18;
 
 TH1F* _h1_etag1;
 TH1F* _h2_etag1;
@@ -132,6 +141,11 @@ void AnaTree()
 	_h11 = new TH2F("h11","log(beamTransfMomSqr) vs beamEnergy; E_{f} [GeV]; log_{10}(Q^2)",1000,-20,20,2000,-100,100);
 	_h12 = new TH1F("h12","Bjorken scaling variable; x",2000,-100,100);
 	_h13 = new TH2F("h13","Beam log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
+	_h14 = new TH2F("h14","Kill PosX vs PosZ; PosZ [cm]; PosX [cm}",7000,-6000,1000,2000,-100,100);
+	_h15 = new TH2F("h15","Kill PosY vs PosZ; PosZ [cm]; PosY [cm}",7000,-6000,1000,2000,-100,100);
+	_h16 = new TH2F("h16","Kill PosX vs PosZ (Q3eR); PosZ [cm]; PosY [cm}",7000,-6000,1000,2000,-100,100);
+	_h17 = new TH2F("h17","Kill PosY vs PosZ (Q3eR); PosZ [cm]; PosY [cm}",7000,-6000,1000,2000,-100,100);
+	_h18 = new TH2F("h18","Kill PosY vs PosX (Q3eR); PosX [cm]; PosY [cm}",2000,-100,100,2000,-100,100);
 
 	_h1_etag1 = new TH1F("h1_etag1","Tagger1 electron posX; X [cm]",8000,-40,40);
 	_h2_etag1 = new TH1F("h2_etag1","Tagger1 electron posY; Y [cm]",8000,-40,40);
@@ -182,7 +196,7 @@ void AnaTree()
 		_tree->GetEntry(iEntry);
 		TVector3 center(sensRefPosX_cm,sensRefPosY_cm,sensRefPosZ_cm);
 		// should be only one primary
-		if(beamPdg->size() != 1){cout<<endl<<"[ERROR] More than one primary!"<<endl;exit(-1);}
+		if(beamPdg->size() != 1 || beamKillPosZ_cm->size() != 1){cout<<endl<<"[ERROR] More than one primary!"<<endl;exit(-1);}
 		// loop over primaries
 		for(Int_t i = 0; i < beamPdg->size(); i++)
 		{
@@ -202,6 +216,15 @@ void AnaTree()
 			_h12->Fill(beamTransfMomSqr_GeV2->at(i)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(i)));
 			_h13->Fill(	TMath::Log10(beamTransfMomSqr_GeV2->at(i)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(i))),
 					TMath::Log10(beamTransfMomSqr_GeV2->at(i)));
+			_h14->Fill(beamKillPosZ_cm->at(i),beamKillPosX_cm->at(i));
+			_h15->Fill(beamKillPosZ_cm->at(i),beamKillPosY_cm->at(i));
+
+			if(beamKillPosZ_cm->at(i) < -4474)
+			{
+				_h16->Fill(beamKillPosZ_cm->at(i),beamKillPosX_cm->at(i));
+				_h17->Fill(beamKillPosZ_cm->at(i),beamKillPosY_cm->at(i));
+				_h18->Fill(beamKillPosX_cm->at(i),beamKillPosY_cm->at(i));
+			}
 
 		}
 		// loop over all hits on the taggers
@@ -317,6 +340,11 @@ void SaveHisto(TString fName)
 	_h11->Write();
 	_h12->Write();
 	_h13->Write();
+	_h14->Write();
+	_h15->Write();
+	_h16->Write();
+	_h17->Write();
+	_h18->Write();
 
 	_h1_etag1->Write();
 	_h2_etag1->Write();
@@ -384,6 +412,9 @@ void LoadTree(TString fName, TString tName)
    beamMomZ_eV = 0;
    beamEnergy_eV = 0;
    beamTransfMomSqr_GeV2 = 0;
+   beamKillPosX_cm = 0;
+   beamKillPosY_cm = 0;
+   beamKillPosZ_cm = 0;
 
    sensName = 0;
    sensPDG = 0;
@@ -409,6 +440,9 @@ void LoadTree(TString fName, TString tName)
    _tree->SetBranchAddress("beamEnergy_eV", &beamEnergy_eV);
    _tree->SetBranchAddress("beamTransfMomSqr_GeV2", &beamTransfMomSqr_GeV2);
    _tree->SetBranchAddress("beamTransfEnergy_GeV", &beamTransfEnergy_GeV);
+   _tree->SetBranchAddress("beamKillPosX_cm", &beamKillPosX_cm);
+   _tree->SetBranchAddress("beamKillPosY_cm", &beamKillPosY_cm);
+   _tree->SetBranchAddress("beamKillPosZ_cm", &beamKillPosZ_cm);
 
    _tree->SetBranchAddress("sensName", &sensName);
    _tree->SetBranchAddress("sensPDG", &sensPDG);
