@@ -4,14 +4,14 @@ const Float_t IP_posS = 43.301534723896; // m
 
 void plotBeamEnvelope()
 {
-	const Float_t minS = -43; // m
-	const Float_t maxS = +33; // m
+	const Float_t minS = -80; // m
+	const Float_t maxS = +50; // m
 	const Float_t emitX = 24.0e-9; // m
 	const Float_t emitY = 2.0e-9; // m
 	const Float_t max_gr_beamX = 100; // mm
 	const Float_t max_gr_beamY = 100; // mm
-	const Float_t nSigmaX = 15; 
-	const Float_t nSigmaY = 23;
+	const Float_t nSigmaX = 15.0; 
+	const Float_t nSigmaY = 22.0;
 	cout<<"--> nSigmaX = "<<nSigmaX<<endl;
 	cout<<"--> nSigmaY = "<<nSigmaY<<endl;
 
@@ -51,14 +51,36 @@ void plotBeamEnvelope()
 	// X
 	gr_betaX->SetLineColor(kBlue);
 	gr_betaX->SetLineWidth(2);
-	gr_betaX->SetMarkerStyle(20);
+	gr_betaX->SetMarkerStyle(24);
+	gr_betaX->SetMarkerSize(0.7);
 	gr_betaX->GetXaxis()->SetLimits(minS,maxS);
+	gr_betaX->GetXaxis()->SetTitle("S [m]");
+	gr_betaX->GetYaxis()->SetTitle("#beta [m]");
+	gr_betaX->SetTitle("ESR v6.3 18 GeV");
+	gr_betaX->GetXaxis()->CenterTitle(1);
+	gr_betaX->GetYaxis()->CenterTitle(1);
+	gr_betaX->GetXaxis()->SetTitleSize(0.05);
+	gr_betaX->GetYaxis()->SetTitleSize(0.05);
+	gr_betaX->GetXaxis()->SetLabelSize(0.05);
+	gr_betaX->GetYaxis()->SetLabelSize(0.05);
+	gr_betaX->GetXaxis()->SetTitleOffset(0.8);
+	gr_betaX->GetYaxis()->SetTitleOffset(0.8);
 	gr_betaX->Draw("APL");
 	// Y
 	gr_betaY->SetLineColor(kRed);
+	gr_betaY->SetLineStyle(9);
 	gr_betaY->SetLineWidth(2);
 	gr_betaY->SetMarkerStyle(21);
+	gr_betaY->SetMarkerSize(0.5);
 	gr_betaY->Draw("SAME & PL");
+
+	TLegend* leg1 = new TLegend(0.15,0.70,0.35,0.87);
+	leg1->AddEntry(gr_betaX,"Horizontal (#beta_{X})");
+	leg1->AddEntry(gr_betaY,"Vertical (#beta_{Y})");
+	leg1->SetTextSize(0.05);
+	leg1->Draw();
+
+	gPad->SetGrid();
 
 	//- get beam envelope
 	TGraph* gr_beamX1 = new TGraph();
@@ -84,36 +106,66 @@ void plotBeamEnvelope()
 	gr_beamX2->SetLineColor(kBlue);
 	gr_beamX1->SetLineWidth(2);
 	gr_beamX2->SetLineWidth(2);
-	gr_beamX1->SetMarkerStyle(20);
-	gr_beamX2->SetMarkerStyle(20);
+	gr_beamX1->SetMarkerStyle(24);
+	gr_beamX2->SetMarkerStyle(24);
+	gr_beamX1->SetMarkerSize(0.7);
+	gr_beamX2->SetMarkerSize(0.7);
 	gr_beamX1->GetXaxis()->SetLimits(minS,maxS);
-	gr_beamX2->GetXaxis()->SetLimits(minS,maxS);
 	gr_beamX1->SetMaximum(+1.2*max_gr_beamX);
 	gr_beamX1->SetMinimum(-1.2*max_gr_beamX);
+	gr_beamX1->GetXaxis()->SetTitle("S [m]");
+	gr_beamX1->GetYaxis()->SetTitle("Aperture/Beam envelope [mm]");
+	gr_beamX1->SetTitle(Form("#varepsilon_{X/Y} = %.f/%.f nm",emitX*1e9,emitY*1e9));
+	gr_beamX1->GetXaxis()->CenterTitle(1);
+	gr_beamX1->GetYaxis()->CenterTitle(1);
+	gr_beamX1->GetXaxis()->SetTitleSize(0.05);
+	gr_beamX1->GetYaxis()->SetTitleSize(0.05);
+	gr_beamX1->GetXaxis()->SetLabelSize(0.05);
+	gr_beamX1->GetYaxis()->SetLabelSize(0.05);
+	gr_beamX1->GetXaxis()->SetTitleOffset(0.8);
+	gr_beamX1->GetYaxis()->SetTitleOffset(0.8);
 	gr_beamX1->Draw("APL");
 	gr_beamX2->Draw("SAME & PL");
 	// Y
 	gr_beamY1->SetLineColor(kRed);
 	gr_beamY2->SetLineColor(kRed);
+	gr_beamY1->SetLineStyle(9);
+	gr_beamY2->SetLineStyle(9);
 	gr_beamY1->SetLineWidth(2);
 	gr_beamY2->SetLineWidth(2);
 	gr_beamY1->SetMarkerStyle(21);
 	gr_beamY2->SetMarkerStyle(21);
+	gr_beamY1->SetMarkerSize(0.5);
+	gr_beamY2->SetMarkerSize(0.5);
 	gr_beamY1->Draw("SAME & PL");
 	gr_beamY2->Draw("SAME & PL");
+
+	gPad->SetGrid();
 
 	//- draw beam pipe
 	const Int_t nAp = 23;
 	//- original aperture
 //	Double_t ss[] = {-15.270,-11.414,-11.364,-9.364,-9.2880,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.450, 4.460, 4.660, 7.200, 10.50, 23.00, 23.50, 33.50}; // m
 //	Double_t dx[] = { 0.1960, 0.1960, 0.1540, 0.154, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.044, 0.044, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
+
+	//- original aperture + narrower B2eR beam pipe
+//	Double_t ss[] = {-70.0000,-16.0000,-15.0000,-11.4140,-11.3640,-9.3640,-9.2880,-9.2800,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.450, 4.460, 4.660, 7.200, 10.50, 23.00, 23.50, 40.00}; // m
+//	Double_t dx[] = {  0.1000,  0.1000,  0.1960,  0.1960,  0.1540, 0.1540, 0.1286, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.044, 0.044, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
+//	Double_t dy[] = {  0.1000,  0.1000,  0.1960,  0.1960,  0.1540, 0.1540, 0.1286, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.044, 0.044, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
+
 	//- srmask5
 //	Double_t ss[] = {-15.270,-11.414,-11.364,-9.364,-9.2880,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.453, 4.660, 7.200, 10.50, 23.00, 23.50, 33.50}; // m
 //	Double_t dx[] = { 0.1960, 0.1960, 0.1540, 0.154, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.043, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
 
 	//- srmask5 + narrower B2eR beam pipe
-	Double_t ss[] = {-50.0000,-16.0000,-15.0000,-11.4140,-11.3640,-9.3640,-9.2880,-9.2800,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.453, 4.660, 7.200, 10.50, 23.00, 23.50, 33.50}; // m
+	Double_t ss[] = {-70.0000,-16.0000,-15.0000,-11.4140,-11.3640,-9.3640,-9.2880,-9.2800,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.453, 4.660, 7.200, 10.50, 23.00, 23.50, 40.00}; // m
 	Double_t dx[] = {  0.1000,  0.1000,  0.1960,  0.1960,  0.1540, 0.1540, 0.1286, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.043, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
+	Double_t dy[] = {  0.1000,  0.1000,  0.1960,  0.1960,  0.1540, 0.1540, 0.1286, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.043, 0.054, 0.054, 0.126, 0.126, 0.100, 0.100}; // m
+
+	//- srmask5 + narrower B2eR beam pipe + Q0eF narrower (from Holger)
+//	Double_t ss[] = {-70.0000,-16.0000,-15.0000,-11.4140,-11.3640,-9.3640,-9.2880,-9.2800,-7.4050,-7.3420,-0.800, 0.670, 0.670, 0.755, 0.755, 4.300, 4.453, 4.660, 7.200, 10.50, 23.00, 23.50, 40.00}; // m
+//	Double_t dx[] = {  0.1000,  0.1000,  0.1960,  0.1960,  0.1540, 0.1540, 0.1286, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.043, 0.050, 0.050, 0.126, 0.126, 0.100, 0.100}; // m
+//	Double_t dy[] = {  0.1000,  0.1000,  0.1960,  0.1960,  0.1540, 0.1540, 0.1286, 0.1286, 0.1286, 0.1114, 0.062, 0.062, 0.060, 0.060, 0.062, 0.062, 0.043, 0.050, 0.050, 0.126, 0.126, 0.100, 0.100}; // m
 
 	TGraph* gr_rx1 = new TGraph();
 	TGraph* gr_rx2 = new TGraph();
@@ -127,14 +179,25 @@ void plotBeamEnvelope()
 	gr_rx1->Draw("SAME & L");
 	gr_rx2->Draw("SAME & L");
 
+	TLegend* leg2 = new TLegend(0.15,0.70,0.35,0.87);
+	leg2->AddEntry(gr_beamX1,Form("Horizontal (%.1f #sigma_{X})",nSigmaX));
+	leg2->AddEntry(gr_beamY1,Form("Vertical (%.1f #sigma_{Y})",nSigmaY));
+	leg2->AddEntry(gr_rx1,"Beam pipe aperture");
+	leg2->SetTextSize(0.05);
+	leg2->Draw();
+
 	//- get minimum aperture
 	Double_t nSigmaMinX = 1e9, nSigmaMinXs = 0;
+	Double_t nSigmaMinY = 1e9, nSigmaMinYs = 0;
 	for(Int_t i = 0; i < nAp; i++)
 	{
-		Double_t nSigma = (dx[i]/2.)/TMath::Sqrt(emitX * gr_betaX->Eval(ss[i]));
-		if(nSigma < nSigmaMinX)	{nSigmaMinX = nSigma; nSigmaMinXs = ss[i];}
+		Double_t nSigmaX = (dx[i]/2.)/TMath::Sqrt(emitX * gr_betaX->Eval(ss[i]));
+		Double_t nSigmaY = (dy[i]/2.)/TMath::Sqrt(emitY * gr_betaY->Eval(ss[i]));
+		if(nSigmaX < nSigmaMinX)	{nSigmaMinX = nSigmaX; nSigmaMinXs = ss[i];}
+		if(nSigmaY < nSigmaMinY)	{nSigmaMinY = nSigmaY; nSigmaMinYs = ss[i];}
 	}
 	cout<<"--> nSigmaMinX = "<<nSigmaMinX<<" at s = "<<nSigmaMinXs<<" [m]"<<endl;
+	cout<<"--> nSigmaMinY = "<<nSigmaMinY<<" at s = "<<nSigmaMinYs<<" [m]"<<endl;
 
 	return;
 }
@@ -154,7 +217,7 @@ void getOpticsParameters(TString opticsFileName, TGraph* gr_betaX, TGraph* gr_be
 		exit(-1);
 	}
 
-	Float_t maxS = 0, circ = 3834.0;
+	Float_t maxS = 0, circ = 3834.013;
 	string line;
 	getline(opticsFileName_IO, line);
 	linesToSkip = 52; while (linesToSkip-- > 0 && getline(opticsFileName_IO, line)){/* skip */}
