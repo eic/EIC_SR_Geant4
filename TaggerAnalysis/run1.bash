@@ -37,9 +37,10 @@ fIn="${outputDir}/output_${PosZ}.root"
 fOut="${outputDir}/ana1_output_${PosZ}.root"
 bsub -q $queue -o ${outputDir}/log_ana1_${PosZ}.txt "root -l -b -q ana1.C\(\\\"${fIn}\\\",\\\"${fOut}\\\"\)"
 KK
+<<LL
 outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_Tagger1_-150cm_ChamberH_6cm'
 PosZ=-150 # cm
 fIn="${outputDir}/output_${PosZ}.root"
 fOut="${outputDir}/ana1_output_${PosZ}.root"
 bsub -q $queue -o ${outputDir}/log_ana1_${PosZ}.txt "root -l -b -q ana1.C\(\\\"${fIn}\\\",\\\"${fOut}\\\"\)"
-
+LL

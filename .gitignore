@@ -69,6 +69,7 @@ benchmark/SolenoidFieldMap/*.png
 benchmark/HitRates/eic_recon/pics
 eic_matscan/detector_geometry/*
 !eic_matscan/detector_geometry/run.sh
+TaggerAnalysis/pics
 
 # folders with trash
 delete

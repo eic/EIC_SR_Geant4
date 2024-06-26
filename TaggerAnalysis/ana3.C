@@ -1,3 +1,7 @@
+/**********************************************************************
+ * Maximize the pixel coverage by each tagger separately
+ **********************************************************************/
+
 Int_t GetAcceptance(TString fName, TString tagName);
 
 void ana3()

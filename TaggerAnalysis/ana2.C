@@ -1,3 +1,7 @@
+/**********************************************************************
+ * Maximize the number of hits in each tagger separately 
+ **********************************************************************/
+
 Double_t GetAcceptance(TString fName, TString tagName);
 
 void ana2()
@@ -74,3 +78,4 @@ Double_t GetAcceptance(TString fName, TString tagName)
 	_file->Close();
 	return (Double_t)nEntries1/nEntries0;
 }
+
