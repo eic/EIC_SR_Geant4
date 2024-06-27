@@ -20,7 +20,7 @@
 
 	<!-- ip beam pipe - gold -->
 	<ipbeampipe>
-		<sec desc="fwd Z" name="zmin" unit="cm">-80</sec>
+		<sec desc="fwd Z" name="zmin" unit="cm">-79.9</sec>
 		<sec desc="bwd Z" name="zmax" unit="cm">67</sec>
 	</ipbeampipe>
 

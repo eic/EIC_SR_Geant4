@@ -12,6 +12,7 @@
 #include "G4Material.hh"
 #include "G4VSolid.hh"
 #include "G4MagneticField.hh"
+#include "G4RotationMatrix.hh"
 #include "RunAction.hh"
 
 class SimParameters;
@@ -63,6 +64,8 @@ private:
 	G4MagneticField* GetMagField(G4int,G4LogicalVolume*);
 	G4double tag1_posZ;
 	G4double ante_chmbr_H;
+	G4ThreeVector far_bwd_center;
+	G4RotationMatrix* farbwd_rot;
 };
 
 #endif

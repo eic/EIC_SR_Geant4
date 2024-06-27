@@ -33,6 +33,8 @@
 
 const G4double farbwd_len = 20 * m;
 const G4double B2eR_beampipe_radius = 5 * cm;
+const G4double farbwd_ext = 5 * m;
+const G4double lumi_halflen = 2.25 * m;
 
 DetectorConstruction::DetectorConstruction(RunAction* runAct, G4String xmlFileName, G4double tag1_posZ_cm, G4double ante_chmbr_H_cm) : 
 G4VUserDetectorConstruction(), runAction(runAct)
@@ -193,10 +195,6 @@ void DetectorConstruction::CreateBeamPipeSolid()
 		bwd_beampipeVac_solid,beampipe_cut,0,G4ThreeVector(0,0,B2eR_end.z() - B2eR_cut_offset - 10*m));
 	//---------------------------------------------------------------------------------------------------------------//
 	// Far-BWD beam pipe
-	G4double farbwd_ext = 5 * m;
-	G4double lumi_halflen = 2.25 * m;
-	G4RotationMatrix* farbwd_rot = new G4RotationMatrix();
-	farbwd_rot->rotateY(-B2eR_bend);
 	G4RotationMatrix* lumi_rot = new G4RotationMatrix();
 	lumi_rot->rotateY(B2eR_bend);
 	G4RotationMatrix* cut_rot = new G4RotationMatrix();
@@ -212,7 +210,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	farbwd_tube = new G4UnionSolid("farbwd_tube",
 		farbwd_tube,ante_chmbr_box,0,G4ThreeVector(-25*cm/2.,0,0));
 	// distance between the main beam pipe center (placement coordinates) and the cut
-	G4double L = (abs(B2eR_end.z()) + 0.5*farbwd_len*cos(B2eR_bend)-(abs(B2eR_end.z()) + B2eR_cut_offset))/cos(B2eR_bend);
+	G4double L = 0.5*farbwd_len - B2eR_cut_offset/cos(B2eR_bend);
 	// half-width of the cut in the main beam pipe
 	G4double M = B2eR_end.x() + 0.5*farbwd_len*sin(B2eR_bend) - L*sin(B2eR_bend);
 	// displacement of the lumi pipe w.r.t. the main beam pipe
@@ -223,47 +221,19 @@ void DetectorConstruction::CreateBeamPipeSolid()
 
 	// Cut the FarBWD beam pipe at the end of B2eR
 	farbwd_beampipeVac_solid = new G4SubtractionSolid("farbwd_beampipeVac_solid",
-		farbwd_tube,beampipe_cut,cut_rot,G4ThreeVector(0,0,(L+(10*m)/cos(B2eR_bend))));
-
-	// Place the assembly
-	farbwd_beampipeVac_log = new G4LogicalVolume(farbwd_beampipeVac_solid,mat_vac,"farbwd_beampipeVac_log");
-	farbwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
-	G4ThreeVector far_bwd_center(	B2eR_end.x() - 0.5*farbwd_len*sin(B2eR_bend),
-					B2eR_end.y(),
-					B2eR_end.z() - 0.5*farbwd_len*cos(B2eR_bend));
-	new G4PVPlacement(farbwd_rot, 
-		G4ThreeVector(far_bwd_center.x(),far_bwd_center.y(),far_bwd_center.z()),
-		farbwd_beampipeVac_log,"vac_farbwd_beampipeVac",world_log,false,0,true);
-
-	// print far-bwd center coordinates
-	printf("[INFO] Far-BWD center: (%.10f,%.10f,%.10f) [cm]\n",
-		far_bwd_center.x()/cm,
-		far_bwd_center.y()/cm,
-		far_bwd_center.z()/cm);
+		farbwd_tube,beampipe_cut,cut_rot,G4ThreeVector(0,0,L+(10*m)/cos(B2eR_bend)));
+	// set FarBWD center
+	far_bwd_center.setX(B2eR_end.x() - 0.5*farbwd_len*sin(B2eR_bend));
+	far_bwd_center.setY(B2eR_end.y());
+	far_bwd_center.setZ(B2eR_end.z() - 0.5*farbwd_len*cos(B2eR_bend));
+	// set FarBWD rotation
+	farbwd_rot = new G4RotationMatrix();
+	farbwd_rot->rotateY(-B2eR_bend);
 	// store far-bwd coordinates for tagger reference
 	runAction->_sensRefPosX = far_bwd_center.x()/cm;
 	runAction->_sensRefPosY = far_bwd_center.y()/cm;
 	runAction->_sensRefPosZ = far_bwd_center.z()/cm;
 	runAction->_sensRefAngl = B2eR_bend/rad;
-
-	// Visualization
-	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Gray());
-	farbwd_beampipeVac_vis->SetVisibility(visibility);
-	farbwd_beampipeVac_log->SetVisAttributes(farbwd_beampipeVac_vis);
-	//---------------------------------------------------------------------------------------------------------------//
-	// Place an absorber inside the FarBWD vacuum
-	if(addAbsorber && farbwd_beampipeVac_log)
-	{
-		G4Tubs* abs_tube = new G4Tubs("abs_tube_farbwd",0,B2eR_beampipe_radius,1*cm,0, 2.0 * M_PI * rad);
-		G4LogicalVolume* abs_log = new G4LogicalVolume(abs_tube,mat_vac, "abs_log_farbwd");
-		new G4PVPlacement(0,G4ThreeVector(0,0,-(farbwd_len+farbwd_ext)/2. + 1 * cm),
-			abs_log,"abs_farbwd",farbwd_beampipeVac_log,false,0,true);
-
-		//- Visualization
-		G4VisAttributes* abs_vis = new G4VisAttributes(G4Color::Magenta());
-		abs_vis->SetVisibility(visibility);
-		abs_log->SetVisAttributes(abs_vis);
-	}
 	//---------------------------------------------------------------------------------------------------------------//
 	// Place a lumi window
 	G4double lumiWindStart_posz = B2eR_end.z() - B2eR_cut_offset - lumi_halflen;
@@ -271,7 +241,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	G4Box* lumiWind_box = new G4Box("lumiWind_box",B2eR_beampipe_radius,B2eR_beampipe_radius,1 * cm);
 	G4LogicalVolume* lumiWind_log = new G4LogicalVolume(lumiWind_box,mat_vac,"lumiWind_log");
 	new G4PVPlacement(0,G4ThreeVector(0,0,lumiWindStart_posz - 1*cm),lumiWind_log,"lumiWind",world_log,false,0,true);
-	
+
 	return;
 }
 
@@ -461,11 +431,13 @@ void DetectorConstruction::BuildMagnets()
 			}
 			else if(simPar->GetMagName(iMag) == "Q3ER")
 			{
-				mag_solid = mag_vol;
-				G4Tubs* mag_tube = new G4Tubs("tube",0.0,20*cm,10*m,0.,2*M_PI*rad); 
-			
-				mag_solid = new G4SubtractionSolid(simPar->GetMagName(iMag)+"_solid",
-					mag_solid,mag_tube,0,G4ThreeVector(0,0,0));
+				G4Tubs* mag_tube = new G4Tubs("tube",0.0,10*cm/2.,simPar->GetMagLength(iMag)/2,0.,2*M_PI*rad); 
+				mag_solid = mag_tube;
+
+				// mag_solid = mag_vol;
+				// G4Tubs* mag_tube = new G4Tubs("tube",0.0,20*cm,10*m,0.,2*M_PI*rad); 
+				// mag_solid = new G4SubtractionSolid(simPar->GetMagName(iMag)+"_solid",
+				//	mag_solid,mag_tube,0,G4ThreeVector(0,0,0));
 			}
 			else
 			{
@@ -779,6 +751,18 @@ void DetectorConstruction::BuildIrBeamPipe()
 	bwd_beampipeVac_vis->SetVisibility(visibility);
 	bwd_beampipeVac_log->SetVisAttributes(bwd_beampipeVac_vis);
 
+	//- Vacuum far-BWD beam pipe
+	farbwd_beampipeVac_log = new G4LogicalVolume(farbwd_beampipeVac_solid,mat_vac,"farbwd_beampipeVac_log");
+	farbwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
+	new G4PVPlacement(farbwd_rot, 
+		G4ThreeVector(far_bwd_center.x(),far_bwd_center.y(),far_bwd_center.z()),
+		farbwd_beampipeVac_log,"vac_farbwd_beampipeVac",world_log,false,0,true);
+
+	// Visualization
+	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Gray());
+	farbwd_beampipeVac_vis->SetVisibility(visibility);
+	farbwd_beampipeVac_log->SetVisAttributes(farbwd_beampipeVac_vis);
+
 	return;
 }
 
@@ -799,9 +783,21 @@ void DetectorConstruction::BuildAbsorbers()
 			simPar->GetAbsSizeZ(iAbs)/2); 
 		G4LogicalVolume* abs_log;
 
-		if((bwd_beampipeVac_solid || farbwd_beampipeVac_solid) && iAbs == simPar->GetAbsNum() - 1) // skip the last absorber
+		if(bwd_beampipeVac_solid && !farbwd_beampipeVac_solid && iAbs == simPar->GetAbsNum() - 1) // skip the last absorber for the BWD beam pipe
 		{
 			continue;
+		}
+		else if(farbwd_beampipeVac_solid && iAbs == simPar->GetAbsNum() - 1) // build the FarBWD absorber 
+		{
+			G4Tubs* abs_solid = new G4Tubs("abs_solid_"+to_string(iAbs),
+				0,B2eR_beampipe_radius,1*cm,0, 2.0 * M_PI * rad);
+
+			abs_log = new G4LogicalVolume(abs_solid,mat_vac, "abs_log_"+to_string(iAbs));
+
+			new G4PVPlacement(0,G4ThreeVector(	0,
+								0,
+								-(farbwd_len+farbwd_ext)/2. + 1 * cm),
+				abs_log,"abs_"+to_string(iAbs),farbwd_beampipeVac_log,false,0,true);
 		}
 		else
 		{
