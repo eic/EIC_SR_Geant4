@@ -431,8 +431,8 @@ void DetectorConstruction::BuildMagnets()
 			}
 			else if(simPar->GetMagName(iMag) == "Q3ER")
 			{
-				G4Tubs* mag_tube = new G4Tubs("tube",0.0,10*cm/2.,simPar->GetMagLength(iMag)/2,0.,2*M_PI*rad); 
-				mag_solid = mag_tube;
+				mag_solid = new G4Tubs("tube",0.0,B2eR_beampipe_radius,
+					simPar->GetMagLength(iMag)/2,0.,2*M_PI*rad); 
 
 				// mag_solid = mag_vol;
 				// G4Tubs* mag_tube = new G4Tubs("tube",0.0,20*cm,10*m,0.,2*M_PI*rad); 
@@ -542,6 +542,13 @@ void DetectorConstruction::BuildMagnets()
 			G4VisAttributes* yoke_vis = new G4VisAttributes(G4Color::Magenta());
 			yoke_vis->SetVisibility(visibility);
 			yoke_log->SetVisAttributes(yoke_vis);
+		}
+		else if (simPar->GetMagName(iMag) == "Q3ER")
+		{
+			farbwd_beampipeVac_solid = new G4SubtractionSolid("farbwd_beampipeVac_solid",
+				farbwd_beampipeVac_solid,mag_vol,0,
+				G4ThreeVector(0,0,-sqrt(	pow(mag_center.x()-far_bwd_center.x(),2) + 
+								pow(mag_center.z()-far_bwd_center.z(),2))));
 		}
 		else
 		{
