@@ -38,6 +38,7 @@
 #/vis/set/volumeForField mag_Q1EF
 #/vis/set/volumeForField mag_Q0EF
 #/vis/set/volumeForField mag_MARCO
+#/vis/set/volumeForField mag_Q3ER
 #/vis/scene/add/magneticField 20 fullArrow #lightArrow
 ##-----------------------------------------##
 #- Draws logical volume with additional components

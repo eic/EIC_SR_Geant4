@@ -61,7 +61,7 @@ private:
 	void BuildTaggers();
 	void BuildFwdAnteChamber();
 
-	G4MagneticField* GetMagField(G4int,G4LogicalVolume*);
+	G4MagneticField* GetMagField(G4int,G4LogicalVolume*,G4ThreeVector,G4RotationMatrix*);
 	G4double tag1_posZ;
 	G4double ante_chmbr_H;
 	G4ThreeVector far_bwd_center;

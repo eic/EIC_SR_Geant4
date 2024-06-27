@@ -360,7 +360,7 @@ void DetectorConstruction::BuildTaggers()
 		tag_log,"sens_tag1",farbwd_beampipeVac_log,false,0,true);
 
 	// Tagger 2
-	new G4PVPlacement(0,G4ThreeVector(-(B2eR_beampipe_radius+18.0 * cm /2),0,-(farbwd_len/2. - 1*mm)),
+	new G4PVPlacement(0,G4ThreeVector(-(B2eR_beampipe_radius+18.0 * cm /2),0,-(farbwd_len/2. - 2*mm)),
 		tag_log,"sens_tag2",farbwd_beampipeVac_log,false,0,true);
 
 	return;
@@ -480,7 +480,6 @@ void DetectorConstruction::BuildMagnets()
 		// set tracking time limit in the volume
 		mag_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
 		// magnet placement
-
 		if(simPar->GetMagName(iMag) == "Q3ER")
 		{
 			new G4PVPlacement(mag_rot,mag_center,
@@ -493,7 +492,7 @@ void DetectorConstruction::BuildMagnets()
 		}
 
 		//- Create magnetic field
-		G4MagneticField* mag_field = GetMagField(iMag,mag_log); 
+		G4MagneticField* mag_field = GetMagField(iMag,mag_log,mag_center,mag_rot); 
 
 		// apply the field to logic volume
 		G4FieldManager* localFieldMgr = new G4FieldManager(mag_field);
@@ -654,7 +653,10 @@ void DetectorConstruction::CreateSrMask()
 
 
 
-G4MagneticField* DetectorConstruction::GetMagField(G4int iMag, G4LogicalVolume* mag_log)
+G4MagneticField* DetectorConstruction::GetMagField(	G4int iMag, 
+							G4LogicalVolume* mag_log, 
+							G4ThreeVector field_origin,
+							G4RotationMatrix* field_rot)
 {
 	if(mass < 0 || gamma < 0)
 	{
@@ -679,9 +681,9 @@ G4MagneticField* DetectorConstruction::GetMagField(G4int iMag, G4LogicalVolume* 
 	else if(simPar->GetMagType(iMag) == "Q-pole")
 	{
 		// k1[1/m^2] = 0.2998*grad[T/m]/pc[GeV], k1[1/m^2] = k1l[1/m]/l[m]
-		G4double grad = (3.33564*(simPar->GetMagK1L(iMag)/(1/m))/(simPar->GetMagLength(iMag)/m)*
-			(mass/GeV)*sqrt(pow(gamma,2)-1.0))*(tesla/m);
-		mag_field = new G4QuadrupoleMagField(grad);
+		G4double field_grad = 	(3.33564*(simPar->GetMagK1L(iMag)/(1/m))/(simPar->GetMagLength(iMag)/m)*
+					(mass/GeV)*sqrt(pow(gamma,2)-1.0))*(tesla/m);
+		mag_field = new G4QuadrupoleMagField(field_grad,field_origin,field_rot);
 		//- Visualization
 		G4VisAttributes* mag_vis = new G4VisAttributes(G4Color::Yellow());
 		mag_vis->SetVisibility(visibility);
@@ -790,7 +792,9 @@ void DetectorConstruction::BuildAbsorbers()
 			simPar->GetAbsSizeZ(iAbs)/2); 
 		G4LogicalVolume* abs_log;
 
-		if(bwd_beampipeVac_solid && !farbwd_beampipeVac_solid && iAbs == simPar->GetAbsNum() - 1) // skip the last absorber for the BWD beam pipe
+		if(	bwd_beampipeVac_solid && 
+			!farbwd_beampipeVac_solid && 
+			iAbs == simPar->GetAbsNum() - 1) // skip the last absorber for the BWD beam pipe
 		{
 			continue;
 		}
