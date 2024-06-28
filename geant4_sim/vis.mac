@@ -7,10 +7,11 @@
 # Kill secondaries (i.e., SR photons)
 /stack/killsecondaries 0
 # Tagger's distance from the start of the far-bwd nate-chamber
-/detector/dist_tag 1 m # Tagger-1
-/detector/dist_tag 20 m # Tagger-2
-/detector/dist_tag 45 m # Tagger-3
-/detector/dist_tag 120 m # Tagger-4
+/detector/dist_tag 5.0  m # Tagger-1
+/detector/dist_tag 20.2 m # Tagger-2
+/detector/dist_tag 24.7 m # Tagger-3
+/detector/dist_tag 29.2 m # Tagger-4
+/detector/dist_tag 31.3 m # Tagger-5
 # BWD ante-chamber height
 /detector/bwd_achmbH 10 cm
 # Rebuild geometry with the given parameters
@@ -23,7 +24,7 @@
 #/vis/open HepRepFile # then: heprapp G4Data0.heprep
 
 /vis/drawVolume
-/vis/viewer/set/viewpointThetaPhi 90. 0.
+/vis/viewer/set/viewpointThetaPhi 90. 45.
 /vis/scene/add/trajectories
 /vis/scene/endOfEventAction accumulate 100
 /vis/scene/add/trajectories rich smooth

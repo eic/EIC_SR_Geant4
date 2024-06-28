@@ -31,7 +31,7 @@
 #include "G4EllipticalTube.hh"
 #include "G4ExtrudedSolid.hh"
 
-const G4double farbwd_len = 40 * m;
+const G4double farbwd_len = 30 * m; // between B2eR and B3eR
 const G4double B2eR_beampipe_radius = 5 * cm;
 const G4double lumi_halflen = 2.25 * m;
 
@@ -91,7 +91,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildIpBeamPipe();
 	BuildMagnets();
 	BuildIrBeamPipe();
-//	BuildTaggers();
+	BuildTaggers();
 	if(addAbsorber) BuildAbsorbers();
 
 	return world_phys;
@@ -346,29 +346,43 @@ void DetectorConstruction::BuildTaggers()
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::BuildTaggers ==> far-bwd beam pipe LV is not created\n");
 	}
-
+	G4double clearance = 5.0 * cm; // minimum distance from the bwd-ante-chamber edge and tagger
+	G4double tagger_thickness = 2.0 * mm; // tagger's thickness (Z-axis)
+	G4double tagger_width = 18.0 * cm; // tagger's width (X-axis)
+	
 	//- Visualization
 	G4VisAttributes* tag_vis = new G4VisAttributes(G4Color::Yellow());
 	tag_vis->SetVisibility(visibility);
-	G4Box* tag_box = new G4Box("tag_box",18.0 * cm /2, bwd_ante_chmbH/2., 1 * mm);
+	G4Box* tag_box = new G4Box("tag_box",tagger_width/2., bwd_ante_chmbH/2.,tagger_thickness/2.);
 	G4LogicalVolume* tag_log = new G4LogicalVolume(tag_box,mat_vac,"tag_log");
 	tag_log->SetVisAttributes(tag_vis);
 
-	G4double tag1_posZ = 1;
-	// Tagger 1
-	new G4PVPlacement(0,G4ThreeVector(-(B2eR_beampipe_radius+18.0 * cm /2),0,-tag1_posZ),
-		tag_log,"sens_tag1",farbwd_beampipeVac_log,false,0,true);
-
-	// Tagger 2
-	new G4PVPlacement(0,G4ThreeVector(-(B2eR_beampipe_radius+18.0 * cm /2),0,-(farbwd_len/2. - 2*mm)),
-		tag_log,"sens_tag2",farbwd_beampipeVac_log,false,0,true);
+	// loop over tagger positions and place
+	for(G4int iTag = 0; iTag < dist_tag.size(); iTag++)
+	{
+		// get tagger's position inside the ante-chamber
+		G4double posX = -(B2eR_beampipe_radius+tagger_width/2);
+		G4double posY = 0;
+		G4double posZ = farbwd_len/2. - dist_tag.at(iTag);
+		// check range
+		if(posZ > +farbwd_len/2. - clearance - tagger_thickness/2.)
+			posZ = farbwd_len/2. - clearance - tagger_thickness/2.;
+		if(posZ < -farbwd_len/2. + clearance + tagger_thickness/2.)
+			posZ = -farbwd_len/2. + clearance + tagger_thickness/2.;
+		// place
+		string name = "sens_tag" + std::to_string(iTag+1);
+		new G4PVPlacement(0,G4ThreeVector(posX,posY,posZ),
+			tag_log,name.c_str(),farbwd_beampipeVac_log,false,0,true);
+	}
 
 	return;
 }
 
 void DetectorConstruction::BuildMagnets()
 {
-	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_log || !bwd_beampipeVac_solid || !farbwd_beampipeVac_solid || !farbwd_beampipe_tube)
+	if(	!mat_vac || !beampipeVac_solid || !beampipeUni_solid || 
+		!world_log || !bwd_beampipeVac_solid || 
+		!farbwd_beampipeVac_solid || !farbwd_beampipe_tube)
 	{
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::BuildMagnets ==> Materials, beam pipe solids, or world LV are not created\n");
