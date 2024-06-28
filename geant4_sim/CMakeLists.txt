@@ -70,12 +70,8 @@ target_link_libraries(exe ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${HEPMC3_LIB})
 set(exe_SCRIPTS
   run.mac
   vis.mac
-  vis_ogl.mac
   runAll.bash
   runAll_sdcc.bash
-  runAll_TaggerScan.bash
-  runAll_AnteChamberScan.bash
-  runAll_TaggerData.bash
   )
 
 foreach(_script ${exe_SCRIPTS})
