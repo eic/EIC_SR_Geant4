@@ -260,6 +260,32 @@
 			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
 			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.092420910960</sec>
 		</magnet>
+		<magnet>
+			<sec desc="magnet name" name="name">Q4ER</sec>
+			<sec desc="magnet type" name="type">Q-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">0.600000000000</sec>
+			<sec desc="start position X in a global ref. system" name="posx1" unit="m">-590.696549909740</sec>
+			<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0</sec>
+			<sec desc="start position Z in a global ref. system" name="posz1" unit="m">-46.953485536656</sec>
+			<sec desc="end position X in a global ref. system" name="posx2" unit="m">-590.713347714630</sec>
+			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
+			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-47.553250352022</sec>
+			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">0.001745740028</sec>
+		</magnet>
+		<magnet>
+			<sec desc="magnet name" name="name">Q5ER</sec>
+			<sec desc="magnet type" name="type">Q-pole</sec>
+			<sec desc="magnet length" name="length" unit="m">0.600000000000</sec>
+			<sec desc="start position X in a global ref. system" name="posx1" unit="m">-590.822533446390</sec>
+			<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0</sec>
+			<sec desc="start position Z in a global ref. system" name="posz1" unit="m">-51.451721651901</sec>
+			<sec desc="end position X in a global ref. system" name="posx2" unit="m">-590.839331251270</sec>
+			<sec desc="end position Y in a global ref. system" name="posy2" unit="m">0</sec>
+			<sec desc="end position Z in a global ref. system" name="posz2" unit="m">-52.051486467267</sec>
+			<sec desc="deflection angle" name="angle" unit="rad">0</sec>
+			<sec desc="integrated quadrupole strength" name="k1l" unit="1/m">-0.056914044970</sec>
+		</magnet>
 		<solenoid>
 			<sec desc="magnet name" name="name">MARCO</sec>
 			<sec desc="magnet type" name="type">SOL</sec>

@@ -34,32 +34,26 @@ int main(int argc, char** argv)
 	G4String macFileName;
 	G4String xmlFileName;
 	G4long randomSeed;
-	G4double tag1_posZ_cm;
-	G4double ante_chmbr_H_cm;
 
 	// check input parameters
-	if( argc == 6 )
+	if( argc == 4 )
 	{
        		macFileName = argv[1];
 		xmlFileName = argv[2];
 		randomSeed = time(NULL)+atoi(argv[3]);
-		tag1_posZ_cm = atof(argv[4]); 
-		ante_chmbr_H_cm = atof(argv[5]);
 		
 		G4cout<<"\n\n=================================================================="<<G4endl;
 		G4cout<<"[INFO] main ==> Input parameters"<<G4endl;
 		G4cout<<"argv[1] macFileName = "<<macFileName<<G4endl;
 		G4cout<<"argv[2] xmlFileName = "<<xmlFileName<<G4endl;
 		G4cout<<"argv[3] randomSeed = "<<randomSeed<<G4endl;
-		G4cout<<"argv[4] tagger1 posZ = "<<tag1_posZ_cm<<" [cm]"<<G4endl;
-		G4cout<<"argv[5] ante-chamber height = "<<ante_chmbr_H_cm<<" [cm]"<<G4endl;
 		G4cout<<"==================================================================\n"<<G4endl;
 	}
 	else
 	{
 		G4cout<<"\n\n=================================================================="<<G4endl;
 		G4cout<<"[ERROR] main ==> Wrong number of input parameters: argc = "<<argc<<G4endl;
-		G4cout<<"Usage: ./exe run.mac ../geometry/simParameters.xml 21011993 -995 10"<<G4endl;
+		G4cout<<"Usage: ./exe run.mac ../geometry/simParameters.xml 21011993"<<G4endl;
 		G4cout<<"==================================================================\n"<<G4endl;
 
 		return -1;
@@ -84,7 +78,7 @@ int main(int argc, char** argv)
     	runManager->SetUserAction(runAction);
 
     	DetectorConstruction* detConstr = new DetectorConstruction(
-		runAction,xmlFileName,tag1_posZ_cm,ante_chmbr_H_cm);
+		runAction,xmlFileName);
     	runManager->SetUserInitialization(detConstr);
 
     	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(runAction,xmlFileName);

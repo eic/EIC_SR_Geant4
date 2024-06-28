@@ -55,12 +55,12 @@ void printLatticeParameters()
 		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
 */
 	//- lists of elements (BWD)
-	const Int_t nElements = 5;
+	const Int_t nElements = 7;
 	TString startElementName[nElements] = {	
-		"\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"O0EF_6\""};
+		"\"OWW_SH\"","\"OWW_SH\"","\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"O0EF_6\""};
 //		"\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
 	TString stopElementName[nElements] = {
-		"\"Q3ER_6\"","\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
+		"\"Q5ER_6\"","\"Q4ER_6\"","\"Q3ER_6\"","\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
 
 	//- get parameters
 	for(Int_t i = 0; i < nElements; i++)

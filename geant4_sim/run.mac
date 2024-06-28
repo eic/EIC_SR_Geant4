@@ -4,8 +4,18 @@
 /tracking/verbose 0
 ##-----------------------------------------##
 /output/filename ./output.root
-
+# Kill secondaries (i.e., SR photons)
 /stack/killsecondaries 0
+# Tagger's distance from the start of the far-bwd nate-chamber
+/detector/dist_tag 1 m # Tagger-1
+/detector/dist_tag 20 m # Tagger-2
+/detector/dist_tag 45 m # Tagger-3
+/detector/dist_tag 120 m # Tagger-4
+# BWD ante-chamber height
+/detector/bwd_achmbH 10 cm
+# Rebuild geometry with the given parameters
+/detector/ModifyGeometry
+
 
 /run/initialize
 ##-----------------------------------------##
