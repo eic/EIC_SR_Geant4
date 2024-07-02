@@ -31,9 +31,9 @@ void drawStoredTracks(const string fname);
 
 vector<string> _fileNames;
 
-void plotTracks(const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_g4sim_v6.2_srmask5_1_ip_cut3/",
+void plotTracks(const string directory = "/gpfs/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_extendedBWD_stdFWD/",
 		const string extension = ".root",
-		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/highstat_output_g4sim_v6.2_srmask5_1_ip_cut3_tracks.root")
+		const string outputfile = "/gpfs/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_extendedBWD_stdFWD_tracks.root")
 {
 	cout<<"FUNCTION:: "<<__FUNCTION__<<endl;
 	//-- get data from geant4 simulation output data

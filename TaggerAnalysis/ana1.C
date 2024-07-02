@@ -11,36 +11,37 @@
 #include "string"
 
 TTree *_tree;
-	// Beam
-   vector<int>     *beamPdg;
-   vector<float>   *beamPosX_cm;
-   vector<float>   *beamPosY_cm;
-   vector<float>   *beamPosZ_cm;
-   vector<float>   *beamMomX_eV;
-   vector<float>   *beamMomY_eV;
-   vector<float>   *beamMomZ_eV;
-   vector<float>   *beamEnergy_eV;
-   vector<float>   *beamTransfMomSqr_GeV2;
-   vector<float>   *beamTransfEnergy_GeV;
-   vector<float>   *beamKillPosX_cm;
-   vector<float>   *beamKillPosY_cm;
-   vector<float>   *beamKillPosZ_cm;
+// Beam
+vector<int>     *beamPdg;
+vector<float>   *beamPosX_cm;
+vector<float>   *beamPosY_cm;
+vector<float>   *beamPosZ_cm;
+vector<float>   *beamMomX_eV;
+vector<float>   *beamMomY_eV;
+vector<float>   *beamMomZ_eV;
+vector<float>   *beamEnergy_eV;
+vector<float>   *beamTransfMomSqr_GeV2;
+vector<float>   *beamTransfEnergy_GeV;
+vector<float>   *beamTargetMass_GeV;
+vector<float>   *beamKillPosX_cm;
+vector<float>   *beamKillPosY_cm;
+vector<float>   *beamKillPosZ_cm;
 
-	// Taggers
-   vector<string>  *sensName;
-   vector<int>     *sensPDG;
-   vector<float>   *sensPosX_cm;
-   vector<float>   *sensPosY_cm;
-   vector<float>   *sensPosZ_cm;
-   vector<float>   *sensMomX_eV;
-   vector<float>   *sensMomY_eV;
-   vector<float>   *sensMomZ_eV;
-   vector<float>   *sensEnergy_eV;
-   vector<float>   *sensTime_ms;
-   Float_t sensRefPosX_cm;
-   Float_t sensRefPosY_cm;
-   Float_t sensRefPosZ_cm;
-   Float_t sensRefAngl_rad;
+// Taggers
+vector<string>  *sensName;
+vector<int>     *sensPDG;
+vector<float>   *sensPosX_cm;
+vector<float>   *sensPosY_cm;
+vector<float>   *sensPosZ_cm;
+vector<float>   *sensMomX_eV;
+vector<float>   *sensMomY_eV;
+vector<float>   *sensMomZ_eV;
+vector<float>   *sensEnergy_eV;
+vector<float>   *sensTime_ms;
+Float_t sensRefPosX_cm;
+Float_t sensRefPosY_cm;
+Float_t sensRefPosZ_cm;
+Float_t sensRefAngl_rad;
 
 void LoadTree(TString fName, TString tName);
 void AnaTree();
@@ -66,47 +67,28 @@ TH2F* _h16;
 TH2F* _h17;
 TH2F* _h18;
 
-TH1F* _h1_etag1;
-TH1F* _h2_etag1;
-TH1F* _h3_etag1;
-TH1F* _h4_etag1;
-TH1F* _h5_etag1;
-TH2F* _h6_etag1;
-TH2F* _h7_etag1;
-TH1F* _h8_etag1;
-TH2F* _h9_etag1;
+const Int_t nTag = 5;
 
-TH1F* _h1_etag2;
-TH1F* _h2_etag2;
-TH1F* _h3_etag2;
-TH1F* _h4_etag2;
-TH1F* _h5_etag2;
-TH2F* _h6_etag2;
-TH2F* _h7_etag2;
-TH1F* _h8_etag2;
-TH2F* _h9_etag2;
+TH1F* _h1_etag[nTag];
+TH1F* _h2_etag[nTag];
+TH1F* _h3_etag[nTag];
+TH1F* _h4_etag[nTag];
+TH1F* _h5_etag[nTag];
+TH2F* _h6_etag[nTag];
+TH2F* _h7_etag[nTag];
+TH1F* _h8_etag[nTag];
+TH2F* _h9_etag[nTag];
 
-TH1F* _h1_gtag1;
-TH1F* _h2_gtag1;
-TH1F* _h3_gtag1;
-TH1F* _h4_gtag1;
-TH1F* _h5_gtag1;
-TH2F* _h6_gtag1;
-TH2F* _h7_gtag1;
-TH1F* _h8_gtag1;
-TH2F* _h9_gtag1;
-TH2F* _h10_gtag1;
-
-TH1F* _h1_gtag2;
-TH1F* _h2_gtag2;
-TH1F* _h3_gtag2;
-TH1F* _h4_gtag2;
-TH1F* _h5_gtag2;
-TH2F* _h6_gtag2;
-TH2F* _h7_gtag2;
-TH1F* _h8_gtag2;
-TH2F* _h9_gtag2;
-TH2F* _h10_gtag2;
+TH1F* _h1_gtag[nTag];
+TH1F* _h2_gtag[nTag];
+TH1F* _h3_gtag[nTag];
+TH1F* _h4_gtag[nTag];
+TH1F* _h5_gtag[nTag];
+TH2F* _h6_gtag[nTag];
+TH2F* _h7_gtag[nTag];
+TH1F* _h8_gtag[nTag];
+TH2F* _h9_gtag[nTag];
+TH2F* _h10_gtag[nTag];
 
 const Double_t protonMass_GeV = 9.3826997280120850e-01; // GeV/c^2
 
@@ -118,6 +100,8 @@ void ana1(TString fNameIn, TString fNameOut)
 	AnaTree();
 	SaveHisto(fNameOut);
 	CleanMem();
+
+// root -l -b -q ana1.C\(\"/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_ExtendedFarBwd_Tagger1_-500cm_ChamberH_10cm/output_0.root\",\"/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_ExtendedFarBwd_Tagger1_-500cm_ChamberH_10cm/ana1_output_0.root\"\)
 
 	return;
 }
@@ -147,47 +131,29 @@ void AnaTree()
 	_h17 = new TH2F("h17","Kill PosY vs PosZ (Q3eR); PosZ [cm]; PosY [cm}",7000,-6000,1000,2000,-100,100);
 	_h18 = new TH2F("h18","Kill PosY vs PosX (Q3eR); PosX [cm]; PosY [cm}",2000,-100,100,2000,-100,100);
 
-	_h1_etag1 = new TH1F("h1_etag1","Tagger1 electron posX; X [cm]",8000,-40,40);
-	_h2_etag1 = new TH1F("h2_etag1","Tagger1 electron posY; Y [cm]",8000,-40,40);
-	_h3_etag1 = new TH1F("h3_etag1","Tagger1 electron posZ; Z [cm]",50000,-5000,5000);
-	_h4_etag1 = new TH1F("h4_etag1","Tagger1 electron Energy; E_{e} [GeV]",20000,0,20);
-	_h5_etag1 = new TH1F("h5_etag1","Tagger1 electron Q^2; Q^2 [GeV^2]",4000,-2,2);
-	_h6_etag1 = new TH2F("h6_etag1","Tagger1 electron log_{10}(Q^2) vs Energy; E_{e} [GeV]; log_{10}(Q^2)",2000,0,20,2000,-100,100);
-	_h7_etag1 = new TH2F("h7_etag1","Tagger1 electron posY vs posX; X [cm]; Y [cm]",8000,-40,40,8000,-40,40);
-	_h8_etag1 = new TH1F("h8_etag1","Tagger1 electron Time; t [#mus]",10000,0,1);
-	_h9_etag1 = new TH2F("h9_etag1","Tagger1 photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
+	for(Int_t i = 0; i < nTag; i ++)
+	{
+		_h1_etag[i] = new TH1F(Form("h1_etag%d",i),Form("Tagger%d electron posX; X [cm]",i),8000,-40,40);
+		_h2_etag[i] = new TH1F(Form("h2_etag%d",i),Form("Tagger%d electron posY; Y [cm]",i),8000,-40,40);
+		_h3_etag[i] = new TH1F(Form("h3_etag%d",i),Form("Tagger%d electron posZ; Z [cm]",i),50000,-5000,5000);
+		_h4_etag[i] = new TH1F(Form("h4_etag%d",i),Form("Tagger%d electron Energy; E_{e} [GeV]",i),20000,0,20);
+		_h5_etag[i] = new TH1F(Form("h5_etag%d",i),Form("Tagger%d electron Q^2; Q^2 [GeV^2]",i),4000,-2,2);
+		_h6_etag[i] = new TH2F(Form("h6_etag%d",i),Form("Tagger%d electron log_{10}(Q^2) vs Energy; E_{e} [GeV]; log_{10}(Q^2)",i),2000,0,20,2000,-100,100);
+		_h7_etag[i] = new TH2F(Form("h7_etag%d",i),Form("Tagger%d electron posY vs posX; X [cm]; Y [cm]",i),8000,-40,40,8000,-40,40);
+		_h8_etag[i] = new TH1F(Form("h8_etag%d",i),Form("Tagger%d electron Time; t [#mus]",i),10000,0,1);
+		_h9_etag[i] = new TH2F(Form("h9_etag%d",i),Form("Tagger%d photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",i),2000,-100,100,2000,-100,100);
 
-	_h1_etag2 = new TH1F("h1_etag2","Tagger2 electron posX; X [cm]",8000,-40,40);
-	_h2_etag2 = new TH1F("h2_etag2","Tagger2 electron posY; Y [cm]",8000,-40,40);
-	_h3_etag2 = new TH1F("h3_etag2","Tagger2 electron posZ; Z [cm]",50000,-5000,5000);
-	_h4_etag2 = new TH1F("h4_etag2","Tagger2 electron Energy; E_{e} [GeV]",20000,0,20);
-	_h5_etag2 = new TH1F("h5_etag2","Tagger2 electron Q^2; Q^2 [GeV^2]",4000,-2,2);
-	_h6_etag2 = new TH2F("h6_etag2","Tagger2 electron log_{10}(Q^2) vs Energy; E_{e} [GeV]; log_{10}(Q^2)",2000,0,20,2000,-100,100);
-	_h7_etag2 = new TH2F("h7_etag2","Tagger2 electron posY vs posX; X [cm]; Y [cm]",8000,-40,40,8000,-40,40);
-	_h8_etag2 = new TH1F("h8_etag2","Tagger2 electron Time; t [#mus]",10000,0,1);
-	_h9_etag2 = new TH2F("h9_etag2","Tagger2 photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
-
-	_h1_gtag1 = new TH1F("h1_gtag1","Tagger1 photon posX; X [cm]",8000,-40,40);
-	_h2_gtag1 = new TH1F("h2_gtag1","Tagger1 photon posY; Y [cm]",8000,-40,40);
-	_h3_gtag1 = new TH1F("h3_gtag1","Tagger1 photon posZ; Z [cm]",50000,-5000,5000);
-	_h4_gtag1 = new TH1F("h4_gtag1","Tagger1 photon Energy; E_{ph} [keV]",10000,0,1000);
-	_h5_gtag1 = new TH1F("h5_gtag1","Tagger1 photon Q^2; Q^2 [GeV^2]",4000,-2,2);
-	_h6_gtag1 = new TH2F("h6_gtag1","Tagger1 photon log_{10}(Q^2) vs Energy; E_{f} [GeV]; log_{10}(Q^2)",2000,0,20,2000,-100,100);
-	_h7_gtag1 = new TH2F("h7_gtag1","Tagger1 photon posY vs posX; X [cm]; Y [cm]",8000,-40,40,8000,-40,40);
-	_h8_gtag1 = new TH1F("h8_gtag1","Tagger1 photon Time; t [#mus]",10000,0,1);
-	_h9_gtag1 = new TH2F("h9_gtag1","Tagger1 photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
-	_h10_gtag1 = new TH2F("h10_gtag1","Tagger1 photon posY vs posX; X [cm]; Y [cm]; E_{#gamma} [GeV]",8000,-40,40,8000,-40,40);
-
-	_h1_gtag2 = new TH1F("h1_gtag2","Tagger2 photon posX; X [cm]",8000,-40,40);
-	_h2_gtag2 = new TH1F("h2_gtag2","Tagger2 photon posY; Y [cm]",8000,-40,40);
-	_h3_gtag2 = new TH1F("h3_gtag2","Tagger2 photon posZ; Z [cm]",50000,-5000,5000);
-	_h4_gtag2 = new TH1F("h4_gtag2","Tagger2 photon Energy; E_{ph} [keV]",10000,0,1000);
-	_h5_gtag2 = new TH1F("h5_gtag2","Tagger2 photon Q^2; Q^2 [GeV^2]",4000,-2,2);
-	_h6_gtag2 = new TH2F("h6_gtag2","Tagger2 photon log_{10}(Q^2) vs Energy; E_{f} [GeV]; log_{10}(Q^2)",2000,0,20,2000,-100,100);
-	_h7_gtag2 = new TH2F("h7_gtag2","Tagger2 photon posY vs posX; X [cm]; Y [cm]",8000,-40,40,8000,-40,40);
-	_h8_gtag2 = new TH1F("h8_gtag2","Tagger2 photon Time; t [#mus]",10000,0,1);
-	_h9_gtag2 = new TH2F("h9_gtag2","Tagger2 photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",2000,-100,100,2000,-100,100);
-	_h10_gtag2 = new TH2F("h10_gtag2","Tagger2 photon posY vs posX; X [cm]; Y [cm]; E_{#gamma} [GeV]",8000,-40,40,8000,-40,40);
+		_h1_gtag[i] = new TH1F(Form("h1_gtag%d",i),Form("Tagger%d photon posX; X [cm]",i),8000,-40,40);
+		_h2_gtag[i] = new TH1F(Form("h2_gtag%d",i),Form("Tagger%d photon posY; Y [cm]",i),8000,-40,40);
+		_h3_gtag[i] = new TH1F(Form("h3_gtag%d",i),Form("Tagger%d photon posZ; Z [cm]",i),50000,-5000,5000);
+		_h4_gtag[i] = new TH1F(Form("h4_gtag%d",i),Form("Tagger%d photon Energy; E_{ph} [keV]",i),10000,0,1000);
+		_h5_gtag[i] = new TH1F(Form("h5_gtag%d",i),Form("Tagger%d photon Q^2; Q^2 [GeV^2]",i),4000,-2,2);
+		_h6_gtag[i] = new TH2F(Form("h6_gtag%d",i),Form("Tagger%d photon log_{10}(Q^2) vs Energy; E_{f} [GeV]; log_{10}(Q^2)",i),2000,0,20,2000,-100,100);
+		_h7_gtag[i] = new TH2F(Form("h7_gtag%d",i),Form("Tagger%d photon posY vs posX; X [cm]; Y [cm]",i),8000,-40,40,8000,-40,40);
+		_h8_gtag[i] = new TH1F(Form("h8_gtag%d",i),Form("Tagger%d photon Time; t [#mus]",i),10000,0,1);
+		_h9_gtag[i] = new TH2F(Form("h9_gtag%d",i),Form("Tagger%d photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",i),2000,-100,100,2000,-100,100);
+		_h10_gtag[i] = new TH2F(Form("h10_gtag%d",i),Form("Tagger%d photon posY vs posX; X [cm]; Y [cm]; E_{#gamma} [GeV]",i),8000,-40,40,8000,-40,40);
+	}
 
 	// loop over entries
 	for(Int_t iEntry = 0; iEntry < nEntries; iEntry++)
@@ -239,76 +205,44 @@ void AnaTree()
 			// fill histos
 			if(sensPDG->at(i) == 11) // electrons
 			{
-				if(sensName->at(i) == "sens_tag1") // tagger1
+				for(Int_t j = 0; j < nTag; j++)
 				{
-					_h1_etag1->Fill(pos.x());
-					_h2_etag1->Fill(pos.y());
-					_h3_etag1->Fill(pos.z());
-					_h4_etag1->Fill(sensEnergy_eV->at(i)/1e9);
-					_h5_etag1->Fill(beamTransfMomSqr_GeV2->at(0));
-					_h6_etag1->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
-					_h7_etag1->Fill(pos.x(),pos.y());
-					_h8_etag1->Fill(sensTime_ms->at(i)*1e3);
-					_h9_etag1->Fill(
-						TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
-						TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
-				}
-				else if(sensName->at(i) == "sens_tag2") // tagger2
-				{
-					_h1_etag2->Fill(pos.x());
-					_h2_etag2->Fill(pos.y());
-					_h3_etag2->Fill(pos.z());
-					_h4_etag2->Fill(sensEnergy_eV->at(i)/1e9);
-					_h5_etag2->Fill(beamTransfMomSqr_GeV2->at(0));
-					_h6_etag2->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
-					_h7_etag2->Fill(pos.x(),pos.y());
-					_h8_etag2->Fill(sensTime_ms->at(i)*1e3);
-					_h9_etag2->Fill(
-						TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
-						TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
-				}
-				else
-				{
-					cout<<endl<<"[ERROR] Wrong sensor name: '"<<sensName->at(i)<<"' !"<<endl;
-					exit(-1);
+					if(sensName->at(i) == Form("sens_tag%d",j+1))
+					{
+						_h1_etag[j]->Fill(pos.x());
+						_h2_etag[j]->Fill(pos.y());
+						_h3_etag[j]->Fill(pos.z());
+						_h4_etag[j]->Fill(sensEnergy_eV->at(i)/1e9);
+						_h5_etag[j]->Fill(beamTransfMomSqr_GeV2->at(0));
+						_h6_etag[j]->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
+						_h7_etag[j]->Fill(pos.x(),pos.y());
+						_h8_etag[j]->Fill(sensTime_ms->at(i)*1e3);
+						_h9_etag[j]->Fill(
+							TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
+							TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
+					}
 				}
 			}		
 			else if(sensPDG->at(i) == 22) // photons
 			{
-				if(sensName->at(i) == "sens_tag1") // tagger1
+
+				for(Int_t j = 0; j < nTag; j++)
 				{
-					_h1_gtag1->Fill(pos.x());
-					_h2_gtag1->Fill(pos.y());
-					_h3_gtag1->Fill(pos.z());
-					_h4_gtag1->Fill(sensEnergy_eV->at(i)/1e3);
-					_h5_gtag1->Fill(beamTransfMomSqr_GeV2->at(0));
-					_h6_gtag1->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
-					_h7_gtag1->Fill(pos.x(),pos.y());
-					_h8_gtag1->Fill(sensTime_ms->at(i)*1e3);
-					_h9_gtag1->Fill(
-						TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
-						TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
-					_h10_gtag1->Fill(pos.x(),pos.y(),sensEnergy_eV->at(i));
-				}
-				else if(sensName->at(i) == "sens_tag2") // tagger2
-				{
-					_h1_gtag2->Fill(pos.x());
-					_h2_gtag2->Fill(pos.y());
-					_h3_gtag2->Fill(pos.z());
-					_h4_gtag2->Fill(sensEnergy_eV->at(i)/1e3);
-					_h5_gtag2->Fill(beamTransfMomSqr_GeV2->at(0));
-					_h6_gtag2->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
-					_h7_gtag2->Fill(pos.x(),pos.y());
-					_h8_gtag2->Fill(sensTime_ms->at(i)*1e3);
-					_h9_gtag2->Fill(
-						TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
-						TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
-					_h10_gtag2->Fill(pos.x(),pos.y(),sensEnergy_eV->at(i));
-				}
-				else
-				{
-					cout<<endl<<"[ERROR] Wrong sensor name: '"<<sensName->at(i)<<"' !"<<endl;
-					exit(-1);
+					if(sensName->at(i) == Form("sens_tag%d",j))
+					{
+						_h1_gtag[j]->Fill(pos.x());
+						_h2_gtag[j]->Fill(pos.y());
+						_h3_gtag[j]->Fill(pos.z());
+						_h4_gtag[j]->Fill(sensEnergy_eV->at(i)/1e3);
+						_h5_gtag[j]->Fill(beamTransfMomSqr_GeV2->at(0));
+						_h6_gtag[j]->Fill(beamEnergy_eV->at(0)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
+						_h7_gtag[j]->Fill(pos.x(),pos.y());
+						_h8_gtag[j]->Fill(sensTime_ms->at(i)*1e3);
+						_h9_gtag[j]->Fill(
+							TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
+							TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
+						_h10_gtag[j]->Fill(pos.x(),pos.y(),sensEnergy_eV->at(i));
+					}
 				}
 			}		
 			else
@@ -346,47 +280,29 @@ void SaveHisto(TString fName)
 	_h17->Write();
 	_h18->Write();
 
-	_h1_etag1->Write();
-	_h2_etag1->Write();
-	_h3_etag1->Write();
-	_h4_etag1->Write();
-	_h5_etag1->Write();
-	_h6_etag1->Write();
-	_h7_etag1->Write();
-	_h8_etag1->Write();
-	_h9_etag1->Write();
+	for(Int_t i = 0; i < nTag; i++)
+	{
+		_h1_etag[i]->Write();
+		_h2_etag[i]->Write();
+		_h3_etag[i]->Write();
+		_h4_etag[i]->Write();
+		_h5_etag[i]->Write();
+		_h6_etag[i]->Write();
+		_h7_etag[i]->Write();
+		_h8_etag[i]->Write();
+		_h9_etag[i]->Write();
 
-	_h1_etag2->Write();
-	_h2_etag2->Write();
-	_h3_etag2->Write();
-	_h4_etag2->Write();
-	_h5_etag2->Write();
-	_h6_etag2->Write();
-	_h7_etag2->Write();
-	_h8_etag2->Write();
-	_h9_etag2->Write();
-
-	_h1_gtag1->Write();
-	_h2_gtag1->Write();
-	_h3_gtag1->Write();
-	_h4_gtag1->Write();
-	_h5_gtag1->Write();
-	_h6_gtag1->Write();
-	_h7_gtag1->Write();
-	_h8_gtag1->Write();
-	_h9_gtag1->Write();
-	_h10_gtag1->Write();
-
-	_h1_gtag2->Write();
-	_h2_gtag2->Write();
-	_h3_gtag2->Write();
-	_h4_gtag2->Write();
-	_h5_gtag2->Write();
-	_h6_gtag2->Write();
-	_h7_gtag2->Write();
-	_h8_gtag2->Write();
-	_h9_gtag2->Write();
-	_h10_gtag2->Write();
+		_h1_gtag[i]->Write();
+		_h2_gtag[i]->Write();
+		_h3_gtag[i]->Write();
+		_h4_gtag[i]->Write();
+		_h5_gtag[i]->Write();
+		_h6_gtag[i]->Write();
+		_h7_gtag[i]->Write();
+		_h8_gtag[i]->Write();
+		_h9_gtag[i]->Write();
+		_h10_gtag[i]->Write();
+	}
 
 	f->Close();
 	cout<<"--> Output file name: "<<f->GetName()<<endl;
@@ -402,62 +318,64 @@ void LoadTree(TString fName, TString tName)
 		f = new TFile(fName.Data());
 	f->GetObject(tName.Data(),_tree);
 
-   // Set object pointer
-   beamPdg = 0;
-   beamPosX_cm = 0;
-   beamPosY_cm = 0;
-   beamPosZ_cm = 0;
-   beamMomX_eV = 0;
-   beamMomY_eV = 0;
-   beamMomZ_eV = 0;
-   beamEnergy_eV = 0;
-   beamTransfMomSqr_GeV2 = 0;
-   beamKillPosX_cm = 0;
-   beamKillPosY_cm = 0;
-   beamKillPosZ_cm = 0;
+	// Set object pointer
+	beamPdg = 0;
+	beamPosX_cm = 0;
+	beamPosY_cm = 0;
+	beamPosZ_cm = 0;
+	beamMomX_eV = 0;
+	beamMomY_eV = 0;
+	beamMomZ_eV = 0;
+	beamEnergy_eV = 0;
+	beamTransfMomSqr_GeV2 = 0;
+	beamTargetMass_GeV = 0;
+	beamKillPosX_cm = 0;
+	beamKillPosY_cm = 0;
+	beamKillPosZ_cm = 0;
 
-   sensName = 0;
-   sensPDG = 0;
-   sensPosX_cm = 0;
-   sensPosY_cm = 0;
-   sensPosZ_cm = 0;
-   sensMomX_eV = 0;
-   sensMomY_eV = 0;
-   sensMomZ_eV = 0;
-   sensEnergy_eV = 0;
-   sensTime_ms = 0;
+	sensName = 0;
+	sensPDG = 0;
+	sensPosX_cm = 0;
+	sensPosY_cm = 0;
+	sensPosZ_cm = 0;
+	sensMomX_eV = 0;
+	sensMomY_eV = 0;
+	sensMomZ_eV = 0;
+	sensEnergy_eV = 0;
+	sensTime_ms = 0;
 
-   // Set branch addresses and branch pointers
-   if (!_tree) return;
+	// Set branch addresses and branch pointers
+	if (!_tree) return;
 
-   _tree->SetBranchAddress("beamPdg", &beamPdg);
-   _tree->SetBranchAddress("beamPosX_cm", &beamPosX_cm);
-   _tree->SetBranchAddress("beamPosY_cm", &beamPosY_cm);
-   _tree->SetBranchAddress("beamPosZ_cm", &beamPosZ_cm);
-   _tree->SetBranchAddress("beamMomX_eV", &beamMomX_eV);
-   _tree->SetBranchAddress("beamMomY_eV", &beamMomY_eV);
-   _tree->SetBranchAddress("beamMomZ_eV", &beamMomZ_eV);
-   _tree->SetBranchAddress("beamEnergy_eV", &beamEnergy_eV);
-   _tree->SetBranchAddress("beamTransfMomSqr_GeV2", &beamTransfMomSqr_GeV2);
-   _tree->SetBranchAddress("beamTransfEnergy_GeV", &beamTransfEnergy_GeV);
-   _tree->SetBranchAddress("beamKillPosX_cm", &beamKillPosX_cm);
-   _tree->SetBranchAddress("beamKillPosY_cm", &beamKillPosY_cm);
-   _tree->SetBranchAddress("beamKillPosZ_cm", &beamKillPosZ_cm);
+	_tree->SetBranchAddress("beamPdg", &beamPdg);
+	_tree->SetBranchAddress("beamPosX_cm", &beamPosX_cm);
+	_tree->SetBranchAddress("beamPosY_cm", &beamPosY_cm);
+	_tree->SetBranchAddress("beamPosZ_cm", &beamPosZ_cm);
+	_tree->SetBranchAddress("beamMomX_eV", &beamMomX_eV);
+	_tree->SetBranchAddress("beamMomY_eV", &beamMomY_eV);
+	_tree->SetBranchAddress("beamMomZ_eV", &beamMomZ_eV);
+	_tree->SetBranchAddress("beamEnergy_eV", &beamEnergy_eV);
+	_tree->SetBranchAddress("beamTransfMomSqr_GeV2", &beamTransfMomSqr_GeV2);
+	_tree->SetBranchAddress("beamTransfEnergy_GeV", &beamTransfEnergy_GeV);
+	_tree->SetBranchAddress("beamTargetMass_GeV", &beamTargetMass_GeV);
+	_tree->SetBranchAddress("beamKillPosX_cm", &beamKillPosX_cm);
+	_tree->SetBranchAddress("beamKillPosY_cm", &beamKillPosY_cm);
+	_tree->SetBranchAddress("beamKillPosZ_cm", &beamKillPosZ_cm);
 
-   _tree->SetBranchAddress("sensName", &sensName);
-   _tree->SetBranchAddress("sensPDG", &sensPDG);
-   _tree->SetBranchAddress("sensPosX_cm", &sensPosX_cm);
-   _tree->SetBranchAddress("sensPosY_cm", &sensPosY_cm);
-   _tree->SetBranchAddress("sensPosZ_cm", &sensPosZ_cm);
-   _tree->SetBranchAddress("sensMomX_eV", &sensMomX_eV);
-   _tree->SetBranchAddress("sensMomY_eV", &sensMomY_eV);
-   _tree->SetBranchAddress("sensMomZ_eV", &sensMomZ_eV);
-   _tree->SetBranchAddress("sensEnergy_eV", &sensEnergy_eV);
-   _tree->SetBranchAddress("sensTime_ms", &sensTime_ms);
-   _tree->SetBranchAddress("sensRefPosX_cm",&sensRefPosX_cm);
-   _tree->SetBranchAddress("sensRefPosY_cm",&sensRefPosY_cm);
-   _tree->SetBranchAddress("sensRefPosZ_cm",&sensRefPosZ_cm);
-   _tree->SetBranchAddress("sensRefAngl_rad",&sensRefAngl_rad);
+	_tree->SetBranchAddress("sensName", &sensName);
+	_tree->SetBranchAddress("sensPDG", &sensPDG);
+	_tree->SetBranchAddress("sensPosX_cm", &sensPosX_cm);
+	_tree->SetBranchAddress("sensPosY_cm", &sensPosY_cm);
+	_tree->SetBranchAddress("sensPosZ_cm", &sensPosZ_cm);
+	_tree->SetBranchAddress("sensMomX_eV", &sensMomX_eV);
+	_tree->SetBranchAddress("sensMomY_eV", &sensMomY_eV);
+	_tree->SetBranchAddress("sensMomZ_eV", &sensMomZ_eV);
+	_tree->SetBranchAddress("sensEnergy_eV", &sensEnergy_eV);
+	_tree->SetBranchAddress("sensTime_ms", &sensTime_ms);
+	_tree->SetBranchAddress("sensRefPosX_cm",&sensRefPosX_cm);
+	_tree->SetBranchAddress("sensRefPosY_cm",&sensRefPosY_cm);
+	_tree->SetBranchAddress("sensRefPosZ_cm",&sensRefPosZ_cm);
+	_tree->SetBranchAddress("sensRefAngl_rad",&sensRefAngl_rad);
 
 	return;
 }

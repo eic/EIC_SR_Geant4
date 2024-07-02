@@ -271,22 +271,32 @@ void DetectorConstruction::BuildFwdAnteChamber()
 		fwd_beampipeVac_solid,ell_tube,0,G4ThreeVector(0,0,-(startZ-stopZ)/2. + (23.5*m - stopZ)/2.));
 
 	// Ante-chamber
+/*
 	const G4int nsect = 12;
 	std::vector<G4TwoVector> polygon(nsect);
 	// +X
-	polygon[0].set(70*mm,-5*mm);
-	polygon[1].set(140*mm,5*mm);
-	polygon[2].set(150*mm,5*mm);
-	polygon[3].set(150*mm,15*mm);
-	polygon[4].set(140*mm,15*mm);
-	polygon[5].set(70*mm,5*mm);
+	polygon[0].set(70*mm,-10*mm);
+	polygon[1].set(140*mm,10*mm);
+	polygon[2].set(150*mm,10*mm);
+	polygon[3].set(150*mm,20*mm);
+	polygon[4].set(140*mm,20*mm);
+	polygon[5].set(70*mm,10*mm);
 	// -X                                                                                          
-	polygon[6].set(-70*mm,5*mm);
-	polygon[7].set(-140*mm,15*mm);
-	polygon[8].set(-150*mm,15*mm);
-	polygon[9].set(-150*mm,5*mm);
-	polygon[10].set(-140*mm,5*mm);
-	polygon[11].set(-70*mm,-5*mm);
+	polygon[6].set(-70*mm,10*mm);
+	polygon[7].set(-140*mm,20*mm);
+	polygon[8].set(-150*mm,20*mm);
+	polygon[9].set(-150*mm,10*mm);
+	polygon[10].set(-140*mm,10*mm);
+	polygon[11].set(-70*mm,-10*mm);
+*/
+	const G4int nsect = 4;
+	std::vector<G4TwoVector> polygon(nsect);
+	// +X
+	polygon[0].set(+150*mm,-10*mm);
+	polygon[1].set(+150*mm,+10*mm);
+	// -X                                                                                          
+	polygon[2].set(-150*mm,+10*mm);
+	polygon[3].set(-150*mm,-10*mm);
 
 	G4TwoVector offsetA(0,0), offsetB(0,0);
 	G4double scaleA = 1, scaleB = 1;

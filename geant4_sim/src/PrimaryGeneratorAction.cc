@@ -186,7 +186,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 				gotParticles = true;
       			}
 			// Select only the beam proton
-			if (!particle->end_vertex() && particle->status() == 4 && particle->pid() == 2212)
+			if (particle->status() == 4 && particle->pid() == 2212)
 			{targetMass = particle->generated_mass();}
 			// we need only one scattered electron, skip the rest of particles
 			if(gotParticles){break;}
