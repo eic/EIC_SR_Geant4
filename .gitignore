@@ -71,6 +71,9 @@ eic_matscan/detector_geometry/*
 !eic_matscan/detector_geometry/run.sh
 TaggerAnalysis/pics
 
+#Tagger study
+geant4_sim/tagger_build
+
 # folders with trash
 delete
 

@@ -2,10 +2,10 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_extendedBWD_stdFWD' # input directory
+mainInDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_srmask5_extendedBWD_stdFWD_highstat' # input directory
 treeName='tree'
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_v6.3_nosrmask_extendedBWD_stdFWD' # output directory
-buildDir='./build8' # build directory
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4ana_v6.3_srmask5_extendedBWD_stdFWD_highstat' # output directory
+buildDir='./build14' # build directory
 nJobs=1000 # number of jobs
 queue='s'
 # in the custom-built Geant4 coordinate system

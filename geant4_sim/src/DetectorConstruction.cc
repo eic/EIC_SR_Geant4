@@ -289,6 +289,7 @@ void DetectorConstruction::BuildFwdAnteChamber()
 	polygon[10].set(-140*mm,10*mm);
 	polygon[11].set(-70*mm,-10*mm);
 */
+
 	const G4int nsect = 4;
 	std::vector<G4TwoVector> polygon(nsect);
 	// +X
