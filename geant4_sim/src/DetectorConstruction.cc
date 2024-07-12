@@ -86,7 +86,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
-// 	CreateSrMask();
+ 	CreateSrMask();
 	BuildFwdAnteChamber();
 	BuildIpBeamPipe();
 	BuildMagnets();
@@ -271,33 +271,36 @@ void DetectorConstruction::BuildFwdAnteChamber()
 		fwd_beampipeVac_solid,ell_tube,0,G4ThreeVector(0,0,-(startZ-stopZ)/2. + (23.5*m - stopZ)/2.));
 
 	// Ante-chamber
-/*
+/**/
+	// PEP-II-like (new)
 	const G4int nsect = 12;
 	std::vector<G4TwoVector> polygon(nsect);
 	// +X
-	polygon[0].set(70*mm,-10*mm);
-	polygon[1].set(140*mm,10*mm);
-	polygon[2].set(150*mm,10*mm);
-	polygon[3].set(150*mm,20*mm);
-	polygon[4].set(140*mm,20*mm);
-	polygon[5].set(70*mm,10*mm);
+	polygon[0].set(70*mm,-15*mm);
+	polygon[1].set(140*mm,15*mm);
+	polygon[2].set(160*mm,15*mm);
+	polygon[3].set(160*mm,45*mm);
+	polygon[4].set(140*mm,45*mm);
+	polygon[5].set(70*mm,15*mm);
 	// -X                                                                                          
-	polygon[6].set(-70*mm,10*mm);
-	polygon[7].set(-140*mm,20*mm);
-	polygon[8].set(-150*mm,20*mm);
-	polygon[9].set(-150*mm,10*mm);
-	polygon[10].set(-140*mm,10*mm);
-	polygon[11].set(-70*mm,-10*mm);
-*/
-
+	polygon[6].set(-70*mm,15*mm);
+	polygon[7].set(-140*mm,45*mm);
+	polygon[8].set(-160*mm,45*mm);
+	polygon[9].set(-160*mm,15*mm);
+	polygon[10].set(-140*mm,15*mm);
+	polygon[11].set(-70*mm,-15*mm);
+/**/
+/*
+	// Typical (std)
 	const G4int nsect = 4;
 	std::vector<G4TwoVector> polygon(nsect);
 	// +X
-	polygon[0].set(+150*mm,-10*mm);
-	polygon[1].set(+150*mm,+10*mm);
+	polygon[0].set(+160*mm,-15*mm);
+	polygon[1].set(+160*mm,+15*mm);
 	// -X                                                                                          
-	polygon[2].set(-150*mm,+10*mm);
-	polygon[3].set(-150*mm,-10*mm);
+	polygon[2].set(-160*mm,+15*mm);
+	polygon[3].set(-160*mm,-15*mm);
+*/
 
 	G4TwoVector offsetA(0,0), offsetB(0,0);
 	G4double scaleA = 1, scaleB = 1;
@@ -658,7 +661,7 @@ void DetectorConstruction::CreateSrMask()
 */
 
 	//- mask-5
-	const G4double  zPlane[] = {-4660.0 * mm, -4453.0 * mm, -4300.0 * mm};
+	const G4double  zPlane[] = {4660.0 * mm, 4453.0 * mm, 4300.0 * mm};
 	const G4double  rInner[] = {54/2. * mm, 43/2. * mm, 62/2. * mm};
 	const G4double  rOuter[] = {(62+1)/2. * mm, (62+1)/2. * mm, (62+1)/2. * mm};
 	G4VSolid* mask5_polycone = new G4Polycone("mask5_polycone", 0, 2.0 * M_PI, 3, zPlane, rInner, rOuter); 
