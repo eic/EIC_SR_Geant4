@@ -185,12 +185,17 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 
 				gotParticles = true;
       			}
-			// Select only the beam proton
-			if (particle->status() == 4 && particle->pid() == 2212)
-			{targetMass = particle->generated_mass();}
 			// we need only one scattered electron, skip the rest of particles
 			if(gotParticles){break;}
     		}
+                // Loop over incoming particles
+                // Only for a real vertex (i.e., stable particle or the one which will decay later)
+                for(const auto& particle : vertex->particles_in()) 
+                {
+                        // Select only the beam proton
+                        if (particle->status() == 4 && particle->pid() == 2212)
+                        {targetMass = particle->generated_mass();break;}
+                }
 		// we need only one scattered electron, skip the rest of vertices
 		if(gotParticles){break;}
 	}
