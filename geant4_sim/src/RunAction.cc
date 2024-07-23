@@ -46,8 +46,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
     	_tree->Branch("beamRefPosZ_cm",	&_beamRefPosZ);
     	_tree->Branch("beamRefAngle_rad",	&_beamRefAngle);
     	_tree->Branch("beamTransfMomSqr_GeV2",	&_beamTransfMomSqr);
-    	_tree->Branch("beamTransfEnergy_GeV",	&_beamTransfEnergy);
-	_tree->Branch("beamTargetMass_GeV",	&_beamTargetMass);
+    	_tree->Branch("beamBjorkenX",	&_beamBjorkenX);
 	_tree->Branch("beamKillPosX_cm",	&_beamKillPosX);
     	_tree->Branch("beamKillPosY_cm",	&_beamKillPosY);
     	_tree->Branch("beamKillPosZ_cm",	&_beamKillPosZ);

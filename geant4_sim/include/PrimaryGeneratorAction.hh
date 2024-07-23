@@ -47,8 +47,7 @@ public:
 					const G4ThreeVector magVector, 
 					const G4double angle,
 					const G4double Q2,
-					const G4double dE,
-					const G4double M);
+					const G4double x);
 
 private:
 	G4bool CheckVertexInsideWorld(const G4ThreeVector& pos) const;

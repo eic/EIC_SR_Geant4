@@ -67,7 +67,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 void PrimaryGeneratorAction::StorePrimaryCoordinates(
 	const G4Event* anEvent, const G4ThreeVector magVector, 
-	const G4double angle, const G4double Q2, const G4double dE, const G4double M)
+	const G4double angle, const G4double Q2, const G4double x)
 {
 	// Loop over vertices
 	for(G4int ivtx = 0; ivtx < anEvent->GetNumberOfPrimaryVertex(); ivtx++)
@@ -91,8 +91,7 @@ void PrimaryGeneratorAction::StorePrimaryCoordinates(
 			runAction->_beamRefPosZ.push_back(magVector.z()/cm);
 			runAction->_beamRefAngle.push_back(angle/rad);
 			runAction->_beamTransfMomSqr.push_back(Q2/GeV/GeV);
-			runAction->_beamTransfEnergy.push_back(dE/GeV);
-			runAction->_beamTargetMass.push_back(M/GeV);
+			runAction->_beamBjorkenX.push_back(x);
 		}
 	}
 
@@ -110,7 +109,8 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
     	particleDef = particleTable->FindParticle(simPar->GetBeamName().c_str());
 	G4PrimaryParticle* g4prim;
 	G4PrimaryVertex* g4vtx;
-	G4double Q2 = 0, E_i = 0, E_f = 0, targetMass = 0;
+	G4double Q2 = 0, E_i = 0, E_f = 0, targetMass = 0, E_2 = 0;
+	G4LorentzVector q, p2;
 
 	// Construct an event
 	HepMC3::GenEvent hepmcevt(HepMC3::Units::GEV,HepMC3::Units::MM);
@@ -194,7 +194,17 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
                 {
                         // Select only the beam proton
                         if (particle->status() == 4 && particle->pid() == 2212)
-                        {targetMass = particle->generated_mass();break;}
+                        {
+				targetMass = particle->generated_mass();
+				HepMC3::FourVector targetMom = particle->momentum();
+				E_2 = sqrt(     pow(targetMom.x(),2) +
+						pow(targetMom.y(),2) +
+						pow(targetMom.z(),2) +
+						pow(targetMass,2));
+
+				p2 = TLorentzVector(targetMom.px(), targetMom.py(), targetMom.pz(), E_2);
+				break;
+			}
                 }
 		// we need only one scattered electron, skip the rest of vertices
 		if(gotParticles){break;}
@@ -209,7 +219,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
     	fParticleGun->GeneratePrimaryVertex(g4event);
 
 	// Store Coordinates
-	StorePrimaryCoordinates(g4event,G4ThreeVector(0,0,0),0,Q2*GeV*GeV,(E_i-E_f)*GeV,targetMass*GeV);
+	StorePrimaryCoordinates(g4event,G4ThreeVector(0,0,0),0,Q2*GeV*GeV,Q2/(2.*p2*q));
 
 	return;
 }
@@ -326,7 +336,7 @@ void PrimaryGeneratorAction::GenerateBeamPrimaries(G4Event* anEvent)
     	fParticleGun->GeneratePrimaryVertex(anEvent);
 
 	// Store Coordinates
-	StorePrimaryCoordinates(anEvent,magVector2,angle,0,0,0);
+	StorePrimaryCoordinates(anEvent,magVector2,angle,0,0);
 
 	return;
 }

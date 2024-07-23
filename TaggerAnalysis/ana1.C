@@ -21,8 +21,7 @@ vector<float>   *beamMomY_eV;
 vector<float>   *beamMomZ_eV;
 vector<float>   *beamEnergy_eV;
 vector<float>   *beamTransfMomSqr_GeV2;
-vector<float>   *beamTransfEnergy_GeV;
-vector<float>   *beamTargetMass_GeV;
+vector<float>   *beamBjorkenX;
 vector<float>   *beamKillPosX_cm;
 vector<float>   *beamKillPosY_cm;
 vector<float>   *beamKillPosZ_cm;
@@ -166,7 +165,6 @@ void AnaTree()
 		// loop over primaries
 		for(Int_t i = 0; i < beamPdg->size(); i++)
 		{
-			if(beamTransfEnergy_GeV->at(i) <= 0){continue;}
 			// fill histos with primary coordinates
 			_h1->Fill(beamPosX_cm->at(i));
 			_h2->Fill(beamPosY_cm->at(i));
@@ -179,8 +177,8 @@ void AnaTree()
 			_h9->Fill(beamPosZ_cm->at(i),beamPosX_cm->at(i));
 			_h10->Fill(beamPosZ_cm->at(i),beamPosY_cm->at(i));
 			_h11->Fill(beamEnergy_eV->at(i)/1e9,TMath::Log10(beamTransfMomSqr_GeV2->at(i)));
-			_h12->Fill(beamTransfMomSqr_GeV2->at(i)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(i)));
-			_h13->Fill(	TMath::Log10(beamTransfMomSqr_GeV2->at(i)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(i))),
+			_h12->Fill(beamBjorkenX->at(i));
+			_h13->Fill(	TMath::Log10(beamBjorkenX->at(i)),
 					TMath::Log10(beamTransfMomSqr_GeV2->at(i)));
 			_h14->Fill(beamKillPosZ_cm->at(i),beamKillPosX_cm->at(i));
 			_h15->Fill(beamKillPosZ_cm->at(i),beamKillPosY_cm->at(i));
@@ -218,7 +216,7 @@ void AnaTree()
 						_h7_etag[j]->Fill(pos.x(),pos.y());
 						_h8_etag[j]->Fill(sensTime_ms->at(i)*1e3);
 						_h9_etag[j]->Fill(
-							TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
+							TMath::Log10(beamBjorkenX->at(0)),
 							TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 					}
 				}
@@ -239,7 +237,7 @@ void AnaTree()
 						_h7_gtag[j]->Fill(pos.x(),pos.y());
 						_h8_gtag[j]->Fill(sensTime_ms->at(i)*1e3);
 						_h9_gtag[j]->Fill(
-							TMath::Log10(beamTransfMomSqr_GeV2->at(0)/(2.*protonMass_GeV*beamTransfEnergy_GeV->at(0))),
+							TMath::Log10(beamBjorkenX->at(0)),
 							TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 						_h10_gtag[j]->Fill(pos.x(),pos.y(),sensEnergy_eV->at(i));
 					}
@@ -328,7 +326,7 @@ void LoadTree(TString fName, TString tName)
 	beamMomZ_eV = 0;
 	beamEnergy_eV = 0;
 	beamTransfMomSqr_GeV2 = 0;
-	beamTargetMass_GeV = 0;
+	beamBjorkenX = 0;
 	beamKillPosX_cm = 0;
 	beamKillPosY_cm = 0;
 	beamKillPosZ_cm = 0;
@@ -356,8 +354,7 @@ void LoadTree(TString fName, TString tName)
 	_tree->SetBranchAddress("beamMomZ_eV", &beamMomZ_eV);
 	_tree->SetBranchAddress("beamEnergy_eV", &beamEnergy_eV);
 	_tree->SetBranchAddress("beamTransfMomSqr_GeV2", &beamTransfMomSqr_GeV2);
-	_tree->SetBranchAddress("beamTransfEnergy_GeV", &beamTransfEnergy_GeV);
-	_tree->SetBranchAddress("beamTargetMass_GeV", &beamTargetMass_GeV);
+	_tree->SetBranchAddress("beamBjorkenX", &beamBjorkenX);
 	_tree->SetBranchAddress("beamKillPosX_cm", &beamKillPosX_cm);
 	_tree->SetBranchAddress("beamKillPosY_cm", &beamKillPosY_cm);
 	_tree->SetBranchAddress("beamKillPosZ_cm", &beamKillPosZ_cm);

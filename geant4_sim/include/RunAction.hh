@@ -64,8 +64,7 @@ public:
 	vector<G4float> _beamRefPosZ;
 	vector<G4float> _beamRefAngle;	
 	vector<G4float> _beamTransfMomSqr;
-	vector<G4float> _beamTransfEnergy;
-	vector<G4float> _beamTargetMass;
+	vector<G4float> _beamBjorkenX;
 	vector<G4float> _beamKillPosX;
 	vector<G4float> _beamKillPosY;
 	vector<G4float> _beamKillPosZ;
