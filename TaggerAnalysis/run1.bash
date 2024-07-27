@@ -46,10 +46,12 @@ bsub -q $queue -o ${outputDir}/log_ana1_${PosZ}.txt "root -l -b -q ana1.C\(\\\"$
 LL
 
 outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_nosrmask_ExtendedFarBwd_Tagger1_-500cm_ChamberH_10cm'
-#fIn="${outputDir}/output_0.root"
-#fOut="${outputDir}/ana1_output_0.root"
-#fIn="${outputDir}/output_nosec.root"
-#fOut="${outputDir}/ana1_output_nosec.root"
-fIn="${outputDir}/output_nosec_q3defoc.root"
-fOut="${outputDir}/ana1_output_nosec_q3defoc.root"
-bsub -q $queue -o ${outputDir}/log_ana1_0.txt "root -l -b -q ana1.C\(\\\"${fIn}\\\",\\\"${fOut}\\\"\)"
+fIn="${outputDir}/output_nosec_q3foc.root"
+fOut="${outputDir}/ana1_output_nosec_q3foc.root"
+fLog="${outputDir}/log_ana1_q3foc.txt"
+
+#fIn="${outputDir}/output_nosec_q3defoc.root"
+#fOut="${outputDir}/ana1_output_nosec_q3defoc.root"
+#fLog="${outputDir}/log_ana1_q3defoc.txt"
+
+bsub -q $queue -o ${fLog} "root -l -b -q ana1.C\(\\\"${fIn}\\\",\\\"${fOut}\\\"\)"

@@ -177,7 +177,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 						pow(massBeam,2));
 				G4LorentzVector k_f(mom.px(), mom.py(), mom.pz(), E_f);
 				G4LorentzVector k_i(momBeam.px(), momBeam.py(), momBeam.pz(), E_i);
-				G4LorentzVector q = k_i - k_f;
+				q = k_i - k_f;
 				Q2 = -q.m2();
 
 				g4prim = new G4PrimaryParticle(pdgcode, k_f.x()*GeV, k_f.y()*GeV, k_f.z()*GeV);
@@ -202,7 +202,7 @@ void PrimaryGeneratorAction::GenerateHepMcPrimaries(G4Event* g4event)
 						pow(targetMom.z(),2) +
 						pow(targetMass,2));
 
-				p2 = TLorentzVector(targetMom.px(), targetMom.py(), targetMom.pz(), E_2);
+				p2 = G4LorentzVector(targetMom.px(), targetMom.py(), targetMom.pz(), E_2);
 				break;
 			}
                 }
