@@ -38,7 +38,7 @@ void plot_core(TString fName = "output_ana_all.root")
 	Double_t mon_alphaY, mon_betaY, mon_etaY, mon_etaPrimeY;
 	Double_t mon_minP, mon_maxP;
 
-	Double_t D2EF1_l_m, D2EF2_l_m, D1EF_l_m, Q1EF_l_m, Q0EF_l_m, MARCO_l_m;
+	Double_t D2EF1_l_m, D2EF2_l_m, D1EF_l_m, Q1EF_l_m, Q0EF_l_m, MARCO_l_m, Q3ER_l_m;
 	Double_t D2EF1_theta_rad, D2EF2_theta_rad, D1EF_theta_rad;
 
 	gStyle->SetOptStat(0);
@@ -262,6 +262,7 @@ void plot_core(TString fName = "output_ana_all.root")
 	//--------------------------------------------------------------------------------------------------------------------------//
 	// lattice v6.3 (May 2024)  closed orbit (IR) ------------------------------------------------------------------------------//
 
+	Q3ER_l_m = 0.600000000000;
 	D2EF1_l_m = 2.726017320163;
 	D2EF2_l_m = 2.726017320163;
 	D1EF_l_m = 0.891400083569;
@@ -283,6 +284,17 @@ void plot_core(TString fName = "output_ana_all.root")
 	beam_etaY = 1.442910784000e-09;		beam_etaPrimeY = -1.297850364000e-11;
 	beam_minP = 17.5;			beam_maxP = 18.5;
 
+	// Q3ER
+	mon_name = "Q3ER";
+	mon_minX = -1.5;	mon_maxX = 1.5;		mon_minXp = -0.5e-3;	mon_maxXp = 0.5e-3;
+	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.2e-3;	mon_maxYp = 0.2e-3;
+	mon_alphaX = 4.562437131000;		mon_betaX = 28.483505630000;	
+	mon_etaX = -4.587086799000e-01;		mon_etaPrimeX = 2.264020388000e-02;
+	mon_alphaY = -0.446339875300;		mon_betaY = 13.448653900000;	
+	mon_etaY = 5.605609265000e-10;		mon_etaPrimeY = 9.860762163000e-11;
+	mon_minP = 17.5;			mon_maxP = 18.5;
+
+/*
 	// Q2ER
 	mon_name = "Q2ER";
 	mon_minX = -1.5;	mon_maxX = 1.5;		mon_minXp = -0.5e-3;	mon_maxXp = 0.5e-3;
@@ -292,7 +304,7 @@ void plot_core(TString fName = "output_ana_all.root")
 	mon_alphaY = 5.038141847000;		mon_betaY = 210.909690800000;	
 	mon_etaY = -1.125097655000e-09;		mon_etaPrimeY = 4.902222472000e-11;
 	mon_minP = 17.5;			mon_maxP = 18.5;
-
+*/
 /*
 	// Q1ER
 	mon_name = "Q1ER";
@@ -370,10 +382,11 @@ void plot_core(TString fName = "output_ana_all.root")
 			t_s = (theta_rad*l_m/(2.*TMath::Sin(theta_rad/2.)))/TMath::C(); 
 			nPh = t_s*(1./137.)*gamma*TMath::C()*5./((l_m/(2.*sin(theta_rad/2)))*2.*sqrt(3.));
 		}
-		else if(title.Contains("Q1EF") || title.Contains("Q0EF") || title.Contains("MARCO")) // Quads and Solenoid
+		else if(title.Contains("Q1EF") || title.Contains("Q0EF") || title.Contains("MARCO") || title.Contains("Q3ER")) // Quads and Solenoid
 		{
 			if	(title.Contains("Q1EF")){l_m = Q1EF_l_m;}
 			else if	(title.Contains("Q0EF")){l_m = Q0EF_l_m;}
+			else if	(title.Contains("Q3ER")){l_m = Q3ER_l_m;}
 			else if	(title.Contains("MARCO")){l_m = MARCO_l_m;}
 	
 			t_s = l_m/TMath::C();
@@ -403,10 +416,11 @@ void plot_core(TString fName = "output_ana_all.root")
 
 			P_W = (1e9)*TMath::Qe()*(TMath::Power(beta,4)*TMath::C()*C_gamma*TMath::Power(E0_GeV,4))/(2.*TMath::Pi()*TMath::Power(rho_m,2));
 		}
-		else if(title.Contains("Q1EF") || title.Contains("Q0EF") || title.Contains("MARCO")) // Quads and Solenoid
+		else if(title.Contains("Q1EF") || title.Contains("Q0EF") || title.Contains("MARCO") || title.Contains("Q3ER")) // Quads and Solenoid
 		{
 			if	(title.Contains("Q1EF")){l_m = Q1EF_l_m;}
 			else if	(title.Contains("Q0EF")){l_m = Q0EF_l_m;}
+			else if	(title.Contains("Q3ER")){l_m = Q3ER_l_m;}
 			else if	(title.Contains("MARCO")){l_m = MARCO_l_m;}
 		
 			t_s = l_m/TMath::C();

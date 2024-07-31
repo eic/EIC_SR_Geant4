@@ -134,9 +134,9 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		runAction->_monMomZ = postStep->GetMomentum().getZ()/eV;
 
 		// start of the beam vector between the two magnets
-		G4ThreeVector magVector1(	simPar->GetMagEndPosX(iMag) - simPar->GetIpPosX(),
-						simPar->GetMagEndPosY(iMag) - simPar->GetIpPosY(),
-						simPar->GetMagEndPosZ(iMag) - simPar->GetIpPosZ());
+		G4ThreeVector magVector1(	-simPar->GetMagEndPosX(iMag) + simPar->GetIpPosX(),
+						-simPar->GetMagEndPosY(iMag) + simPar->GetIpPosY(),
+						-simPar->GetMagEndPosZ(iMag) + simPar->GetIpPosZ());
 
 		// end of the beam vector between the two magnets 
 		jMag = (iMag < simPar->GetMagNum() - 1) ? iMag + 1 : iMag;
@@ -144,9 +144,9 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		if(G4StrUtil::contains(runAction->_magName.at(jMag),"MARCO")){jMag = iMag;}
 
 
-		G4ThreeVector magVector2(	simPar->GetMagStartPosX(jMag) - simPar->GetIpPosX(),
-						simPar->GetMagStartPosY(jMag) - simPar->GetIpPosY(),
-						simPar->GetMagStartPosZ(jMag) - simPar->GetIpPosZ());
+		G4ThreeVector magVector2(	-simPar->GetMagStartPosX(jMag) + simPar->GetIpPosX(),
+						-simPar->GetMagStartPosY(jMag) + simPar->GetIpPosY(),
+						-simPar->GetMagStartPosZ(jMag) + simPar->GetIpPosZ());
 
 		// rotate coordinate vectors from global to local/ip system
 		magVector1.rotateY(-simPar->GetIpTheta());
