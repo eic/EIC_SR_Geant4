@@ -88,8 +88,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
-// 	CreateSrMask();
-	BuildFwdAnteChamber();
+ 	CreateSrMask();
+//	BuildFwdAnteChamber();
 	BuildIpBeamPipe();
 	BuildMagnets();
 	BuildIrBeamPipe();
