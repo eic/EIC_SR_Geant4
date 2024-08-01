@@ -123,6 +123,7 @@ void drawHistograms(const string hname, const string title, const string outputd
 	gPad->SetGrid();
 
 	c0->SaveAs(Form("%s/c0_%s.png",outputdir.c_str(),hname.c_str()));
+	hAllHits->SaveAs(Form("%s/hAllCounts_%s.root",outputdir.c_str(),hname.c_str()));
 
 	hAllHits->Scale(BeamCurrent_A/(nElectronsPerFile*nFiles*TMath::Qe()));
 	cout<<"--> Scaling = "<<BeamCurrent_A/(nElectronsPerFile*nFiles*TMath::Qe())<<endl;
@@ -144,6 +145,7 @@ void drawHistograms(const string hname, const string title, const string outputd
 	gPad->SetGrid();
 
 	c1->SaveAs(Form("%s/c1_%s.png",outputdir.c_str(),hname.c_str()));
+	hAllHits->SaveAs(Form("%s/hAllHits_%s.root",outputdir.c_str(),hname.c_str()));
 
 	_file0->Close();
 	delete c0;

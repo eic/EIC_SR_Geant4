@@ -2,10 +2,10 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-inputDirName="/gpfs02/eic/anatochii/${1}_highstat_output_g4ana_v6.2_srmask5_1" # input directory
-outputDirName="/gpfs02/eic/anatochii/${1}_highstat_output_eicsim_v6.2_srmask5_1" # output directory
+inputDirName="/gpfs02/eic/anatochii/${1}_highstat_output_g4ana_v6.2_srmask5_1_ipcut4" # input directory
+outputDirName="/gpfs02/eic/anatochii/${1}_highstat_output_eicsim_v6.2_srmask5_1_ipcut4" # output directory
 buildDir="./build_${1}" # build directory
-nJobs=20000 # number of jobs
+nJobs=10000 # number of jobs
 eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 eicsetup='/direct/eic+u/anatochii/eic/epic/install/setup.sh'
 compactFile='/direct/eic+u/anatochii/eic/epic/install/share/epic/epic.xml'
