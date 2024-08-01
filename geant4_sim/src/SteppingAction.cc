@@ -51,9 +51,10 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 
 
 	// the monitor is associated with one of the magnets
-	G4String prePV_name = prePV->GetName();
+	G4String mon_name = "";
+	if(postPV){mon_name = postPV->GetName();}
 	// solenoid field in the IP beam pipe
-	if(prePV_name == "vac_IP" && simPar->IsBuildSolenoid()){prePV_name = "mag_MARCO";}
+	if(mon_name == "vac_IP" && simPar->IsBuildSolenoid()){mon_name = "mag_MARCO";}
 
 	//--------------------------------------------------------------------------//
 	//- Store taggers' info 
@@ -89,8 +90,6 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	if(	track->GetTrackID() == 1 && // primary particle
 		postStep->GetStepStatus() == fGeomBoundary && // at boundary
 		postPV->GetName() == "world") // entering world
-//		(G4StrUtil::contains(prePV_name,"vac_") || // leaving vacuum
-//		G4StrUtil::contains(prePV_name,"mag_"))) // leaving magnet
 	{
 		runAction->_beamKillPosX.push_back(postStep->GetPosition().getX()/cm);
 		runAction->_beamKillPosY.push_back(postStep->GetPosition().getY()/cm);
@@ -105,13 +104,12 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	if(     postStep && // check for the entering volume
 		track->GetTrackID() == 1 && // primary particle 
 		postStep->GetStepStatus() == fGeomBoundary && // at boundary
-		G4StrUtil::contains(postPV->GetName(),"vac_") && // entering vacuum
-		G4StrUtil::contains(prePV_name,simPar->GetBeamMonName())) // leaving the magnet
+		G4StrUtil::contains(prePV->GetName(),"vac_") && // leaving the vacuum
+		G4StrUtil::contains(mon_name,simPar->GetBeamMonName())) // entering the magnet
 	{
 		G4int iMag = simPar->GetMagNum() - 1;
-		G4int jMag = simPar->GetMagNum() - 1;
 		// find the iterator of the magnet by its name
-		auto it = std::find(runAction->_magName.begin(),runAction->_magName.end(),prePV_name);
+		auto it = std::find(runAction->_magName.begin(),runAction->_magName.end(),mon_name);
 		if (it != runAction->_magName.end())
 		{
 			iMag = distance(runAction->_magName.begin(),it);
@@ -123,9 +121,8 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 			G4cout<<"Cannot find the magnet for the beam monitoring"<<G4endl;
 			G4cout<<"==================================================================\n"<<G4endl;
 		}
-
 		// get particle coordinates
-		runAction->_monName = prePV_name;
+		runAction->_monName = mon_name;
 		runAction->_monPosX = postStep->GetPosition().getX()/cm;
 		runAction->_monPosY = postStep->GetPosition().getY()/cm;
 		runAction->_monPosZ = postStep->GetPosition().getZ()/cm;
@@ -133,36 +130,30 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 		runAction->_monMomY = postStep->GetMomentum().getY()/eV;
 		runAction->_monMomZ = postStep->GetMomentum().getZ()/eV;
 
-		// start of the beam vector between the two magnets
-		G4ThreeVector magVector1(	simPar->GetMagEndPosX(iMag) - simPar->GetIpPosX(),
-						simPar->GetMagEndPosY(iMag) - simPar->GetIpPosY(),
-						simPar->GetMagEndPosZ(iMag) - simPar->GetIpPosZ());
-
-		// end of the beam vector between the two magnets 
-		jMag = (iMag < simPar->GetMagNum() - 1) ? iMag + 1 : iMag;
-		// do not use solenoid coordinates
-		if(G4StrUtil::contains(runAction->_magName.at(jMag),"MARCO")){jMag = iMag;}
-
-
-		G4ThreeVector magVector2(	simPar->GetMagStartPosX(jMag) - simPar->GetIpPosX(),
-						simPar->GetMagStartPosY(jMag) - simPar->GetIpPosY(),
-						simPar->GetMagStartPosZ(jMag) - simPar->GetIpPosZ());
+		// vector of start coordinates in the global ref. system shifted w.r.t. the ip
+		G4ThreeVector magVector1(	-simPar->GetMagStartPosX(iMag) + simPar->GetIpPosX(),
+						-simPar->GetMagStartPosY(iMag) + simPar->GetIpPosY(),
+						-simPar->GetMagStartPosZ(iMag) + simPar->GetIpPosZ());
+		// vector of end coordinates in the global ref. system shifted w.r.t. the ip
+		G4ThreeVector magVector2(	-simPar->GetMagEndPosX(iMag) + simPar->GetIpPosX(),
+						-simPar->GetMagEndPosY(iMag) + simPar->GetIpPosY(),
+						-simPar->GetMagEndPosZ(iMag) + simPar->GetIpPosZ());
 
 		// rotate coordinate vectors from global to local/ip system
 		magVector1.rotateY(-simPar->GetIpTheta());
 		magVector2.rotateY(-simPar->GetIpTheta());
 		
 		// get monitor coordinates
-		runAction->_monRefPosX = magVector2.x()/cm;
-        	runAction->_monRefPosY = magVector2.y()/cm;
-        	runAction->_monRefPosZ = magVector2.z()/cm;
+		runAction->_monRefPosX = magVector1.x()/cm;
+        	runAction->_monRefPosY = magVector1.y()/cm;
+        	runAction->_monRefPosZ = magVector1.z()/cm;
 
 		// orientation angle of the beam/monitor
 		runAction->_monRefAngle = (magVector2.z() != magVector1.z()) ? 
 			atan((magVector2.x()-magVector1.x())/(magVector2.z()-magVector1.z())) : 0;
 
 		// solenoid
-		if(simPar->IsBuildSolenoid() && prePV_name == "mag_MARCO")
+		if(simPar->IsBuildSolenoid() && mon_name == "mag_MARCO")
 		{
 			runAction->_monRefPosX = 0.0;
 			runAction->_monRefPosY = 0.0;

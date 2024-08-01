@@ -63,7 +63,7 @@
 
 	<!-- stop tracking on the backward side -->
 	<bwdgeocut>
-		<sec desc="tracking geometry cut on the bwd side" name="bwdTrkCutZ" unit="m">-5</sec>
+		<sec desc="tracking geometry cut on the bwd side" name="bwdTrkCutZ" unit="m">-500</sec>
 	</bwdgeocut>
 
 	<!-- beam parameters: from esr-survey-doug.tfs and esr-ring-norad.tfs (2IR, 18 GeV, Jan. 2024) -->
@@ -308,7 +308,7 @@
 			<sec desc="hor. angle in a global ref. system" name="theta" unit="rad">3.149592653590</sec>
 		</ip>
 		<monitor>
-			<sec desc="the name of the magnet in front of the beam monitor" name="magname">Q2ER</sec>
+			<sec desc="the name of the magnet in front of the beam monitor" name="magname">Q3ER</sec>
 		</monitor>
 	</magnets>
 </xml>

@@ -7,11 +7,11 @@ date;
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="${PWD}/geometry/simParameters_v6.3.xml" # simulation geometry settings
-nParticles=10000 # number of primary particles per job
-outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_srmask5_extendedBWD_stdFWD_highstat' # output directory # default radius
-buildDir='./build14' # build directory
+nParticles=1000 # number of primary particles per job
+outputDir='/group/belle2/TMP/anatochi/eic/output_g4sim_v6.3_srmask5_extendedBWD_stdFWD_Q3ERorbitCheck' # output directory # default radius
+buildDir='./build' # build directory
 nJobs=1000 # number of jobs
-queue='l'
+queue='s'
 #--------------------------------------------------#
 #--------------------------------------------------#
 
