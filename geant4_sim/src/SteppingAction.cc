@@ -51,8 +51,7 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 
 
 	// the monitor is associated with one of the magnets
-	G4String mon_name = "";
-	if(postPV){mon_name = postPV->GetName();}
+	G4String mon_name = prePV->GetName();
 	// solenoid field in the IP beam pipe
 	if(mon_name == "vac_IP" && simPar->IsBuildSolenoid()){mon_name = "mag_MARCO";}
 
@@ -104,8 +103,8 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
 	if(     postStep && // check for the entering volume
 		track->GetTrackID() == 1 && // primary particle 
 		postStep->GetStepStatus() == fGeomBoundary && // at boundary
-		G4StrUtil::contains(prePV->GetName(),"vac_") && // leaving the vacuum
-		G4StrUtil::contains(mon_name,simPar->GetBeamMonName())) // entering the magnet
+		G4StrUtil::contains(postPV->GetName(),"vac_") && // entering the vacuum
+		G4StrUtil::contains(mon_name,simPar->GetBeamMonName())) // leaving the magnet
 	{
 		G4int iMag = simPar->GetMagNum() - 1;
 		// find the iterator of the magnet by its name
