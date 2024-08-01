@@ -50,9 +50,11 @@ private:
 	G4VSolid* ip_box; // IP beam pipe virtual volume
 	G4LogicalVolume* ip_log; // IP beam pipe LV
 	G4VSolid* bwd_beampipeVac_solid; // backward SV
-	G4VSolid* farbwd_beampipeVac_solid; // far-backward SV
 	G4Tubs* farbwd_beampipe_tube; // far-backward SV (only tube w/o ante-chamber)
-	G4LogicalVolume* farbwd_beampipeVac_log; // far-backward LV
+	G4VSolid* farbwd_beampipeVac_solid1; // far-backward SV (w/o ante-chamber)
+	G4VSolid* farbwd_beampipeVac_solid2; // far-backward SV (w/  ante-chamber)
+	G4LogicalVolume* farbwd_beampipeVac_log1; // far-backward LV
+	G4LogicalVolume* farbwd_beampipeVac_log2; // far-backward LV
 
 	G4double mass;
 	G4double gamma;

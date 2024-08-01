@@ -29,7 +29,7 @@ void printLatticeParameters()
 //		"\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
 
 	//_______________________________ NEW LATTICE ______________________________________//
-	oldLattice = false;
+//	oldLattice = false;
 
 	//- Sep. 2023 - so-called new lattice
 	// surveyFileName = "./lattice_v6.X/survey_ir_6m.tfs";
@@ -44,8 +44,9 @@ void printLatticeParameters()
 	// opticsFileName = "./lattice_v6.3_notClosedOrbit/esr-ring-norad.tfs";
 
 	//- May. 2024 - v6.3 lattice - closed orbit
-	surveyFileName = "./lattice_v6.3/ir6survey.tfs";
-	opticsFileName = "./lattice_v6.3/ir6twiss.tfs";
+	// surveyFileName = "./lattice_v6.3/ir6survey.tfs";
+	// opticsFileName = "./lattice_v6.3/ir6twiss.tfs";
+
 /*
 	//- lists of elements (FWD)
 	const Int_t nElements = 7;
@@ -55,12 +56,54 @@ void printLatticeParameters()
 		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
 */
 	//- lists of elements (BWD)
+//	const Int_t nElements = 7;
+//	TString startElementName[nElements] = {	
+//		"\"OWW_SH\"","\"OWW_SH\"","\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"O0EF_6\""};
+//		"\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
+//	TString stopElementName[nElements] = {
+//		"\"Q5ER_6\"","\"Q4ER_6\"","\"Q3ER_6\"","\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
+
+	//_______________________________ NEW R&D ATTICE ______________________________________//
+	oldLattice = false;
+
+	//- Jul. 2024 - v6.3 lattice - modified BWD beam line for low-Q^2 taggers
+	surveyFileName = "./lattice_v6.3_modif_bwd/ir6survey.tfs";
+	opticsFileName = "./lattice_v6.3_modif_bwd/ir6twiss.tfs";
+
+/*
+	//- lists of elements (FWD)
 	const Int_t nElements = 7;
 	TString startElementName[nElements] = {	
-		"\"OWW_SH\"","\"OWW_SH\"","\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"O0EF_6\""};
-//		"\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"RING$START\""};
+		"\"SQ2EF_6\"", "\"OWW_SH\"", "\"ODB23\"", "\"ODB23\"", "\"MCOLL_MASK\"", "\"O1EF_6\"","\"O0EF_6\""};
 	TString stopElementName[nElements] = {
-		"\"Q5ER_6\"","\"Q4ER_6\"","\"Q3ER_6\"","\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
+		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
+*/
+	//- lists of elements (BWD)
+	const Int_t nElements = 10;
+	TString startElementName[nElements] = {	
+		"\"OWW_SH\"",
+		"\"OWW_SH\"",
+		"\"OMIR_IR6RB\"",
+		"\"OMIR_IR6RA\"",
+		"\"Q3ER_6\"",
+		"\"O3ER_6\"",
+		"\"O2ER_6\"", 
+		"\"O1ER_6\"", 
+		"\"O0ER_6\"",
+		"\"O0EF_6\""
+	};
+	TString stopElementName[nElements] = {
+		"\"Q5ER_6\"",
+		"\"Q4ER_6\"",
+		"\"Q3BER_6\"",
+		"\"Q3AER_6\"",
+		"\"Q3ER_6\"",
+		"\"Q3ER_6\"",
+		"\"D2ER_6\"", 
+		"\"Q2ER_6\"", 
+		"\"Q1ER_6\"",
+		"\"IP6\""
+	};
 
 	//- get parameters
 	for(Int_t i = 0; i < nElements; i++)

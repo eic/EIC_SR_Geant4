@@ -43,7 +43,7 @@ cmake ../
 # compile
 make -j4
 
-chmod 777 runAll.bash;
+chmod 777 runAll_kekcc.bash;
 
 mkdir -pv ./macFiles
 
@@ -60,7 +60,7 @@ do
 	done
 	
 	# submit a job
-	com="./runAll.bash $jobID $nParticles $xmlFile $RANDOM ${outputDir}"
+	com="./runAll_kekcc.bash $jobID $nParticles $xmlFile $RANDOM ${outputDir}"
 	echo -ne "[INFO] ${com} => "
 	bsub -q $queue -o ${outputDir}/logJob_${jobID}.txt "${com}"
 done

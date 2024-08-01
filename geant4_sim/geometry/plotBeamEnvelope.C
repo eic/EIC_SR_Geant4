@@ -36,7 +36,10 @@ void plotBeamEnvelope()
 	// opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
 
 	//- May. 2024 - v6.3 lattice
-	opticsFileName = "./lattice_v6.3/ir6twiss.tfs";
+	// opticsFileName = "./lattice_v6.3/ir6twiss.tfs";
+
+	//- Jul. 2024 - v6.3 lattice - modified BWD beam line for low-Q^2 taggers
+	opticsFileName = "./lattice_v6.3_modif_bwd/ir6twiss.tfs";
 
 	//__________________________________________________________________________________//
 
