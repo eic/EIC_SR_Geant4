@@ -67,8 +67,13 @@ void printLatticeParameters()
 	oldLattice = false;
 
 	//- Jul. 2024 - v6.3 lattice - modified BWD beam line for low-Q^2 taggers
-	surveyFileName = "./lattice_v6.3_modif_bwd/ir6survey.tfs";
-	opticsFileName = "./lattice_v6.3_modif_bwd/ir6twiss.tfs";
+	// surveyFileName = "./lattice_v6.3_modif_bwd/ir6survey.tfs";
+	// opticsFileName = "./lattice_v6.3_modif_bwd/ir6twiss.tfs";
+
+	//- Aug. 2024 - v6.3 lattice - modified BWD beam line for low-Q^2 taggers increased |alpha|
+	surveyFileName = "./lattice_v6.3_modif_bwd/ir6survey.tfs"; // from previous version
+	opticsFileName = "./lattice_v6.3_modif_bwd2/ir6twiss.tfs";
+
 
 /*
 	//- lists of elements (FWD)
