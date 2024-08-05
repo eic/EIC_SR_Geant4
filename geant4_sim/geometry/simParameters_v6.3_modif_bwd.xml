@@ -71,7 +71,7 @@
 	<!-- here, 'start position' means at the beginning of the previous element (SQ2EF_6), -->
 	<!-- while 'end position' means at the beginning of the current element (OWW_SH, same for optics functions) -->
 	<generator>
-		<sec desc="particle generator: Beam or HepMC" name="genname">Beam</sec>
+		<sec desc="particle generator: Beam or HepMC" name="genname">HepMC</sec>
 		<sec desc="particle" name="part">e-</sec>
 		<sec desc="start position X in a global ref. system" name="posx1" unit="m">-589.557294783830</sec>
 		<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0.0</sec>
@@ -96,7 +96,7 @@
 		<sec desc="tail fit parameter Y" name="tailky" unit="">25e-7</sec>
 		<sec desc="tail min sigma" name="tailmin" unit="">5</sec>
 		<sec desc="tail max sigma" name="tailmax" unit="">20</sec>
-		<sec desc="hepmc file" name="hepmcfilename">../LowQ2_Pythia_HepMC3/pythia_ep_noradcor_18x275_q2_0.000000001_1.0_run1.ab.hepmc</sec>
+		<sec desc="hepmc file" name="hepmcfilename">/gpfs02/eic/anatochii/Low-Q2_PythiaData/pythia_ep_noradcor_18x275_q2_0.000000001_1.0_run1.ab.hepmc</sec>
 	</generator>
 
 	<!-- gamma absorbers attached to the vacuum beam pipe ends -->
