@@ -9,7 +9,7 @@ buildDir='./build' # build directory
 nJobs=1000 # number of jobs
 queue='s'
 # in the custom-built Geant4 coordinate system
-minZ=-5000.0 # [cm] minimum Z
+minZ=-8000.0 # [cm] minimum Z
 maxZ=5000.0 # [cm] maximum Z
 #--------------------------------------------------#
 #--------------------------------------------------#
