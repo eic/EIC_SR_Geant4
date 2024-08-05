@@ -2,11 +2,11 @@
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-mainInDir="/gpfs02/eic/anatochii/${1}_highstat_output_g4sim_v6.2_srmask5_1" # input directory
+mainInDir="/gpfs02/eic/anatochii/${1}_highstat_output_g4sim_v6.2_srmask5_1_ipcut4" # input directory
 treeName='tree'
-outputDir="/gpfs02/eic/anatochii/${1}_highstat_output_g4ana_v6.2_srmask5_1" # output directory
+outputDir="/gpfs02/eic/anatochii/${1}_highstat_output_g4ana_v6.2_srmask5_1_ipcut4" # output directory
 buildDir="./build_${1}" # build directory
-nJobs=20000 # number of jobs
+nJobs=10000 # number of jobs
 # in the custom-built Geant4 coordinate system
 minZ=-500.0 # [cm] minimum Z
 maxZ=4000.0 # [cm] maximum Z
