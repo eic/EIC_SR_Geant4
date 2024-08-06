@@ -131,7 +131,7 @@ void AnaTree()
 	_h16 = new TH2F("h16","Kill PosX vs PosZ (Q3eR); PosZ [cm]; PosY [cm}",7000,-6000,1000,2000,-100,100);
 	_h17 = new TH2F("h17","Kill PosY vs PosZ (Q3eR); PosZ [cm]; PosY [cm}",7000,-6000,1000,2000,-100,100);
 	_h18 = new TH2F("h18","Kill PosY vs PosX (Q3eR); PosX [cm]; PosY [cm}",2000,-100,100,2000,-100,100);
-	_h19 = new TH2F("h19","Beam Energy vs Polar Angle; #theta [rad]; E_{e} [GeV]",80000,-4,4,2000,0,20);
+	_h19 = new TH2F("h19","Beam Energy vs Polar Angle; #theta [rad]; E_{e} [GeV]",8000,-4,4,2000,0,20);
 
 	for(Int_t i = 0; i < nTag; i ++)
 	{
@@ -144,7 +144,7 @@ void AnaTree()
 		_h7_etag[i] = new TH2F(Form("h7_etag%d",i),Form("Tagger%d electron posY vs posX; X [cm]; Y [cm]",i),8000,-40,40,8000,-40,40);
 		_h8_etag[i] = new TH1F(Form("h8_etag%d",i),Form("Tagger%d electron Time; t [#mus]",i),10000,0,1);
 		_h9_etag[i] = new TH2F(Form("h9_etag%d",i),Form("Tagger%d electron log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",i),2000,-100,100,2000,-100,100);
-		_h10_etag[i] = new TH2F(Form("h10_etag%d",i),Form("Tagger%d electron Energy vs Polar Angle; #theta [rad]; E_{e} [GeV]",i),80000,-4,4,2000,0,20);
+		_h10_etag[i] = new TH2F(Form("h10_etag%d",i),Form("Tagger%d electron Energy vs Polar Angle; #theta [rad]; E_{e} [GeV]",i),8000,-4,4,2000,0,20);
 
 		_h1_gtag[i] = new TH1F(Form("h1_gtag%d",i),Form("Tagger%d photon posX; X [cm]",i),8000,-40,40);
 		_h2_gtag[i] = new TH1F(Form("h2_gtag%d",i),Form("Tagger%d photon posY; Y [cm]",i),8000,-40,40);
