@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 eicshell='/direct/eic+u/anatochii/eic/eic-shell'
-outputDir='/gpfs02/eic/anatochii/output_v6.3_modif_bwd_hepmc'
+outputDir='/gpfs02/eic/anatochii/output_v6.3_modif_bwd2_hepmc'
 fIn="${outputDir}/output_0.root"
 fOut="${outputDir}/ana1_output_0.root"
 runDir="./runDir"
