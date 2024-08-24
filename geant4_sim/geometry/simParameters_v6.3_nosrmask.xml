@@ -53,7 +53,7 @@
 
 	<!-- scale the number of SR gammas per electron -->
 	<meanfreepath>
-		<sec desc="gamma production scale factor to modify MeanFreePath" name="MeanFreePathFactor" unit="">1</sec>
+		<sec desc="gamma production scale factor to modify MeanFreePath" name="MeanFreePathFactor" unit="">10</sec>
 	</meanfreepath>
 
 	<!-- tracking time cut -->
