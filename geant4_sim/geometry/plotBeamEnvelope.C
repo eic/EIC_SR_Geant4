@@ -6,14 +6,8 @@ void plotBeamEnvelope()
 {
 	const Float_t minS = -80; // m
 	const Float_t maxS = +50; // m
-	const Float_t emitX = 24.0e-9; // m
-	const Float_t emitY = 2.0e-9; // m
 	const Float_t max_gr_beamX = 100; // mm
 	const Float_t max_gr_beamY = 100; // mm
-	const Float_t nSigmaX = 15.0; 
-	const Float_t nSigmaY = 22.0;
-	cout<<"--> nSigmaX = "<<nSigmaX<<endl;
-	cout<<"--> nSigmaY = "<<nSigmaY<<endl;
 
 	TString surveyFileName, opticsFileName;
 	Bool_t oldLattice;
@@ -36,7 +30,7 @@ void plotBeamEnvelope()
 	// opticsFileName = "./lattice_v6.2/esr-ring-norad.tfs";
 
 	//- May. 2024 - v6.3 lattice
-	opticsFileName = "./lattice_v6.3/ir6twiss.tfs";
+	//opticsFileName = "./lattice_v6.3/ir6twiss.tfs";
 
 	//- Jul. 2024 - v6.3 lattice - modified BWD beam line for low-Q^2 taggers
 	// opticsFileName = "./lattice_v6.3_modif_bwd/ir6twiss.tfs";
@@ -44,7 +38,30 @@ void plotBeamEnvelope()
 	//- Aug. 2024 - v6.3 lattice - modified BWD beam line for low-Q^2 taggers, increased |alpha|
 	// opticsFileName = "./lattice_v6.3_modif_bwd2/ir6twiss.tfs";
 
+	//-Aug. 2024 18x275 GeV
+	// const Float_t emitX = 24.0e-9; // m
+	// const Float_t emitY = 2.0e-9; // m
+	// const Float_t nSigmaX = 15.0; 
+	// const Float_t nSigmaY = 22.0;
+	// opticsFileName = "./lattice_v6.3.1_18GeV/ir6twiss.tfs";
+
+	//-Aug. 2024 10x275 GeV
+	const Float_t emitX = 20.0e-9; // m
+	const Float_t emitY = 1.3e-9; // m
+	const Float_t nSigmaX = 14; 
+	const Float_t nSigmaY = 27;
+	opticsFileName = "./lattice_v6.3.1_10GeV/ir6twiss.tfs";
+
+	//-Aug. 2024 5x100 GeV
+	// const Float_t emitX = 20.0e-9; // m
+	// const Float_t emitY = 1.8e-9; // m
+	// const Float_t nSigmaX = 18; 
+	// const Float_t nSigmaY = 26;
+	// opticsFileName = "./lattice_v6.3.1_5GeV/ir6twiss.tfs";
+
 	//__________________________________________________________________________________//
+	cout<<"--> nSigmaX = "<<nSigmaX<<endl;
+	cout<<"--> nSigmaY = "<<nSigmaY<<endl;
 
 	//- get parameters
 	getOpticsParameters(opticsFileName,gr_betaX,gr_betaY,oldLattice);
@@ -204,6 +221,8 @@ void plotBeamEnvelope()
 	}
 	cout<<"--> nSigmaMinX = "<<nSigmaMinX<<" at s = "<<nSigmaMinXs<<" [m]"<<endl;
 	cout<<"--> nSigmaMinY = "<<nSigmaMinY<<" at s = "<<nSigmaMinYs<<" [m]"<<endl;
+
+	c1->SaveAs("beamEnvelope.png");
 
 	return;
 }

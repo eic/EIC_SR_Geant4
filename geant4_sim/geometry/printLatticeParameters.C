@@ -64,15 +64,15 @@ void printLatticeParameters()
 //		"\"Q5ER_6\"","\"Q4ER_6\"","\"Q3ER_6\"","\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
 
 	//_______________________________ NEW R&D ATTICE ______________________________________//
-	oldLattice = false;
+//	oldLattice = false;
 
 	//- Jul. 2024 - v6.3 lattice - modified BWD beam line for low-Q^2 taggers
 	// surveyFileName = "./lattice_v6.3_modif_bwd/ir6survey.tfs";
 	// opticsFileName = "./lattice_v6.3_modif_bwd/ir6twiss.tfs";
 
 	//- Aug. 2024 - v6.3 lattice - modified BWD beam line for low-Q^2 taggers increased |alpha|
-	surveyFileName = "./lattice_v6.3_modif_bwd/ir6survey.tfs"; // from previous version
-	opticsFileName = "./lattice_v6.3_modif_bwd2/ir6twiss.tfs";
+//	surveyFileName = "./lattice_v6.3_modif_bwd/ir6survey.tfs"; // from previous version
+//	opticsFileName = "./lattice_v6.3_modif_bwd2/ir6twiss.tfs";
 
 
 /*
@@ -83,6 +83,7 @@ void printLatticeParameters()
 	TString stopElementName[nElements] = {
 		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
 */
+/*
 	//- lists of elements (BWD)
 	const Int_t nElements = 10;
 	TString startElementName[nElements] = {	
@@ -109,6 +110,40 @@ void printLatticeParameters()
 		"\"Q1ER_6\"",
 		"\"IP6\""
 	};
+*/
+	//_______________________________ NEW LATTICE ______________________________________//
+	oldLattice = false;
+
+	//- Aug. 2024 - v6.3.1 lattice - 18x275GeV
+//	surveyFileName = "./lattice_v6.3.1_18GeV/ir6survey.tfs";
+//	opticsFileName = "./lattice_v6.3.1_18GeV/ir6twiss.tfs";
+
+	//- Aug. 2024 - v6.3.1 lattice - 10x275GeV
+//	surveyFileName = "./lattice_v6.3.1_10GeV/ir6survey.tfs";
+//	opticsFileName = "./lattice_v6.3.1_10GeV/ir6twiss.tfs";
+
+	//- Aug. 2024 - v6.3.1 lattice - 5x100GeV
+	surveyFileName = "./lattice_v6.3.1_5GeV/ir6survey.tfs";
+	opticsFileName = "./lattice_v6.3.1_5GeV/ir6twiss.tfs";
+
+	//- lists of elements (FWD)
+/*
+	const Int_t nElements = 7;
+	TString startElementName[nElements] = {	
+		"\"SQ2EF_6\"", "\"OWW_SH\"", "\"ODB23\"", "\"ODB23\"", "\"MCOLL_MASK\"", "\"O1EF_6\"","\"O0EF_6\""};
+	TString stopElementName[nElements] = {
+		"\"OWW_SH\"", "\"D2EF_6\"", "\"D2EF_6\"", "\"D1EF_6\"", "\"Q1EF_6\"", "\"Q0EF_6\"","\"IP6\""};
+*/
+	//- lists of elements (BWD)
+
+	const Int_t nElements = 7;
+	TString startElementName[nElements] = {	
+		"\"OWW_SH\"","\"OWW_SH\"","\"OWW_SH\"","\"O2ER_6\"", "\"O1ER_6\"", "\"O0ER_6\"","\"O0EF_6\""};
+	TString stopElementName[nElements] = {
+		"\"Q5ER_6\"","\"Q4ER_6\"","\"Q3ER_6\"","\"D2ER_6\"", "\"Q2ER_6\"", "\"Q1ER_6\"","\"IP6\""};
+
+	//__________________________________________________________________________________//
+
 
 	//- get parameters
 	for(Int_t i = 0; i < nElements; i++)
@@ -128,9 +163,6 @@ void printLatticeParameters()
 
 void printOpticsParameters(TString opticsFileName, TString startElementName, TString endElementName)
 {
-	cout<<endl<<"> function: "<<__FUNCTION__<<endl;
-	cout<<opticsFileName<<" : "<<startElementName<<" - "<<endElementName<<endl<<endl;
-
 	ifstream opticsFileName_IO(opticsFileName.Data());
 	Double_t alphax, alphay, betax, betay, etax, etay, etapx, etapy, k1l, s, length;	
 	Int_t wordsToSkip;
@@ -179,26 +211,24 @@ void printOpticsParameters(TString opticsFileName, TString startElementName, TSt
 	}
 	opticsFileName_IO.close();
 
-	printf("> s = %.12f\n",s);
-	printf("> length = %.12f\n",length);
-	printf("> betax = %.12f\n",betax);
-	printf("> alphax = %.12f\n",alphax);
-	printf("> betay = %.12f\n",betay);
-	printf("> alphay = %.12f\n",alphay);
-	printf("> etax = %.12e\n",etax);
-	printf("> etapx = %.12e\n",etapx);
-	printf("> etay = %.12e\n",etay);
-	printf("> etapy = %.12e\n",etapy);
-	printf("> k1l = %.12f\n",k1l);
+	printf("<sec desc=\"integrated quadrupole strength\" name=\"k1l\" unit=\"1/m\">%.12f</sec>\n",k1l);
+
+	cout<<endl<<endl;
+
+	printf("<sec desc=\"alpha X\" name=\"alphax\" unit=\"\">%.12f</sec>\n",alphax);
+	printf("<sec desc=\"alpha Y\" name=\"alphay\" unit=\"\">%.12f</sec>\n",alphay);
+	printf("<sec desc=\"beta X\" name=\"betax\" unit=\"\">%.12f</sec>\n",betax);
+	printf("<sec desc=\"beta Y\" name=\"betay\" unit=\"\">%.12f</sec>\n",betay);
+	printf("<sec desc=\"dispersion X\" name=\"etax\" unit=\"m\">%.12e</sec>\n",etax);
+	printf("<sec desc=\"dispersion Y\" name=\"etay\" unit=\"m\">%.12e</sec>\n",etay);
+	printf("<sec desc=\"dispersion PX\" name=\"etapx\" unit=\"\">%.12e</sec>\n",etapx);
+	printf("<sec desc=\"dispersion PY\" name=\"etapy\" unit=\"\">%.12e</sec>\n",etapy);
 
 	return;
 }
 
 void printOpticsParameters_old(TString opticsFileName, TString startElementName, TString endElementName)
 {
-	cout<<endl<<"> function: "<<__FUNCTION__<<endl;
-	cout<<opticsFileName<<" : "<<startElementName<<" - "<<endElementName<<endl<<endl;
-
 	ifstream opticsFileName_IO(opticsFileName.Data());
 	Double_t alphax, alphay, betax, betay, etax, etay, etapx, etapy, k1l, s, length;	
 	Int_t wordsToSkip;
@@ -245,17 +275,15 @@ void printOpticsParameters_old(TString opticsFileName, TString startElementName,
 	}
 	opticsFileName_IO.close();
 
-	printf("> s = %.12f\n",s);
-	printf("> length = %.12f\n",length);
-	printf("> betax = %.12f\n",betax);
-	printf("> alphax = %.12f\n",alphax);
-	printf("> betay = %.12f\n",betay);
-	printf("> alphay = %.12f\n",alphay);
-	printf("> etax = %.12e\n",etax);
-	printf("> etapx = %.12e\n",etapx);
-	printf("> etay = %.12e\n",etay);
-	printf("> etapy = %.12e\n",etapy);
-	printf("> k1l = %.12f\n",k1l);
+	printf("<sec desc=\"integrated quadrupole strength\" name=\"k1l\" unit=\"1/m\">%.12f</sec>\n",k1l);
+	printf("<sec desc=\"alpha X\" name=\"alphax\" unit=\"\">%.12f</sec>\n",alphax);
+	printf("<sec desc=\"alpha Y\" name=\"alphay\" unit=\"\">%.12f</sec>\n",alphay);
+	printf("<sec desc=\"beta X\" name=\"betax\" unit=\"\">%.12f</sec>\n",betax);
+	printf("<sec desc=\"beta Y\" name=\"betay\" unit=\"\">%.12f</sec>\n",betay);
+	printf("<sec desc=\"dispersion X\" name=\"etax\" unit=\"m\">%.12e</sec>\n",etax);
+	printf("<sec desc=\"dispersion Y\" name=\"etay\" unit=\"m\">%.12e</sec>\n",etay);
+	printf("<sec desc=\"dispersion PX\" name=\"etapx\" unit=\"\">%.12e</sec>\n",etapx);
+	printf("<sec desc=\"dispersion PY\" name=\"etapy\" unit=\"\">%.12e</sec>\n",etapy);
 
 	return;
 }
@@ -310,15 +338,35 @@ void printSurveyParameters(TString surveyFileName, TString startElementName, TSt
 	}
 	surveyFileName_IO.close();
 
-	printf("> posx1 = %.12f\n",start_posX);
-	printf("> posy1 = %.12f\n",start_posY);
-	printf("> posz1 = %.12f\n",start_posZ);
-	printf("> posx2 = %.12f\n",end_posX);
-	printf("> posy2 = %.12f\n",end_posY);
-	printf("> posz2 = %.12f\n",end_posZ);
-	printf("> theta = %.12f\n",end_theta);
-	printf("> length = %.12f\n",end_length);
-	printf("> angle = %.12f\n",end_angle);
+	if(startElementName.Contains("IP") || endElementName.Contains("IP"))
+	{
+		printf("<sec desc=\"position X in a global ref. system\" name=\"posx\" unit=\"m\">%.12f</sec>\n",
+			start_posX);
+		printf("<sec desc=\"position Y in a global ref. system\" name=\"posy\" unit=\"m\">%.12f</sec>\n",
+			start_posY);
+		printf("<sec desc=\"position Z in a global ref. system\" name=\"posz\" unit=\"m\">%.12f</sec>\n",
+			start_posZ);
+		printf("<sec desc=\"hor. angle in a global ref. system\" name=\"theta\" unit=\"rad\">%.12f</sec>\n",end_theta);
+	}
+	else
+	{
+		printf("<sec desc=\"magnet length\" name=\"length\" unit=\"m\">%.12f</sec>\n",
+			end_length);
+		printf("<sec desc=\"start position X in a global ref. system\" name=\"posx1\" unit=\"m\">%.12f</sec>\n",
+			start_posX);
+		printf("<sec desc=\"start position Y in a global ref. system\" name=\"posy1\" unit=\"m\">%.12f</sec>\n",
+			start_posY);
+		printf("<sec desc=\"start position Z in a global ref. system\" name=\"posz1\" unit=\"m\">%.12f</sec>\n",
+			start_posZ);
+		printf("<sec desc=\"end position X in a global ref. system\" name=\"posx2\" unit=\"m\">%.12f</sec>\n",
+			end_posX);
+		printf("<sec desc=\"end position Y in a global ref. system\" name=\"posy2\" unit=\"m\">%.12f</sec>\n",
+			end_posY);
+		printf("<sec desc=\"end position Z in a global ref. system\" name=\"posz2\" unit=\"m\">%.12f</sec>\n",
+			end_posZ);
+		printf("<sec desc=\"deflection angle\" name=\"angle\" unit=\"rad\">%.12f</sec>\n",
+			end_angle);
+	}
 
 	return;
 }

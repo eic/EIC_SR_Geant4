@@ -72,3 +72,5 @@ Geant4 stand-alone simulation of synchrotron radiation in the EIC interaction re
 
 # Copy HEPMC3 files from gpfs:
 # for runID in {1..50}; do sftp anatochii@sftp.sdcc.bnl.gov:/gpfs02/eic/bpage/home/EPIC/officialSimu/pythia6/sidis_minbias/HEPMCFILES/pythia_ep_noradcor_18x275_q2_0.000000001_1.0_run${runID}.ab.hepmc.gz
+
+# FreeCAD: STL -> OBJ ESR -> EPIC coord. system: open STL mode, go to Edit->Transform, and rotate around Y-axis by 180 deg

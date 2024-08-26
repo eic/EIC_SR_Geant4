@@ -1,9 +1,9 @@
 @ NAME             %06s "SURVEY"
 @ TYPE             %06s "SURVEY"
-@ TITLE            %40s "5GeV, 1 IP, EIC -- Electron Storage Ring"
+@ TITLE            %41s "10GeV, 1 IP, EIC -- Electron Storage Ring"
 @ ORIGIN           %16s "5.09.01 Linux 64"
 @ DATE             %08s "22/08/24"
-@ TIME             %08s "09.36.05"
+@ TIME             %08s "09.30.46"
 * NAME               KEYWORD                                 S                      L                  ANGLE                      X                      Y                      Z                  THETA                    PHI                    PSI             GLOBALTILT                   TILT    SLOT_ID ASSEMBLY_ID               MECH_SEP                  V_POS COMMENTS           
 $ %s                 %s                                    %le                    %le                    %le                    %le                    %le                    %le                    %le                    %le                    %le                    %le                    %le         %d         %d                    %le                    %le %s                 
  "IR6CRABS$START"    "MARKER"                                 0                      0                      0       -589.66647195814                      0         43.29928199291        3.1233954535898                      0                      0                      0                      0          0          0                      0                      0 ""                 
