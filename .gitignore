@@ -42,6 +42,7 @@
 # g4 sim
 geant4_sim/build*
 geant4_sim/output*
+geant4_sim/geometry/*.png
 
 # g4 ana
 geant4_ana/build*
