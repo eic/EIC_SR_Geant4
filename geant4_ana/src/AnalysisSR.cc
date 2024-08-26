@@ -113,9 +113,9 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	_h0 = new TH1F("h0","SR photon energy (abs(gammaPosZ_cm) < 65 cm);E_{#gamma} [eV];# of photons",
 		101000,-1000,100000);
 	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",101000,-1000,100000);
-	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",8000,-4000,4000,2000,-100,100);
-	_h3x = new TH2F("h3x","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",8000,-4000,4000,2000,-100,100);
-	_h3y = new TH2F("h3y","SR photon vertex position;Z_{vtx} [cm];Y_{vtx} [cm]",8000,-4000,4000,2000,-100,100);
+	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",10000,-6000,4000,2000,-100,100);
+	_h3x = new TH2F("h3x","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",10000,-6000,4000,2000,-100,100);
+	_h3y = new TH2F("h3y","SR photon vertex position;Z_{vtx} [cm];Y_{vtx} [cm]",10000,-6000,4000,2000,-100,100);
 
 	_h4 = new TH2F("h4",Form("Monitor [%s]: Px vs X;X [cm];X'",monName->c_str()),1000,-4,4,10000,-1e-2,1e-2);
 	_h5 = new TH2F("h5",Form("Monitor [%s]: Py vs Y;Y [cm];Y'",monName->c_str()),1000,-4,4,10000,-1e-2,1e-2);
@@ -128,7 +128,7 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV/c]",
 		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),20000,0,20);
 
-	_h21 = new TH2F("h21","SR photon position vs energy;Z_{#gamma} [cm];X_{#gamma} [cm];E_{#gamma} [eV]",8000,-4000,4000,2000,-100,100);
+	_h21 = new TH2F("h21","SR photon position vs energy;Z_{#gamma} [cm];X_{#gamma} [cm];E_{#gamma} [eV]",10000,-6000,4000,2000,-100,100);
 
 	for(Int_t iMag = 0; iMag < magName->size(); iMag++)
 	{

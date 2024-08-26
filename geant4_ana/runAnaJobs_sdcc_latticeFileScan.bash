@@ -1,18 +1,17 @@
 #!/bin/bash
 
-#for sample in 'loglog' 'linlin'
-for sample in 'linlin'
+for beamEnergy in '18x275' '10x275' '5x100'
 do
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
-	mainInDir="/gpfs02/eic/anatochii/output_v6.3_srmask_${sample}" # input directory
+	mainInDir="/gpfs02/eic/anatochii/output_v6.3.1_nosrmask_${beamEnergy}GeV_lowStat" # input directory 
 	treeName='tree'
-	outputDir="/gpfs02/eic/anatochii/output_g4ana_v6.3_srmask_${sample}" # output directory
-	buildDir="./build_srmask_${sample}" # build directory
-	nJobs=10000 # number of jobs
+	outputDir="/gpfs02/eic/anatochii/output_g4ana_v6.3.1_nosrmask_${beamEnergy}GeV_lowStat" # output directory "
+	buildDir="./build_${beamEnergy}GeV" # build directory
+	nJobs=1000 # number of jobs
 	# in the custom-built Geant4 coordinate system
-	minZ=-500.0 # [cm] minimum Z
-	maxZ=500.0 # [cm] maximum Z
+	minZ=-10000.0 # [cm] minimum Z
+	maxZ=10000.0 # [cm] maximum Z
 	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 	#--------------------------------------------------#
 	#--------------------------------------------------#

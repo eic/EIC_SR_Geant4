@@ -6,11 +6,11 @@ date;
 
 #--------------------------------------------------#
 #---------------- INPUT PARAMETERS ----------------#
-xmlFile="/direct/eic+u/anatochii/EIC_SR_Geant4/geant4_sim/geometry/simParameters_v6.3_modif_bwd2.xml" # simulation geometry settings
-nParticles=1000000 # number of primary particles per job
-outputDir="/gpfs02/eic/anatochii/output_v6.3_modif_bwd2_hepmc" # output directory
-buildDir="./build" # build directory
-nJobs=1 # number of jobs
+xmlFile="/direct/eic+u/anatochii/EIC_SR_Geant4/geant4_sim/geometry/simParameters_v6.3_nosrmask.xml" # simulation geometry settings
+nParticles=10000 # number of primary particles per job
+outputDir="/gpfs02/eic/anatochii/output_v6.3_nosrmask_loglog" # output directory
+buildDir="./build_nosrmask" # build directory
+nJobs=10000 # number of jobs
 eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 #--------------------------------------------------#
 #--------------------------------------------------#
