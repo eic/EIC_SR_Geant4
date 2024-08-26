@@ -134,7 +134,7 @@ void plot_core(TString fName = "output_ana_all.root")
 
 	//------------------------------------------------------------------------------------------------//
 	//- Parameters: 18x275 GeV v6.3.1
-
+/*
 	emitX = 24e-9;	emitY = 2e-9;	delta = 0.109e-2; gamma = 34924.26476; mass_GeV = 0.00051099895;
 
 	Q3ER_l_m = 0.600000000000;
@@ -153,21 +153,95 @@ void plot_core(TString fName = "output_ana_all.root")
 	beam_name = "beam";
 	beam_minX = -1.0;	beam_maxX = 1.0;	beam_minXp = -0.5e-3;	beam_maxXp = 0.5e-3;
 	beam_minY = -0.4;	beam_maxY = 0.4;	beam_minYp = -0.4e-4;	beam_maxYp = 0.4e-4;
-	beam_alphaX = -7.031809489000;		beam_betaX = 161.794286000000;	
-	beam_etaX = -7.969464074000e-02;	beam_etaPrimeX =  2.621736904000e-02;
-	beam_alphaY = -1.228417153000;		beam_betaY = 121.630397700000;	
-	beam_etaY = 1.442910784000e-09;		beam_etaPrimeY = -1.297850364000e-11;
+	beam_alphaX = -7.020094038000;		beam_betaX = 161.537446500000;	
+	beam_etaX = -7.369610888000e-02;	beam_etaPrimeX = 2.648906677000e-02;
+	beam_alphaY = -1.228552192000;		beam_betaY = 121.654928400000;	
+	beam_etaY = 2.776767981000e-08;		beam_etaPrimeY = 2.601180642000e-10;
 	beam_minP = 17.5;			beam_maxP = 18.5;
 
 	// Q3ER
 	mon_name = "Q3ER";
 	mon_minX = -1.5;	mon_maxX = 1.5;		mon_minXp = -0.5e-3;	mon_maxXp = 0.5e-3;
 	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.2e-3;	mon_maxYp = 0.2e-3;
-	mon_alphaX = 4.562437131000;		mon_betaX = 28.483505630000;	
-	mon_etaX = -4.587086799000e-01;		mon_etaPrimeX = 2.264020388000e-02;
-	mon_alphaY = -0.446339875300;		mon_betaY = 13.448653900000;	
-	mon_etaY = 5.605609265000e-10;		mon_etaPrimeY = 9.860762163000e-11;
+	mon_alphaX = 5.300651139000;		mon_betaX = 27.955675690000;	
+	mon_etaX = -4.575784673000e-01;		mon_etaPrimeX = 3.549687147000e-02;
+	mon_alphaY = -0.821460055400;		mon_betaY = 13.667850260000;	
+	mon_etaY = -5.241147187000e-09;		mon_etaPrimeY = 2.509796699000e-10;
 	mon_minP = 17.5;			mon_maxP = 18.5;
+*/
+	//------------------------------------------------------------------------------------------------//
+	//- Parameters: 10x275 GeV v6.3.1
+/*
+	emitX = 20e-9;	emitY = 1.3e-9;	delta = 0.058e-2; gamma = 19141.67165; mass_GeV = 0.00051099895;
+
+	Q3ER_l_m = 0.600000000000;
+	D2EF1_l_m = 2.726017320163;
+	D2EF2_l_m = 2.726017320163;
+	D1EF_l_m = 0.891400083569;
+	Q1EF_l_m = 1.610000000000;
+	Q0EF_l_m = 1.200000000000;
+	MARCO_l_m = 10.0;
+
+	D2EF1_theta_rad = 0.012348600000;
+	D2EF2_theta_rad = 0.012348600000;
+	D1EF_theta_rad = 0.001500000000;
+
+	// Beam
+	beam_name = "beam";
+	beam_minX = -1.0;	beam_maxX = 1.0;	beam_minXp = -0.5e-3;	beam_maxXp = 0.5e-3;
+	beam_minY = -0.4;	beam_maxY = 0.4;	beam_minYp = -0.4e-4;	beam_maxYp = 0.4e-4;
+	beam_alphaX = -8.362146988000;		beam_betaX = 113.856281000000;	
+	beam_etaX = -8.017646934000e-02;	beam_etaPrimeX = 2.619458099000e-02;
+	beam_alphaY = -0.431238607400;		beam_betaY = 175.171052700000;	
+	beam_etaY = -1.345636698000e-09;		beam_etaPrimeY = -1.802947446000e-11;
+	beam_minP = 9.5;			beam_maxP = 10.5;
+
+	// Q3ER
+	mon_name = "Q3ER";
+	mon_minX = -1.5;	mon_maxX = 1.5;		mon_minXp = -0.5e-3;	mon_maxXp = 0.5e-3;
+	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.2e-3;	mon_maxYp = 0.2e-3;
+	mon_alphaX = 6.617091169000;		mon_betaX = 35.779891500000;	
+	mon_etaX = -4.558543153000e-01;		mon_etaPrimeX = 3.136060963000e-02;
+	mon_alphaY = -0.693142959600;		mon_betaY = 13.600346720000;	
+	mon_etaY = 7.871374303000e-10;		mon_etaPrimeY = 5.425718594000e-11;
+	mon_minP = 9.5;			mon_maxP = 10.5;
+*/
+	//------------------------------------------------------------------------------------------------//
+	//- Parameters: 5x100 GeV v6.3.1
+
+	emitX = 20e-9;	emitY = 1.8e-9;	delta = 0.068e-2; gamma = 9916.766536; mass_GeV = 0.00051099895;
+
+	Q3ER_l_m = 0.600000000000;
+	D2EF1_l_m = 2.726017320163;
+	D2EF2_l_m = 2.726017320163;
+	D1EF_l_m = 0.891400083569;
+	Q1EF_l_m = 1.610000000000;
+	Q0EF_l_m = 1.200000000000;
+	MARCO_l_m = 10.0;
+
+	D2EF1_theta_rad = 0.012348600000;
+	D2EF2_theta_rad = 0.012348600000;
+	D1EF_theta_rad = 0.001500000000;
+
+	// Beam
+	beam_name = "beam";
+	beam_minX = -1.0;	beam_maxX = 1.0;	beam_minXp = -0.5e-3;	beam_maxXp = 0.5e-3;
+	beam_minY = -0.4;	beam_maxY = 0.4;	beam_minYp = -0.4e-4;	beam_maxYp = 0.4e-4;
+	beam_alphaX = -5.264224068000;		beam_betaX = 108.860014800000;	
+	beam_etaX = -8.005710148000e-02;	beam_etaPrimeX = 2.620039503000e-02;
+	beam_alphaY = -0.813223050300;		beam_betaY = 107.221683200000;	
+	beam_etaY = -2.451973176000e-16;	beam_etaPrimeY = 1.731589953000e-18;
+	beam_minP = 4.5;			beam_maxP = 5.5;
+
+	// Q3ER
+	mon_name = "Q3ER";
+	mon_minX = -1.5;	mon_maxX = 1.5;		mon_minXp = -0.5e-3;	mon_maxXp = 0.5e-3;
+	mon_minY = -0.5;	mon_maxY = 0.5;		mon_minYp = -0.2e-3;	mon_maxYp = 0.2e-3;
+	mon_alphaX = 3.440554194000;		mon_betaX = 22.700582640000;	
+	mon_etaX = -4.588243708000e-01;		mon_etaPrimeX = 2.165567534000e-02;
+	mon_alphaY = -0.634291564300;		mon_betaY = 13.346991320000;	
+	mon_etaY = -7.183405642000e-17;		mon_etaPrimeY = -1.421445374000e-17;
+	mon_minP = 4.5;			mon_maxP = 5.5;
 
 	//------------------------------------------------------------------------------------------------//
 	//- Draw
