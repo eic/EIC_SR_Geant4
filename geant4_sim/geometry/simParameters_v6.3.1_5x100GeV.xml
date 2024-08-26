@@ -63,7 +63,7 @@
 
 	<!-- stop tracking on the backward side -->
 	<bwdgeocut>
-		<sec desc="tracking geometry cut on the bwd side" name="bwdTrkCutZ" unit="m">-5</sec>
+		<sec desc="tracking geometry cut on the bwd side" name="bwdTrkCutZ" unit="m">-500</sec>
 	</bwdgeocut>
 
 	<!-- beam parameters: from esr-survey-doug.tfs and esr-ring-norad.tfs (2IR, 18 GeV, Jan. 2024) -->
@@ -83,8 +83,8 @@
 		<sec desc="momentum spread" name="spread" unit="">0.068e-2</sec>
 		<sec desc="alpha X" name="alphax" unit="">-5.264224068000</sec>
 		<sec desc="alpha Y" name="alphay" unit="">-0.813223050300</sec>
-		<sec desc="beta X" name="betax" unit="">108.860014800000</sec>
-		<sec desc="beta Y" name="betay" unit="">107.221683200000</sec>
+		<sec desc="beta X" name="betax" unit="m">108.860014800000</sec>
+		<sec desc="beta Y" name="betay" unit="m">107.221683200000</sec>
 		<sec desc="dispersion X" name="etax" unit="m">-8.005710148000e-02</sec>
 		<sec desc="dispersion Y" name="etay" unit="m">-2.451973176000e-16</sec>
 		<sec desc="dispersion PX" name="etapx" unit="">2.620039503000e-02</sec>

@@ -217,8 +217,8 @@ void printOpticsParameters(TString opticsFileName, TString startElementName, TSt
 
 	printf("<sec desc=\"alpha X\" name=\"alphax\" unit=\"\">%.12f</sec>\n",alphax);
 	printf("<sec desc=\"alpha Y\" name=\"alphay\" unit=\"\">%.12f</sec>\n",alphay);
-	printf("<sec desc=\"beta X\" name=\"betax\" unit=\"\">%.12f</sec>\n",betax);
-	printf("<sec desc=\"beta Y\" name=\"betay\" unit=\"\">%.12f</sec>\n",betay);
+	printf("<sec desc=\"beta X\" name=\"betax\" unit=\"m\">%.12f</sec>\n",betax);
+	printf("<sec desc=\"beta Y\" name=\"betay\" unit=\"m\">%.12f</sec>\n",betay);
 	printf("<sec desc=\"dispersion X\" name=\"etax\" unit=\"m\">%.12e</sec>\n",etax);
 	printf("<sec desc=\"dispersion Y\" name=\"etay\" unit=\"m\">%.12e</sec>\n",etay);
 	printf("<sec desc=\"dispersion PX\" name=\"etapx\" unit=\"\">%.12e</sec>\n",etapx);
@@ -278,8 +278,8 @@ void printOpticsParameters_old(TString opticsFileName, TString startElementName,
 	printf("<sec desc=\"integrated quadrupole strength\" name=\"k1l\" unit=\"1/m\">%.12f</sec>\n",k1l);
 	printf("<sec desc=\"alpha X\" name=\"alphax\" unit=\"\">%.12f</sec>\n",alphax);
 	printf("<sec desc=\"alpha Y\" name=\"alphay\" unit=\"\">%.12f</sec>\n",alphay);
-	printf("<sec desc=\"beta X\" name=\"betax\" unit=\"\">%.12f</sec>\n",betax);
-	printf("<sec desc=\"beta Y\" name=\"betay\" unit=\"\">%.12f</sec>\n",betay);
+	printf("<sec desc=\"beta X\" name=\"betax\" unit=\"m\">%.12f</sec>\n",betax);
+	printf("<sec desc=\"beta Y\" name=\"betay\" unit=\"m\">%.12f</sec>\n",betay);
 	printf("<sec desc=\"dispersion X\" name=\"etax\" unit=\"m\">%.12e</sec>\n",etax);
 	printf("<sec desc=\"dispersion Y\" name=\"etay\" unit=\"m\">%.12e</sec>\n",etay);
 	printf("<sec desc=\"dispersion PX\" name=\"etapx\" unit=\"\">%.12e</sec>\n",etapx);
