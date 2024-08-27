@@ -1,17 +1,19 @@
 #!/bin/bash
 
-for beamEnergy in '18x275' '10x275' '5x100'
+beamEnergy=$1 # '18x275' or '10x275' or '5x100'
+
+for mask in 'nosrmask' 'srmask'
 do
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
-	mainInDir="/gpfs02/eic/anatochii/output_v6.3.1_nosrmask_${beamEnergy}GeV_lowStat" # input directory 
+	mainInDir="/gpfs02/eic/anatochii/output_v6.3.1_${mask}_${beamEnergy}GeV_highStat" # input directory 
 	treeName='tree'
-	outputDir="/gpfs02/eic/anatochii/output_g4ana_v6.3.1_nosrmask_${beamEnergy}GeV_lowStat" # output directory "
-	buildDir="./build_${beamEnergy}GeV" # build directory
-	nJobs=1000 # number of jobs
+	outputDir="/gpfs02/eic/anatochii/output_g4ana_v6.3.1_${mask}_${beamEnergy}GeV_highStat" # output directory
+	buildDir="./build_${beamEnergy}GeV_${mask}" # build directory
+	nJobs=10000 # number of jobs
 	# in the custom-built Geant4 coordinate system
-	minZ=-10000.0 # [cm] minimum Z
-	maxZ=10000.0 # [cm] maximum Z
+	minZ=-500.0 # [cm] minimum Z
+	maxZ=500.0 # [cm] maximum Z
 	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 	#--------------------------------------------------#
 	#--------------------------------------------------#
