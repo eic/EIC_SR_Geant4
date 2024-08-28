@@ -8,8 +8,9 @@
 
 	<!-- beam pipe vacuum -->
 		<!-- sec desc="beam pipe file [srmask5]" name="fname">../geometry/beam_pipe_211004_1_mask_in_q0_ePICorient.obj</sec -->
+		<!-- sec desc="beam pipe file [nosrmask]" name="fname">../geometry/beam_pipe_211004_ePICorient.obj</sec -->
 	<beampipe>
-		<sec desc="beam pipe file [nosrmask]" name="fname">../geometry/beam_pipe_211004_ePICorient.obj</sec>
+		<sec desc="beam pipe file [srmask6]" name="fname">../geometry/beam_pipe_211004_1_mask_in_q0_with_vert_mask_ePICorient.obj</sec>
 	</beampipe>
 
 	<!-- beam pipe extension -->

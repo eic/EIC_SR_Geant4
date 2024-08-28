@@ -38,6 +38,8 @@ const G4double lumi_halflen = 2.25 * m;
 DetectorConstruction::DetectorConstruction(RunAction* runAct, G4String xmlFileName) : 
 G4VUserDetectorConstruction(), runAction(runAct)
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	simPar = new SimParameters();
 	simPar->InitDefault();
 	simPar->ReadXML(xmlFileName);
@@ -79,16 +81,20 @@ G4VUserDetectorConstruction(), runAction(runAct)
 
 DetectorConstruction::~DetectorConstruction()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	delete simPar;
 	delete fDetectorMessenger;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
- 	CreateSrMask();
+// 	CreateSrMask();
 //	BuildFwdAnteChamber();
 	BuildIpBeamPipe();
 	BuildMagnets();
@@ -101,6 +107,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 void DetectorConstruction::BuildMaterials()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	G4NistManager* nistManager = G4NistManager::Instance();
 	//- Vacuum
 	mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic");
@@ -110,6 +118,8 @@ void DetectorConstruction::BuildMaterials()
 
 void DetectorConstruction::BuildWorld()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(!mat_vac)
 	{
 		throw runtime_error(
@@ -130,6 +140,8 @@ void DetectorConstruction::BuildWorld()
 
 void DetectorConstruction::CreateBeamPipeSolid()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(!mat_vac)
 	{
 		throw runtime_error(
@@ -273,6 +285,8 @@ void DetectorConstruction::CreateBeamPipeSolid()
 
 void DetectorConstruction::BuildFwdAnteChamber()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(!beampipeVac_solid || !beampipeUni_solid)
 	{
 		throw runtime_error(
@@ -354,6 +368,8 @@ void DetectorConstruction::BuildFwdAnteChamber()
 
 void DetectorConstruction::BuildIpBeamPipe()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_log)
 	{
 		throw runtime_error(
@@ -382,6 +398,8 @@ void DetectorConstruction::BuildIpBeamPipe()
 
 void DetectorConstruction::BuildTaggers()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(!farbwd_beampipeVac_log1)
 	{
 		throw runtime_error(
@@ -421,6 +439,8 @@ void DetectorConstruction::BuildTaggers()
 
 void DetectorConstruction::BuildMagnets()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(	!mat_vac || !beampipeVac_solid || !beampipeUni_solid || 
 		!world_log || !bwd_beampipeVac_solid || 
 		!farbwd_beampipeVac_solid1 || !farbwd_beampipeVac_solid2 || !farbwd_beampipe_tube)
@@ -683,6 +703,8 @@ void DetectorConstruction::BuildMagnets()
 
 void DetectorConstruction::CreateSrMask()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_log)
 	{
 		throw runtime_error(
@@ -780,6 +802,8 @@ G4MagneticField* DetectorConstruction::GetMagField(	G4int iMag,
 							G4ThreeVector field_origin,
 							G4RotationMatrix* field_rot)
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(mass < 0 || gamma < 0)
 	{
 		throw runtime_error(
@@ -841,6 +865,8 @@ G4MagneticField* DetectorConstruction::GetMagField(	G4int iMag,
 
 void DetectorConstruction::BuildParticles()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
         G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
         G4ParticleDefinition* particleDef;
         particleDef = particleTable->FindParticle(simPar->GetBeamName().c_str());
@@ -850,10 +876,10 @@ void DetectorConstruction::BuildParticles()
 	return;
 }
 
-
-
 void DetectorConstruction::BuildIrBeamPipe()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(!mat_vac || !beampipeVac_solid || !world_log || !bwd_beampipeVac_solid)
 	{
 		throw runtime_error(
@@ -906,6 +932,8 @@ void DetectorConstruction::BuildIrBeamPipe()
 
 void DetectorConstruction::BuildAbsorbers()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	if(!mat_vac || !beampipeUni_solid || !world_log)
 	{
 		throw runtime_error(
@@ -967,6 +995,8 @@ void DetectorConstruction::BuildAbsorbers()
 
 void DetectorConstruction::SetTaggerDistance(G4double dist)
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	dist_tag.push_back(dist);
 	G4cout	<<G4endl
 		<<"[INFO] DetectorConstruction::SetTaggerDistance ==> "
@@ -979,6 +1009,8 @@ void DetectorConstruction::SetTaggerDistance(G4double dist)
 
 void DetectorConstruction::SetAnteChamberH(G4double H)
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	bwd_ante_chmbH = H;
 	G4cout  <<G4endl
 		<<"[INFO] DetectorConstruction::SetAnteChamberH ==> "
@@ -990,5 +1022,7 @@ void DetectorConstruction::SetAnteChamberH(G4double H)
 
 void DetectorConstruction::ModifyGeometry()
 {
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
 	G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
 }
