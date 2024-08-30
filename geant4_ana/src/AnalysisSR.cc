@@ -114,6 +114,7 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 		101000,-1000,100000);
 	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",101000,-1000,100000);
 	_h2 = new TH2F("h2","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",10000,-6000,4000,2000,-100,100);
+	_h21 = new TH2F("h21","SR photon position vs energy;Z_{#gamma} [cm];X_{#gamma} [cm];E_{#gamma} [eV]",10000,-6000,4000,2000,-100,100);
 	_h3x = new TH2F("h3x","SR photon vertex position;Z_{vtx} [cm];X_{vtx} [cm]",10000,-6000,4000,2000,-100,100);
 	_h3y = new TH2F("h3y","SR photon vertex position;Z_{vtx} [cm];Y_{vtx} [cm]",10000,-6000,4000,2000,-100,100);
 
@@ -128,7 +129,9 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	_h9 = new TH1F("h9",Form("Beam [(%.1e,%.1e,%.1e) cm, %.1e rad]: Momentum;P [GeV/c]",
 		beamRefPosX_cm->at(0),beamRefPosY_cm->at(0),beamRefPosZ_cm->at(0),beamRefAngle_rad->at(0)),20000,0,20);
 
-	_h21 = new TH2F("h21","SR photon position vs energy;Z_{#gamma} [cm];X_{#gamma} [cm];E_{#gamma} [eV]",10000,-6000,4000,2000,-100,100);
+	_h21_hepmc = new TH2F("h21_hepmc","SR photon X-Z position vs energy (backtracked);Z_{#gamma} [cm];X_{#gamma} [cm];E_{#gamma} [eV]",10000,-6000,4000,2000,-100,100);
+	_h22_hepmc = new TH2F("h22_hepmc","SR photon Y-Z position vs energy (backtracked);Z_{#gamma} [cm];Y_{#gamma} [cm];E_{#gamma} [eV]",10000,-6000,4000,2000,-100,100);
+	_h23_hepmc = new TH2F("h23_hepmc","SR photon Y-X position vs energy (backtracked);X_{#gamma} [cm];Y_{#gamma} [cm];E_{#gamma} [eV]",2000,-100,100,2000,-100,100);
 
 	for(Int_t iMag = 0; iMag < magName->size(); iMag++)
 	{
@@ -166,7 +169,7 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	return;
 }
 
-void AnalysisSR::Loop()
+void AnalysisSR::Loop(Float_t r_target = 0)
 {
   	if(!_fChain){return;}
 
@@ -252,6 +255,15 @@ void AnalysisSR::Loop()
 			py = gammaMomY_eV->at(i)/1e9; // eV -> GeV
 			pz = gammaMomZ_eV->at(i)/1e9; // eV -> GeV
 
+			BackTrack(x,y,z,px,py,pz,r_target);
+
+			//---------------------------------------------------------------------------
+			// fill histograms in HepMC
+			_h21_hepmc->Fill(z/1e1,x/1e1,TMath::Sqrt(px*px+py*py+pz*pz)*1e9); // mm -> cm, GeV -> eV
+			_h22_hepmc->Fill(z/1e1,y/1e1,TMath::Sqrt(px*px+py*py+pz*pz)*1e9); // mm -> cm, GeV -> eV
+			_h23_hepmc->Fill(x/1e1,y/1e1,TMath::Sqrt(px*px+py*py+pz*pz)*1e9); // mm -> cm, GeV -> eV
+			//---------------------------------------------------------------------------
+
 			energy = gammaEnergy_eV->at(i)/1e9; // eV -> GeV
 			pdg = 22; // gamma
 
@@ -332,6 +344,9 @@ void AnalysisSR::Loop()
 	_h8->Write();
 	_h9->Write();
 	_h21->Write();
+	_h21_hepmc->Write();
+	_h22_hepmc->Write();
+	_h23_hepmc->Write();
 	for(Int_t iMag = 0; iMag < magName->size(); iMag++)
 	{
 		_h10[iMag]->Write();
@@ -350,6 +365,31 @@ void AnalysisSR::Loop()
 	h1_ene_dirz->Write();
 
 	f->Close();
+
+	return;
+}
+
+void AnalysisSR::BackTrack(Float_t &x, Float_t &y, Float_t &z, Float_t &px, Float_t &py, Float_t &pz, Float_t r_target)
+{	
+	// Put all photons on the reference beam pipe
+	Float_t r_current = TMath::Sqrt(x * x + y * y);
+	if(r_current > r_target && r_target >= 0)
+	{
+		// Momentum vector in the x-y plane
+		Float_t momentum_xy = TMath::Sqrt(px * px + py * py);
+
+		// Ensure that the momentum is not zero to avoid division by zero  
+		if(momentum_xy != 0)
+		{
+			// Calculate the scaling factor (lambda) to achieve the target radius
+			Float_t lambda = (r_target - r_current) / momentum_xy;  
+
+			// Update the photon's position along the momentum direction
+			x += lambda * px;
+			y += lambda * py;
+			z += lambda * pz;
+		}
+	}
 
 	return;
 }

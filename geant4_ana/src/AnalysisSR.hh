@@ -132,13 +132,14 @@ public :
 	TBranch        *b_monRefAngle_rad;   //!
 
  	void Init(TString,Double_t,Double_t);
-	void Loop();
+	void Loop(Float_t r_target = 0);
 	void SetInputFileName(TString val){_inputFileName = val; return;}
 	TString GetInputFileName(){return _inputFileName;}
 	void SetOutputFileNameRoot(TString val){_outputFileName_root = val; return;}
 	TString GetOutputFileNameRoot(){return _outputFileName_root;}
 	void SetOutputFileNameHepmc(TString val){_outputFileName_hepmc = val; return;}
 	TString GetOutputFileNameHepmc(){return _outputFileName_hepmc;}
+	void BackTrack(Float_t &x, Float_t &y, Float_t &z, Float_t &px, Float_t &py, Float_t &pz, Float_t r_target);
 
 private:
 
@@ -164,6 +165,9 @@ private:
 	TH1F* _h9;
 	TH1F* _h10[NMAGMAX];
 	TH1F* _h11[NMAGMAX];
+	TH2F* _h21_hepmc;
+	TH2F* _h22_hepmc;
+	TH2F* _h23_hepmc;
 
 	// for benchmark/debug
 	TH1D*	h1_ene;	

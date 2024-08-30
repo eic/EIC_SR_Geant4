@@ -15,6 +15,7 @@ do
 	minZ=-500.0 # [cm] minimum Z
 	maxZ=500.0 # [cm] maximum Z
 	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
+	r_target=20 # target radius to backtrack absorbed SR photons [mm]
 	#--------------------------------------------------#
 	#--------------------------------------------------#
 
@@ -48,13 +49,13 @@ do
 	instructionFile="instr.sub"
 
 	echo "#!/bin/bash" > run.bash
-	echo "echo \"./exe \$1 \$2 \$3 output_ana_\$4 \$5 \$6 \$7 &> \$3/logExe_\${4}.txt\" > exe_\${4}.bash" >> run.bash
-	echo "chmod 777 exe_\${4}.bash" >> run.bash
-	echo ". ${eicshell} -- ./exe_\${4}.bash" >> run.bash
+	echo "echo \"./exe ${mainInDir} output_\${1}.root ${outputDir} output_ana_\${1} ${treeName} ${minZ} ${maxZ} ${r_target} &> ${outputDir}/logExe_\${1}.txt\" > exe_\${1}.bash" >> run.bash
+	echo "chmod 777 exe_\${1}.bash" >> run.bash
+	echo ". ${eicshell} -- ./exe_\${1}.bash" >> run.bash
 	chmod 777 run.bash
 
 	echo "executable = run.bash" > ${instructionFile}
-	echo "arguments  = ${mainInDir} output_\$(ProcId).root ${outputDir} \$(ProcId) ${treeName} ${minZ} ${maxZ}" >> ${instructionFile}
+	echo "arguments  = \$(ProcId)" >> ${instructionFile}
 #	echo "log        = ${outputDir}/logJob_\$(ProcId).log" >> ${instructionFile}
 #	echo "error      = ${outputDir}/logErr_\$(ProcId).err" >> ${instructionFile}
 	echo "queue ${nJobs}" >> ${instructionFile}

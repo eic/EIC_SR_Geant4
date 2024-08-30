@@ -18,8 +18,9 @@ int main(int argc, char* argv[])
 
 	TString mainInDir, inputFileName, mainOutDir, outputFileName, treeName;
 	Double_t minZ, maxZ;
+	Float_t r_target_mm;
 
-	if(argc == 8)
+	if(argc == 9)
 	{
 		mainInDir 	= argv[1];
 		inputFileName 	= argv[2];
@@ -28,6 +29,7 @@ int main(int argc, char* argv[])
 		treeName 	= argv[5]; 
 		minZ		= atof(argv[6]);
 		maxZ		= atof(argv[7]);
+		r_target_mm	= atof(argv[8]);
 		
 		cout<<"\n\n=================================================================="<<endl;
 		cout<<"[INFO] main ==> Input parameters"<<endl;
@@ -38,14 +40,15 @@ int main(int argc, char* argv[])
 		cout<<"argv[5] = "<<treeName<<endl;
 		cout<<"argv[6] = "<<minZ<<endl;
 		cout<<"argv[7] = "<<maxZ<<endl;
+		cout<<"argv[8] = "<<r_target_mm<<endl;
 		cout<<"==================================================================\n"<<endl;
 	}
 	else
 	{
 		cout<<"\n\n=================================================================="<<endl;
 		cout<<"[ERROR] main ==> Wrong number of input parameters: argc = "<<argc<<endl;
-		cout<<"Usage: [executable] [input file directory] [input file name] [output file directory] [output file name pattern] [input tree name] [min Z in cm] [max Z in cm]"<<endl;
-		cout<<"Example: ./exe ../../geant4_sim/output output_*.root ../output output tree -10000 10000"<<endl;
+		cout<<"Usage: [executable] [input file directory] [input file name] [output file directory] [output file name pattern] [input tree name] [min Z in cm] [max Z in cm] [r_target in mm]"<<endl;
+		cout<<"Example: ./exe ../../geant4_sim/output output_*.root ../output output tree -10000 10000 0"<<endl;
 		cout<<"==================================================================\n"<<endl;
 
 		return -1;
@@ -61,8 +64,9 @@ int main(int argc, char* argv[])
     	cout<<"[INFO] Input file name: "<<ana->GetInputFileName()<<endl;
     	cout<<"[INFO] Output ROOT file name: "<<ana->GetOutputFileNameRoot()<<endl;
     	cout<<"[INFO] Output HEPMC file name: "<<ana->GetOutputFileNameHepmc()<<endl;
+	cout<<"[INFO] Target radius = "<<r_target_mm<<" [mm]"<<endl;
 
-    	ana->Loop();
+    	ana->Loop(r_target_mm);
     	ana->~AnalysisSR();
 
     	stop_time = time(NULL);
