@@ -132,7 +132,7 @@ public :
 	TBranch        *b_monRefAngle_rad;   //!
 
  	void Init(TString,Double_t,Double_t);
-	void Loop(Float_t r_target = 0);
+	void Loop(Float_t);
 	void SetInputFileName(TString val){_inputFileName = val; return;}
 	TString GetInputFileName(){return _inputFileName;}
 	void SetOutputFileNameRoot(TString val){_outputFileName_root = val; return;}
