@@ -7,7 +7,8 @@ outputDirName="/gpfs02/eic/anatochii/${1}_highstat_output_eicrecon_v6.2_srmask5_
 buildDir="./build_${1}" # build directory
 nJobs=10000 # number of jobs
 eicshell='/direct/eic+u/anatochii/eic/eic-shell'
-eicsetup='/direct/eic+u/anatochii/eic/epic/install/setup.sh'
+#eicsetup='/direct/eic+u/anatochii/eic/epic/install/setup.sh'
+eicsetup='/direct/eic+u/anatochii/eic/epic/install/bin/thisepic.sh'
 #--------------------------------------------------#
 #--------------------------------------------------#
 

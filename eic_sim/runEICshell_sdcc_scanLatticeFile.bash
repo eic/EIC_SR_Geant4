@@ -36,8 +36,8 @@ do
 
 	echo "executable = exe.bash" > ${instructionFile}
 	echo "arguments  = \$(ProcId) ${inputDirName} ${outputDirName} ${eicshell} ${eicsetup} ${compactFile}" >> ${instructionFile}
-	echo "log        = ${outputDirName}/logJob_\$(ProcId).log" >> ${instructionFile}
-	echo "error      = ${outputDirName}/logErr_\$(ProcId).err" >> ${instructionFile}
+#	echo "log        = ${outputDirName}/logJob_\$(ProcId).log" >> ${instructionFile}
+#	echo "error      = ${outputDirName}/logErr_\$(ProcId).err" >> ${instructionFile}
 	echo "queue ${nJobs}" >> ${instructionFile}
 
 	condor_submit ${instructionFile}

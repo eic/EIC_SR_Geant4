@@ -1,11 +1,15 @@
 #!/bin/bash
 
-for beamEnergy in '18x275' '10x275' '5x100'
+beamEnergy=$1 # '18x275' or '10x275' or '5x100'
+
+for mask in 'nosrmask' 'srmask5' 'srmask6'
 do
-	directory="/gpfs02/eic/anatochii/output_v6.3.1_nosrmask_${beamEnergy}GeV_lowStat"
+	echo "[INFO] Beam Energy ${beamEnergy}GeV"
+
+	directory="/gpfs02/eic/anatochii/output_v6.3.1_${mask}_${beamEnergy}GeV_tracks"
 	extension=".root"
-	outputfile="/gpfs02/eic/anatochii/output_v6.3.1_nosrmask_${beamEnergy}GeV_lowStat_tracks.root"
-	picsdir="pics_v6.3.1_nosrmask_${beamEnergy}GeV_lowStat"
+	outputfile="${directory}.root"
+	picsdir="${directory}/pics"
 
 	mkdir -pv ${picsdir}
 

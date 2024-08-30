@@ -166,6 +166,12 @@ void getStoredTracks(const string outputfile)
 	// loop over tracks
 	for(Long64_t i = 0; i < nentries; i++)
 	{
+		if(i%100 == 0)
+        	{
+           	 	printf("\r[INFO] Progress: %.3f [%%]",100.0*i/nentries);
+            		fflush(stdout);
+        	}
+
 		// get track
 		fChain->GetEntry(i);
 		h1_en->Fill(trackEne_GeV->back()*1e6); // [GeV --> keV]
@@ -214,6 +220,7 @@ void getStoredTracks(const string outputfile)
 			h1_rz->Fill(z1,r1,1);
 		}
 	}
+	cout<<endl;
 
 	// write the multigraph to file
 	TFile* file = new TFile(outputfile.c_str(),"recreate");

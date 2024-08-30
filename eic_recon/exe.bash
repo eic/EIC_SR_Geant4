@@ -16,7 +16,8 @@ nRawHitsArray=("B0ECalRawHits" "B0TrackerRawHits" "BackwardMPGDEndcapRawHits" "D
 
 nRecHitsArray=("B0ECalRecHits" "B0TrackerRecHits" "BackwardMPGDEndcapRecHits" "DIRCBarRecHits" "DRICHRecHits" "EcalBarrelImagingRecHits" "EcalBarrelScFiRecHits" "EcalEndcapNRecHits" "EcalEndcapPRecHits" "EcalEndcapPInsertRecHits" "EcalFarForwardZDCRecHits" "EcalLumiSpecRecHits" "ForwardMPGDEndcapRecHits" "ForwardOffMTrackerRecHits" "ForwardRomanPotRecHits" "HcalBarrelRecHits" "HcalEndcapNRecHits" "HcalEndcapPInsertRecHits" "HcalFarForwardZDCRecHits" "LFHCALRecHits" "LumiDirectPCALRecHits" "LumiSpecTrackerRecHits" "MPGDBarrelRecHits" "OuterMPGDBarrelRecHits" "PFRICHRecHits" "SiBarrelTrackerRecHits" "TaggerTrackerRecHits" "TOFBarrelRecHits" "TOFEndcapRecHits" "SiEndcapTrackerRecHits" "SiBarrelVertexRecHits")
 
-echo -ne "time eicrecon -Ppodio:output_include_collections=\"" >> ${runFile}
+#echo -ne "time eicrecon -Ppodio:output_include_collections=\"" >> ${runFile}
+echo -ne "time eicrecon -Ppodio:output_collections=\"" >> ${runFile}
 echo -ne "MCParticles,LumiWindowCALHits" >> ${runFile}
 #- Sim Hits
 for str in ${nHitsArray[@]}
@@ -36,7 +37,7 @@ done
 
 echo -ne "\" " >> ${runFile} 
 echo -ne "-Ppodio:output_file=${outputDirName}/output_eicrecon_${jobID}.podio.root " >> ${runFile} 
-echo "-Phistsfile=${outputDirName}/output_eicrecon_${jobID}.hist.root ${inputDirName}/output_eicsim_${jobID}.edm4hep.root" >> ${runFile}
+echo "-Phistsfile=${outputDirName}/output_eicrecon_${jobID}.hist.root ${inputDirName}/output_eicsim_${jobID}.edm4hep.root &> ${outputDirName}/logExe_${jobID}.txt" >> ${runFile}
 # -Pjana:nevents=1000 <-- to limit the number of events
 
 chmod 777 ${runFile}

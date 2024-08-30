@@ -55,8 +55,8 @@ do
 
 	echo "executable = run.bash" > ${instructionFile}
 	echo "arguments  = ${mainInDir} output_\$(ProcId).root ${outputDir} \$(ProcId) ${treeName} ${minZ} ${maxZ}" >> ${instructionFile}
-	echo "log        = ${outputDir}/logJob_\$(ProcId).log" >> ${instructionFile}
-	echo "error      = ${outputDir}/logErr_\$(ProcId).err" >> ${instructionFile}
+#	echo "log        = ${outputDir}/logJob_\$(ProcId).log" >> ${instructionFile}
+#	echo "error      = ${outputDir}/logErr_\$(ProcId).err" >> ${instructionFile}
 	echo "queue ${nJobs}" >> ${instructionFile}
 
 	condor_submit ${instructionFile}

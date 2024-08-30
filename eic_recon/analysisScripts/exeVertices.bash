@@ -15,7 +15,7 @@ echo -ne "time root -l -b -q ${scriptName}\(" >> ${runFile}
 echo -ne "\\\"${inputDirName}/output_eicrecon_${jobID}.podio.root\\\"" >> ${runFile}
 echo -ne "," >> ${runFile}
 echo -ne "\\\"${outputDirName}/output_eicrecon_${jobID}.vertex.root\\\"" >> ${runFile}
-echo     "\)" >> ${runFile}
+echo     "\) &> ${outputDirName}/logAllVerticesExe_${jobID}.txt" >> ${runFile}
 
 # make the file executable
 chmod 777 ${runFile}

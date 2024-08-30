@@ -6,16 +6,16 @@ date;
 
 beamEnergy=$1 # '18x275' or '10x275' or '5x100'
 
-for mask in 'nosrmask' 'srmask'
+for mask in 'nosrmask' 'srmask5' 'srmask6'
 do
 	echo "[INFO] Beam Energy ${beamEnergy}GeV"
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
 	xmlFile="/direct/eic+u/anatochii/EIC_SR_Geant4/geant4_sim/geometry/simParameters_v6.3.1_${beamEnergy}GeV_${mask}.xml" # simulation geometry settings
 	nParticles=10000 # number of primary particles per job
-	outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${mask}_${beamEnergy}GeV_highStat" # output directory
-	buildDir="./build_${beamEnergy}GeV_${mask}" # build directory
-	nJobs=10000 # number of jobs
+	outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${mask}_${beamEnergy}GeV_tracks" # output directory
+	buildDir="./build_${beamEnergy}GeV_${mask}_tracks" # build directory
+	nJobs=3000 # number of jobs
 	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 	#--------------------------------------------------#
 	#--------------------------------------------------#
@@ -61,8 +61,8 @@ do
 
 	echo "executable = runAll_sdcc.bash" > ${instructionFile}
 	echo "arguments  = \$(ProcId) $nParticles $xmlFile $eicshell $outputDir" >> ${instructionFile}
-	echo "log        = ${outputDir}/logJob_\$(ProcId).log" >> ${instructionFile}
-	echo "error      = ${outputDir}/logErr_\$(ProcId).err" >> ${instructionFile}
+#	echo "log        = ${outputDir}/logJob_\$(ProcId).log" >> ${instructionFile}
+#	echo "error      = ${outputDir}/logErr_\$(ProcId).err" >> ${instructionFile}
 	echo "queue ${nJobs}" >> ${instructionFile}
 
 	condor_submit ${instructionFile}
