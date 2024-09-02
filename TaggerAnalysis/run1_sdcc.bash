@@ -1,29 +1,34 @@
 #!/bin/bash 
 
-eicshell='/direct/eic+u/anatochii/eic/eic-shell'
-outputDir='/gpfs02/eic/anatochii/output_v6.3_modif_bwd2_hepmc'
-fIn="${outputDir}/output_0.root"
-fOut="${outputDir}/ana1_output_0.root"
-runDir="./runDir"
+for beamEnergy in '18x275' '10x275' '5x100'
+do
+	echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
-mkdir -pv ${outputDir}
-mkdir -pv ${runDir}
-cd ${runDir}
-cp ../ana1.C ./
-instructionFile="instr.sub"
-runFile='run.bash'
-exeFile='exe.bash'
+	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
+	outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_lowQ2"
+	fIn="${outputDir}/output_0.root"
+	fOut="${outputDir}/ana1_output_0.root"
+	runDir="${outputDir}/runDir"
 
-echo "#!/bin/bash" > ${runFile}
-echo "echo \"root -l -b -q ana1.C\(\\\\\\\"\$1\\\\\\\",\\\\\\\"\$2\\\\\\\"\) &> ${outputDir}/logExe_ana1.txt\" > ${exeFile}" >> ${runFile}  
-echo "chmod 777 ${exeFile}" >> ${runFile}
-echo ". ${eicshell} -- ./${exeFile}" >> ${runFile} 
-chmod 777 ${runFile} 
+	mkdir -pv ${runDir}
+	cp ana1.C ${runDir}
+	cd ${runDir}
+	instructionFile="instr.sub"
+	runFile='run.bash'
+	exeFile='exe.bash'
 
-echo "executable = ${runFile}" > ${instructionFile}
-echo "arguments  = ${fIn} ${fOut}" >> ${instructionFile}
-echo "log        = ${outputDir}/logJob_ana1.txt" >> ${instructionFile}
-echo "error      = ${outputDir}/logErr_ana1.txt" >> ${instructionFile}
-echo "queue ${nJobs}" >> ${instructionFile}
+	echo "#!/bin/bash" > ${runFile}
+	echo "echo \"root -l -b -q ana1.C\(\\\\\\\"\$1\\\\\\\",\\\\\\\"\$2\\\\\\\"\) &> ${outputDir}/logExe_ana1.txt\" > ${exeFile}" >> ${runFile}  
+	echo "chmod 777 ${exeFile}" >> ${runFile}
+	echo ". ${eicshell} -- ./${exeFile}" >> ${runFile} 
+	chmod 777 ${runFile} 
 
-condor_submit ${instructionFile}
+	echo "executable = ${runFile}" > ${instructionFile}
+	echo "arguments  = ${fIn} ${fOut}" >> ${instructionFile}
+	echo "log        = ${outputDir}/logJob_ana1.txt" >> ${instructionFile}
+	echo "error      = ${outputDir}/logErr_ana1.txt" >> ${instructionFile}
+	echo "queue ${nJobs}" >> ${instructionFile}
+
+	condor_submit ${instructionFile}
+	cd -
+done
