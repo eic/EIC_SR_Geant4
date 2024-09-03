@@ -23,7 +23,7 @@
 	<!-- ip beam pipe - gold -->
 	<ipbeampipe>
 		<sec desc="fwd Z" name="zmin" unit="cm">-79.9</sec>
-		<sec desc="bwd Z" name="zmax" unit="cm">67</sec>
+		<sec desc="bwd Z" name="zmax" unit="cm">66.9</sec>
 	</ipbeampipe>
 
 	<!-- synrad model -->
@@ -46,15 +46,15 @@
 
 	<!-- tracked gamma cuts -->
 	<gammacut>
-		<sec desc="gamma energy cut" name="ecut" unit="eV">30</sec>
-		<sec desc="gamma straight track kill: 1 - true; 0 - false" name="trackkill">0</sec>
-		<sec desc="gamma straight track Dmin" name="Dmin" unit="mm">43.0</sec>
-		<sec desc="gamma straight track Zend" name="Zend" unit="cm">-2227.0</sec>
+		<sec desc="gamma energy cut" name="ecut" unit="eV">1000</sec>
+		<sec desc="gamma straight track kill: 1 - true; 0 - false" name="trackkill">1</sec>
+		<sec desc="gamma straight track Dmin" name="Dmin" unit="mm">40.0</sec>
+		<sec desc="gamma straight track Zend" name="Zend" unit="cm">-2450.0</sec>
 	</gammacut>
 
 	<!-- scale the number of SR gammas per electron -->
 	<meanfreepath>
-		<sec desc="gamma production scale factor to modify MeanFreePath" name="MeanFreePathFactor" unit="">1</sec>
+		<sec desc="gamma production scale factor to modify MeanFreePath" name="MeanFreePathFactor" unit="">10</sec>
 	</meanfreepath>
 
 	<!-- tracking time cut -->
@@ -64,7 +64,7 @@
 
 	<!-- stop tracking on the backward side -->
 	<bwdgeocut>
-		<sec desc="tracking geometry cut on the bwd side" name="bwdTrkCutZ" unit="m">-500</sec>
+		<sec desc="tracking geometry cut on the bwd side" name="bwdTrkCutZ" unit="m">-5</sec>
 	</bwdgeocut>
 
 	<!-- beam parameters: from esr-survey-doug.tfs and esr-ring-norad.tfs (2IR, 18 GeV, Jan. 2024) -->
@@ -73,7 +73,7 @@
 	<!-- while 'end position' means at the beginning of the current element (OWW_SH, same for optics functions) -->
 		<!-- sec desc="hepmc file" name="hepmcfilename">../LowQ2_Pythia_HepMC3/pythia_ep_noradcor_5x100_q2_0.000000001_1.0_run1.ab.hepmc</sec -->
 	<generator>
-		<sec desc="particle generator: Beam or HepMC" name="genname">HepMC</sec>
+		<sec desc="particle generator: Beam or HepMC" name="genname">Beam</sec>
 		<sec desc="particle" name="part">e-</sec>
 		<sec desc="start position X in a global ref. system" name="posx1" unit="m">-589.557294783830</sec>
 		<sec desc="start position Y in a global ref. system" name="posy1" unit="m">0.000000000000</sec>
@@ -310,7 +310,7 @@
 			<sec desc="hor. angle in a global ref. system" name="theta" unit="rad">3.149592653590</sec>
 		</ip>
 		<monitor>
-			<sec desc="the name of the magnet in front of the beam monitor" name="magname">Q3ER</sec>
+			<sec desc="the name of the magnet in front of the beam monitor" name="magname">Q2ER</sec>
 		</monitor>
 	</magnets>
 </xml>
