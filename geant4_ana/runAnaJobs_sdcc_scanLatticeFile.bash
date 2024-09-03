@@ -12,8 +12,8 @@ do
 	buildDir="./build_${beamEnergy}GeV_${mask}" # build directory
 	nJobs=10000 # number of jobs
 	# in the custom-built Geant4 coordinate system
-	minZ=-500.0 # [cm] minimum Z
-	maxZ=500.0 # [cm] maximum Z
+	minZ=-79.9 # [cm] minimum Z
+	maxZ=66.9 # [cm] maximum Z
 	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 	r_target=20 # target radius to backtrack absorbed SR photons [mm]
 	#--------------------------------------------------#
