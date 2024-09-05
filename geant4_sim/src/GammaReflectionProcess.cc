@@ -1,11 +1,4 @@
 #include "GammaReflectionProcess.hh"
-#include "G4VParticleChange.hh"
-#include "G4VSolid.hh"
-#include "globals.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4ParallelWorldProcess.hh"
-#include "G4TransportationManager.hh"
-#include "G4Exp.hh"
 
 #define NMAXLOOPS 100 // the maximum number of loops to find acceptable angular offsets
 
@@ -336,16 +329,16 @@ void GammaReflectionProcess::DoGammaReflection1(const G4double GamEner,
 
 	// get reflection probability from the database
 	if(volName == "vac_IP" || volName == "vac_ip") // Au ip beam pipe
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Au"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Au"],
 			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle/rad,GamEner/eV);
 	else if(G4StrUtil::contains(volName,"vac_TaggerFoil_")) // Cu tagger foil
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Cu"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Cu"],
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
 	else if(volName == "lumiWind") // Al lumi exit window
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Al"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Al"],
 			_grazingAngleMap["Al"],_photonEnergyMap["Al"],grazingPhotonAngle/rad,GamEner/eV);
 	else // Cu beam pipe
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Cu"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Cu"],
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
 
 	//- Roughtness
@@ -495,16 +488,16 @@ void GammaReflectionProcess::DoGammaReflection2(const G4double GamEner,
 
 	// get reflection probability from the database
 	if(volName == "vac_IP" || volName == "vac_ip") // Au ip beam pipe
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Au"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Au"],
 			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle/rad,GamEner/eV);
 	else if(G4StrUtil::contains(volName,"vac_TaggerFoil_")) // Cu tagger foil
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Cu"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Cu"],
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
 	else if(volName == "lumiWind") // Al lumi exit window
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Al"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Al"],
 			_grazingAngleMap["Al"],_photonEnergyMap["Al"],grazingPhotonAngle/rad,GamEner/eV);
 	else // Cu beam pipe
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Cu"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Cu"],
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
 
 	return;
@@ -585,16 +578,16 @@ void GammaReflectionProcess::DoGammaReflection3(const G4double GamEner,
 
 	// get reflection probability from the database
 	if(volName == "vac_IP" || volName == "vac_ip") // Au ip beam pipe
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Au"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Au"],
 			_grazingAngleMap["Au"],_photonEnergyMap["Au"],grazingPhotonAngle/rad,GamEner/eV);
 	else if(G4StrUtil::contains(volName,"vac_TaggerFoil_")) // Cu tagger foil
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Cu"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Cu"],
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
 	else if(volName == "lumiWind") // Al lumi exit window
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Al"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Al"],
 			_grazingAngleMap["Al"],_photonEnergyMap["Al"],grazingPhotonAngle/rad,GamEner/eV);
 	else // Cu beam pipe
-		prob = FindReflectionProbabilityLogInt(_reflectDataMap["Cu"],
+		prob = FindReflectionProbabilityLogLog(_reflectDataMap["Cu"],
 			_grazingAngleMap["Cu"],_photonEnergyMap["Cu"],grazingPhotonAngle/rad,GamEner/eV);
 
 	//- Roughtness
@@ -956,7 +949,7 @@ void GammaReflectionProcess::FindClosestIndexesInVec(vector<double> vec, double 
 	return;
 }
 
-double GammaReflectionProcess::FindReflectionProbabilityLogInt(	vector<pair<double, vector<double>>> dataset,
+double GammaReflectionProcess::FindReflectionProbabilityLogLog(	vector<pair<double, vector<double>>> dataset,
 								vector<double> angle, vector<double> energy, 
 								double angle_val, double energy_val)
 {
@@ -972,11 +965,12 @@ double GammaReflectionProcess::FindReflectionProbabilityLogInt(	vector<pair<doub
 	double prob_ij = dataset.at(ang_i).second.at(ene_j);
 	double prob_jj = dataset.at(ang_j).second.at(ene_j);
 
-	// log10 interpolation between two points
-	prob_ii = log10(prob_ii);
-	prob_ji = log10(prob_ji);
-	prob_ij = log10(prob_ij);
-	prob_jj = log10(prob_jj);
+	//prob_ii = log10(prob_ii);
+	//prob_ji = log10(prob_ji);
+	//prob_ij = log10(prob_ij);
+	//prob_jj = log10(prob_jj);
+
+	// log10 interpolation for angles and energies
 	angle_val = log10(angle_val);
 	energy_val = log10(energy_val);
 
@@ -995,10 +989,11 @@ double GammaReflectionProcess::FindReflectionProbabilityLogInt(	vector<pair<doub
 	double b = prob1 - k*log10(angle.at(ang_i));
 	double prob = (angle.at(ang_j) == angle.at(ang_i)) ? prob1 : k*angle_val + b;
 
-	return pow(10,prob);
+	//return pow(10,prob);
+	return (prob);
 }
 
-double GammaReflectionProcess::FindReflectionProbability(	vector<pair<double, vector<double>>> dataset,
+double GammaReflectionProcess::FindReflectionProbabilityLinLin(	vector<pair<double, vector<double>>> dataset,
 								vector<double> angle, vector<double> energy, 
 								double angle_val, double energy_val)
 {
