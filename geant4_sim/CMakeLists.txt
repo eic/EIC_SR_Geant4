@@ -72,6 +72,7 @@ set(exe_SCRIPTS
   vis.mac
   runAll_kekcc.bash
   runAll_sdcc.bash
+  runAll_jlab.bash
   )
 
 foreach(_script ${exe_SCRIPTS})
