@@ -48,6 +48,8 @@ geant4_sim/geometry/*.png
 geant4_ana/build*
 geant4_ana/output*
 geant4_ana/pics*
+geant4_ana/log*
+geant4_ana/getSimpleHist/log*
 
 # eic sim
 eic_sim/output*         

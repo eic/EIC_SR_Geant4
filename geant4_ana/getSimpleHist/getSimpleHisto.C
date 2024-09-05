@@ -3,8 +3,8 @@ void getSimpleHisto(TString dirName = "/gpfs02/eic/anatochii/output_g4ana_v6.3_n
 	cout<<"[INFO] dirName = "<<dirName<<" | nFiles = "<<nFiles<<endl;
 	Long64_t nEntries = 0;
 	TH1F* h1_com = new TH1F("h1_com","SR photon energy;E_{#gamma} [eV];# of photons",101000,-1000,100000);
-	TH2F* h2_com = new TH2F("h2_com","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",8000,-4000,4000,2000,-100,100);
-	TH2F* h21_com = new TH2F("h21_com","SR photon position vs energy;Z_{#gamma} [cm];X_{#gamma} [cm];E_{#gamma} [eV]",8000,-4000,4000,2000,-100,100);
+	TH2F* h2_com = new TH2F("h2_com","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",10000,-6000,4000,2000,-100,100);
+	TH2F* h21_com = new TH2F("h21_com","SR photon position vs energy;Z_{#gamma} [cm];X_{#gamma} [cm];E_{#gamma} [eV]",10000,-6000,4000,2000,-100,100);
 
 	for(Int_t i = 0; i < nFiles; i++)
 	{
