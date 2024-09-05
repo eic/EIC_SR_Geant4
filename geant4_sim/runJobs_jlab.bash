@@ -22,7 +22,8 @@ do
 	nParticles=10000
 	# output directory
 	outputDir="/work/eic/users/anatochii/output_g4sim_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
-	buildDir="./build_${beamEnergy}GeV_${runID}" # build directory
+	# build directory
+	buildDir="./build_${beamEnergy}GeV_${runID}"
 	# number of jobs
 	nJobs=10000 # SLURM: MaxArraySize=10001 
 	# eic-shell
