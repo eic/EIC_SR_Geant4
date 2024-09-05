@@ -74,3 +74,6 @@ Geant4 stand-alone simulation of synchrotron radiation in the EIC interaction re
 # for runID in {1..50}; do sftp anatochii@sftp.sdcc.bnl.gov:/gpfs02/eic/bpage/home/EPIC/officialSimu/pythia6/sidis_minbias/HEPMCFILES/pythia_ep_noradcor_18x275_q2_0.000000001_1.0_run${runID}.ab.hepmc.gz
 
 # FreeCAD: Charlie's STL file: coordinate system -> EPIC coord. system: open STL mode, go to Edit->Transform, and rotate around Y-axis by 180 deg; use https://imagetostl.com/convert/file/stl/to/obj#google_vignette for STL to OBJ
+
+# Count the number of files:
+# for beamEnergy in '18x275' '10x275' '5x100'; do echo "--> ${beamEnergy}"; for mask in 'nosrmask' 'srmask'; do echo ">> ${mask}"; ls /gpfs02/eic/anatochii/output_eicrecon_v6.3.1_${mask}_${beamEnergy}GeV_highStat/logExe_*.txt | wc -l; done; done

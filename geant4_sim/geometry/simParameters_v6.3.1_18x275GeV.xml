@@ -64,7 +64,7 @@
 
 	<!-- stop tracking on the backward side -->
 	<bwdgeocut>
-		<sec desc="tracking geometry cut on the bwd side" name="bwdTrkCutZ" unit="m">-500</sec>
+		<sec desc="tracking geometry cut on the bwd side" name="bwdTrkCutZ" unit="m">-5</sec>
 	</bwdgeocut>
 
 	<!-- beam parameters: from esr-survey-doug.tfs and esr-ring-norad.tfs (2IR, 18 GeV, Jan. 2024) -->
