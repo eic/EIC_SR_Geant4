@@ -33,6 +33,6 @@ echo "" >> ${instructionFile}
 
 echo "directory=\"/work/eic/users/anatochii/output_g4ana_v6.3.1_20240904_${beamEnergy}GeV_\${SLURM_ARRAY_TASK_ID}\"" >> ${instructionFile}
 echo "time root -l -b -q getSimpleHisto.C\(\\\"\${directory}\\\",${nFiles}\) >& ./log/log_output_g4ana_v6.3.1_20240904_${beamEnergy}GeV_\${SLURM_ARRAY_TASK_ID}.txt" >> ${instructionFile}
-echo "date >& ./log/log_output_g4ana_v6.3.1_20240904_${beamEnergy}GeV_\${SLURM_ARRAY_TASK_ID}.txt" >> ${instructionFile}
+echo "date >> ./log/log_output_g4ana_v6.3.1_20240904_${beamEnergy}GeV_\${SLURM_ARRAY_TASK_ID}.txt" >> ${instructionFile}
 
 sbatch ${instructionFile}
