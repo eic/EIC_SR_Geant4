@@ -50,8 +50,12 @@ geant4_ana/output*
 geant4_ana/pics*
 geant4_ana/log*
 geant4_ana/getSimpleHist/log*
+<<<<<<< HEAD
 geant4_ana/getSimpleHist/instrJob*
 geant4_ana/getSimpleHist/runDir*
+=======
+geant4_ana/merge_hepmc/build*
+>>>>>>> 6368a3888ceda1706f19ce5d59c3c40c71f5116c
 
 # eic sim
 eic_sim/output*         
