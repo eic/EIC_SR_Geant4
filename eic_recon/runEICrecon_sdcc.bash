@@ -1,38 +1,52 @@
 #!/bin/bash
 
-#--------------------------------------------------#
-#---------------- INPUT PARAMETERS ----------------#
-inputDirName="/gpfs02/eic/anatochii/${1}_highstat_output_eicsim_v6.2_srmask5_1_ipcut4" # input directory
-outputDirName="/gpfs02/eic/anatochii/${1}_highstat_output_eicrecon_v6.2_srmask5_1_ipcut4" # output directory
-buildDir="./build_${1}" # build directory
-nJobs=10000 # number of jobs
-eicshell='/direct/eic+u/anatochii/eic/eic-shell'
-#eicsetup='/direct/eic+u/anatochii/eic/epic/install/setup.sh'
-eicsetup='/direct/eic+u/anatochii/eic/epic/install/bin/thisepic.sh'
-#--------------------------------------------------#
-#--------------------------------------------------#
+beamEnergy=$1 # '18x275' or '10x275' or '5x100'
 
-echo "[INFO] inputDirName = ${inputDirName}"
-echo "[INFO] outputDirName = ${outputDirName}"
-echo "[INFO] buildDir = ${buildDir}"
-echo "[INFO] nJobs = ${nJobs}"
+# loop over runs
+for runID in {1..10}
+do
+	echo "[INFO] RunID = ${runID}"
 
-# output directory
-mkdir -pv ${outputDirName}
+	#--------------------------------------------------#
+	#---------------- INPUT PARAMETERS ----------------#
+	# input directory
+	inputDirName="/gpfs02/eic/anatochii/output_eicsim_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
+	# output directory
+	outputDirName="/gpfs02/eic/anatochii/output_eicrecon_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
+	# build directory
+	buildDir="${outputDirName}/build_${beamEnergy}GeV_${runID}"
+	# number of jobs
+	nJobs=1
+	# eic-shell
+	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
+	# eic-setup
+	eicsetup='/direct/eic+u/anatochii/eic/epic/install/bin/thisepic.sh'
+	#--------------------------------------------------#
+	#--------------------------------------------------#
 
-# build directory
-mkdir -pv ${buildDir}
-cd ${buildDir}
-cp ../exe.bash  ./
-chmod 777 exe.bash
+	echo "[INFO] inputDirName = ${inputDirName}"
+	echo "[INFO] outputDirName = ${outputDirName}"
+	echo "[INFO] buildDir = ${buildDir}"
+	echo "[INFO] nJobs = ${nJobs}"
 
-# submit jobs
-instructionFile="instr.sub"
+	# output directory
+	mkdir -pv ${outputDirName}
 
-echo "executable = exe.bash" > ${instructionFile}
-echo "arguments  = \$(ProcId) ${inputDirName} ${outputDirName} ${eicshell} ${eicsetup}" >> ${instructionFile}
-echo "log        = ${outputDirName}/logJob_\$(ProcId).log" >> ${instructionFile}
-echo "error      = ${outputDirName}/logErr_\$(ProcId).err" >> ${instructionFile}
-echo "queue ${nJobs}" >> ${instructionFile}
+	# build directory
+	mkdir -pv ${buildDir}
+	cp exe.bash  ${buildDir}
+	cd ${buildDir}
+	chmod 777 exe.bash
 
-condor_submit ${instructionFile}
+	# submit jobs
+	instructionFile="instr.sub"
+
+	echo "executable = exe.bash" > ${instructionFile}
+	echo "arguments  = \$(ProcId) ${inputDirName} ${outputDirName} ${eicshell} ${eicsetup}" >> ${instructionFile}
+	echo "log        = ${outputDirName}/logJob_\$(ProcId).log" >> ${instructionFile}
+	echo "error      = ${outputDirName}/logErr_\$(ProcId).err" >> ${instructionFile}
+	echo "queue ${nJobs}" >> ${instructionFile}
+
+	condor_submit ${instructionFile}
+	cd -
+done
