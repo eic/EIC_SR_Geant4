@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
     	// Close the writer
     	writer.close();
 
-    	cout << "Merging complete. Output written to " << output_filename << "with " << event_count << " events." << endl;
+    	cout << "Merging complete. Output written to " << output_filename << " with " << event_count << " events." << endl;
 
     	return 0;
 }
