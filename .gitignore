@@ -50,6 +50,8 @@ geant4_ana/output*
 geant4_ana/pics*
 geant4_ana/log*
 geant4_ana/getSimpleHist/log*
+geant4_ana/getSimpleHist/instrJob*
+geant4_ana/getSimpleHist/runDir*
 
 # eic sim
 eic_sim/output*         
