@@ -8,6 +8,9 @@ echo "[INFO] Beam Energy ${beamEnergy}GeV"
 mkdir -pv build
 cd build
 
+# eic-shell
+eicshell='/direct/eic+u/anatochii/eic/eic-shell'
+
 # compile the code
 compileFile="compile.sh"
 echo "make clean" > ${compileFile}
@@ -26,8 +29,6 @@ do
 	# output directory
 	inputDir="/gpfs02/eic/anatochii/output_g4ana_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
 	nJobs=10000 # number of jobs
-	# eic-shell
-	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 	#--------------------------------------------------#
 	#--------------------------------------------------#
 
