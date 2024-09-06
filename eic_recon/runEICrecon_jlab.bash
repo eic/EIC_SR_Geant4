@@ -2,6 +2,8 @@
 
 beamEnergy=$1 # '18x275' or '10x275' or '5x100'
 
+echo "[INFO] Beam Energy ${beamEnergy}GeV"
+
 # loop over runs
 for runID in {1..10}
 do
@@ -14,7 +16,7 @@ do
 	# output directory
 	outputDirName="/work/eic/users/anatochii/output_eicrecon_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
 	# build directory
-	buildDir="${outputDirName}/build_${beamEnergy}GeV_${runID}"
+	buildDir="${outputDirName}/build"
 	# number of jobs
 	nJobs=1
 	# eic-shell
