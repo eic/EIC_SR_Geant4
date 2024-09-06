@@ -6,7 +6,7 @@ void getSimpleHisto(TString dirName = "/gpfs02/eic/anatochii/output_g4ana_v6.3_n
 	TH2F* h2_com = new TH2F("h2_com","SR photon position;Z_{#gamma} [cm];X_{#gamma} [cm]",10000,-6000,4000,2000,-100,100);
 	TH2F* h21_com = new TH2F("h21_com","SR photon position vs energy;Z_{#gamma} [cm];X_{#gamma} [cm];E_{#gamma} [eV]",10000,-6000,4000,2000,-100,100);
 
-	for(Int_t i = 0; i < nFiles; i++)
+	for(Int_t i = 0; i <= nFiles; i++)
 	{
 		TFile *_file0 = TFile::Open(Form("%s/output_ana_%d.root",dirName.Data(),i));
 		if(!_file0){continue;}
