@@ -131,6 +131,7 @@ void drawHistograms(const string outputdir)
 		hMcPrim_TrackerEndcapAll_ene->SetName("hMcPrim_TrackerEndcapAll_ene");
 
 		ready = !ready;
+		nFiles++;
 	}
 
 	while(iFile < _fileNames.size()) 
@@ -188,6 +189,7 @@ void drawHistograms(const string outputdir)
 		_file1->Close();
 		nFiles++;
 	}
+	cout<<"--> nFiles = "<<nFiles<<endl;
 
 	TCanvas* cMcPrimAll_xz = new TCanvas("cMcPrimAll_xz","cMcPrimAll_xz",1800,900);
 	cMcPrimAll_xz->cd();
