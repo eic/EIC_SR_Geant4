@@ -74,6 +74,7 @@ void drawHistograms(const string hname, const string title, const string outputd
 		hAllHits = (TH1D*)_file0->Get(hname.c_str());
 		hAllHits->SetName("hAllHits");
 		ready = !ready;
+		nFiles++;
 	}
 
 	while(iFile < _fileNames.size()) 
@@ -89,6 +90,7 @@ void drawHistograms(const string hname, const string title, const string outputd
 		_file1->Close();
 		nFiles++;
 	}
+	cout<<"--> nFiles = "<<nFiles<<endl;
 
 	gStyle->SetErrorX(0);
 	gStyle->SetOptStat(0);

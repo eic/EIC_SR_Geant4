@@ -51,7 +51,7 @@ do
 
 	condor_submit ${instructionFile}
 
-	echo ''
-	echo "[INFO] When HTCondor jobs finished, run in eic-shell: root -l -b -q drawAllHits.C\\(\\\"${inputDirName}\\\",\\\".hist\\\",\\\".root\\\",\\\"${picsDir}\\\"\\)"
 	cd -
 done
+
+#cd ~/; source goToConda.sh; cd -; beamEnergy='18x275'; for runID in {1..10};do echo "RunID = ${runID}"; time root -l -b -q drawAllHits.C\(\"/gpfs02/eic/anatochii/output_eicrecon_v6.3.1_20240904_${beamEnergy}GeV_${runID}\",\".hist\",\".root\",\"/gpfs02/eic/anatochii/output_eicrecon_v6.3.1_20240904_${beamEnergy}GeV_${runID}/pics_ana\"\); echo ''; done
