@@ -9,7 +9,7 @@ beamEnergy=$1 # '18x275' or '10x275' or '5x100'
 
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
-for runID in {1..10}
+for runID in {1..100}
 do
 	echo ""
 	echo "################################ RUNID = ${runID} ################################";
@@ -21,7 +21,7 @@ do
 	# number of primary particles per job
 	nParticles=10000
 	# output directory
-	outputDir="/work/eic/users/anatochii/output_g4sim_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
+	outputDir="/work/eic/users/anatochii/output_g4sim_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
 	# build directory
 	buildDir="./build_${beamEnergy}GeV_${runID}"
 	# number of jobs

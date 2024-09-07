@@ -38,9 +38,9 @@
 
 	<!-- store photon trajectories -->
 	<storetrj>
-		<sec desc="Store trajectories: 1 - true; 0 - false" name="store">0</sec>
-		<sec desc="Zmin for the region of interest (where the photon stopped)" name="Zmin" unit="cm">-79</sec>
-		<sec desc="Zmax for the region of interest (where the photon stopped)" name="Zmax" unit="cm">66</sec>
+		<sec desc="Store trajectories: 1 - true; 0 - false" name="store">1</sec>
+		<sec desc="Zmin for the region of interest (where the photon stopped)" name="Zmin" unit="cm">-79.9</sec>
+		<sec desc="Zmax for the region of interest (where the photon stopped)" name="Zmax" unit="cm">66.9</sec>
 		<sec desc="Emin for the tracked photon" name="Emin" unit="GeV">10e-6</sec>
 	</storetrj>
 
