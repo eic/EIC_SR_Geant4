@@ -16,7 +16,7 @@ do
 	# output directory
 	outputDirName="/work/eic/users/anatochii/output_eicsim_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
 	# build directory
-	buildDir="${outputDirName}/build_${runID}"
+	buildDir="${outputDirName}/build"
 	# number of jobs
 	nJobs=1
 	# eic-shell
