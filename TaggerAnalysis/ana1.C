@@ -79,6 +79,8 @@ TH2F* _h7_etag[nTag];
 TH1F* _h8_etag[nTag];
 TH2F* _h9_etag[nTag];
 TH2F* _h10_etag[nTag];
+TH2F* _h11_etag[nTag];
+TH2F* _h12_etag[nTag];
 
 TH1F* _h1_gtag[nTag];
 TH1F* _h2_gtag[nTag];
@@ -90,6 +92,8 @@ TH2F* _h7_gtag[nTag];
 TH1F* _h8_gtag[nTag];
 TH2F* _h9_gtag[nTag];
 TH2F* _h10_gtag[nTag];
+TH2F* _h11_gtag[nTag];
+TH2F* _h12_gtag[nTag];
 
 const Double_t protonMass_GeV = 9.3826997280120850e-01; // GeV/c^2
 
@@ -145,6 +149,8 @@ void AnaTree()
 		_h8_etag[i] = new TH1F(Form("h8_etag%d",i),Form("Tagger%d electron Time; t [#mus]",i),10000,0,1);
 		_h9_etag[i] = new TH2F(Form("h9_etag%d",i),Form("Tagger%d electron log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",i),2000,-100,100,2000,-100,100);
 		_h10_etag[i] = new TH2F(Form("h10_etag%d",i),Form("Tagger%d electron Energy vs Polar Angle; #theta [rad]; E_{e} [GeV]",i),8000,-4,4,2000,0,20);
+		_h11_etag[i] = new TH2F(Form("h11_etag%d",i),Form("Tagger%d electron log_{10}(Q^2) vs log_{10}(x) (theta cut); log_{10}(x); log_{10}(Q^2)",i),2000,-100,100,2000,-100,100);
+		_h12_etag[i] = new TH2F(Form("h12_etag%d",i),Form("Tagger%d electron Energy vs Polar Angle (theta cut); #theta [rad]; E_{e} [GeV]",i),8000,-4,4,2000,0,20);
 
 		_h1_gtag[i] = new TH1F(Form("h1_gtag%d",i),Form("Tagger%d photon posX; X [cm]",i),8000,-40,40);
 		_h2_gtag[i] = new TH1F(Form("h2_gtag%d",i),Form("Tagger%d photon posY; Y [cm]",i),8000,-40,40);
@@ -156,6 +162,8 @@ void AnaTree()
 		_h8_gtag[i] = new TH1F(Form("h8_gtag%d",i),Form("Tagger%d photon Time; t [#mus]",i),10000,0,1);
 		_h9_gtag[i] = new TH2F(Form("h9_gtag%d",i),Form("Tagger%d photon log_{10}(Q^2) vs log_{10}(x); log_{10}(x); log_{10}(Q^2)",i),2000,-100,100,2000,-100,100);
 		_h10_gtag[i] = new TH2F(Form("h10_gtag%d",i),Form("Tagger%d photon posY vs posX; X [cm]; Y [cm]; E_{#gamma} [GeV]",i),8000,-40,40,8000,-40,40);
+		_h11_gtag[i] = new TH2F(Form("h11_gtag%d",i),Form("Tagger%d photon log_{10}(Q^2) vs log_{10}(x) (theta cut); log_{10}(x); log_{10}(Q^2)",i),2000,-100,100,2000,-100,100);
+		_h12_gtag[i] = new TH2F(Form("h12_gtag%d",i),Form("Tagger%d photon posY vs posX (theta cut); X [cm]; Y [cm]; E_{#gamma} [GeV]",i),8000,-40,40,8000,-40,40);
 	}
 
 	TVector3 beamMom; // initial beam momentum
@@ -230,6 +238,14 @@ void AnaTree()
 							TMath::Log10(beamBjorkenX->at(0)),
 							TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 						_h10_etag[j]->Fill(beamMom.Theta(),beamEnergy_eV->at(0)/1e9);
+
+						if(beamMom.Theta() < 3.14) // theta cut
+						{
+							_h11_etag[j]->Fill(
+								TMath::Log10(beamBjorkenX->at(0)),
+								TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
+							_h12_etag[j]->Fill(beamMom.Theta(),beamEnergy_eV->at(0)/1e9);
+						}
 					}
 				}
 			}		
@@ -252,6 +268,14 @@ void AnaTree()
 							TMath::Log10(beamBjorkenX->at(0)),
 							TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
 						_h10_gtag[j]->Fill(pos.x(),pos.y(),sensEnergy_eV->at(i));
+						
+						if(beamMom.Theta() < 3.14) // theta cut
+						{
+							_h11_gtag[j]->Fill(
+								TMath::Log10(beamBjorkenX->at(0)),
+								TMath::Log10(beamTransfMomSqr_GeV2->at(0)));
+							_h12_gtag[j]->Fill(pos.x(),pos.y(),sensEnergy_eV->at(i));
+						}
 					}
 				}
 			}		
@@ -303,6 +327,8 @@ void SaveHisto(TString fName)
 		_h8_etag[i]->Write();
 		_h9_etag[i]->Write();
 		_h10_etag[i]->Write();
+		_h11_etag[i]->Write();
+		_h12_etag[i]->Write();
 
 		_h1_gtag[i]->Write();
 		_h2_gtag[i]->Write();
@@ -314,6 +340,8 @@ void SaveHisto(TString fName)
 		_h8_gtag[i]->Write();
 		_h9_gtag[i]->Write();
 		_h10_gtag[i]->Write();
+		_h11_gtag[i]->Write();
+		_h12_gtag[i]->Write();
 	}
 
 	f->Close();

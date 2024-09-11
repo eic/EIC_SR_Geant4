@@ -42,6 +42,7 @@ public:
     	void GeneratePrimaries(G4Event* anEvent);
 	void GenerateBeamPrimaries(G4Event* anEvent);
 	void GenerateHepMcPrimaries(G4Event* anEvent);
+	void GenerateHepMcGETaLMPrimaries(G4Event* anEvent);
 	void StorePrimaryCoordinates(const G4Event* anEvent);
 	void StorePrimaryCoordinates(	const G4Event* anEvent, 
 					const G4ThreeVector magVector, 
