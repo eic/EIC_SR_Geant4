@@ -8,19 +8,19 @@
 /stack/killsecondaries 0
 # Tagger's distance from the start of the far-bwd ante-chamber
 #- v6.3
-#/detector/dist_tag 5.0  m # Tagger-1
-#/detector/dist_tag 20.2 m # Tagger-2
-#/detector/dist_tag 24.7 m # Tagger-3
-#/detector/dist_tag 29.2 m # Tagger-4
-#/detector/dist_tag 31.3 m # Tagger-5
-#- v6.3 modif_bwd
-/detector/dist_tag  8.6 m # Tagger-1
-/detector/dist_tag 16.6 m # Tagger-2
+/detector/dist_tag 5.0  m # Tagger-1
+/detector/dist_tag 20.2 m # Tagger-2
 /detector/dist_tag 24.7 m # Tagger-3
 /detector/dist_tag 29.2 m # Tagger-4
 /detector/dist_tag 31.3 m # Tagger-5
+#- v6.3 modif_bwd
+#/detector/dist_tag  8.6 m # Tagger-1
+#/detector/dist_tag 16.6 m # Tagger-2
+#/detector/dist_tag 24.7 m # Tagger-3
+#/detector/dist_tag 29.2 m # Tagger-4
+#/detector/dist_tag 31.3 m # Tagger-5
 # BWD ante-chamber height
-/detector/bwd_achmbH 10 cm
+/detector/bwd_achmbH 6 cm
 # Rebuild geometry with the given parameters
 /detector/ModifyGeometry
 

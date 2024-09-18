@@ -1,11 +1,13 @@
 #!/bin/bash 
 
-for beamEnergy in '18x275' '10x275' '5x100'
+for beamEnergy in '18x275' #'10x275' '5x100'
 do
 	echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
 	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
-	outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_lowQ2"
+	# outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_LowQ2"
+	# outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_Brems"
+	outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_QuasiReal"
 	fIn="${outputDir}/output_0.root"
 	fOut="${outputDir}/ana1_output_0.root"
 	runDir="${outputDir}/runDir"

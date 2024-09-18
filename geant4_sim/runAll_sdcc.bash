@@ -26,12 +26,12 @@ echo "##-----------------------------------------##"		>> ./macFiles/run_${jobID}
 echo "/output/filename ${outputDir}/output_${jobID}.root"	>> ./macFiles/run_${jobID}.mac
 echo ""								>> ./macFiles/run_${jobID}.mac
 echo "/stack/killsecondaries 0"					>> ./macFiles/run_${jobID}.mac
-echo "/detector/dist_tag 8.6  m"                                >> ./macFiles/run_${jobID}.mac
-echo "/detector/dist_tag 16.6 m"                                >> ./macFiles/run_${jobID}.mac
+echo "/detector/dist_tag 5.0  m"                                >> ./macFiles/run_${jobID}.mac
+echo "/detector/dist_tag 20.2 m"                                >> ./macFiles/run_${jobID}.mac
 echo "/detector/dist_tag 24.7 m"                                >> ./macFiles/run_${jobID}.mac
 echo "/detector/dist_tag 29.2 m"                                >> ./macFiles/run_${jobID}.mac
 echo "/detector/dist_tag 31.3 m"                                >> ./macFiles/run_${jobID}.mac
-echo "/detector/bwd_achmbH 10 cm"                               >> ./macFiles/run_${jobID}.mac
+echo "/detector/bwd_achmbH 6 cm"                                >> ./macFiles/run_${jobID}.mac
 echo "/detector/ModifyGeometry"                                 >> ./macFiles/run_${jobID}.mac
 echo ""								>> ./macFiles/run_${jobID}.mac
 echo "/run/initialize"						>> ./macFiles/run_${jobID}.mac
