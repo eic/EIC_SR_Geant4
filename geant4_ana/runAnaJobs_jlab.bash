@@ -9,21 +9,24 @@ beamEnergy=$1 # '18x275' or '10x275' or '5x100'
 
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
-for runID in {1..10}
+for runID in {76..100}
 do
 	echo ""
 	echo "################################ RUNID = ${runID} ################################";
 
+	# get the current/work dir
+	workdir=${PWD}
+
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
 	# input directory
-	mainInDir="/work/eic/users/anatochii/output_g4sim_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
+	mainInDir="/work/eic/users/anatochii/output_g4sim_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
 	# input tree name
 	treeName='tree'
 	# output directory
-	outputDir="/work/eic/users/anatochii/output_g4ana_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
+	outputDir="/work/eic/users/anatochii/output_g4ana_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
 	# build directory
-	buildDir="./build_${beamEnergy}GeV_${runID}"
+	buildDir="${outputDir}/build"
 	# number of jobs
 	nJobs=10000
 	# in the custom-built Geant4 coordinate system
@@ -57,7 +60,7 @@ do
 
 	# config
 	echo "make clean" > ${compileFile}
-	echo "cmake ../" >> ${compileFile}
+	echo "cmake ${workdir}/" >> ${compileFile}
 	echo "make -j4" >> ${compileFile}
 
 	chmod 777 ${compileFile}
@@ -83,7 +86,7 @@ do
 	nJobSubmitted=0
 	for (( i=${firstID}; i<=${nJobs}; i++ ))
 	do
-		if (( i % 100 == 0 || i == ${nJobs} ))
+		if (( i % 20 == 0 || i == ${nJobs} ))
 		then
 			lastID=$i
 			echo "[INFO] Range: ${firstID} - ${lastID}"
@@ -97,7 +100,7 @@ do
 			#echo "#SBATCH --mem=1G" >> ${instructionFile} # total memory per node
 			echo "#SBATCH --mem-per-cpu=8G" >> ${instructionFile} # memory per cpu-core
 			echo "#SBATCH --partition=production" >> ${instructionFile}
-			echo "#SBATCH --time=02:00:00" >> ${instructionFile}
+			echo "#SBATCH --time=03:00:00" >> ${instructionFile}
 			echo "#SBATCH -o /dev/null" >> ${instructionFile}
 			echo "" >> ${instructionFile} 
 			echo "./run.bash ${firstID} ${lastID} ${nJobSubmitted} &> ${outputDir}/logExe_ana_${nJobSubmitted}.txt" >> ${instructionFile}

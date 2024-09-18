@@ -46,6 +46,9 @@ int main(int argc, char* argv[])
                 		break;  // Exit if the read operation failed (e.g., end of file)
             		}
 
+			// Set the event number to ensure uniqueness
+			event.set_event_number(event_count);
+
             		// Write the event to the output file
 			cout <<"["<<event_count<<"] : ";
             		writer.write_event(event);

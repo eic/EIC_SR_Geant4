@@ -20,14 +20,15 @@ chmod 777 ${compileFile}
 . ${eicshell} -- ./${compileFile}
 
 # loop over runs
-for runID in {1..10}
+for runID in {1..100}
 do
-	echo "[INFO] RunID = ${runID}"
+	echo ""
+	echo "################################ RUNID = ${runID} ################################";
 
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
 	# output directory
-	inputDir="/work/eic/users/anatochii/output_g4ana_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
+	inputDir="/work/eic/users/anatochii/output_g4ana_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
 	nJobs=10000 # number of jobs
 	#--------------------------------------------------#
 	#--------------------------------------------------#
@@ -54,7 +55,7 @@ do
 	#echo "#SBATCH --mem=1G" >> ${instructionFile} # total memory per node
 	echo "#SBATCH --mem-per-cpu=8G" >> ${instructionFile} # memory per cpu-core
 	echo "#SBATCH --partition=production" >> ${instructionFile}
-	echo "#SBATCH --time=00:30:00" >> ${instructionFile}
+	echo "#SBATCH --time=01:00:00" >> ${instructionFile}
 	echo "#SBATCH -o /dev/null" >> ${instructionFile}
 	echo "" >> ${instructionFile} 
 	echo ". ${eicshell} -- ./${runFile}" >> ${instructionFile}
