@@ -9,21 +9,24 @@ beamEnergy=$1 # '18x275' or '10x275' or '5x100'
 
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
-for runID in {1..100}
+for runID in {101..120}
 do
 	echo ""
 	echo "################################ RUNID = ${runID} ################################";
 
+	# get the current/work dir
+	workdir=${PWD}
+
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
 	# simulation geometry settings
-	xmlFile="/home/natochii/EIC_SR_Geant4/geant4_sim/geometry/simParameters_v6.3.1_${beamEnergy}GeV.xml"
+	xmlFile="../geometry/simParameters_v6.3.1_${beamEnergy}GeV.xml"
 	# number of primary particles per job
 	nParticles=10000
 	# output directory
 	outputDir="/work/eic/users/anatochii/output_g4sim_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
 	# build directory
-	buildDir="./build_${beamEnergy}GeV_${runID}"
+	buildDir="${outputDir}/build"
 	# number of jobs
 	nJobs=10000 # SLURM: MaxArraySize=10001 
 	# eic-shell
@@ -52,11 +55,17 @@ do
 	mkdir -pv ${buildDir}
 	cd ${buildDir}
 
+	# copy the geometry directory
+	cp -r ${workdir}/geometry ../
+
+	# copy the materials directory
+	cp -r ${workdir}/materials ../
+
 	compileFile="compile.sh"
 
 	# config
 	echo "make clean" > ${compileFile}
-	echo "cmake ../" >> ${compileFile}
+	echo "cmake ${workdir}/" >> ${compileFile}
 	echo "make -j4" >> ${compileFile}
 
 	chmod 777 ${compileFile}
