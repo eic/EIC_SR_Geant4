@@ -5,14 +5,14 @@ beamEnergy=$1 # '18x275' or '10x275' or '5x100'
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
 # loop over run
-for runID in {1..10}
+for runID in {1..100}
 do
 	echo "[INFO] RunID = ${runID}"
 
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
 	# input directory
-	inputDirName="/gpfs02/eic/anatochii/output_eicrecon_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
+	inputDirName="/gpfs02/eic/anatochii/SynradG4_v6.3.1_20240906_18x275GeV_HepMCfiles_IPphotons/output_eicrecon_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
 	# build directory
 	buildDir="${inputDirName}/build_anaVtx"
 	# pics directory
@@ -54,4 +54,4 @@ do
 	cd -
 done
 
-#cd ~/; source goToConda.sh; cd -; beamEnergy='18x275'; for runID in {1..10};do echo "RunID = ${runID}"; time root -l -b -q drawAllVertices.C\(\"/gpfs02/eic/anatochii/output_eicrecon_v6.3.1_20240904_${beamEnergy}GeV_${runID}\",\".vertex\",\".root\",\"/gpfs02/eic/anatochii/output_eicrecon_v6.3.1_20240904_${beamEnergy}GeV_${runID}/pics_ana\"\); echo ''; done
+#cd ~/; source goToConda.sh; cd -; beamEnergy='18x275'; for runID in {1..100};do echo "RunID = ${runID}"; time root -l -b -q drawAllVertices.C\(\"/gpfs02/eic/anatochii/SynradG4_v6.3.1_20240906_18x275GeV_HepMCfiles_IPphotons/output_eicrecon_v6.3.1_20240906_${beamEnergy}GeV_${runID}\",\".vertex\",\".root\",\"/gpfs02/eic/anatochii/SynradG4_v6.3.1_20240906_18x275GeV_HepMCfiles_IPphotons/output_eicrecon_v6.3.1_20240906_${beamEnergy}GeV_${runID}/pics_ana\"\); echo ''; done

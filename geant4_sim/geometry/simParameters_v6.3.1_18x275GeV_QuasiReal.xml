@@ -99,7 +99,7 @@
 		<sec desc="tail fit parameter Y" name="tailky" unit="">25e-7</sec>
 		<sec desc="tail min sigma" name="tailmin" unit="">5</sec>
 		<sec desc="tail max sigma" name="tailmax" unit="">20</sec>
-		<sec desc="hepmc file" name="hepmcfilename">/gpfs02/eic/anatochii/Low-Q2_GETaLM_Data/qr_18x275.hepmc</sec>
+		<sec desc="hepmc file" name="hepmcfilename">/gpfs02/eic/anatochii/Low-Q2_GETaLM_Data/qr_18x275_beameff.hepmc</sec>
 	</generator>
 
 	<!-- gamma absorbers attached to the vacuum beam pipe ends -->

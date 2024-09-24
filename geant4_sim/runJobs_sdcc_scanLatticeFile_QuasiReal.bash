@@ -11,8 +11,8 @@ echo "[INFO] Beam Energy ${beamEnergy}GeV"
 #---------------- INPUT PARAMETERS ----------------#
 xmlFile="/direct/eic+u/anatochii/EIC_SR_Geant4/geant4_sim/geometry/simParameters_v6.3.1_${beamEnergy}GeV_QuasiReal.xml" # simulation geometry settings
 nParticles=1000000 # number of primary particles per job
-outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_20240910_QuasiReal" # output directory
-buildDir="./build_${beamEnergy}GeV_QuasiReal" # build directory
+outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_20240910_QuasiReal_beameff" # output directory
+buildDir="./build_${beamEnergy}GeV_QuasiReal_beameff" # build directory
 nJobs=1 # number of jobs
 eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 #--------------------------------------------------#
