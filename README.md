@@ -1,5 +1,14 @@
 # Electron-Ion Collider Synchrotron Radiation Simulation in Geant4 (EIC_SR_Geant4)
 
+## Disclaimer
+
+> **This software is provided "as-is" without any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose. In no event shall the authors or contributors be held liable for any damages arising from the use of this software.**
+>
+> **Use at your own risk. Ensure you have proper backups and validation procedures in place when using this software in a production environment.**
+>
+> **Steering scripts for the ePIC/EIC data production are labeled with the prefix `DataProd_` and were used on iFarm server at JLab.**
+
+
 **EIC_SR_Geant4** is a Geant4-based simulation framework for modeling synchrotron radiation (SR) in the Electron-Ion Collider (EIC). This tool aims to simulate the generation, propagation, and interaction of SR photons with the vacuum chamber, taking into account effects like surface roughness and diffuse/specular reflection. For a comprehensive overview of the physics processes implemented in the code, please refer to the following paper: [https://doi.org/10.48550/arXiv.2408.11709](https://doi.org/10.48550/arXiv.2408.11709).
 
 ## Features
