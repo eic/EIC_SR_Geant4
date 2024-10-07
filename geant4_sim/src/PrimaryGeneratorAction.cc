@@ -240,7 +240,7 @@ void PrimaryGeneratorAction::GenerateHepMcGETaLMPrimaries(G4Event* g4event)
 	G4PrimaryParticle* g4prim;
 	G4PrimaryVertex* g4vtx;
 	HepMC3::FourVector momBeam;
-	G4double Q2 = 0, E_i = 0, E_f = 0, targetMass = 0, E_2 = 0, massBeam = 0;
+	G4double Q2 = 0, E_i = 0, E_f = 0, targetMass = 0, E_2 = 0, massBeam = 0, x = 0;
 	G4LorentzVector q, p2;
 
 	// Construct an event
@@ -256,6 +256,15 @@ void PrimaryGeneratorAction::GenerateHepMcGETaLMPrimaries(G4Event* g4event)
 		HepMC3::Print::listing(hepmcevt);
 		HepMC3::Print::content(hepmcevt);
 	}
+
+	// Get event attributions
+	auto trueQ2 = hepmcevt.attribute<HepMC3::DoubleAttribute>("trueQ2");
+	auto truex = hepmcevt.attribute<HepMC3::DoubleAttribute>("truex");
+	auto true_el_theta = hepmcevt.attribute<HepMC3::DoubleAttribute>("true_el_theta");
+	auto true_el_px = hepmcevt.attribute<HepMC3::DoubleAttribute>("true_el_px");
+	auto true_el_py = hepmcevt.attribute<HepMC3::DoubleAttribute>("true_el_py");
+	auto true_el_pz = hepmcevt.attribute<HepMC3::DoubleAttribute>("true_el_pz");
+	auto true_el_en = hepmcevt.attribute<HepMC3::DoubleAttribute>("true_el_en");
 
 	bool gotParticles = false;
 	// Loop over vertices
@@ -317,8 +326,23 @@ void PrimaryGeneratorAction::GenerateHepMcGETaLMPrimaries(G4Event* g4event)
 						pow(massBeam,2));
 				G4LorentzVector k_f(mom.px(), mom.py(), mom.pz(), E_f);
 				G4LorentzVector k_i(momBeam.px(), momBeam.py(), momBeam.pz(), E_i);
-				q = k_i - k_f;
-				Q2 = -q.m2();
+				if(trueQ2 && truex) // DIS
+				{
+					Q2 = trueQ2->value();
+					x = truex->value();
+				}
+				else if(true_el_theta && true_el_px && true_el_py && true_el_pz) // Brems
+				{
+					Q2 = 2.0 * E_i * E_f * (1.0 - cos(M_PI - true_el_theta->value())); // assuming: m/E -> 0
+					G4LorentzVector k_f_true(
+						true_el_px->value(), true_el_py->value(), true_el_pz->value(), E_f);
+					q = k_i - k_f_true;
+				}
+				else
+				{
+					throw runtime_error(
+						"[ERROR] PrimaryGeneratorAction::GenerateHepMcGETaLMPrimaries ==> Event attributions\n");
+				}
 
 				g4prim = new G4PrimaryParticle(pdgcode, k_f.x()*GeV, k_f.y()*GeV, k_f.z()*GeV);
 				g4vtx->SetPrimary(g4prim);
@@ -341,7 +365,10 @@ void PrimaryGeneratorAction::GenerateHepMcGETaLMPrimaries(G4Event* g4event)
     	fParticleGun->GeneratePrimaryVertex(g4event);
 
 	// Store Coordinates
-	StorePrimaryCoordinates(g4event,G4ThreeVector(0,0,0),0,Q2*GeV*GeV,Q2/(2.*p2*q));
+	if(trueQ2 && truex)
+		StorePrimaryCoordinates(g4event,G4ThreeVector(0,0,0),0,Q2*GeV*GeV,x);
+	else
+		StorePrimaryCoordinates(g4event,G4ThreeVector(0,0,0),0,Q2*GeV*GeV,Q2/(2.*p2*q));
 
 	return;
 }

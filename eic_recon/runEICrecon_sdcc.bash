@@ -5,16 +5,16 @@ beamEnergy=$1 # '18x275' or '10x275' or '5x100'
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
 # loop over runs
-for runID in {1..10}
+for runID in {1..100}
 do
 	echo "[INFO] RunID = ${runID}"
 
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
 	# input directory
-	inputDirName="/gpfs02/eic/anatochii/output_eicsim_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
+	inputDirName="/gpfs02/eic/anatochii/SynradG4_v6.3.1_20240906_18x275GeV_HepMCfiles_IPphotons/output_eicsim_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
 	# output directory
-	outputDirName="/gpfs02/eic/anatochii/output_eicrecon_v6.3.1_20240904_${beamEnergy}GeV_${runID}"
+	outputDirName="/gpfs02/eic/anatochii/SynradG4_v6.3.1_20240906_18x275GeV_HepMCfiles_IPphotons/output_eicrecon_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
 	# build directory
 	buildDir="${outputDirName}/build"
 	# number of jobs
