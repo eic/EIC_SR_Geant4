@@ -116,13 +116,31 @@
     - To simplify the analysis process on high-performance computing resources like **KEKCC** at KEK, **SDCC** at BNL, or **iFarm** at JLab, a dedicated set of bash scripts is provided. These scripts—`runAnaJobs_kekcc.bash`, `runAnaJobs_sdcc.bash`, and `runAnaJobs_jlab.bash` — are tailored for each respective server.
       
 - **Output**: The analysis outputs ROOT files with histograms and HepMC files with the absorbed SR photons within the define region of the beam pipe for further ePIC detector response study through the DD4Hep simulation in eic-shell.
-
+- **Merging**: In the case of hundreds of HepMC files, it is recommended to merge them into a smaller number of HepMC files:
+  ```bash
+  cd geant4_ana/merge_hepmc
+  mkdir build
+  cd build
+  cmake ../
+  make
+  ./exe [output_file_name] [input_file_name_pattern] [number_of_input_files]
+  ```
+  The code will create a single HepMC file with non-empty events of absorbed SR photons.
+- **Final Analysis**: To analyse the single HepMC file (draw SR photon distributions):
+  ```bash
+  cd geant4_ana/merge_hepmc/ana
+  mkdir build
+  cd build
+  cmake ../
+  make
+  ./exe [input_file_name]
+  ```
+  The code creates an output ROOT file containing a ROOT tree with the coordinates of absorbed SR photons.
+  
 ### III. Auxiliarly step: Detector response and SR track study ###
-
-
-
-
-
+- Use `eic_sim` to run the DD4Hep simulation.
+- Use `eic_recon` to analyze the DD4Hep outputs.
+- Use `plotTracks.C` to plot the stored SR trackes after the Geant4 simulation.
 
 
 ## Contributing
@@ -135,100 +153,3 @@ Contributions are welcome! Please follow these steps:
 ## Issues
 
 If you encounter any issues or bugs, please open an issue on the GitHub repository with a clear description and, if possible, steps to reproduce.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
-
-## Acknowledgments
-
-Special thanks to the Electron-Ion Collider Collaboration and the Geant4 development team for their support and resources.
-
-
-
-
-
-
-
-
-
-
-# EIC_SR_Geant4
-Geant4 stand-alone simulation of synchrotron radiation in the EIC interaction region (IR6)
-
-
-# pre-requirements
-
-[Geant4](https://root.cern)
-[ROOT6](https://root.cern)
-[BOOST](https://www.boost.org)
-[HEPMC3](http://hepmc.web.cern.ch/hepmc/)
-
-
-
-#################################
-#				#
-# USEFULL INSTRUCTIONS/COMMANDS #
-#				#
-#################################
-# Install eic-shell
-# https://eic.phy.anl.gov/tutorials/eic_tutorial/getting-started/quickstart/
-#
-#-- To build EIC
-# git clone https://github.com/eic/epic
-# (or git clone git@github.com:eic/epic)
-# cd epic
-# cmake -S . -B build
-# cmake --build build --target install -- -j1
-#
-#-- To load det configs and env vars
-# source /opt/detector/setup.sh 
-#
-#-- To convert det geometry from XML to ROOT
-# dd_web_display --export $DETECTOR_PATH/$DETECTOR_CONFIG.xml
-#
-#-- To run simulation with a particle gun
-# ddsim --steeringFile doubleElectron_negativeDir.py --compactFile $DETECTOR_PATH/$DETECTOR_CONFIG.xml -G -N 10 --outputFile ee_1GeV_10GeV_EndcalN_1e1.edm4hep.root --part.minimalKineticEnergy "1*TeV"
-#
-#-- To get HEPMC files from S3/SDCC
-#
-#- Load the server
-# mc config host add S3 https://dtn01.sdcc.bnl.gov:9000 eicS3read eicS3read
-#
-#- Find the file
-# mc ls S3/eictest/EPIC/Tutorials/
-#
-#- Take only first 20k lines
-# mc head -n 20000 S3/eictest/EPIC/Tutorials/pythia8NCDIS_10x100_minQ2=1_beamEffects_xAngle=-0.025_hiDiv.hepmc > pythia8NCDIS_10x100.hepmc
-#
-#- To run simulation with HEPMC events
-# ddsim --steeringFile --compactFile $DETECTOR_PATH/$DETECTOR_CONFIG.xml -numberOfEvents 10 --outputFile pythia8NCDIS_10x100.edm4hep.root
-#
-#- To run simulation with HEPMC events + optical photon physics
-# npsim --steeringFile --compactFile $DETECTOR_PATH/$DETECTOR_CONFIG.xml -numberOfEvents 10 --outputFile npsim_pythia8NCDIS_10x100.edm4hep.root
-#
-# EICrecon is now automatically loaded with eic-shell -- no needs to install and load it separately
-#-- To build EICreco
-# in eic-shell
-# git clone https://github.com/eic/EICrecon
-# (or git clone git@github.com:eic/EICrecon)
-# cd EICrecon
-# cmake -S . -B build
-# cmake --build build --target install -- -j1
-#
-#-- To load EICrecon env vars
-# source EICrecon/bin/eicrecon-this.sh
-#
-#-- To run EIC reconstruction on the simulated data file with only defined branches
-# eicrecon -Ppodio:output_include_collections=ReconstructedParticles,MCParticles,EcalEndcapNRawHits pythia8NCDIS_10x100.edm4hep.root
-
-
-
-
-# Copy HEPMC3 files from gpfs:
-# for runID in {1..50}; do sftp anatochii@sftp.sdcc.bnl.gov:/gpfs02/eic/bpage/home/EPIC/officialSimu/pythia6/sidis_minbias/HEPMCFILES/pythia_ep_noradcor_18x275_q2_0.000000001_1.0_run${runID}.ab.hepmc.gz
-
-# FreeCAD: Charlie's STL file: coordinate system -> EPIC coord. system: open STL mode, go to Edit->Transform, and rotate around Y-axis by 180 deg; use https://imagetostl.com/convert/file/stl/to/obj#google_vignette for STL to OBJ
-
-# Count the number of files:
-# for beamEnergy in '18x275' '10x275' '5x100'; do echo "--> ${beamEnergy}"; for mask in 'nosrmask' 'srmask'; do echo ">> ${mask}"; ls /gpfs02/eic/anatochii/output_eicrecon_v6.3.1_${mask}_${beamEnergy}GeV_highStat/logExe_*.txt | wc -l; done; done
