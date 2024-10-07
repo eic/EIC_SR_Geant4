@@ -73,6 +73,7 @@ set(exe_SCRIPTS
   runAll_kekcc.bash
   runAll_sdcc.bash
   runAll_jlab.bash
+  runAll_nersc.bash
   )
 
 foreach(_script ${exe_SCRIPTS})
