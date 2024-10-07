@@ -1,4 +1,4 @@
-# EIC_SR_Geant4
+# Electron-Ion Collider Synchrotron Radiation Simulation in Geant4 (EIC_SR_Geant4_
 
 **EIC_SR_Geant4** is a Geant4-based simulation framework for modeling synchrotron radiation (SR) in the Electron-Ion Collider (EIC). This tool aims to simulate the generation, propagation, and interaction of SR photons with the vacuum chamber, taking into account effects like surface roughness and diffuse/specular reflection. For a comprehensive overview of the physics processes implemented in the code, please refer to the following paper: [https://doi.org/10.48550/arXiv.2408.11709](https://doi.org/10.48550/arXiv.2408.11709).
 
@@ -34,7 +34,7 @@
 2. **Set up Software**:
    Make sure Geant4, ROOT, and HepMC3 are installed and sourced correctly. Refer to the [Geant4 installation guide](https://geant4.web.cern.ch/support/download), [ROOT installation guide](https://root.cern/install/), and [HepMC3 installation guide](https://gitlab.cern.ch/hepmc/HepMC3/-/blob/master/README.md?ref_type=heads) for instructions, respectively.
 
-## Simulation Steps
+## Usage
 1. **SR sample production**:
    - Go to the main Geant4 directory:
      ```bash
@@ -88,32 +88,15 @@
 
 12. The simulated beam pipe, provided by the EIC vacuum group, is imported as an `.OBJ` file and converted into a tessellated volume using the [CADMesh class](https://github.com/christopherpoole/CADMesh). The path to the XML file is specified in the `beampipe` section. **Note**: Geant4’s OGL visualizer may not correctly render the 3D model due to the complexity of the beam pipe geometry, but this does not affect the simulation results, only the visualization.
 
-
-## Usage
-
-The executable supports various input parameters to customize the simulation. You can provide a configuration file or pass arguments directly to the command line. 
-
-### Example Command
-```bash
-./EIC_SR_Geant4 -config config/simulation_config.in
-```
-
-### Configuration File
-
-The configuration file allows specifying:
-- Magnetic field parameters
-- Vacuum chamber geometry
-- Surface properties (e.g., roughness, material type)
-- Output settings (e.g., file format, histogram options)
-
-Refer to the `config/example_config.in` file for a template.
+13. The EIC_SR_Geant4 framework can use the input HepMC3 files to generate, for example, low-Q^2 electrons at the interaction point (IP) at (0;0;0) cm. To produce the input HepMC files, one can use one of the approaches and then select the corresponding option in the XML file section `genname`: `genname=Beam` - generates beam particles, `genname=HepMC` - uses Pythia HepMC files, `genname=HepMC_GETaLM` - uses GETaLM files (Bremsstrahlung or Quasi-Real):
+    - `Beam`: based on the lattice file; see `geometry/printLatticeParameters.C`;
+    - `HepMC`: electrons are taken from the Pythia file stored on SDCC: `/gpfs02/eic/bpage/home/EPIC/officialSimu/pythia6/sidis_minbias/HEPMCFILES/`
+    - `HepMC_GETaLM`: electrons are produced using the [GETaLM generator](https://doi.org/10.1016/j.cpc.2021.108251).
 
 ## Output
 
-The simulation outputs various data files, including:
-- **Photon spectra**: Energy and angular distributions of SR photons.
-- **Reflection statistics**: Details of photon interactions with surfaces, including specular and diffuse components.
-- **ROOT histograms** (if ROOT is enabled): For visual analysis of SR characteristics.
+The simulation outputs ROOT data files, including:
+- **Photon spectra**: 
 
 ## Contributing
 
