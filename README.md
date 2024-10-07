@@ -62,36 +62,23 @@
      ```
      where `server_name` could be `kekcc`, `sdcc`, `jlab`, or `nersc`.
 
-    ### A few comments about the input XML file:
-    
-    1. The file is divided into sections, each describing a part of the simulation, such as geometry, magnetic field, X-ray reflection mode, etc.
-    
-    2. Under the `srmodel` section, you can select the SR production physics model from standard Geant4 libraries, such as `G4SynchrotronRadiation` or `G4SynchrotronRadiationInMat`. The X-ray reflection model is defined by the parameter `type`. For a comprehensive reflection model, including specular and diffuse reflection similar to Synrad+, use `type=3`.
-    
-    3. In the same section, you can define the roughness of the beam pipe surface. Currently, the same roughness is applied to all materials in the simulation.
-    
-    4. To store X-ray tracks from the production vertex in a magnet to the absorption position, use the `storetrj` section.
-    
-    5. To improve computational efficiency, the `gammacut` section defines energy and coordinate cuts for X-ray photons.
-    
-    6. The `meanfreepath` section allows you to adjust the SR production cross-section. By changing the `MeanFreePathFactor` parameter from 1 to 10, you can increase the number of SR photons produced in a magnet by a factor of 10, improving CPU time usage.
-    
-    7. The `tcut` parameter in the `timecut` section limits how long particles are tracked.
-    
-    8. To stop particle tracking at a specific boundary, use the `bwdgeocut` section.
-    
-    9. The electron beam distribution is defined in the `generator` section. Beam parameters are sourced from the ESR lattice file provided by the EIC optics group, located in `geometry/lattice_vXX` (where `XX` represents the optics version, e.g., `6.3` or `6.3.1`). For lattice file version control, refer to the [EIC SharePoint](https://brookhavenlab.sharepoint.com/sites/eRHIC/bnl&slac).
-    
-    10. Since the modeled geometry is limited, the `absorbers` section describes absorbers used to prevent particles from propagating beyond the defined beam pipe vacuum geometry.
-    
-    11. All magnets, including the detector solenoid, are described in the `magnets` section.
-    
-    12. The simulated beam pipe, provided by the EIC vacuum group, is imported as an `.OBJ` file and converted into a tessellated volume using the [CADMesh class](https://github.com/christopherpoole/CADMesh). The path to the XML file is specified in the `beampipe` section. **Note**: Geant4’s OGL visualizer may not correctly render the 3D model due to the complexity of the beam pipe geometry, but this does not affect the simulation results, only the visualization.
-    
-    13. The EIC_SR_Geant4 framework can use the input HepMC files to generate, for example, low-Q^2 electrons at the interaction point (IP) at (0;0;0) cm. To produce the input HepMC files, one can use one of the approaches and then select the corresponding option in the XML file section `genname`: `genname=Beam` - generates beam particles, `genname=HepMC` - uses Pythia HepMC files, `genname=HepMC_GETaLM` - uses GETaLM files (Bremsstrahlung or Quasi-Real):
-        - `Beam`: based on the lattice file; see `geometry/printLatticeParameters.C`;
-        - `HepMC`: electrons are taken from the Pythia file stored on SDCC: `/gpfs02/eic/bpage/home/EPIC/officialSimu/pythia6/sidis_minbias/HEPMCFILES/`
-        - `HepMC_GETaLM`: electrons are produced using the [GETaLM generator](https://doi.org/10.1016/j.cpc.2021.108251).
+  - A few comments about the input XML file:
+      1. The file is divided into sections, each describing a part of the simulation, such as geometry, magnetic field, X-ray reflection mode, etc.
+      2. Under the `srmodel` section, you can select the SR production physics model from standard Geant4 libraries, such as `G4SynchrotronRadiation` or `G4SynchrotronRadiationInMat`. The X-ray reflection model is defined by the parameter `type`. For a comprehensive reflection model, including specular and diffuse reflection similar to Synrad+, use `type=3`.
+      3. In the same section, you can define the roughness of the beam pipe surface. Currently, the same roughness is applied to all materials in the simulation.
+      4. To store X-ray tracks from the production vertex in a magnet to the absorption position, use the `storetrj` section.
+      5. To improve computational efficiency, the `gammacut` section defines energy and coordinate cuts for X-ray photons.
+      6. The `meanfreepath` section allows you to adjust the SR production cross-section. By changing the `MeanFreePathFactor` parameter from 1 to 10, you can increase the number of SR photons produced in a magnet by a factor of 10, improving CPU time usage.
+      7. The `tcut` parameter in the `timecut` section limits how long particles are tracked.
+      8. To stop particle tracking at a specific boundary, use the `bwdgeocut` section.
+      9. The electron beam distribution is defined in the `generator` section. Beam parameters are sourced from the ESR lattice file provided by the EIC optics group, located in `geometry/lattice_vXX` (where `XX` represents the optics version, e.g., `6.3` or `6.3.1`). For lattice file version control, refer to the [EIC SharePoint](https://brookhavenlab.sharepoint.com/sites/eRHIC/bnl&slac).
+      10. Since the modeled geometry is limited, the `absorbers` section describes absorbers used to prevent particles from propagating beyond the defined beam pipe vacuum geometry.
+      11. All magnets, including the detector solenoid, are described in the `magnets` section.
+      12. The simulated beam pipe, provided by the EIC vacuum group, is imported as an `.OBJ` file and converted into a tessellated volume using the [CADMesh class](https://github.com/christopherpoole/CADMesh). The path to the XML file is specified in the `beampipe` section. **Note**: Geant4’s OGL visualizer may not correctly render the 3D model due to the complexity of the beam pipe geometry, but this does not affect the simulation results, only the visualization.
+      13. The EIC_SR_Geant4 framework can use the input HepMC files to generate, for example, low-Q^2 electrons at the interaction point (IP) at (0;0;0) cm. To produce the input HepMC files, one can use one of the approaches and then select the corresponding option in the XML file section `genname`: `genname=Beam` - generates beam particles, `genname=HepMC` - uses Pythia HepMC files, `genname=HepMC_GETaLM` - uses GETaLM files (Bremsstrahlung or Quasi-Real):
+          - `Beam`: based on the lattice file; see `geometry/printLatticeParameters.C`;
+          - `HepMC`: electrons are taken from the Pythia file stored on SDCC: `/gpfs02/eic/bpage/home/EPIC/officialSimu/pythia6/sidis_minbias/HEPMCFILES/`
+          - `HepMC_GETaLM`: electrons are produced using the [GETaLM generator](https://doi.org/10.1016/j.cpc.2021.108251).
 
 - **Output**: The simulation outputs ROOT data files that contain the following three ROOT trees:
   - **xml**: Contains the simulation settings, including the XML file.
