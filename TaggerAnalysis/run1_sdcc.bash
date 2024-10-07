@@ -7,7 +7,12 @@ do
 	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
 	# outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_LowQ2"
 	# outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_Brems"
-	outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_QuasiReal"
+	# outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_QuasiReal"
+	# outputDir="/gpfs02/eic/anatochii/output_v6.3.1_18x275GeV_20240924_QuasiReal_beameff"
+	# outputDir="/gpfs02/eic/anatochii/output_v6.3.1_18x275GeV_20240924_Brems"
+	# outputDir="/gpfs02/eic/anatochii/output_v6.3.1_18x275GeV_20240929_Brems"
+	outputDir="/gpfs02/eic/anatochii/output_v6.3.1_18x275GeV_20240929_QuasiReal_beameff"
+
 	fIn="${outputDir}/output_0.root"
 	fOut="${outputDir}/ana1_output_0.root"
 	runDir="${outputDir}/runDir"
