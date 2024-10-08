@@ -85,6 +85,20 @@ TaggerAnalysis/runDir
 # folders with trash
 delete
 
+# hepmc to root
+hepmc3ascii2root/build
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
 # Git
 !.gitignore
 
