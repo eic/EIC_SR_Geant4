@@ -18,12 +18,15 @@
 #include "globals.hh"
 #include "TROOT.h"
 #include "TF1.h"
-#include "HepMC3/GenEvent.h"
-#include "HepMC3/ReaderAscii.h"
-#include "HepMC3/Print.h"
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
 #include "G4RunManager.hh"
+
+// HepMC3
+#include "HepMC3/GenEvent.h"
+#include "HepMC3/ReaderAscii.h"
+#include "HepMC3/Print.h"
+#include "HepMC3/Attribute.h"
 
 using namespace std;
 
