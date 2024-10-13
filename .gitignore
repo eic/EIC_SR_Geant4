@@ -85,6 +85,10 @@ TaggerAnalysis/runDir
 # folders with trash
 delete
 
+# generated hepmc
+generate_hepmc/build*
+generate_hepmc/output*
+
 # Git
 !.gitignore
 
