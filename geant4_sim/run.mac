@@ -6,7 +6,7 @@
 /output/filename ./output.root
 # Kill secondaries (i.e., SR photons)
 /stack/killsecondaries 0
-# Tagger's distance from the start of the far-bwd nate-chamber
+# Tagger's distance from the start of the far-bwd ante-chamber
 #- v6.3
 /detector/dist_tag 5.0  m # Tagger-1
 /detector/dist_tag 20.2 m # Tagger-2
