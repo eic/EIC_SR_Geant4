@@ -218,8 +218,11 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	cut_rot->rotateY(B2eR_bend);
 
 	// main beam pipe
-	farbwd_beampipe_tube = new G4Tubs(
-		"farbwd_beampipe_tube", 0,B2eR_beampipe_radius, farbwd_len/2., 0, 2.0 * M_PI * rad);
+//	farbwd_beampipe_tube = new G4Tubs(
+//		"farbwd_beampipe_tube", 0,B2eR_beampipe_radius, farbwd_len/2., 0, 2.0 * M_PI * rad);
+	auto mesh_farBWD = CADMesh::TessellatedMesh::FromOBJ(simPar->GetFarBwdBeampipeFileName().c_str());
+	farbwd_beampipe_tube = mesh_farBWD->GetSolid();
+
 	// luminosity beam pipe
 	G4VSolid* lumi_tube = new G4Tubs("lumi_tube", 0,B2eR_beampipe_radius, lumi_halflen, 0, 2.0 * M_PI * rad);
 	// ante-chamber

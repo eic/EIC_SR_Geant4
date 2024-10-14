@@ -20,6 +20,7 @@ private:
     	G4double _world_dim_z;
 
 	G4String _beampipeFileName;
+	G4String _farBwdBeampipeFileName;
 
 	G4double _ext_length;
 	G4double _ext_radius;
@@ -140,6 +141,7 @@ public:
 	G4double GetWorldSizeZ(){return _world_dim_z;}
 
 	G4String GetBeampipeFileName(){return _beampipeFileName;}
+	G4String GetFarBwdBeampipeFileName(){return _farBwdBeampipeFileName;}
 
 	G4double GetExtL(){return _ext_length;}
 	G4double GetExtR(){return _ext_radius;}
@@ -241,6 +243,7 @@ private:
 	void SetWorldSizeZ(G4double val){_world_dim_z = val; return;}
 
 	void SetBeampipeFileName(G4String val){_beampipeFileName = val; return;}
+	void SetFarBwdBeampipeFileName(G4String val){_farBwdBeampipeFileName = val; return;}
 
 	void SetExtL(G4double val){_ext_length = val; return;}
 	void SetExtR(G4double val){_ext_radius = val; return;}

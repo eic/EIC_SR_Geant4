@@ -46,8 +46,10 @@ void SimParameters::ReadXML(G4String fName)
 	BOOST_FOREACH(ptree::value_type &child_node, tree.get_child("xml.beampipe"))
 	{
 		// The data function is used to access the data stored in a node.
-		if(child_node.second.get<string>("<xmlattr>.name") == "fname")
+		if	(child_node.second.get<string>("<xmlattr>.name") == "fname") // central beam pipe
 			SetBeampipeFileName(child_node.second.data());
+		else if	(child_node.second.get<string>("<xmlattr>.name") == "fnamefbwd") // far-bwd beam pipe
+			SetFarBwdBeampipeFileName(child_node.second.data());
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
@@ -492,7 +494,8 @@ void SimParameters::InitDefault()
     	_world_dim_y =  10.0*m;
     	_world_dim_z =  80.0*m;
 
-	_beampipeFileName = "../geometry/beam_pipe_20231011_Zup.obj";
+	_beampipeFileName = "../geometry/beam_pipe_211004_ePICorient.obj";
+	_farBwdBeampipeFileName = "../geometry/far_bwd_test_pipe_with_saw_tooth_ePICorient_maskUp.obj";
 
 	_ext_length = 370*cm;
 	_ext_radius = 20.0*cm;
@@ -829,7 +832,9 @@ void SimParameters::PrintMeanFreePathFactor()
 void SimParameters::PrintBeampipeFileName()
 {
 	G4cout<<"\n\n=================================================================="<<G4endl;
-	G4cout<<"[INFO] SimParameters::PrintBeampipeFileName ==> "<<GetBeampipeFileName()<<G4endl;
+	G4cout<<"[INFO] SimParameters::PrintBeampipeFileName"<<endl;
+	G4cout<<"  Central beam pipe: "<<GetBeampipeFileName()<<G4endl;
+	G4cout<<"  Far-BWD beam pipe: "<<GetFarBwdBeampipeFileName()<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
