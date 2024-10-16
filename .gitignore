@@ -81,6 +81,7 @@ TaggerAnalysis/pics
 #Tagger study
 geant4_sim/tagger_build
 TaggerAnalysis/runDir
+TaggerAnalysis/pics*
 
 # folders with trash
 delete

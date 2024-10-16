@@ -7,61 +7,76 @@ date;
 beamEnergy=$1 # '18x275', '10x275', or '5x100'
 
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
-#--------------------------------------------------#
-#---------------- INPUT PARAMETERS ----------------#
-xmlFile="/direct/eic+u/anatochii/EIC_SR_Geant4/geant4_sim/geometry/simParameters_v6.3.1_${beamEnergy}GeV_QuasiReal.xml" # simulation geometry settings
-nParticles=1000000 # number of primary particles per job
-outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_20240929_QuasiReal_beameff" # output directory
-buildDir="./build_${beamEnergy}GeV_QuasiReal_beameff" # build directory
-nJobs=1 # number of jobs
-eicshell='/direct/eic+u/anatochii/eic/eic-shell'
-#--------------------------------------------------#
-#--------------------------------------------------#
 
-echo ""
-echo "[INFO] Input parameters:"
-echo " xmlFile = ${xmlFile}"
-echo " nParticles = ${nParticles}"
-echo " nJobs = ${nJobs}"
-echo " outputDir = ${outputDir}"
-echo ""
+for farBWDmask in 'farBWDmask' 'nofarBWDmask'
+do
+	echo "[INFO] Far-BWD SR mask = ${farBWDmask}"
 
-# output directory
-if [ -d "${outputDir}" ]
-then 
-	dirName=${outputDir}_$(date +%s)
-	mv ${outputDir} ${dirName}
-	echo "[INFO] Directory '${outputDir}' exists. Moved to '${dirName}'"; 
-fi
-mkdir -pv ${outputDir}
+	# get the current/work dir
+	workdir=${PWD}
 
-# build directory
-mkdir -pv ${buildDir}
-cd ${buildDir}
+	#--------------------------------------------------#
+	#---------------- INPUT PARAMETERS ----------------#
+	xmlFile="../geometry/simParameters_v6.3.1_${beamEnergy}GeV_QuasiReal_${farBWDmask}.xml" # simulation geometry settings
+	nParticles=1000000 # number of primary particles per job
+	outputDir="/gpfs02/eic/anatochii/output_v6.3.1_${beamEnergy}GeV_20241014_QuasiReal_${farBWDmask}" # output directory
+	buildDir="${outputDir}/build_${beamEnergy}GeV_QuasiReal_${farBWDmask}" # build directory
+	nJobs=1 # number of jobs
+	eicshell='/direct/eic+u/anatochii/eic/eic-shell'
+	#--------------------------------------------------#
+	#--------------------------------------------------#
 
-compileFile="compile.sh"
+	echo ""
+	echo "[INFO] Input parameters:"
+	echo " xmlFile = ${xmlFile}"
+	echo " nParticles = ${nParticles}"
+	echo " nJobs = ${nJobs}"
+	echo " outputDir = ${outputDir}"
+	echo ""
 
-# config
-echo "make clean" > ${compileFile}
-echo "cmake ../" >> ${compileFile}
-echo "make -j4" >> ${compileFile}
+	# output directory
+	if [ -d "${outputDir}" ]
+	then 
+		dirName=${outputDir}_$(date +%s)
+		mv ${outputDir} ${dirName}
+		echo "[INFO] Directory '${outputDir}' exists. Moved to '${dirName}'"; 
+	fi
+	mkdir -pv ${outputDir}
 
-chmod 777 ${compileFile}
+	# build directory
+	mkdir -pv ${buildDir}
+	cd ${buildDir}
 
-. ${eicshell} -- ./${compileFile}
+	# copy the geometry directory
+	cp -r ${workdir}/geometry ../
 
-chmod 777 runAll_sdcc.bash
+	# copy the materials directory
+	cp -r ${workdir}/materials ../
 
-mkdir -pv ./macFiles
+	compileFile="compile.sh"
 
-# submit jobs
-instructionFile="instr.sub"
+	# config
+	echo "make clean" > ${compileFile}
+	echo "cmake ${workdir}" >> ${compileFile}
+	echo "make -j4" >> ${compileFile}
 
-echo "executable = runAll_sdcc.bash" > ${instructionFile}
-echo "arguments  = \$(ProcId) $nParticles $xmlFile $eicshell $outputDir" >> ${instructionFile}
-#	echo "log        = ${outputDir}/logJob_\$(ProcId).log" >> ${instructionFile}
-#	echo "error      = ${outputDir}/logErr_\$(ProcId).err" >> ${instructionFile}
-echo "queue ${nJobs}" >> ${instructionFile}
+	chmod 777 ${compileFile}
 
-condor_submit ${instructionFile}
-cd -
+	. ${eicshell} -- ./${compileFile}
+
+	chmod 777 runAll_sdcc.bash
+
+	mkdir -pv ./macFiles
+
+	# submit jobs
+	instructionFile="instr.sub"
+
+	echo "executable = runAll_sdcc.bash" > ${instructionFile}
+	echo "arguments  = \$(ProcId) $nParticles $xmlFile $eicshell $outputDir" >> ${instructionFile}
+	#	echo "log        = ${outputDir}/logJob_\$(ProcId).log" >> ${instructionFile}
+	#	echo "error      = ${outputDir}/logErr_\$(ProcId).err" >> ${instructionFile}
+	echo "queue ${nJobs}" >> ${instructionFile}
+
+	condor_submit ${instructionFile}
+	cd -
+done
