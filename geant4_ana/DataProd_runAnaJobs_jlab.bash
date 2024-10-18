@@ -5,8 +5,15 @@ LC_NUMERIC=en_US.UTF-8
 
 date;
 
-beamEnergy='18x275'
+# global path for output files
+globalPath=$1
+echo "[INFO] Global PATH: ${globalPath}"
 
+# eic-shell: '/home/username/eic/eic-shell'
+eicshell=$2
+echo "[INFO] Eic-shell: ${eicshell}"
+
+beamEnergy='18x275'
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
 for runID in {1..100}
@@ -20,11 +27,11 @@ do
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
 	# input directory
-	mainInDir="/work/eic/users/anatochii/output_g4sim_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
+	mainInDir="${globalPath}/output_g4sim_v6.3.1_${beamEnergy}GeV_${runID}"
 	# input tree name
 	treeName='tree'
 	# output directory
-	outputDir="/work/eic/users/anatochii/output_g4ana_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
+	outputDir="${globalPath}/output_g4ana_v6.3.1_${beamEnergy}GeV_${runID}"
 	# build directory
 	buildDir="${outputDir}/build"
 	# number of jobs
@@ -32,8 +39,6 @@ do
 	# in the custom-built Geant4 coordinate system
 	minZ=-79.9 # [cm] minimum Z
 	maxZ=66.9 # [cm] maximum Z
-	# eic-shell
-	eicshell='/home/natochii/eic/eic-shell'
 	# target radius to backtrack absorbed SR photons [mm]
 	r_target=-1
 	#--------------------------------------------------#

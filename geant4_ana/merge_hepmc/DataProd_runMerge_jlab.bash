@@ -1,15 +1,21 @@
 #!/bin/bash
 
-beamEnergy=$1 # '18x275' or '10x275' or '5x100'
+date 
 
+# global path for output files
+globalPath=$1
+echo "[INFO] Global PATH: ${globalPath}"
+
+# eic-shell: '/home/username/eic/eic-shell'
+eicshell=$2
+echo "[INFO] Eic-shell: ${eicshell}"
+
+beamEnergy='18x275'
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
 # build directory
 mkdir -pv build
 cd build
-
-# eic-shell
-eicshell='/home/natochii/eic/eic-shell'
 
 # compile the code
 compileFile="compile.sh"
@@ -28,7 +34,7 @@ do
 	#--------------------------------------------------#
 	#---------------- INPUT PARAMETERS ----------------#
 	# output directory
-	inputDir="/work/eic/users/anatochii/output_g4ana_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
+	inputDir="${globalPath}/output_g4ana_v6.3.1_${beamEnergy}GeV_${runID}"
 	nJobs=10000 # number of jobs
 	#--------------------------------------------------#
 	#--------------------------------------------------#

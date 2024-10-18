@@ -1,7 +1,0 @@
-/home/belle2/anatochi/eic/EIC_SR_SynRad/eic_recon/analysisPlugin/build/CMakeFiles/analysisPlugin_plugin.dir
-/home/belle2/anatochi/eic/EIC_SR_SynRad/eic_recon/analysisPlugin/build/CMakeFiles/edit_cache.dir
-/home/belle2/anatochi/eic/EIC_SR_SynRad/eic_recon/analysisPlugin/build/CMakeFiles/rebuild_cache.dir
-/home/belle2/anatochi/eic/EIC_SR_SynRad/eic_recon/analysisPlugin/build/CMakeFiles/list_install_components.dir
-/home/belle2/anatochi/eic/EIC_SR_SynRad/eic_recon/analysisPlugin/build/CMakeFiles/install.dir
-/home/belle2/anatochi/eic/EIC_SR_SynRad/eic_recon/analysisPlugin/build/CMakeFiles/install/local.dir
-/home/belle2/anatochi/eic/EIC_SR_SynRad/eic_recon/analysisPlugin/build/CMakeFiles/install/strip.dir

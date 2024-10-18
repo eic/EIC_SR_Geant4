@@ -5,8 +5,15 @@ LC_NUMERIC=en_US.UTF-8
 
 date;
 
-beamEnergy='18x275'
+# global path for output files
+globalPath=$1
+echo "[INFO] Global PATH: ${globalPath}"
 
+# eic-shell: '/home/username/eic/eic-shell'
+eicshell=$2
+echo "[INFO] Eic-shell: ${eicshell}"
+
+beamEnergy='18x275'
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
 for runID in {1..100}
@@ -24,13 +31,11 @@ do
 	# number of primary particles per job
 	nParticles=10000
 	# output directory
-	outputDir="/work/eic/users/anatochii/output_g4sim_v6.3.1_20240906_${beamEnergy}GeV_${runID}"
+	outputDir="${globalPath}/output_g4sim_v6.3.1_${beamEnergy}GeV_${runID}"
 	# build directory
 	buildDir="${outputDir}/build"
 	# number of jobs
 	nJobs=10000 # SLURM: MaxArraySize=10001 
-	# eic-shell
-	eicshell='/home/natochii/eic/eic-shell'
 	#--------------------------------------------------#
 	#--------------------------------------------------#
 

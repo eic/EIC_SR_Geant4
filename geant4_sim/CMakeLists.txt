@@ -70,10 +70,7 @@ target_link_libraries(exe ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${HEPMC3_LIB})
 set(exe_SCRIPTS
   run.mac
   vis.mac
-  runAll_kekcc.bash
-  runAll_sdcc.bash
   runAll_jlab.bash
-  runAll_nersc.bash
   )
 
 foreach(_script ${exe_SCRIPTS})

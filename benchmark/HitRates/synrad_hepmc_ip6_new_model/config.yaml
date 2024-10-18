@@ -1,6 +1,0 @@
-# Processed individual photons file
-input_single_photons: 'output_data/output.csv'
-
-integration_window: 10e-15 # seconds
-n_events: 10000
-seed: 1 # Set random seed. If 0 is passed, then the seed is not fixed
