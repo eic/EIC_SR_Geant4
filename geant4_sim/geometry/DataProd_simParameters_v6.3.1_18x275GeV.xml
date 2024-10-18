@@ -11,6 +11,7 @@
 		<!-- sec desc="beam pipe file [nosrmask]" name="fname">../geometry/beam_pipe_211004_ePICorient.obj</sec -->
 	<beampipe>
 		<sec desc="beam pipe file [srmask6]" name="fname">../geometry/beam_pipe_211004_1_mask_in_q0_with_vert_mask_ePICorient.obj</sec>
+		<sec desc="far-bwd beam pipe [srmask]" name="fnamefbwd">../geometry/far_bwd_test_pipe_with_saw_tooth_ePICorient_maskUp.obj</sec>
 	</beampipe>
 
 	<!-- beam pipe extension -->
