@@ -27,6 +27,7 @@
 - **[ROOT](https://root.cern)** (version 6.30 or later)
 - **[HepMC3](https://gitlab.cern.ch/hepmc/HepMC3)**
 - **[EIC-SHELL](https://github.com/eic/eic-shell)**
+
 **NOTE**: "The [eic-shell](https://github.com/eic/eic-shell) environment is fully equipped with all the necessary software packages and dependencies required to compile, execute, and manage the project efficiently, ensuring a streamlined and consistent development experience."
 
 ### System Requirements
