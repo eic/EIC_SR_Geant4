@@ -1,19 +1,36 @@
 #include "AnalysisSR.hh"
 
 AnalysisSR::AnalysisSR() : _fChain(0), _fHepmc(0) 
-{}
+{
+	cout<<"[FUNCTION] "<<__FUNCTION__<<endl;
+	gSystem->GetProcInfo(&fProcInfo);
+}
 
 AnalysisSR::~AnalysisSR()
 {
+	cout<<"[FUNCTION] "<<__FUNCTION__<<endl;
    	if(_fChain)
 		delete _fChain->GetCurrentFile();
 
 	if(_fHepmc)
 		delete _fHepmc;
+
+	delete _fOut;
+}
+
+// Function to print memory usage
+void AnalysisSR::PrintMemoryUsage(const char* description) 
+{
+	cout << description << ": " << endl;
+	cout << "  Resident Memory: " << fProcInfo.fMemResident / 1024.0 << " MB" << endl;
+	cout << "  Virtual Memory: " << fProcInfo.fMemVirtual / 1024.0 << " MB" << endl;
+
+	return;
 }
 
 void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t maxZ = 1e9)
 {
+	cout<<"[FUNCTION] "<<__FUNCTION__<<endl;
 	// set Z coord limits
 	_minZ = minZ;
 	_maxZ = maxZ;
@@ -29,6 +46,10 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 
    	// set object pointer
 	beamPdg = nullptr;
+	beamX_norm = nullptr;
+	beamXprime_norm = nullptr;
+	beamY_norm = nullptr;
+	beamYprime_norm = nullptr;
 	beamPosX_cm = nullptr;
 	beamPosY_cm = nullptr;
 	beamPosZ_cm = nullptr;
@@ -63,6 +84,10 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 	// set branch addresses and branch pointers
    	_fChain->SetBranchAddress("event", &event, &b_event);
    	_fChain->SetBranchAddress("beamPdg", &beamPdg, &b_beamPdg);
+	_fChain->SetBranchAddress("beamX_norm", &beamX_norm, &b_beamX_norm);
+	_fChain->SetBranchAddress("beamXprime_norm", &beamXprime_norm, &b_beamXprime_norm);
+	_fChain->SetBranchAddress("beamY_norm", &beamY_norm, &b_beamY_norm);
+	_fChain->SetBranchAddress("beamYprime_norm", &beamYprime_norm, &b_beamYprime_norm);
    	_fChain->SetBranchAddress("beamPosX_cm", &beamPosX_cm, &b_beamPosX_cm);
    	_fChain->SetBranchAddress("beamPosY_cm", &beamPosY_cm, &b_beamPosY_cm);
    	_fChain->SetBranchAddress("beamPosZ_cm", &beamPosZ_cm, &b_beamPosZ_cm);
@@ -109,7 +134,11 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
    	_fChain->SetBranchAddress("monRefAngle_rad", &monRefAngle_rad, &b_monRefAngle_rad);
 
 	_fChain->GetEntry(0);
+
 	// histograms
+	_fOut = new TFile(GetOutputFileNameRoot().Data(),"recreate");
+	_fOut->cd();
+
 	_h0 = new TH1F("h0","SR photon energy (abs(gammaPosZ_cm) < 65 cm);E_{#gamma} [eV];# of photons",
 		101000,-1000,100000);
 	_h1 = new TH1F("h1","SR photon energy;E_{#gamma} [eV];# of photons",101000,-1000,100000);
@@ -142,27 +171,33 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 			magName->at(iMag).c_str()),1e6,0,100e6);
 	}	
 
+	_h0_Xnorm = new TH2F("h0_Xnorm","XX';X[#sigma];X'[#sigma]",1000,-50,50,1000,-50,50);
+	_h1_Xnorm = new TH2F("h1_Xnorm","XX' (XX' > 5#sigma);X[#sigma];X'[#sigma]",1000,-50,50,1000,-50,50);
+	_h0_Ynorm = new TH2F("h0_Ynorm","YY';Y[#sigma];Y'[#sigma]",1000,-50,50,1000,-50,50);
+	_h1_Ynorm = new TH2F("h1_Ynorm","YY' (YY' > 5#sigma);Y[#sigma];Y'[#sigma]",1000,-50,50,1000,-50,50);
+
 	// ascii file to store generated events
 	_fHepmc = new WriterAscii(GetOutputFileNameHepmc().Data());
 
 	// for benchmark/debug
-	h1_ene = new TH1D("h1_ene_g4","SR photon spectrum;E_{#gamma} [eV];Flux [ph/s]",1e6,0,1e6);
-	h1_dirx = new TH1D("h1_dirx_g4","SR photon momDir X; Px_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
-	h1_diry = new TH1D("h1_diry_g4","SR photon momDir Y; Py_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
-	h1_dirz = new TH1D("h1_dirz_g4","SR photon momDir Z; Pz_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
-	h1_posx = new TH1D("h1_posx_g4","SR photon position X; X_{#gamma} [cm];Flux [ph/s]",20000,-10,10);
-	h1_posy = new TH1D("h1_posy_g4","SR photon position Y; Y_{#gamma} [cm];Flux [ph/s]",20000,-10,10);
-	h1_posz = new TH1D("h1_posz_g4","SR photon position Z; Z_{#gamma} [cm];Flux [ph/s]",20000,-100,100);
+	h1_ene = new TH1F("h1_ene_g4","SR photon spectrum;E_{#gamma} [eV];Flux [ph/s]",1e6,0,1e6);
+	h1_dirx = new TH1F("h1_dirx_g4","SR photon momDir X; Px_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
+	h1_diry = new TH1F("h1_diry_g4","SR photon momDir Y; Py_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
+	h1_dirz = new TH1F("h1_dirz_g4","SR photon momDir Z; Pz_{#gamma}/E_{#gamma};Flux [ph/s]",4e6,-2,2);
+	h1_posx = new TH1F("h1_posx_g4","SR photon position X; X_{#gamma} [cm];Flux [ph/s]",20000,-10,10);
+	h1_posy = new TH1F("h1_posy_g4","SR photon position Y; Y_{#gamma} [cm];Flux [ph/s]",20000,-10,10);
+	h1_posz = new TH1F("h1_posz_g4","SR photon position Z; Z_{#gamma} [cm];Flux [ph/s]",20000,-100,100);
+
 	h1_ene_dirx = 
-		new TH2D("h1_ene_dirx_g4",
+		new TH2F("h1_ene_dirx_g4",
 		"SR photon energy vs momDir X;Px_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
 		4e3,-2,2,4e3,0,40e3);
 	h1_ene_diry = 
-		new TH2D("h1_ene_diry_g4",
+		new TH2F("h1_ene_diry_g4",
 		"SR photon energy vs momDir Y;Py_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
 		4e3,-2,2,4e3,0,40e3);
 	h1_ene_dirz = 
-		new TH2D("h1_ene_dirz_g4",
+		new TH2F("h1_ene_dirz_g4",
 		"SR photon energy vs momDir Z;Pz_{#gamma}/E_{#gamma};E_{#gamma} [eV];Flux [ph/s]",
 		4e3,-2,2,4e3,0,40e3);
 
@@ -171,6 +206,8 @@ void AnalysisSR::Init(TString treeName = "tree", Double_t minZ = -1e9, Double_t 
 
 void AnalysisSR::Loop(Float_t r_target = 0)
 {
+	cout<<"[FUNCTION] "<<__FUNCTION__<<endl;
+
   	if(!_fChain){return;}
 
    	Long64_t nEntries = _fChain->GetEntries();
@@ -202,10 +239,11 @@ void AnalysisSR::Loop(Float_t r_target = 0)
 		
 		// data type that holds the position of the primary inter- action, and lists of vertices, 
 		// particles and attributes
-		GenEvent event(HepMC3::Units::GEV,HepMC3::Units::MM);
-		event.set_run_info(run);
-		vector<double> weights = {1};
-		event.weights() = weights;
+		GenEvent* event = new GenEvent(HepMC3::Units::GEV,HepMC3::Units::MM);
+		event->set_run_info(run);
+		vector<float> weights = {1};
+		event->weights().clear();               // Clear existing weights
+		event->weights().insert(event->weights().end(), weights.begin(), weights.end());
 		
 		// loop over SR photons
 		for(Int_t i = 0; i < gammaEnergy_eV->size(); i++)
@@ -276,13 +314,13 @@ void AnalysisSR::Loop(Float_t r_target = 0)
 			GenParticlePtr pin = make_shared<GenParticle>( 
 					FourVector(pinx,piny,pinz,energy),pdg,4);	
 			pin->set_generated_mass(0.);
-			event.add_particle(pin);
+			event->add_particle(pin);
 
 			// particles coming out of the vertex
 			GenParticlePtr pout = make_shared<GenParticle>( 
 					FourVector(px,py,pz,energy),pdg,1);	
 			pout->set_generated_mass(0.);
-			event.add_particle(pout);
+			event->add_particle(pout);
 			
 			// generate the vertex
 			GenVertexPtr vertex = make_shared<GenVertex>(FourVector(x,y,z,0.));
@@ -290,11 +328,13 @@ void AnalysisSR::Loop(Float_t r_target = 0)
 			vertex->add_particle_out(pout);
 
 			// add the vertex to the event
-			event.add_vertex(vertex);
+			event->add_vertex(vertex);
 		}
+
 		// write a non-empty event
-		if(!event.vertices_empty())
-			_fHepmc->write_event(event);
+		if(!event->vertices_empty())
+			_fHepmc->write_event(*event);
+		delete event;
 
 		// monitor data
 		TVector3 monMom(monMomX_eV,monMomY_eV,monMomZ_eV);
@@ -319,6 +359,18 @@ void AnalysisSR::Loop(Float_t r_target = 0)
 			_h7->Fill(beamPos.x(),beamMom.x()/beamMom.Mag());
 			_h8->Fill(beamPos.y(),beamMom.y()/beamMom.Mag());
 			_h9->Fill(beamMom.Mag()/1e9); // eV --> GeV
+
+			// normalized coordinates
+			_h0_Xnorm->Fill(beamX_norm->at(iBeam),beamXprime_norm->at(iBeam));
+			_h0_Ynorm->Fill(beamY_norm->at(iBeam),beamYprime_norm->at(iBeam));
+			Double_t rx = TMath::Sqrt(
+					TMath::Power(beamX_norm->at(iBeam),2) +
+					TMath::Power(beamXprime_norm->at(iBeam),2));
+			Double_t ry = TMath::Sqrt(
+					TMath::Power(beamY_norm->at(iBeam),2) +
+					TMath::Power(beamYprime_norm->at(iBeam),2));
+			if(ry < 5 || (rx > 5 && ry > 5)){_h1_Xnorm->Fill(beamX_norm->at(iBeam),beamXprime_norm->at(iBeam));}
+			if(rx < 5 || (rx > 5 && ry > 5)){_h1_Ynorm->Fill(beamY_norm->at(iBeam),beamYprime_norm->at(iBeam));}
 		}
 
 		// loop over magnets
@@ -330,41 +382,74 @@ void AnalysisSR::Loop(Float_t r_target = 0)
    	}
  	printf("\r[INFO] Progress: %.3f [%%]\n",100.0*jentry/nEntries);
 
-	TFile* f = new TFile(GetOutputFileNameRoot().Data(),"recreate");
-	f->cd();
 	_h0->Write();
+	delete _h0;
 	_h1->Write();
+	delete _h1;
 	_h2->Write();
+	delete _h2;
 	_h3x->Write();
+	delete _h3x;
 	_h3y->Write();
+	delete _h3y;
 	_h4->Write();
+	delete _h4;
 	_h5->Write();
+	delete _h5;
 	_h6->Write();
+	delete _h6;
 	_h7->Write();
+	delete _h7;
 	_h8->Write();
+	delete _h8;
 	_h9->Write();
+	delete _h9;
 	_h21->Write();
+	delete _h21;
 	_h21_hepmc->Write();
+	delete _h21_hepmc;
 	_h22_hepmc->Write();
+	delete _h22_hepmc;
 	_h23_hepmc->Write();
+	delete _h23_hepmc;
 	for(Int_t iMag = 0; iMag < magName->size(); iMag++)
 	{
 		_h10[iMag]->Write();
+		delete _h10[iMag];
 		_h11[iMag]->Write();
+		delete _h11[iMag];
 	}
+	_h0_Xnorm->Write();
+	delete _h0_Xnorm;
+	_h1_Xnorm->Write();
+	delete _h1_Xnorm;
+	_h0_Ynorm->Write();
+	delete _h0_Ynorm;
+	_h1_Ynorm->Write();
+	delete _h1_Ynorm;
 	// for benchmark/debug
 	h1_ene->Write();
+	delete h1_ene;
 	h1_dirx->Write();
+	delete h1_dirx;
 	h1_diry->Write();
+	delete h1_diry;
 	h1_dirz->Write();
+	delete h1_dirz;
 	h1_posx->Write();
+	delete h1_posx;
 	h1_posy->Write();
+	delete h1_posy;
 	h1_posz->Write();
+	delete h1_posz;
 	h1_ene_dirx->Write();
+	delete h1_ene_dirx;
 	h1_ene_diry->Write();
+	delete h1_ene_diry;
 	h1_ene_dirz->Write();
+	delete h1_ene_dirz;
 
-	f->Close();
+	_fOut->Close();
 
 	return;
 }

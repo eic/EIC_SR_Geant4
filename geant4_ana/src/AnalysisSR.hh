@@ -9,6 +9,7 @@
 #include <TH3.h>
 #include <TMath.h>
 #include <TVector3.h>
+#include <TSystem.h>
 
 #include "vector"
 #include <ctime>
@@ -38,6 +39,10 @@ public :
    	// Declaration of leaf types
 	int             event;
 	vector<int>     *beamPdg;
+	vector<float>   *beamX_norm;
+	vector<float>   *beamXprime_norm;
+	vector<float>   *beamY_norm;
+	vector<float>   *beamYprime_norm;
 	vector<float>   *beamPosX_cm;
 	vector<float>   *beamPosY_cm;
 	vector<float>   *beamPosZ_cm;
@@ -86,6 +91,10 @@ public :
    	// List of branches
 	TBranch        *b_event;   //!
 	TBranch        *b_beamPdg;   //!
+	TBranch        *b_beamX_norm; //!
+	TBranch        *b_beamXprime_norm; //!
+	TBranch        *b_beamY_norm; //!
+	TBranch        *b_beamYprime_norm; //!
 	TBranch        *b_beamPosX_cm;   //!
 	TBranch        *b_beamPosY_cm;   //!
 	TBranch        *b_beamPosZ_cm;   //!
@@ -140,6 +149,7 @@ public :
 	void SetOutputFileNameHepmc(TString val){_outputFileName_hepmc = val; return;}
 	TString GetOutputFileNameHepmc(){return _outputFileName_hepmc;}
 	void BackTrack(Float_t &x, Float_t &y, Float_t &z, Float_t &px, Float_t &py, Float_t &pz, Float_t r_target);
+	void PrintMemoryUsage(const char* description);
 
 private:
 
@@ -168,17 +178,24 @@ private:
 	TH2F* _h21_hepmc;
 	TH2F* _h22_hepmc;
 	TH2F* _h23_hepmc;
+	TH2F* _h0_Xnorm;
+	TH2F* _h1_Xnorm;
+	TH2F* _h0_Ynorm;
+	TH2F* _h1_Ynorm;
 
 	// for benchmark/debug
-	TH1D*	h1_ene;	
-	TH1D*	h1_dirx;	
-  	TH1D*	h1_diry;	
-  	TH1D*	h1_dirz;	
-  	TH1D*	h1_posx;	
-  	TH1D*	h1_posy;
-  	TH1D*	h1_posz;
-	TH2D*	h1_ene_dirx;
-	TH2D*	h1_ene_diry;
-	TH2D*	h1_ene_dirz;
+	TH1F*	h1_ene;	
+	TH1F*	h1_dirx;	
+  	TH1F*	h1_diry;	
+  	TH1F*	h1_dirz;	
+  	TH1F*	h1_posx;	
+  	TH1F*	h1_posy;
+  	TH1F*	h1_posz;
+	TH2F*	h1_ene_dirx;
+	TH2F*	h1_ene_diry;
+	TH2F*	h1_ene_dirz;
+
+	ProcInfo_t fProcInfo;
+	TFile* _fOut;
 };
 #endif

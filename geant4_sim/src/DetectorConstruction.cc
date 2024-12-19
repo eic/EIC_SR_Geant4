@@ -30,10 +30,15 @@
 #include "G4EllipticalCone.hh"
 #include "G4EllipticalTube.hh"
 #include "G4ExtrudedSolid.hh"
+#include "G4Trd.hh"
 
 const G4double farbwd_len = 30 * m; // between B2eR and B3eR
+const G4double farbwd_ante_chmbL = 19 * m; // ante-chamber length 
 const G4double B2eR_beampipe_radius = 5 * cm;
 const G4double lumi_halflen = 2.25 * m;
+const G4double fwd_CRYO_posZ = 22 * m;
+const G4double bwd_CRYO_posZ = -15 * m;
+const G4double fwd_straight_section = -5 * m;
 
 DetectorConstruction::DetectorConstruction(RunAction* runAct, G4String xmlFileName) : 
 G4VUserDetectorConstruction(), runAction(runAct)
@@ -48,33 +53,24 @@ G4VUserDetectorConstruction(), runAction(runAct)
 	simPar->PrintGeoParameters();
 	simPar->PrintMagParameters();
 	simPar->PrintAbsParameters();
-
+	
 	addAbsorber = true;
 	visibility = true;
-	mat_vac = nullptr;
-	world_box = nullptr;
-	world_log = nullptr;
-	world_phys = nullptr;
-	beampipeUni_solid = nullptr;
-	beampipeVac_solid = nullptr;
-	bwd_beampipeVac_solid = nullptr;
-	farbwd_beampipeVac_solid1 = nullptr;
-	farbwd_beampipeVac_solid2 = nullptr;
-	farbwd_beampipeVac_log1 = nullptr;
-	farbwd_beampipeVac_log2 = nullptr;
-	farbwd_beampipe_tube = nullptr;
-	beampipeVac_log = nullptr;
-	ip_box = nullptr;
-	ip_log = nullptr;
 	mass = -1;
 	gamma = -1;
 	dist_tag.clear();
 	bwd_ante_chmbH = 1;
+	farBwdSrMaskDepth = simPar->GetFarBwdSrMaskDepth();
+	farBwdSrMaskRelPos = simPar->GetFarBwdSrMaskRelPos();
 
 	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> farbwd_len = "
 		<<farbwd_len/m<<" [m]"<<G4endl;
 	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> B2eR_beampipe_radius = "
 		<<B2eR_beampipe_radius/cm<<" [cm]"<<G4endl;
+	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> farBwdSrMaskDepth = "
+		<<farBwdSrMaskDepth/mm<<" [mm]"<<G4endl;
+	G4cout<<"[INFO] DetectorConstruction::DetectorConstruction ==> farBwdSrMaskRelPos = "
+		<<farBwdSrMaskRelPos/m<<" [m]"<<G4endl;
 
 	fDetectorMessenger = new DetectorMessenger(this);
 }
@@ -91,15 +87,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 {
 	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
 
+	ResetVolumes();
 	BuildMaterials();
 	BuildWorld();
 	CreateBeamPipeSolid();
-// 	CreateSrMask();
-//	BuildFwdAnteChamber();
 	BuildIpBeamPipe();
 	BuildMagnets();
 	BuildIrBeamPipe();
-	BuildTaggers();
 	if(addAbsorber) BuildAbsorbers();
 
 	return world_phys;
@@ -110,8 +104,24 @@ void DetectorConstruction::BuildMaterials()
 	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
 
 	G4NistManager* nistManager = G4NistManager::Instance();
-	//- Vacuum
-	mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic");
+	mat_vac = nistManager->FindOrBuildMaterial("G4_Galactic"); // vacuum
+	mat_be = nistManager->FindOrBuildMaterial("G4_Be"); // beryllium
+	mat_au = nistManager->FindOrBuildMaterial("G4_Au"); // gold
+	mat_si = nistManager->FindOrBuildMaterial("G4_Si"); // silicon
+
+	G4double a;  // Atomic mass
+	G4double z;  // Atomic number
+	G4double density; // Density
+	G4int nAtoms, nComponents;
+	G4Element* elPb = new G4Element("Lead", "Pb", z=82, a=207.2*g/mole);
+	G4Element* elW  = new G4Element("Tungsten", "W", z=74, a=183.84*g/mole);
+	G4Element* elO  = new G4Element("Oxygen", "O", z=8, a=16.00*g/mole);
+
+	// Define material PbWO4
+	mat_pbwo4 = new G4Material("LeadTungstate", density=8.28*g/cm3, nComponents=3);
+	mat_pbwo4->AddElement(elPb, nAtoms=1);
+	mat_pbwo4->AddElement(elW, nAtoms=1);
+	mat_pbwo4->AddElement(elO, nAtoms=4);
 
 	return;	
 }
@@ -149,8 +159,24 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	}
 
 	//- Original (beam pipe)
-	auto mesh = CADMesh::TessellatedMesh::FromOBJ(simPar->GetBeampipeFileName().c_str());
-	G4VSolid* beampipeOrig_solid = mesh->GetSolid();
+	G4VSolid* beampipeOrig_solid;
+	if(simPar->GetBeampipeFileName().find(".obj") != std::string::npos)
+	{
+		cout<<"[INFO] Building the central beam pipe from the OBJ file"<<endl;
+		auto mesh = CADMesh::TessellatedMesh::FromOBJ(simPar->GetBeampipeFileName().c_str());
+		beampipeOrig_solid = mesh->GetSolid();
+	}
+	else if(simPar->GetBeampipeFileName().find(".stl") != std::string::npos)
+	{
+		cout<<"[INFO] Building the central beam pipe from the STL file"<<endl;
+		auto mesh = CADMesh::TessellatedMesh::FromSTL(simPar->GetBeampipeFileName().c_str());
+		beampipeOrig_solid = mesh->GetSolid();
+	}
+	else
+	{
+		throw runtime_error(
+		"[ERROR] DetectorConstruction::CreateBeamPipeSolid ==> Wrong central beam pipe file format\n");
+	}
 
 	//- FWD extention
 	G4VSolid* beampipeExtFwd_solid = new G4Tubs("beampipeExtFwd_solid", 0, 
@@ -160,19 +186,43 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	beampipeUni_solid = new G4UnionSolid("beampipeUni_solid", 
 		beampipeOrig_solid, beampipeExtFwd_solid, 0, 
 		G4ThreeVector(0, 0, simPar->GetExtE()+simPar->GetExtL()/2));
+	fwd_beampipeVac_solid = new G4UnionSolid("fwd_beampipeVac_solid", 
+		beampipeOrig_solid, beampipeExtFwd_solid, 0, 
+		G4ThreeVector(0, 0, simPar->GetExtE()+simPar->GetExtL()/2));
+	//---------------------------------------------------------------------------------------------------------//
+	//- Cut the vacuum on the BWD/FWD side - CRYO 
+	G4double beampipe_cut1_halfL = 10*m;
+	G4double beampipe_cut2_halfL = 20*m;
+	G4double beampipe_cut3_halfL = 50*m;
+	G4Box* beampipe_cut1 = new G4Box("beampipe_cut1",2*m, 2*m, beampipe_cut1_halfL);
+	G4Box* beampipe_cut2 = new G4Box("beampipe_cut2",2*m, 2*m, beampipe_cut2_halfL);
+	G4Box* beampipe_cut3 = new G4Box("beampipe_cut3",2*m, 2*m, beampipe_cut3_halfL);
 
-	//- Cut the vacuum on the BWD side 
-	G4double beampipe_cut1_halfL1 = 10*m;
-	G4double beampipe_cut1_halfL2 = 20*m;
-	G4Box* beampipe_cut1 = new G4Box("beampipe_cut1",2*m, 2*m, beampipe_cut1_halfL1);
-	G4Box* beampipe_cut2 = new G4Box("beampipe_cut2",2*m, 2*m, beampipe_cut1_halfL2);
-
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+		beampipeOrig_solid,beampipe_cut3,0,G4ThreeVector(0,0,fwd_CRYO_posZ + beampipe_cut3_halfL));
+	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
+//		beampipeVac_solid,beampipe_cut1,0,G4ThreeVector(0,0,bwd_CRYO_posZ - beampipe_cut1_halfL)); // if we do not modify the BWD quad beam pipe
+		beampipeVac_solid,beampipe_cut1,0,G4ThreeVector(0,0,fwd_straight_section - beampipe_cut1_halfL));
 	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
-		beampipeUni_solid,beampipe_cut1,0,G4ThreeVector(0,0,-9280.0 * mm - beampipe_cut1_halfL1));
+//		beampipeUni_solid,beampipe_cut1,0,G4ThreeVector(0,0,bwd_CRYO_posZ - beampipe_cut1_halfL)); // if we do not modify the BWD quad beam pipe
+		beampipeUni_solid,beampipe_cut1,0,G4ThreeVector(0,0,fwd_straight_section - beampipe_cut1_halfL));
 
-	//- Copy
-	beampipeVac_solid = beampipeUni_solid;
-
+	//---------------------------------------------------------------------------------------------------------//
+	//- FWD beam pipe
+	fwd_beampipeVac_solid = new G4SubtractionSolid("fwd_beampipeVac_solid",
+		fwd_beampipeVac_solid,beampipe_cut3,0,G4ThreeVector(0,0,fwd_CRYO_posZ - beampipe_cut3_halfL));
+	//---------------------------------------------------------------------------------------------------------//
+	//- BWD IR straight: if we do modify the BWD quad beam pipe
+	G4VSolid* beampipeStrBwd_solid = new G4Tubs("beampipeStrBwd_solid", 0,
+		B2eR_beampipe_radius, (fwd_straight_section - bwd_CRYO_posZ)/2, 0, 2.0 * M_PI);
+	
+	//- Union with the central beam pipe
+	beampipeUni_solid = new G4UnionSolid("beampipeUni_solid",
+		beampipeUni_solid,beampipeStrBwd_solid,0,
+		G4ThreeVector(0,0,fwd_straight_section-(fwd_straight_section - bwd_CRYO_posZ)/2));	
+	beampipeVac_solid = new G4UnionSolid("beampipeVac_solid",
+		beampipeVac_solid,beampipeStrBwd_solid,0,
+		G4ThreeVector(0,0,fwd_straight_section-(fwd_straight_section - bwd_CRYO_posZ)/2));	
 	//---------------------------------------------------------------------------------------------------------//
 	//- Build an extended bwd beam pipe
 	const G4double B2eR_bend = 0.020 * rad;
@@ -185,14 +235,14 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	B2eR_end.rotateY(B2eR_bend);
 	B2eR_end += G4ThreeVector(-torus_radius,0,B2eR_start.z());  
 
-	const G4int numZPlanes = 8;
+	const G4int numZPlanes = 3;
 	const G4double zPlane[numZPlanes] = {
-		-9280.0 * mm, -9288.0 * mm, -9364.0 * mm, -11364.0 * mm, -11414.0 * mm, 
-		-15000.0 * mm, -16000.0 * mm, -25000.0 * mm};
-	const G4double rInner[numZPlanes] = {0,0,0,0,0,0,0,0};
+		bwd_CRYO_posZ, -16.0 * m, -25.0 * m};
+	const G4double rInner[numZPlanes] = {
+		0,0,0};
 	const G4double rOuter[numZPlanes] = {
-		128.6/2 * mm, 128.6/2 * mm, 154.0/2 * mm, 154.0/2 * mm, 196.0/2 * mm, 
-		196.0/2 * mm, B2eR_beampipe_radius, B2eR_beampipe_radius};
+//		196.0/2 * mm, B2eR_beampipe_radius, B2eR_beampipe_radius}; // if we do not modify the BWD quad beam pipe
+		B2eR_beampipe_radius, B2eR_beampipe_radius, B2eR_beampipe_radius};
 	G4Polycone* polycone = new G4Polycone("polycone",
 		0, 2.0 * M_PI, numZPlanes, zPlane, rInner, rOuter);
 
@@ -209,7 +259,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	//---------------------------------------------------------------------------------------------------------//
 	// Cut the BWD beam pipe at the end of B2eR
 	bwd_beampipeVac_solid = new G4SubtractionSolid("bwd_beampipeVac_solid",
-		bwd_beampipeVac_solid,beampipe_cut1,0,G4ThreeVector(0,0,B2eR_end.z() - B2eR_cut_offset - beampipe_cut1_halfL1));
+		bwd_beampipeVac_solid,beampipe_cut1,0,G4ThreeVector(0,0,B2eR_end.z() - B2eR_cut_offset - beampipe_cut1_halfL));
 	//---------------------------------------------------------------------------------------------------------//
 	// Far-BWD beam pipe
 	G4RotationMatrix* lumi_rot = new G4RotationMatrix();
@@ -218,19 +268,71 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	cut_rot->rotateY(B2eR_bend);
 
 	// main beam pipe
-//	farbwd_beampipe_tube = new G4Tubs(
-//		"farbwd_beampipe_tube", 0,B2eR_beampipe_radius, farbwd_len/2., 0, 2.0 * M_PI * rad);
-	auto mesh_farBWD = CADMesh::TessellatedMesh::FromOBJ(simPar->GetFarBwdBeampipeFileName().c_str());
-	farbwd_beampipe_tube = mesh_farBWD->GetSolid();
+	if(simPar->GetFarBwdBeampipeFileName().find(".obj") != std::string::npos)
+	{
+		cout<<"[INFO] Building the SR mask in the Far-BWD from the OBJ file"<<endl;
+		auto mesh_farBWD = CADMesh::TessellatedMesh::FromOBJ(simPar->GetFarBwdBeampipeFileName().c_str());
+		farbwd_beampipe_tube = mesh_farBWD->GetSolid();
+	}
+	else if(simPar->GetFarBwdBeampipeFileName().find(".stl") != std::string::npos)
+	{
+		cout<<"[INFO] Building the SR mask in the Far-BWD from the STL file"<<endl;
+		auto mesh_farBWD = CADMesh::TessellatedMesh::FromSTL(simPar->GetFarBwdBeampipeFileName().c_str());
+		farbwd_beampipe_tube = mesh_farBWD->GetSolid();
+	}
+	else if(simPar->GetFarBwdBeampipeFileName() == "single_mask")
+	{
+		cout<<"[INFO] Building the SR mask in the Far-BWD from the code"<<endl;
+		farbwd_beampipe_tube = new G4Tubs(
+			"farbwd_beampipe_tube", 0,B2eR_beampipe_radius, farbwd_len/2., 0, 2.0 * M_PI * rad);
+
+		const G4double  zPlane[] = {farBwdSrMaskRelPos, farBwdSrMaskRelPos - farBwdSrMaskDepth};
+		const G4double  rInner[] = {
+			B2eR_beampipe_radius, 
+			B2eR_beampipe_radius+farBwdSrMaskDepth};
+		const G4double  rOuter[] = {
+			B2eR_beampipe_radius+farBwdSrMaskDepth + 20 * mm, 
+			B2eR_beampipe_radius+farBwdSrMaskDepth + 20 * mm};
+		G4VSolid* mask_polycone = new G4Polycone(
+			"mask_polycone", -M_PI_2 * rad, M_PI * rad, 2, zPlane, rInner, rOuter); 
+
+		// merge with the beam pipe
+		farbwd_beampipe_tube = new G4SubtractionSolid("farbwd_beampipe_tube",
+			farbwd_beampipe_tube,mask_polycone,0,G4ThreeVector(-farBwdSrMaskDepth,0,0));
+	}
+	else if(simPar->GetFarBwdBeampipeFileName() == "saw_tooth")
+	{
+	       cout<<"[INFO] Building the saw-tooth SR mask in the the Far-BWD"<<endl; 
+	       farbwd_beampipe_tube = new G4Tubs(
+			"farbwd_beampipe_tube", 0,B2eR_beampipe_radius, farbwd_len/2., 0, 2.0 * M_PI * rad); 
+	       G4Trd* maskCut = new G4Trd("maskCut",0,2*mm,10*cm,10*cm,20/2.*mm);
+	       for(G4double zi = -farbwd_len/2.; zi <= farbwd_len/2.; zi = 50*mm)
+	       {
+		       farbwd_beampipe_tube = new G4SubtractionSolid(
+				"farbwd_beampipe_tube",farbwd_beampipe_tube,maskCut,
+				0,G4ThreeVector(B2eR_beampipe_radius,0,zi));
+	       }
+	}
+	else
+	{
+		cout<<"[INFO] Building the Far-BWD without the SR mask"<<endl;
+		farbwd_beampipe_tube = new G4Tubs(
+			"farbwd_beampipe_tube", 0,B2eR_beampipe_radius, farbwd_len/2., 0, 2.0 * M_PI * rad);
+	}
 
 	// luminosity beam pipe
 	G4VSolid* lumi_tube = new G4Tubs("lumi_tube", 0,B2eR_beampipe_radius, lumi_halflen, 0, 2.0 * M_PI * rad);
 	// ante-chamber
-	G4Box* ante_chmbr_box = new G4Box("ante_chmbr_box",25*cm/2.,bwd_ante_chmbH/2.,farbwd_len/2.);
+	G4VSolid* ante_chmbr_box = new G4Box("ante_chmbr_box",25*cm/2.,bwd_ante_chmbH/2.,farbwd_ante_chmbL/2.);
+	// build low-q^2 taggers
+	ante_chmbr_box = BuildTaggers(ante_chmbr_box);
 
 	// unite main and ante-chamber
 	farbwd_beampipeVac_solid1 = new G4UnionSolid("farbwd_beampipeVac_solid1",
-		farbwd_beampipe_tube,ante_chmbr_box,0,G4ThreeVector(-25*cm/2.,0,0));
+		farbwd_beampipe_tube,ante_chmbr_box,0,G4ThreeVector(-25*cm/2.,0,(farbwd_len-farbwd_ante_chmbL)/2.));
+	farbwd_beampipeVac_solid2 = new G4UnionSolid("farbwd_beampipeVac_solid1",
+		farbwd_beampipe_tube,ante_chmbr_box,0,G4ThreeVector(-25*cm/2.,0,(farbwd_len-farbwd_ante_chmbL)/2.));
+
 	// distance between the main beam pipe center (placement coordinates) and the cut
 	G4double L = 0.5*farbwd_len - B2eR_cut_offset/cos(B2eR_bend);
 	// half-width of the cut in the main beam pipe
@@ -238,25 +340,26 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	// displacement of the lumi pipe w.r.t. the main beam pipe
 	G4double dL = M * sin(B2eR_bend); // along main beam pipe Z-axis
 	G4double dK = M * cos(B2eR_bend); // along main beam pipe X-axis
+
 	// unite lumi and main (+ante-chamber) in the main beam pipe coordinate system
 	farbwd_beampipeVac_solid1 = new G4UnionSolid(
 		"farbwd_beampipeVac_solid1",farbwd_beampipeVac_solid1,lumi_tube,lumi_rot,G4ThreeVector(-dK,0,L-dL));
 	farbwd_beampipeVac_solid2 = new G4UnionSolid(
-		"farbwd_beampipeVac_solid2",farbwd_beampipe_tube,lumi_tube,lumi_rot,G4ThreeVector(-dK,0,L-dL));
+		"farbwd_beampipeVac_solid2",farbwd_beampipeVac_solid2,lumi_tube,lumi_rot,G4ThreeVector(-dK,0,L-dL));
 
 	// Cut the FarBWD beam pipe at the end of B2eR
 	farbwd_beampipeVac_solid2 = new G4SubtractionSolid("farbwd_beampipeVac_solid2",
 		farbwd_beampipeVac_solid2,beampipe_cut1,cut_rot,
-		G4ThreeVector(0,0,L+beampipe_cut1_halfL1/cos(B2eR_bend)));
+		G4ThreeVector(0,0,L+beampipe_cut1_halfL/cos(B2eR_bend)));
 
 	// Cut the FarBWD beam pipe at the start of ante-chamber region
 	G4double ante_chamber_start_posZ = 13.5*m; // distance from the straight section center
 	farbwd_beampipeVac_solid1 = new G4SubtractionSolid("farbwd_beampipeVac_solid1",
 		farbwd_beampipeVac_solid1,beampipe_cut1,cut_rot,
-		G4ThreeVector(0,0,ante_chamber_start_posZ+beampipe_cut1_halfL1/cos(B2eR_bend)));
+		G4ThreeVector(0,0,ante_chamber_start_posZ+beampipe_cut1_halfL/cos(B2eR_bend)));
 	farbwd_beampipeVac_solid2 = new G4SubtractionSolid("farbwd_beampipeVac_solid2",
 		farbwd_beampipeVac_solid2,beampipe_cut2,cut_rot,
-		G4ThreeVector(0,0,ante_chamber_start_posZ-beampipe_cut1_halfL2/cos(B2eR_bend)));
+		G4ThreeVector(0,0,ante_chamber_start_posZ-beampipe_cut2_halfL/cos(B2eR_bend)));
 
 	// set FarBWD center
 	far_bwd_center.setX(B2eR_end.x() - 0.5*farbwd_len*sin(B2eR_bend));
@@ -286,6 +389,7 @@ void DetectorConstruction::CreateBeamPipeSolid()
 	return;
 }
 
+/*
 void DetectorConstruction::BuildFwdAnteChamber()
 {
 	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
@@ -315,26 +419,26 @@ void DetectorConstruction::BuildFwdAnteChamber()
 		fwd_beampipeVac_solid,ell_tube,0,G4ThreeVector(0,0,-(startZ-stopZ)/2. + (23.5*m - stopZ)/2.));
 
 	// Ante-chamber
-/*
+
 	// PEP-II-like (new)
-	const G4int nsect = 12;
-	std::vector<G4TwoVector> polygon(nsect);
+//	const G4int nsect = 12;
+//	std::vector<G4TwoVector> polygon(nsect);
 	// +X
-	polygon[0].set(70*mm,-15*mm);
-	polygon[1].set(140*mm,15*mm);
-	polygon[2].set(160*mm,15*mm);
-	polygon[3].set(160*mm,45*mm);
-	polygon[4].set(140*mm,45*mm);
-	polygon[5].set(70*mm,15*mm);
+//	polygon[0].set(70*mm,-15*mm);
+//	polygon[1].set(140*mm,15*mm);
+//	polygon[2].set(160*mm,15*mm);
+//	polygon[3].set(160*mm,45*mm);
+//	polygon[4].set(140*mm,45*mm);
+//	polygon[5].set(70*mm,15*mm);
 	// -X                                                                                          
-	polygon[6].set(-70*mm,15*mm);
-	polygon[7].set(-140*mm,45*mm);
-	polygon[8].set(-160*mm,45*mm);
-	polygon[9].set(-160*mm,15*mm);
-	polygon[10].set(-140*mm,15*mm);
-	polygon[11].set(-70*mm,-15*mm);
-*/
-/**/
+//	polygon[6].set(-70*mm,15*mm);
+//	polygon[7].set(-140*mm,45*mm);
+//	polygon[8].set(-160*mm,45*mm);
+//	polygon[9].set(-160*mm,15*mm);
+//	polygon[10].set(-140*mm,15*mm);
+//	polygon[11].set(-70*mm,-15*mm);
+
+
 	// Typical (std)
 	const G4int nsect = 4;
 	std::vector<G4TwoVector> polygon(nsect);
@@ -344,7 +448,7 @@ void DetectorConstruction::BuildFwdAnteChamber()
 	// -X                                                                                          
 	polygon[2].set(-160*mm,+15*mm);
 	polygon[3].set(-160*mm,-15*mm);
-/**/
+
 
 	G4TwoVector offsetA(0,0), offsetB(0,0);
 	G4double scaleA = 1, scaleB = 1;
@@ -368,12 +472,13 @@ void DetectorConstruction::BuildFwdAnteChamber()
 
 	return;
 }
+*/
 
 void DetectorConstruction::BuildIpBeamPipe()
 {
 	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
 
-	if(!mat_vac || !beampipeVac_solid || !beampipeUni_solid || !world_log)
+	if(!mat_vac || !beampipeVac_solid || !world_log)
 	{
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::BuildIpBeamPipe ==> Materials, beam pipe solids, or world LV are not created\n");
@@ -388,7 +493,7 @@ void DetectorConstruction::BuildIpBeamPipe()
 		G4ThreeVector(0.,0.,simPar->GetIpBeampipeZmin()+ip_len/2.),
 		ip_log,"vac_IP",world_log,false,0,true);
 	//- Visualization
-	G4VisAttributes* ip_vis = new G4VisAttributes(G4Colour::Cyan());
+	G4VisAttributes* ip_vis = new G4VisAttributes(G4Colour(1.0, 0.5, 0.0));
 	ip_vis->SetVisibility(visibility);
 	ip_log->SetVisAttributes(ip_vis);
 
@@ -399,45 +504,153 @@ void DetectorConstruction::BuildIpBeamPipe()
 	return;
 }
 
-void DetectorConstruction::BuildTaggers()
+G4VSolid* DetectorConstruction::BuildTaggers(G4VSolid* antechamber)
 {
 	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
 
-	if(!farbwd_beampipeVac_log1)
+	if(!antechamber)
 	{
 		throw runtime_error(
-		"[ERROR] DetectorConstruction::BuildTaggers ==> far-bwd beam pipe LV is not created\n");
+		"[ERROR] DetectorConstruction::BuildTaggers ==> far-bwd beam pipe ante-chamber SV is not created\n");
 	}
-	G4double clearance = 5.0 * cm; // minimum distance from the bwd-ante-chamber edge and tagger
-	G4double tagger_thickness = 2.0 * mm; // tagger's thickness (Z-axis)
-	G4double tagger_width = 18.0 * cm; // tagger's width (X-axis)
+	G4double clearanceZ = 5.0 * cm; // minimum distance from the bwd-ante-chamber edge and tagger
+	G4double taggerBoxCut_thickness = 80.0 * cm; // thickness (Z-axis)
+	G4double taggerBoxCut_width = 100.0 * cm; // width (X-axis)
+	G4double taggerBoxCut_height = 100.0 * cm; // height (Y-axis)
+	G4double clearanceW = 5*mm; // distance between the primary vacuum and tagger wall (same as the beam pipe wall thickness) 
+	G4double taggerBoxSens_thickness = taggerBoxCut_thickness - clearanceW; // thickness (Z-axis)
+	G4double taggerBoxSens_width = 30.0 * cm; // width (X-axis)
+	G4double taggerBoxSens_height = 30.0 * cm; // height (Y-axis)
+	G4double taggerWind_thickness = 2 * mm;
+	G4double taggerCoat_thickness = 5 * um;
+	G4double taggerChip_clearance = 1 * cm; // between the beryllium window and the first chip
+	G4double taggerChip_thickness = 400 * um;
+	G4double taggerChip_width = 18 * cm;
+	G4double taggerChip_height = 16 * cm;
+	G4int taggerChip_number = 4; // per box
+	G4double taggerChip_spacing = 10 * cm; // between planes
+	G4double taggerEcal_clearance = 10 * cm; // between the calorimeter and the last chip
+	G4double taggerEcal_thickness = 20 * cm;
+	G4double taggerEcal_width = taggerChip_width;
+	G4double taggerEcal_height = taggerChip_height;
+	G4double taggerClearanceZ = 1 * um; // distance between tagger window+coating and tagger box
 	
-	//- Visualization
-	G4VisAttributes* tag_vis = new G4VisAttributes(G4Color::Yellow());
-	tag_vis->SetVisibility(visibility);
-	G4Box* tag_box = new G4Box("tag_box",tagger_width/2., bwd_ante_chmbH/2.,tagger_thickness/2.);
-	G4LogicalVolume* tag_log = new G4LogicalVolume(tag_box,mat_vac,"tag_log");
-	tag_log->SetVisAttributes(tag_vis);
+	G4Box* tagBoxCut = new G4Box("tagBoxCut",taggerBoxCut_width/2., taggerBoxCut_height/2.,taggerBoxCut_thickness/2.);
+	G4Box* tagBoxSens = new G4Box("tagBoxSens",taggerBoxSens_width/2., taggerBoxSens_height/2.,taggerBoxSens_thickness/2.);
+	G4Box* tagWind = new G4Box("tagWind",taggerBoxSens_width/2., taggerBoxSens_height/2.,taggerWind_thickness/2.);
+	G4Box* tagCoat = new G4Box("tagCoat",taggerBoxSens_width/2., taggerBoxSens_height/2.,taggerCoat_thickness/2.);
+	G4Box* tagChip = new G4Box("tagChip",taggerChip_width/2., taggerChip_height/2.,taggerChip_thickness/2.);
+	G4Box* tagEcal = new G4Box("tagEcal",taggerEcal_width/2., taggerEcal_height/2.,taggerEcal_thickness/2.);
 
+	G4LogicalVolume* tagLogSens = new G4LogicalVolume(tagBoxSens,mat_vac,"tagLogSens");
+	G4LogicalVolume* tagLogWind = new G4LogicalVolume(tagWind,mat_be,"tagLogWind");
+	G4LogicalVolume* tagLogCoat = new G4LogicalVolume(tagCoat,mat_au,"tagLogCoat");
+	G4LogicalVolume* tagLogChip = new G4LogicalVolume(tagChip,mat_si,"tagLogChip");
+	G4LogicalVolume* tagLogEcal = new G4LogicalVolume(tagEcal,mat_pbwo4,"tagLogEcal");
+
+	G4VisAttributes* visSens = new G4VisAttributes(G4Colour::White());
+	G4VisAttributes* visWind = new G4VisAttributes(G4Colour::Red());
+	G4VisAttributes* visCoat = new G4VisAttributes(G4Colour::Yellow());
+	G4VisAttributes* visChip = new G4VisAttributes(G4Colour::Blue());
+	G4VisAttributes* visEcal = new G4VisAttributes(G4Colour::Cyan());
+
+	visSens->SetVisibility(visibility);
+	visWind->SetVisibility(visibility);
+	visCoat->SetVisibility(visibility);
+	visChip->SetVisibility(visibility);
+	visEcal->SetVisibility(visibility);
+
+	tagLogSens->SetVisAttributes(visSens);
+	tagLogWind->SetVisAttributes(visWind);
+	tagLogCoat->SetVisAttributes(visCoat);
+	tagLogChip->SetVisAttributes(visChip);
+	tagLogEcal->SetVisAttributes(visEcal);
+
+	//---- Cut the ante-chamber
 	// loop over tagger positions and place
 	for(G4int iTag = 0; iTag < dist_tag.size(); iTag++)
 	{
 		// get tagger's position inside the ante-chamber
-		G4double posX = -(B2eR_beampipe_radius+tagger_width/2);
+		G4double posZ = farbwd_ante_chmbL/2. - dist_tag.at(iTag);
+		// check range
+		if(posZ > +farbwd_len/2. - clearanceZ)
+			posZ = farbwd_len/2. - clearanceZ;
+		if(posZ < -farbwd_len/2. + clearanceZ + taggerBoxCut_thickness)
+			posZ = -farbwd_len/2. + clearanceZ + taggerBoxCut_thickness;
+
+		// subtract the tagger box from the ante-chamber
+		antechamber = new G4SubtractionSolid("antechamber",
+			antechamber,tagBoxCut,0,G4ThreeVector(0,0,posZ-taggerBoxCut_thickness/2.));
+	}
+
+	//---- Place the tagger box
+	// loop over tagger positions and place
+	for(G4int iTag = 0; iTag < dist_tag.size(); iTag++)
+	{
+		// get tagger's position inside the ante-chamber
+		G4double posX = -(B2eR_beampipe_radius+taggerBoxSens_width/2+clearanceW);
 		G4double posY = 0;
 		G4double posZ = farbwd_len/2. - dist_tag.at(iTag);
 		// check range
-		if(posZ > +farbwd_len/2. - clearance - tagger_thickness/2.)
-			posZ = farbwd_len/2. - clearance - tagger_thickness/2.;
-		if(posZ < -farbwd_len/2. + clearance + tagger_thickness/2.)
-			posZ = -farbwd_len/2. + clearance + tagger_thickness/2.;
-		// place
+		if(posZ > +farbwd_len/2. - clearanceZ)
+			posZ = farbwd_len/2. - clearanceZ;
+		if(posZ < -farbwd_len/2. + clearanceZ + taggerBoxSens_thickness)
+			posZ = -farbwd_len/2. + clearanceZ + taggerBoxSens_thickness;
+
+		// place sensor box
 		string name = "sens_tag" + std::to_string(iTag+1);
-		new G4PVPlacement(0,G4ThreeVector(posX,posY,posZ),
-			tag_log,name.c_str(),farbwd_beampipeVac_log1,false,0,true);
+		G4ThreeVector tagPos(posX,posY,posZ - taggerBoxSens_thickness/2.);
+		G4RotationMatrix* farbwd_rotinv = new G4RotationMatrix(farbwd_rot->inverse());
+		G4ThreeVector tagPosRot = (*farbwd_rotinv) * tagPos;
+		G4ThreeVector tagPosRotTransl = tagPosRot + far_bwd_center;
+
+		new G4PVPlacement(farbwd_rot,tagPosRotTransl,
+			tagLogSens,name.c_str(),world_log,false,0,true);
 	}
 
-	return;
+	//---- Place the tagger window and sensor
+	// loop over tagger positions and place
+	if(tagLogSens)
+	{
+		// coating
+		new G4PVPlacement(0,
+			G4ThreeVector(0,0,taggerBoxSens_thickness/2. - taggerClearanceZ
+			- taggerCoat_thickness/2.),
+			tagLogCoat,"tagCoat",tagLogSens,false,0,true);
+
+		// window
+		new G4PVPlacement(0,
+			G4ThreeVector(0,0,taggerBoxSens_thickness/2. - taggerClearanceZ
+			- taggerCoat_thickness - taggerWind_thickness/2.),
+			tagLogWind,"tagWind",tagLogSens,false,0,true);
+
+		// tagger chips
+		for(G4int iPlane = 0; iPlane < taggerChip_number; iPlane++)
+		{
+			string name = "tagChip" + std::to_string(iPlane+1);
+			new G4PVPlacement(0,
+				G4ThreeVector(
+					taggerBoxSens_width/2. - taggerChip_width/2.,
+					0,
+					taggerBoxSens_thickness/2. - taggerClearanceZ
+					- taggerCoat_thickness - taggerWind_thickness - taggerChip_clearance 
+					- taggerChip_thickness/2. - (iPlane) * taggerChip_spacing),
+				tagLogChip,name.c_str(),tagLogSens,false,0,true);
+		}
+
+		// EM calorimeter
+		new G4PVPlacement(0,
+			G4ThreeVector(
+				taggerBoxSens_width/2. - taggerChip_width/2.,
+				0,
+				taggerBoxSens_thickness/2. - taggerClearanceZ
+				- taggerCoat_thickness - taggerWind_thickness - taggerChip_clearance
+				- taggerChip_thickness/2. - (taggerChip_number - 1) * taggerChip_spacing
+				- taggerEcal_clearance - taggerEcal_thickness/2.),
+			tagLogEcal,"tagEcal",tagLogSens,false,0,true);
+	}
+
+	return antechamber;
 }
 
 void DetectorConstruction::BuildMagnets()
@@ -445,7 +658,7 @@ void DetectorConstruction::BuildMagnets()
 	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
 
 	if(	!mat_vac || !beampipeVac_solid || !beampipeUni_solid || 
-		!world_log || !bwd_beampipeVac_solid || 
+		!world_log || !bwd_beampipeVac_solid || !fwd_beampipeVac_solid || 
 		!farbwd_beampipeVac_solid1 || !farbwd_beampipeVac_solid2 || !farbwd_beampipe_tube)
 	{
 		throw runtime_error(
@@ -534,7 +747,13 @@ void DetectorConstruction::BuildMagnets()
 					G4ThreeVector(0,0,sign*sqrt(	pow(mag_center.x()-far_bwd_center.x(),2) + 
 									pow(mag_center.z()-far_bwd_center.z(),2))));
 			}
-
+			else if(simPar->GetMagName(iMag) == "D2EF1" || 
+				simPar->GetMagName(iMag) == "D2EF2" || 
+				simPar->GetMagName(iMag) == "D1EF")
+			{
+				mag_solid = new G4IntersectionSolid(simPar->GetMagName(iMag)+"_solid",
+					fwd_beampipeVac_solid, mag_vol,mag_rot,mag_center);
+			}
 			else
 			{
 				mag_solid = new G4IntersectionSolid(simPar->GetMagName(iMag)+"_solid",
@@ -694,6 +913,13 @@ void DetectorConstruction::BuildMagnets()
 			quad_vis->SetVisibility(visibility);
 			quad_log->SetVisAttributes(quad_vis);
 		}
+		else if(simPar->GetMagName(iMag) == "D2EF1" || 
+			simPar->GetMagName(iMag) == "D2EF2" || 
+			simPar->GetMagName(iMag) == "D1EF")
+		{
+			fwd_beampipeVac_solid = new G4SubtractionSolid("fwd_beampipeVac_solid",
+				fwd_beampipeVac_solid,mag_vol,mag_rot,mag_center);
+		}
 		else
 		{
 			beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
@@ -703,7 +929,7 @@ void DetectorConstruction::BuildMagnets()
 
 	return;
 }
-
+/*
 void DetectorConstruction::CreateSrMask()
 {
 	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
@@ -713,67 +939,6 @@ void DetectorConstruction::CreateSrMask()
 		throw runtime_error(
 		"[ERROR] DetectorConstruction::CreateSrMask ==> Materials, beam pipe solids, or world LV are not created\n");
 	}
-/*
-	//- mask-0
-	G4VSolid* mask0_vol = new G4Box("mask0_vol",1.0 * m/2,1.0 * m/2,1.0 * cm /2);
-	G4VSolid* mask0_ring = new G4Tubs("mask0_ring", 0, 5.0 * cm, 1.0 * cm/2, 0, 2.0 * M_PI);
-
-	G4double dz = 50.0 * cm;
-	G4double posZ = -2300.0 * cm + dz;
-	while(posZ < -1300.0 * cm - dz)
-	{
-		//- Vacuum (subtract the mask volume from the beam pipe volume) and add a new pipe with the mask
-		beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
-			beampipeVac_solid,mask0_vol,0,G4ThreeVector(0,0,posZ));
-
-		//- Mask logic volume
-		G4LogicalVolume* mask0_log = new G4LogicalVolume(mask0_ring,mat_vac, "mask0_log");
-		mask0_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut()));
-
-		//- Set tracking time limit in the volume
-		new G4PVPlacement(
-			0,G4ThreeVector(0.,0.,posZ),mask0_log,"vac_mask0",world_log,false,0,true);
-		G4VisAttributes* mask0_vis = new G4VisAttributes(G4Color::Red());
-		mask0_vis->SetVisibility(visibility);
-		mask0_log->SetVisAttributes(mask0_vis);
-
-		posZ += dz;
-	}	
-
-	//- mask-1
-	G4VSolid* mask1_ring = new G4Tubs("mask1_ring", 2.0 * cm, 4.0 * cm, 1.0 * cm/2, 0, 2.0 * M_PI);
-
-	posZ = -700.0 * cm;
-	while(posZ <= -550.0 * cm)
-	{
-		//- Vacuum (subtract the mask ring from the beam pipe)
-		beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
-			beampipeVac_solid,mask1_ring,0,G4ThreeVector(0,0,posZ));
-		beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
-			beampipeUni_solid,mask1_ring,0,G4ThreeVector(0,0,posZ));
-
-		posZ += dz;
-	}
-*/
-/*
-	//- mask-3
-	const G4double  zPlane[] = {-720.0 * cm, -710.0 * cm};
-	const G4double  rInner[] = {2.4 * cm, 2.7 * cm};
-	const G4double  rOuter[] = {3.0 * cm, 3.0 * cm};
-	G4VSolid* mask3_polycone = new G4Polycone("mask3_polycone", 0, 2.0 * M_PI, 2, zPlane, rInner, rOuter); 
-
-	//- Vacuum (subtract the mask ring from the beam pipe)
-	beampipeVac_solid = new G4SubtractionSolid("beampipeVac_solid",
-		beampipeVac_solid,mask3_polycone,0,G4ThreeVector(0,0,0));
-	beampipeUni_solid = new G4SubtractionSolid("beampipeUni_solid",
-		beampipeUni_solid,mask3_polycone,0,G4ThreeVector(0,0,0));
-
-	//- Visualization
-//	G4LogicalVolume* mask3_log = new G4LogicalVolume(mask3_polycone, mat_vac, "mask3_log");
-//	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),mask3_log,"mask3",world_log,false,0,true);
-//	G4VisAttributes* mask3_vis = new G4VisAttributes(G4Colour::Red());
-//	mask3_log->SetVisAttributes(mask3_vis);
-*/
 
 	//- mask-5
 	const G4double  zPlane[] = {4660.0 * mm, 4453.0 * mm, 4300.0 * mm};
@@ -797,8 +962,7 @@ void DetectorConstruction::CreateSrMask()
 
 	return;
 }
-
-
+*/
 
 G4MagneticField* DetectorConstruction::GetMagField(	G4int iMag, 
 							G4LogicalVolume* mag_log, 
@@ -900,35 +1064,40 @@ void DetectorConstruction::BuildIrBeamPipe()
 	beampipeVac_vis->SetVisibility(visibility);
 	beampipeVac_log->SetVisAttributes(beampipeVac_vis);
 
+	//- NEG visualization
+	G4VisAttributes* NEG_vis = new G4VisAttributes(G4Color::Cyan());
+	NEG_vis->SetVisibility(visibility);
+
 	//- Vacuum BWD beam pipe vacuum
 	G4LogicalVolume* bwd_beampipeVac_log = new G4LogicalVolume(
 		bwd_beampipeVac_solid, mat_vac, "bwd_beampipeVac");
 	bwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
 	new G4PVPlacement(0,G4ThreeVector(0,0,0),
-		bwd_beampipeVac_log,"vac_bwd_beampipeVac",world_log,false,0,true);
-	//- Visualization
-	G4VisAttributes* bwd_beampipeVac_vis = new G4VisAttributes(G4Color::Grey());
-	bwd_beampipeVac_vis->SetVisibility(visibility);
-	bwd_beampipeVac_log->SetVisAttributes(bwd_beampipeVac_vis);
+		bwd_beampipeVac_log,"vac_NEG_bwd_beampipeVac",world_log,false,0,true);
+	bwd_beampipeVac_log->SetVisAttributes(NEG_vis);
+
+	//- Vacuum FWD beam pipe vacuum
+	G4LogicalVolume* fwd_beampipeVac_log = new G4LogicalVolume(
+		fwd_beampipeVac_solid, mat_vac, "fwd_beampipeVac");
+	fwd_beampipeVac_log->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
+	new G4PVPlacement(0,G4ThreeVector(0,0,0),
+		fwd_beampipeVac_log,"vac_NEG_fwd_beampipeVac",world_log,false,0,true);
+	fwd_beampipeVac_log->SetVisAttributes(NEG_vis);
 
 	//- Vacuum far-BWD beam pipe
 	farbwd_beampipeVac_log1 = new G4LogicalVolume(farbwd_beampipeVac_solid1,mat_vac,"farbwd_beampipeVac_log1");
 	farbwd_beampipeVac_log1->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
 	new G4PVPlacement(farbwd_rot, 
 		G4ThreeVector(far_bwd_center.x(),far_bwd_center.y(),far_bwd_center.z()),
-		farbwd_beampipeVac_log1,"vac_farbwd_beampipeVac1",world_log,false,0,true);
+		farbwd_beampipeVac_log1,"vac_NEG_farbwd_beampipeVac1",world_log,false,0,true);
+	farbwd_beampipeVac_log1->SetVisAttributes(NEG_vis);
 
 	farbwd_beampipeVac_log2 = new G4LogicalVolume(farbwd_beampipeVac_solid2,mat_vac,"farbwd_beampipeVac_log2");
 	farbwd_beampipeVac_log2->SetUserLimits(new G4UserLimits(DBL_MAX,DBL_MAX,simPar->GetTrackTcut())); 
 	new G4PVPlacement(farbwd_rot, 
 		G4ThreeVector(far_bwd_center.x(),far_bwd_center.y(),far_bwd_center.z()),
-		farbwd_beampipeVac_log2,"vac_farbwd_beampipeVac2",world_log,false,0,true);
-
-	// Visualization
-	G4VisAttributes* farbwd_beampipeVac_vis = new G4VisAttributes(G4Color::Gray());
-	farbwd_beampipeVac_vis->SetVisibility(visibility);
-	farbwd_beampipeVac_log1->SetVisAttributes(farbwd_beampipeVac_vis);
-	farbwd_beampipeVac_log2->SetVisAttributes(farbwd_beampipeVac_vis);
+		farbwd_beampipeVac_log2,"vac_NEG_farbwd_beampipeVac2",world_log,false,0,true);
+	farbwd_beampipeVac_log2->SetVisAttributes(NEG_vis);
 
 	return;
 }
@@ -996,6 +1165,34 @@ void DetectorConstruction::BuildAbsorbers()
 	return;
 }
 
+void DetectorConstruction::ResetVolumes()
+{
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
+	mat_vac = nullptr;
+	mat_be = nullptr;
+	mat_au = nullptr;
+	mat_si = nullptr;
+	mat_pbwo4 = nullptr;
+	world_box = nullptr;
+	world_log = nullptr;
+	world_phys = nullptr;
+	beampipeUni_solid = nullptr;
+	beampipeVac_solid = nullptr;
+	bwd_beampipeVac_solid = nullptr;
+	fwd_beampipeVac_solid = nullptr;
+	farbwd_beampipeVac_solid1 = nullptr;
+	farbwd_beampipeVac_solid2 = nullptr;
+	farbwd_beampipeVac_log1 = nullptr;
+	farbwd_beampipeVac_log2 = nullptr;
+	farbwd_beampipe_tube = nullptr;
+	beampipeVac_log = nullptr;
+	ip_box = nullptr;
+	ip_log = nullptr;
+
+	return;
+}
+
 void DetectorConstruction::SetTaggerDistance(G4double dist)
 {
 	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
@@ -1021,6 +1218,34 @@ void DetectorConstruction::SetAnteChamberH(G4double H)
 		<<G4endl; 	
 
 	return;
+}
+
+void DetectorConstruction::SetFarBwdSrMaskDepth(G4double depth)
+{
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
+	farBwdSrMaskDepth = depth;
+	G4cout  <<G4endl
+		<<"[INFO] DetectorConstruction::SetFarBwdSrMaskDepth ==> "
+		<<farBwdSrMaskDepth/mm<<" [mm]"
+		<<G4endl; 	
+
+	return;
+
+}
+
+void DetectorConstruction::SetFarBwdSrMaskRelPos(G4double relpos)
+{
+	G4cout<<"[FUNCTION] "<<__FUNCTION__<<G4endl;
+
+	farBwdSrMaskRelPos = relpos;
+	G4cout  <<G4endl
+		<<"[INFO] DetectorConstruction::SetFarBwdSrMaskRelPos ==> "
+		<<farBwdSrMaskRelPos/m<<" [m]"
+		<<G4endl; 	
+
+	return;
+
 }
 
 void DetectorConstruction::ModifyGeometry()

@@ -50,6 +50,12 @@ void SimParameters::ReadXML(G4String fName)
 			SetBeampipeFileName(child_node.second.data());
 		else if	(child_node.second.get<string>("<xmlattr>.name") == "fnamefbwd") // far-bwd beam pipe
 			SetFarBwdBeampipeFileName(child_node.second.data());
+		else if	(child_node.second.get<string>("<xmlattr>.name") == "farBwdSrMaskDepth" && // far-bwd beam pipe
+			child_node.second.get<string>("<xmlattr>.unit") == "mm")
+			SetFarBwdSrMaskDepth(stod(child_node.second.data())*mm);
+		else if	(child_node.second.get<string>("<xmlattr>.name") == "farBwdSrMaskRelPos" && // far-bwd beam pipe
+			child_node.second.get<string>("<xmlattr>.unit") == "m")
+			SetFarBwdSrMaskRelPos(stod(child_node.second.data())*m);
 		else
 			throw runtime_error("[ERROR] SimParameters::ReadXML ==> Bad XML data\n");
 	}
@@ -249,12 +255,18 @@ void SimParameters::ReadXML(G4String fName)
 		else if(child_node.second.get<string>("<xmlattr>.name") == "tailky" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
 			SetBeamTailKy(stod(child_node.second.data()));
-		else if(child_node.second.get<string>("<xmlattr>.name") == "tailmin" &&
+		else if(child_node.second.get<string>("<xmlattr>.name") == "tailXmin" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
-			SetBeamTailMin(stod(child_node.second.data()));
-		else if(child_node.second.get<string>("<xmlattr>.name") == "tailmax" &&
+			SetBeamTailXmin(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "tailXmax" &&
 			child_node.second.get<string>("<xmlattr>.unit") == "")
-			SetBeamTailMax(stod(child_node.second.data()));
+			SetBeamTailXmax(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "tailYmin" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamTailYmin(stod(child_node.second.data()));
+		else if(child_node.second.get<string>("<xmlattr>.name") == "tailYmax" &&
+			child_node.second.get<string>("<xmlattr>.unit") == "")
+			SetBeamTailYmax(stod(child_node.second.data()));
 		else if(child_node.second.get<string>("<xmlattr>.name") == "hepmcfilename")
 			SetHepMcFileName(child_node.second.data());
 		else
@@ -495,7 +507,9 @@ void SimParameters::InitDefault()
     	_world_dim_z =  80.0*m;
 
 	_beampipeFileName = "../geometry/beam_pipe_211004_ePICorient.obj";
-	_farBwdBeampipeFileName = "../geometry/far_bwd_test_pipe_with_saw_tooth_ePICorient_maskUp.obj";
+	_farBwdBeampipeFileName = "null";
+	_farBwdSrMaskDepth = 10 * mm;
+	_farBwdSrMaskRelPos = 12.5 * m;
 
 	_ext_length = 370*cm;
 	_ext_radius = 20.0*cm;
@@ -591,8 +605,10 @@ void SimParameters::InitDefault()
 	_beamType = "core";
 	_beamTailKx = 0;
 	_beamTailKy = 0;
-	_beamTailMin = 0;
-	_beamTailMax = 0;
+	_beamTailXmin = 0;
+	_beamTailXmax = 0;
+	_beamTailYmin = 0;
+	_beamTailYmax = 0;
 
 	_generator = "Beam";
 	_hepmcFileName = "";
@@ -701,8 +717,10 @@ void SimParameters::PrintBeamParameters()
 	G4cout<<"Beam type = "<<GetBeamType()<<G4endl;
 	G4cout<<"Tail Kx = "<<GetBeamTailKx()<<G4endl;
 	G4cout<<"Tail Ky = "<<GetBeamTailKy()<<G4endl;
-	G4cout<<"Tail Min = "<<GetBeamTailMin()<<" [nSigma]"<<G4endl;
-	G4cout<<"Tail Max = "<<GetBeamTailMax()<<" [nSigma]"<<G4endl;
+	G4cout<<"Tail X Min = "<<GetBeamTailXmin()<<" [nSigma]"<<G4endl;
+	G4cout<<"Tail X Max = "<<GetBeamTailXmax()<<" [nSigma]"<<G4endl;
+	G4cout<<"Tail Y Min = "<<GetBeamTailYmin()<<" [nSigma]"<<G4endl;
+	G4cout<<"Tail Y Max = "<<GetBeamTailYmax()<<" [nSigma]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;
@@ -835,6 +853,8 @@ void SimParameters::PrintBeampipeFileName()
 	G4cout<<"[INFO] SimParameters::PrintBeampipeFileName"<<endl;
 	G4cout<<"  Central beam pipe: "<<GetBeampipeFileName()<<G4endl;
 	G4cout<<"  Far-BWD beam pipe: "<<GetFarBwdBeampipeFileName()<<G4endl;
+	G4cout<<"  Far-BWD beam pipe depth = "<<GetFarBwdSrMaskDepth()/mm<<" [mm]"<<G4endl;
+	G4cout<<"  Far-BWD beam pipe rel. pos. = "<<GetFarBwdSrMaskRelPos()/m<<" [m]"<<G4endl;
 	G4cout<<"==================================================================\n\n"<<G4endl;
 
 	return;

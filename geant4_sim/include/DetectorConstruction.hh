@@ -30,6 +30,8 @@ public:
     	G4VPhysicalVolume* Construct();
 	void SetTaggerDistance(G4double);
 	void SetAnteChamberH(G4double);
+	void SetFarBwdSrMaskDepth(G4double);
+	void SetFarBwdSrMaskRelPos(G4double);
 	void ModifyGeometry();
 
 private:
@@ -40,6 +42,10 @@ private:
 	G4bool visibility; // components visibility
 	G4bool addAbsorber; // build SR photon absorber
 	G4Material* mat_vac; // vacuum material
+	G4Material* mat_be; // beryllium material
+	G4Material* mat_au; // gold material
+	G4Material* mat_si; // silicon material
+	G4Material* mat_pbwo4; // lead tungsten material
 	G4VSolid* world_box; // world SV
 	G4LogicalVolume* world_log; // world LV
 	G4VPhysicalVolume* world_phys; // world PV
@@ -50,6 +56,7 @@ private:
 	G4VSolid* ip_box; // IP beam pipe virtual volume
 	G4LogicalVolume* ip_log; // IP beam pipe LV
 	G4VSolid* bwd_beampipeVac_solid; // backward SV
+	G4VSolid* fwd_beampipeVac_solid; // forward SV
 	G4VSolid* farbwd_beampipe_tube; // far-backward SV (only tube w/o ante-chamber)
 	G4VSolid* farbwd_beampipeVac_solid1; // far-backward SV (w/o ante-chamber)
 	G4VSolid* farbwd_beampipeVac_solid2; // far-backward SV (w/  ante-chamber)
@@ -62,14 +69,13 @@ private:
 	void BuildMaterials();
 	void BuildWorld();
 	void CreateBeamPipeSolid();
-	void CreateSrMask();
 	void BuildMagnets();
 	void BuildParticles();
 	void BuildIrBeamPipe();
 	void BuildIpBeamPipe();
 	void BuildAbsorbers();
-	void BuildTaggers();
-	void BuildFwdAnteChamber();
+	G4VSolid* BuildTaggers(G4VSolid* antechamber);
+	void ResetVolumes();
 
 	G4MagneticField* GetMagField(G4int,G4LogicalVolume*,G4ThreeVector,G4RotationMatrix*);
 	vector<G4double> tag_dist;
@@ -77,6 +83,8 @@ private:
 	G4RotationMatrix* farbwd_rot;
 	vector<G4double> dist_tag;
 	G4double bwd_ante_chmbH;
+	G4double farBwdSrMaskDepth;
+	G4double farBwdSrMaskRelPos; 
 };
 
 #endif

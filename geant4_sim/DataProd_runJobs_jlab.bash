@@ -16,7 +16,7 @@ echo "[INFO] Eic-shell: ${eicshell}"
 beamEnergy='18x275'
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
-for runID in {1..100}
+for runID in {1..100} 
 do
 	echo ""
 	echo "################################ RUNID = ${runID} ################################";
@@ -89,7 +89,7 @@ do
 	echo "#SBATCH --ntasks=1" >> ${instructionFile}
 	echo "#SBATCH --cpus-per-task=1" >> ${instructionFile}
 	#echo "#SBATCH --mem=1G" >> ${instructionFile} # total memory per node
-	echo "#SBATCH --mem-per-cpu=1G" >> ${instructionFile} # memory per cpu-core
+	echo "#SBATCH --mem-per-cpu=3G" >> ${instructionFile} # memory per cpu-core
 	echo "#SBATCH --partition=production" >> ${instructionFile}
 	echo "#SBATCH --time=03:00:00" >> ${instructionFile}
 	echo "#SBATCH -o /dev/null" >> ${instructionFile}

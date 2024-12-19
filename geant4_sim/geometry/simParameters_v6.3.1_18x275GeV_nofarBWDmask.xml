@@ -11,9 +11,10 @@
 		<!-- sec desc="beam pipe file [nosrmask]" name="fname">../geometry/beam_pipe_211004_ePICorient.obj</sec -->
 		<!-- sec desc="beam pipe file [srmask6]" name="fname">../geometry/beam_pipe_211004_1_mask_in_q0_with_vert_mask_ePICorient.obj</sec -->
 		<!-- sec desc="far-bwd beam pipe [nosrmask]" name="fname2">../geometry/far_bwd_test_pipe_with_saw_tooth_ePICorient_maskUp.obj</sec -->
+		<!-- sec desc="far-bwd beam pipe [srmask]" name="fnamefbwd">../geometry/far_bwd_test_pipe_with_saw_tooth_ePICorient_maskUp.obj</sec -->
 	<beampipe>
-		<sec desc="beam pipe file [srmask6]" name="fname">../geometry/beam_pipe_211004_1_mask_in_q0_with_vert_mask_ePICorient.obj</sec>
-		<sec desc="far-bwd beam pipe [srmask]" name="fnamefbwd">../geometry/far_bwd_test_pipe_with_saw_tooth_ePICorient_maskUp.obj</sec>
+		<sec desc="beam pipe file [nosrmask]" name="fname">../geometry/beam_pipe_211004_ePICorient.obj</sec>
+		<sec desc="far-bwd beam pipe [nosrmask]" name="fnamefbwd">null</sec>
 	</beampipe>
 
 	<!-- beam pipe extension -->
@@ -42,14 +43,14 @@
 	<!-- store photon trajectories -->
 	<storetrj>
 		<sec desc="Store trajectories: 1 - true; 0 - false" name="store">1</sec>
-		<sec desc="Zmin for the region of interest (where the photon stopped)" name="Zmin" unit="cm">-79.9</sec>
-		<sec desc="Zmax for the region of interest (where the photon stopped)" name="Zmax" unit="cm">66.9</sec>
+		<sec desc="Zmin for the region of interest (where the photon stopped)" name="Zmin" unit="cm">-4500</sec>
+		<sec desc="Zmax for the region of interest (where the photon stopped)" name="Zmax" unit="cm">-2500</sec>
 		<sec desc="Emin for the tracked photon" name="Emin" unit="GeV">10e-6</sec>
 	</storetrj>
 
 	<!-- tracked gamma cuts -->
 	<gammacut>
-		<sec desc="gamma energy cut" name="ecut" unit="eV">1000</sec>
+		<sec desc="gamma energy cut" name="ecut" unit="eV">30</sec>
 		<sec desc="gamma straight track kill: 1 - true; 0 - false" name="trackkill">0</sec>
 		<sec desc="gamma straight track Dmin" name="Dmin" unit="mm">40.0</sec>
 		<sec desc="gamma straight track Zend" name="Zend" unit="cm">-2450.0</sec>

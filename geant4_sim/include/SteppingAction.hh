@@ -18,6 +18,7 @@ public:
     	SteppingAction(RunAction*,G4String xmlFileName);
     	virtual ~SteppingAction();
     	virtual void UserSteppingAction(const G4Step *);
+	G4int GetTagElementID(G4String,G4String);
 
 private:
     	RunAction* runAction;

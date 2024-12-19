@@ -25,6 +25,20 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* DetConstr): G4UImesse
 	_bwd_achmbH_Cmd->SetDefaultValue(0);
 	_bwd_achmbH_Cmd->SetDefaultUnit("cm");
 
+	_farBwdSrMaskDepth_Cmd = new G4UIcmdWithADoubleAndUnit("/detector/farBwdSrMaskDepth",this);
+	_farBwdSrMaskDepth_Cmd->SetGuidance("Far-BWD SR mask depth"); 
+	_farBwdSrMaskDepth_Cmd->SetParameterName("farBwdSrMaskDepth",true); 
+	_farBwdSrMaskDepth_Cmd->SetRange("farBwdSrMaskDepth>-1e9 && farBwdSrMaskDepth<1e9"); 
+	_farBwdSrMaskDepth_Cmd->SetDefaultValue(0);
+	_farBwdSrMaskDepth_Cmd->SetDefaultUnit("mm");
+
+	_farBwdSrMaskRelPos_Cmd = new G4UIcmdWithADoubleAndUnit("/detector/farBwdSrMaskRelPos",this);
+	_farBwdSrMaskRelPos_Cmd->SetGuidance("Far-BWD SR mask rel. position"); 
+	_farBwdSrMaskRelPos_Cmd->SetParameterName("farBwdSrMaskRelPos",true); 
+	_farBwdSrMaskRelPos_Cmd->SetRange("farBwdSrMaskRelPos>-1e9 && farBwdSrMaskRelPos<1e9"); 
+	_farBwdSrMaskRelPos_Cmd->SetDefaultValue(0);
+	_farBwdSrMaskRelPos_Cmd->SetDefaultUnit("m");
+
 	_modify_Cmd = new G4UIcmdWithoutParameter("/detector/ModifyGeometry",this);
 	_modify_Cmd->SetGuidance("Modify geometry");
 	_modify_Cmd->AvailableForStates(G4State_PreInit,G4State_Idle);
@@ -34,6 +48,8 @@ DetectorMessenger::~DetectorMessenger()
 {
     	delete _dist_tag_Cmd;
 	delete _bwd_achmbH_Cmd;
+	delete _farBwdSrMaskDepth_Cmd;
+	delete _farBwdSrMaskRelPos_Cmd;
 }
 
 void DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
@@ -48,6 +64,16 @@ void DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	{
 		fDetectorConstruction->SetAnteChamberH(
 			_bwd_achmbH_Cmd->GetNewDoubleValue(newValue));
+	}
+	else if(command == _farBwdSrMaskDepth_Cmd)
+	{
+		fDetectorConstruction->SetFarBwdSrMaskDepth(
+			_farBwdSrMaskDepth_Cmd->GetNewDoubleValue(newValue));
+	}
+	else if(command == _farBwdSrMaskRelPos_Cmd)
+	{
+		fDetectorConstruction->SetFarBwdSrMaskRelPos(
+			_farBwdSrMaskRelPos_Cmd->GetNewDoubleValue(newValue));
 	}
 	else if(command == _modify_Cmd)
 	{

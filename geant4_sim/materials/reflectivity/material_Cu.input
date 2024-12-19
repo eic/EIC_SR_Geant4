@@ -1,0 +1,38 @@
+$substrate = "Cu" # Chemical formula
+
+$layer = "Cu" # Chemical formula
+$layerThickness = 4e6 # nm
+$layerDensity = 8.96 # gm/cm^3 (enter negative value to use tabulated values.)
+
+# Energy & angle grid. Make sure it samples the data well (look at the plots)
+$tables =
+[
+  {
+    :Emin => 30,  # in eV, between 30 and 30k
+    :Emax => 600, # in eV, between 30 and 30k
+    :Estep => 10, # in eV
+    :angles => [0.06, 0.11, 0.17, 0.29, 0.57, 0.86, 1.15, 1.72, 2.86, 4.58, 7.16, 11.46, 22.92, 34.38, 45.84, 71.62, 85.94] # degrees
+  },
+  {
+    :Emin => 620,
+    :Emax => 1400,
+    :Estep => 20,
+    :angles => [0.06, 0.11, 0.17, 0.29, 0.57, 0.86, 1.15, 1.72, 2.86, 4.58, 7.16, 11.46, 22.92, 34.38, 45.84, 71.62, 85.94] # degrees
+  },
+  {
+    :Emin => 1405,
+    :Emax => 1600,
+    :Estep => 5,
+    :angles => [0.06, 0.11, 0.17, 0.29, 0.57, 0.86, 1.15, 1.72, 2.86, 4.58, 7.16, 11.46, 22.92, 34.38, 45.84, 71.62, 85.94] # degrees
+  },
+  {
+    :Emin => 1700,
+    :Emax => 30000,
+    :Estep => 100,
+    :angles => [0.06, 0.11, 0.17, 0.29, 0.57, 0.86, 1.15, 1.72, 2.86, 4.58, 7.16, 11.46, 22.92, 34.38, 45.84, 71.62, 85.94] # degrees
+  }
+]
+
+# Default Synrad3D roughness parameters for this material. Not used by Henke
+$s3d_roughness_rms = "50e-9" 
+$s3d_roughness_correlation_len = "10000e-9"

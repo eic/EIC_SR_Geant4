@@ -86,8 +86,10 @@ private:
 	G4String _beamType;
 	G4double _beamTailKx;
 	G4double _beamTailKy;
-	G4double _beamTailMin;
-	G4double _beamTailMax;
+	G4double _beamTailXmin;
+	G4double _beamTailXmax;
+	G4double _beamTailYmin;
+	G4double _beamTailYmax;
 
 	G4String _generator;
 	G4String _hepmcFileName;
@@ -115,6 +117,9 @@ private:
 
 	G4double _meanFreePathFactor;
 	G4double _bwdTrkCutZ;
+
+	G4double _farBwdSrMaskDepth;
+	G4double _farBwdSrMaskRelPos;
 public:
 	// print functions
 	void InitDefault();	
@@ -191,8 +196,10 @@ public:
     	G4String GetBeamType(){return _beamType;}
 	G4double GetBeamTailKx(){return _beamTailKx;}
 	G4double GetBeamTailKy(){return _beamTailKy;}
-	G4double GetBeamTailMin(){return _beamTailMin;}
-	G4double GetBeamTailMax(){return _beamTailMax;}
+	G4double GetBeamTailXmin(){return _beamTailXmin;}
+	G4double GetBeamTailXmax(){return _beamTailXmax;}
+	G4double GetBeamTailYmin(){return _beamTailYmin;}
+	G4double GetBeamTailYmax(){return _beamTailYmax;}
 	G4double GetBeamStartPosX(){return _beamStartPosX;}
 	G4double GetBeamStartPosY(){return _beamStartPosY;}
 	G4double GetBeamStartPosZ(){return _beamStartPosZ;}
@@ -235,6 +242,9 @@ public:
 
 	G4double GetMeanFreePathFactor(){return _meanFreePathFactor;}
 	G4double GetTrackBwdGeoCut(){return _bwdTrkCutZ ;}
+
+	G4double GetFarBwdSrMaskDepth(){return _farBwdSrMaskDepth;}
+	G4double GetFarBwdSrMaskRelPos(){return _farBwdSrMaskRelPos;}
 
 private:
 	// set functions
@@ -279,8 +289,10 @@ private:
     	void SetBeamType(G4String val){_beamType = val; return;}
 	void SetBeamTailKx(G4double val){_beamTailKx = val; return;}
 	void SetBeamTailKy(G4double val){_beamTailKy = val; return;}
-    	void SetBeamTailMin(G4double val){_beamTailMin = val; return;}
-    	void SetBeamTailMax(G4double val){_beamTailMax = val; return;}
+    	void SetBeamTailXmin(G4double val){_beamTailXmin = val; return;}
+    	void SetBeamTailXmax(G4double val){_beamTailXmax = val; return;}
+    	void SetBeamTailYmin(G4double val){_beamTailYmin = val; return;}
+    	void SetBeamTailYmax(G4double val){_beamTailYmax = val; return;}
 	void SetBeamStartPosX(G4double val){_beamStartPosX = val; return;}
 	void SetBeamStartPosY(G4double val){_beamStartPosY = val; return;}
 	void SetBeamStartPosZ(G4double val){_beamStartPosZ = val; return;}
@@ -330,6 +342,9 @@ private:
 
 	void SetMeanFreePathFactor(G4double val){_meanFreePathFactor = val; return;}
 	void SetTrackBwdGeoCut(G4double val){_bwdTrkCutZ = val; return;}
+
+	void SetFarBwdSrMaskDepth(G4double val){_farBwdSrMaskDepth = val; return;}
+	void SetFarBwdSrMaskRelPos(G4double val){_farBwdSrMaskRelPos = val; return;}
 };
 
 #endif

@@ -45,9 +45,14 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 void EventAction::EndOfEventAction(const G4Event*)
 {
     	runAction->_tree->Fill();
+	runAction->_tagger->Fill();
 
 	// clean variables
 	runAction->_beamPdg.clear();
+	runAction->_beamX_norm.clear();
+	runAction->_beamXprime_norm.clear();
+	runAction->_beamY_norm.clear();
+	runAction->_beamYprime_norm.clear();
 	runAction->_beamPosX.clear();
 	runAction->_beamPosY.clear();
 	runAction->_beamPosZ.clear();
@@ -102,6 +107,14 @@ void EventAction::EndOfEventAction(const G4Event*)
 	runAction->_lumiMomZ.clear();
 	runAction->_lumiEnergy.clear();
 	runAction->_lumiTime.clear();
+
+	runAction->_tagInElemID.clear();
+	runAction->_tagInPDG.clear();
+	runAction->_tagInDirX.clear();
+	runAction->_tagInDirY.clear();
+	runAction->_tagInDirZ.clear();
+	runAction->_tagInKinE.clear();
+	for(G4int i = 0; i < 100; i++){runAction->_tagEdep_eV[i] = 0;}
 
     	_timer->Stop();
 	// 'real' is wall clock time - time from start to finish of the call. This is all elapsed time 

@@ -27,6 +27,8 @@ private:
 	G4UIcmdWithADoubleAndUnit* 	_dist_tag_Cmd;
 	G4UIcmdWithADoubleAndUnit* 	_bwd_achmbH_Cmd;
 	G4UIcmdWithoutParameter*	_modify_Cmd;
+	G4UIcmdWithADoubleAndUnit* 	_farBwdSrMaskDepth_Cmd;
+	G4UIcmdWithADoubleAndUnit*	_farBwdSrMaskRelPos_Cmd;
 };
 
 #endif

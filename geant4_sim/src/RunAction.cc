@@ -32,8 +32,11 @@ void RunAction::BeginOfRunAction(const G4Run* run)
 
     	_tree = new TTree("tree", "Collected Data");
     	_tree->Branch("event",		&_event);
-
     	_tree->Branch("beamPdg",	&_beamPdg);
+	_tree->Branch("beamX_norm",	&_beamX_norm);
+	_tree->Branch("beamXprime_norm",&_beamXprime_norm);
+	_tree->Branch("beamY_norm",	&_beamY_norm);
+	_tree->Branch("beamYprime_norm",&_beamYprime_norm);
     	_tree->Branch("beamPosX_cm",	&_beamPosX);
     	_tree->Branch("beamPosY_cm",	&_beamPosY);
     	_tree->Branch("beamPosZ_cm",	&_beamPosZ);
@@ -123,6 +126,15 @@ void RunAction::BeginOfRunAction(const G4Run* run)
 	_xml->Branch("settings",	&_settings); 
     	_xml->Branch("seed",		&_seed);
 
+	_tagger = new TTree("tagger", "Log-Q^2 Tagger Data");
+	_tagger->Branch("tagInElemID", 	&_tagInElemID);
+	_tagger->Branch("tagInPDG", 	&_tagInPDG);
+	_tagger->Branch("tagInDirX", 	&_tagInDirX);
+	_tagger->Branch("tagInDirY", 	&_tagInDirY);
+	_tagger->Branch("tagInDirZ", 	&_tagInDirZ);
+	_tagger->Branch("tagInKinE", 	&_tagInKinE);
+	_tagger->Branch("tagEdep_eV", 	_tagEdep_eV, 	"tagEdep_eV[100]/F");
+
 	DumpXmlFile();
 
 	return;
@@ -137,6 +149,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
     	_xml->Write();
     	_tree->Write();
 	_tracks->Write();
+	_tagger->Write();
 
     	delete _hfile;
 

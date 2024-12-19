@@ -119,7 +119,7 @@ private:
 	G4NistManager* fNistManager;
 	G4Material* theMatIP;
 	G4Material* theMatIR;
-	G4Material* theMatTaggerFoil;
+	G4Material* theMatNEG;
 	G4Material* theMatLumiExitWindow;
 	G4int fReflectionType;
 };

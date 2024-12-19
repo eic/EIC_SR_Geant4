@@ -103,9 +103,9 @@ do
 			echo "#SBATCH --ntasks=1" >> ${instructionFile}
 			echo "#SBATCH --cpus-per-task=1" >> ${instructionFile}
 			#echo "#SBATCH --mem=1G" >> ${instructionFile} # total memory per node
-			echo "#SBATCH --mem-per-cpu=8G" >> ${instructionFile} # memory per cpu-core
+			echo "#SBATCH --mem-per-cpu=2G" >> ${instructionFile} # memory per cpu-core
 			echo "#SBATCH --partition=production" >> ${instructionFile}
-			echo "#SBATCH --time=03:00:00" >> ${instructionFile}
+			echo "#SBATCH --time=01:00:00" >> ${instructionFile}
 			echo "#SBATCH -o /dev/null" >> ${instructionFile}
 			echo "" >> ${instructionFile} 
 			echo "./run.bash ${firstID} ${lastID} ${nJobSubmitted} &> ${outputDir}/logExe_ana_${nJobSubmitted}.txt" >> ${instructionFile}

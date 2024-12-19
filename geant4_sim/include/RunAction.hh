@@ -47,11 +47,16 @@ public:
     	TTree* _tree;
     	TTree* _xml;
 	TTree* _tracks;
+	TTree* _tagger;
 
     	G4int _event;
 	G4long _seed;
 
 	vector<G4int> _beamPdg;
+	vector<G4float> _beamX_norm;
+	vector<G4float> _beamXprime_norm;
+	vector<G4float> _beamY_norm;
+	vector<G4float> _beamYprime_norm;
 	vector<G4float> _beamPosX;
 	vector<G4float> _beamPosY;
 	vector<G4float> _beamPosZ;
@@ -121,6 +126,14 @@ public:
 	G4float _sensRefPosY;
 	G4float _sensRefPosZ;
 	G4float _sensRefAngl;
+
+	vector<G4int> _tagInElemID;
+	vector<G4int> _tagInPDG;
+	vector<G4float> _tagInDirX;
+	vector<G4float> _tagInDirY;
+	vector<G4float> _tagInDirZ;
+	vector<G4float> _tagInKinE;
+	G4float _tagEdep_eV[100];
 
 	string _monName;
 	G4float _monPosX;

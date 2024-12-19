@@ -115,16 +115,16 @@ void printLatticeParameters()
 	oldLattice = false;
 
 	//- Aug. 2024 - v6.3.1 lattice - 18x275GeV
-//	surveyFileName = "./lattice_v6.3.1_18GeV/ir6survey.tfs";
-//	opticsFileName = "./lattice_v6.3.1_18GeV/ir6twiss.tfs";
+	surveyFileName = "./lattice_v6.3.1_18GeV/ir6survey.tfs";
+	opticsFileName = "./lattice_v6.3.1_18GeV/ir6twiss.tfs";
 
 	//- Aug. 2024 - v6.3.1 lattice - 10x275GeV
 //	surveyFileName = "./lattice_v6.3.1_10GeV/ir6survey.tfs";
 //	opticsFileName = "./lattice_v6.3.1_10GeV/ir6twiss.tfs";
 
 	//- Aug. 2024 - v6.3.1 lattice - 5x100GeV
-	surveyFileName = "./lattice_v6.3.1_5GeV/ir6survey.tfs";
-	opticsFileName = "./lattice_v6.3.1_5GeV/ir6twiss.tfs";
+//	surveyFileName = "./lattice_v6.3.1_5GeV/ir6survey.tfs";
+//	opticsFileName = "./lattice_v6.3.1_5GeV/ir6twiss.tfs";
 
 	//- lists of elements (FWD)
 /*
