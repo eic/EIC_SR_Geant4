@@ -25,10 +25,7 @@ echo "/output/filename ${outputDir}/output_${taskID}.root"	>> ./macFiles/run_${t
 echo ""								>> ./macFiles/run_${taskID}.mac
 echo "/stack/killsecondaries 0"					>> ./macFiles/run_${taskID}.mac
 echo "/detector/dist_tag 5.0  m"                                >> ./macFiles/run_${taskID}.mac
-echo "/detector/dist_tag 20.2 m"                                >> ./macFiles/run_${taskID}.mac
-echo "/detector/dist_tag 24.7 m"                                >> ./macFiles/run_${taskID}.mac
-echo "/detector/dist_tag 29.2 m"                                >> ./macFiles/run_${taskID}.mac
-echo "/detector/dist_tag 31.3 m"                                >> ./macFiles/run_${taskID}.mac
+echo "/detector/dist_tag 18.5 m"                                >> ./macFiles/run_${taskID}.mac
 echo "/detector/bwd_achmbH 6 cm"                                >> ./macFiles/run_${taskID}.mac
 echo "/detector/ModifyGeometry"                                 >> ./macFiles/run_${taskID}.mac
 echo ""								>> ./macFiles/run_${taskID}.mac

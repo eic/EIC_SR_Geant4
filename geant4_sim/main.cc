@@ -19,6 +19,7 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 #include "SimParameters.hh"
+#include "G4GDMLParser.hh"
 
 #include <ctime>
 #include <iostream>
@@ -36,7 +37,7 @@ int main(int argc, char** argv)
 	G4long randomSeed;
 
 	// check input parameters
-	if( argc == 4 )
+	if( argc >= 4 )
 	{
        		macFileName = argv[1];
 		xmlFileName = argv[2];
@@ -53,7 +54,7 @@ int main(int argc, char** argv)
 	{
 		G4cout<<"\n\n=================================================================="<<G4endl;
 		G4cout<<"[ERROR] main ==> Wrong number of input parameters: argc = "<<argc<<G4endl;
-		G4cout<<"Usage: ./exe run.mac ../geometry/simParameters.xml 21011993"<<G4endl;
+		G4cout<<"Usage: ./exe run.mac ../geometry/simParameters.xml 21011993 (optional: FTFP_BERT)"<<G4endl;
 		G4cout<<"==================================================================\n"<<G4endl;
 
 		return -1;
@@ -71,8 +72,19 @@ int main(int argc, char** argv)
 
 	// Set initialization classes
 	//
-	PhysicsList* phys = new PhysicsList(xmlFileName);
-    	runManager->SetUserInitialization(phys);
+	if(argc == 5) // Particle Interaction Physics
+	{
+    		G4String physName = argv[4]; 
+		G4cout<<"[INFO] PhysicsList = "<<physName<<G4endl;
+		G4PhysListFactory factory;
+    		G4VModularPhysicsList* phys = factory.GetReferencePhysList(physName);
+    		runManager->SetUserInitialization(phys);
+	}
+	else // GammaReflection Physics
+	{
+		PhysicsList* phys = new PhysicsList(xmlFileName);
+    		runManager->SetUserInitialization(phys);
+	}
 
     	RunAction* runAction = new RunAction(xmlFileName,randomSeed);
     	runManager->SetUserAction(runAction);
@@ -125,6 +137,10 @@ int main(int argc, char** argv)
        		// batch mode
        		UImanager->ApplyCommand("/control/execute " + macFileName);
 	}
+
+	// GDML export
+	// G4GDMLParser parser;
+	// parser.Write("geometry.gdml", G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking()->GetWorldVolume());
 
     	// Job termination
     	// Free the store: user actions, physics_list and detector_description are
