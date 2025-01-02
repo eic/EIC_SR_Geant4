@@ -140,26 +140,31 @@ public :
 	TBranch        *b_monRefPosZ_cm;   //!
 	TBranch        *b_monRefAngle_rad;   //!
 
- 	void Init(TString,Double_t,Double_t);
-	void Loop(Float_t);
+ 	void Init(Double_t,Double_t,Double_t,Double_t);
+	void Loop();
 	void SetInputFileName(TString val){_inputFileName = val; return;}
 	TString GetInputFileName(){return _inputFileName;}
 	void SetOutputFileNameRoot(TString val){_outputFileName_root = val; return;}
 	TString GetOutputFileNameRoot(){return _outputFileName_root;}
 	void SetOutputFileNameHepmc(TString val){_outputFileName_hepmc = val; return;}
 	TString GetOutputFileNameHepmc(){return _outputFileName_hepmc;}
-	void BackTrack(Float_t &x, Float_t &y, Float_t &z, Float_t &px, Float_t &py, Float_t &pz, Float_t r_target);
 	void PrintMemoryUsage(const char* description);
+	void WriteHisto();
+	void SetDataProdFlag(bool flag){_dataProdFlag = flag; return;};
+	bool GetDataProdFlag(){return _dataProdFlag;};
 
 private:
 
 	TString _inputFileName;
 	TString _outputFileName_root;
 	TString _outputFileName_hepmc;
-   	TChain* _fChain;
 	WriterAscii* _fHepmc;
+	shared_ptr<GenRunInfo> _run;
 	Double_t _minZ;
 	Double_t _maxZ;
+	Double_t _minVtxZ;
+	Double_t _maxVtxZ;
+	bool _dataProdFlag = false;
 
 	TH1F* _h0;
 	TH1F* _h1;

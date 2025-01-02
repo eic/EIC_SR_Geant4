@@ -16,6 +16,9 @@ echo "[INFO] Eic-shell: ${eicshell}"
 beamEnergy='18x275'
 echo "[INFO] Beam Energy ${beamEnergy}GeV"
 
+dataProdFlag=1
+echo "[INFO] Data prod. flag = ${dataProdFlag}"
+
 for runID in {1..100}
 do
 	echo ""
@@ -39,8 +42,9 @@ do
 	# in the custom-built Geant4 coordinate system
 	minZ=-79.9 # [cm] minimum Z
 	maxZ=66.9 # [cm] maximum Z
-	# target radius to backtrack absorbed SR photons [mm]
-	r_target=-1
+	# select the region from where SR originates
+	minVtxZ=-10000 # [cm] minimum Z
+	maxVtxZ=10000 # [cm] maximum Z
 	#--------------------------------------------------#
 	#--------------------------------------------------#
 
@@ -52,12 +56,15 @@ do
 	echo "[INFO] nJobs = ${nJobs}"
 	echo "[INFO] minZ = ${minZ} [cm]"
 	echo "[INFO] maxZ = ${maxZ} [cm]"
+	echo "[INFO] minVtxZ = ${minVtxZ} [cm]"
+	echo "[INFO] maaVtxZ = ${maxVtxZ} [cm]"
 	echo ""
 
 	# output directory
 	mkdir -pv ${outputDir}
 
 	# build directory
+	rm -rf ${buildDir}
 	mkdir -pv ${buildDir}
 	cd ${buildDir}
 
@@ -80,7 +87,7 @@ do
 	echo "echo \"date\" > exe_\${jobID}.bash" >> run.bash
 	echo "for (( i=\${minFileID}; i<=\${maxFileID}; i++ ))" >> run.bash
 	echo "do" >> run.bash
-	echo "	echo \"./exe ${mainInDir} output_\${i}.root ${outputDir} output_ana_\${i} ${treeName} ${minZ} ${maxZ} ${r_target}\" >> exe_\${jobID}.bash" >> run.bash
+	echo "	echo \"./exe ${mainInDir} output_\${i} ${outputDir} output_ana_\${i} ${minZ} ${maxZ} ${minVtxZ} ${maxVtxZ} ${dataProdFlag}\" >> exe_\${jobID}.bash" >> run.bash
 	echo "done" >> run.bash
 	echo "chmod 777 exe_\${jobID}.bash" >> run.bash
 	echo ". ${eicshell} -- ./exe_\${jobID}.bash" >> run.bash
@@ -91,7 +98,7 @@ do
 	nJobSubmitted=0
 	for (( i=${firstID}; i<=${nJobs}; i++ ))
 	do
-		if (( i % 20 == 0 || i == ${nJobs} ))
+		if (( i % 1000 == 0 || i == ${nJobs} ))
 		then
 			lastID=$i
 			echo "[INFO] Range: ${firstID} - ${lastID}"
@@ -103,10 +110,12 @@ do
 			echo "#SBATCH --ntasks=1" >> ${instructionFile}
 			echo "#SBATCH --cpus-per-task=1" >> ${instructionFile}
 			#echo "#SBATCH --mem=1G" >> ${instructionFile} # total memory per node
-			echo "#SBATCH --mem-per-cpu=2G" >> ${instructionFile} # memory per cpu-core
+			echo "#SBATCH --mem-per-cpu=3G" >> ${instructionFile} # memory per cpu-core
 			echo "#SBATCH --partition=production" >> ${instructionFile}
-			echo "#SBATCH --time=01:00:00" >> ${instructionFile}
-			echo "#SBATCH -o /dev/null" >> ${instructionFile}
+			echo "#SBATCH --time=10:00:00" >> ${instructionFile}
+#			echo "#SBATCH -o /dev/null" >> ${instructionFile}
+			echo "#SBATCH --output=${outputDir}/logJob_%A_%a_%j.out" >> ${instructionFile}
+			echo "#SBATCH --error=${outputDir}/logErr_%A_%a_%j.err" >> ${instructionFile}
 			echo "" >> ${instructionFile} 
 			echo "./run.bash ${firstID} ${lastID} ${nJobSubmitted} &> ${outputDir}/logExe_ana_${nJobSubmitted}.txt" >> ${instructionFile}
 
@@ -117,4 +126,17 @@ do
 	done
 	echo "[INFO] nJobSubmitted = ${nJobSubmitted}"
 	cd -
+
+	# Wait before submitting the next bunch of jobs
+	pd=$(squeue -u $USER -n G4-ana --state=PENDING | grep -c .)
+	rn=$(squeue -u $USER -n G4-ana --state=RUNNING | grep -c .)
+	while [ "$pd" -gt 10 ] || [ "$rn" -gt 20 ]
+	do
+		echo -ne "___ waiting 10 min for the job to complete ... "
+		date
+		sleep 600
+		pd=$(squeue -u $USER -n G4-ana --state=PENDING | grep -c .)
+		rn=$(squeue -u $USER -n G4-ana --state=RUNNING | grep -c .)
+	done
+	date
 done

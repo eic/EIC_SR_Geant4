@@ -49,7 +49,8 @@ do
 	runFile="run_${runID}.bash"
 
 	echo "#!/bin/bash" > ${runFile}
-	echo "./exe ${inputDir}.hepmc ${inputDir}/output_ana_ ${nJobs} &> ./log_${runID}.txt" >> ${runFile}
+	rm -rf ${inputDir}.hepmc
+	echo "./exe ${inputDir}.hepmc ${inputDir}/output_ana_ ${nJobs} &> ./logExe_${runID}.txt" >> ${runFile}
 	chmod 777 ${runFile}
 	
 	echo "#!/bin/bash" > ${instructionFile}
@@ -59,10 +60,12 @@ do
 	echo "#SBATCH --ntasks=1" >> ${instructionFile}
 	echo "#SBATCH --cpus-per-task=1" >> ${instructionFile}
 	#echo "#SBATCH --mem=1G" >> ${instructionFile} # total memory per node
-	echo "#SBATCH --mem-per-cpu=2G" >> ${instructionFile} # memory per cpu-core
+	echo "#SBATCH --mem-per-cpu=1G" >> ${instructionFile} # memory per cpu-core
 	echo "#SBATCH --partition=production" >> ${instructionFile}
-	echo "#SBATCH --time=01:00:00" >> ${instructionFile}
-	echo "#SBATCH -o /dev/null" >> ${instructionFile}
+	echo "#SBATCH --time=00:30:00" >> ${instructionFile}
+#	echo "#SBATCH -o /dev/null" >> ${instructionFile}
+	echo "#SBATCH --output=./logJob_%A_%a_%j.out" >> ${instructionFile}
+	echo "#SBATCH --error=./logErr_%A_%a_%j.err" >> ${instructionFile}
 	echo "" >> ${instructionFile} 
 	echo ". ${eicshell} -- ./${runFile}" >> ${instructionFile}
 	
