@@ -77,7 +77,7 @@ do
 
 	. ${eicshell} -- ./${compileFile}
 
-	chmod 777 runAll_jlab.bash
+	chmod 777 runAll.bash
 
 	# submit jobs
 	instructionFile="instrJob.sh"
@@ -95,7 +95,7 @@ do
 	echo "#SBATCH -o /dev/null" >> ${instructionFile}
 	echo "#SBATCH --array=1-${nJobs}" >> ${instructionFile}
 	echo "" >> ${instructionFile} 
-	echo "./runAll_jlab.bash \${SLURM_ARRAY_TASK_ID} ${nParticles} ${xmlFile} ${eicshell} ${outputDir} &> ${outputDir}/logExe_\${SLURM_ARRAY_TASK_ID}.txt" >> ${instructionFile}
+	echo "./runAll.bash \${SLURM_ARRAY_TASK_ID} ${nParticles} ${xmlFile} ${eicshell} ${outputDir} &> ${outputDir}/logExe_\${SLURM_ARRAY_TASK_ID}.txt" >> ${instructionFile}
 
 	sbatch ${instructionFile}
 	cd -
