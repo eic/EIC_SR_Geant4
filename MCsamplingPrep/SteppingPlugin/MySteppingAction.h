@@ -34,6 +34,8 @@ namespace dd4hep
 
 			private:
 			string _OutputFileNameWithSteppingInfo;
+			float _PrimaryParticleEnergyCut_eV;
+			string _className;
 			WriterAscii* _fHepmc;
 			shared_ptr<GenRunInfo> _run;
 		 	bool _initialized = false;
@@ -44,7 +46,9 @@ namespace dd4hep
 			MySteppingAction(Geant4Context* context, const std::string& name = "") : 
 			Geant4SteppingAction(context, name) 
 			{
+				_className = name;
 				declareProperty("OutputFileNameWithSteppingInfo", _OutputFileNameWithSteppingInfo);
+				declareProperty("PrimaryParticleEnergyCut_eV", _PrimaryParticleEnergyCut_eV);
 			};
 
 			/// Default destructor
@@ -62,7 +66,8 @@ namespace dd4hep
 			void Init() 
 			{
 				// ascii file to store generated events
-				cout<<"[MySteppingAction] Output file name: "<<_OutputFileNameWithSteppingInfo<<endl; 
+				cout<<"["<<_className<<"] Output file name: "<<_OutputFileNameWithSteppingInfo<<endl; 
+				cout<<"["<<_className<<"] E_cut = "<<_PrimaryParticleEnergyCut_eV<<" [eV]"<<endl;
 				_fHepmc = new WriterAscii(_OutputFileNameWithSteppingInfo.c_str());
 
 				// main bookkeeping type that holds meta-information about the generated events: list of used tools, 
@@ -86,6 +91,17 @@ namespace dd4hep
 				G4StepPoint*            postStep        = step->GetPostStepPoint();
 				G4VPhysicalVolume*      postPV          = postStep->GetPhysicalVolume();
 
+				// set energy cut to primary particles (use for sample scaling from 18 to 5/10 GeV)
+				if(
+					track->GetParentID() == 0 && // primary
+					track->GetTotalEnergy()/CLHEP::eV > _PrimaryParticleEnergyCut_eV // E_cut
+				)
+				{
+					// stop and kill the track
+					track->SetTrackStatus(fStopAndKill);
+					return;
+				}
+				// select particles that enter the virtual beam pipe
 				if(
 					postStep->GetStepStatus() == fGeomBoundary &&
 					G4StrUtil::contains(postPV->GetName(),"BeamPipeSens")

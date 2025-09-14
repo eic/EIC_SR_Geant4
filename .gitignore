@@ -93,6 +93,12 @@ generate_hepmc/output*
 # hepmc to root
 hepmc3ascii2root
 
+# MCsamplingPrep
+*.png
+build
+install
+calibrations
+
 # Git
 !.gitignore
 

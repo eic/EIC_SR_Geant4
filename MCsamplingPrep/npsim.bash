@@ -1,6 +1,7 @@
 #!/bin/bash
 
-compactFile='/eic/u/anatochii/MCsamplingPrep/epic_ip6_cut_25.01.1.xml'
+workDir=$PWD
+compactFile="${workDir}/epic_ip6_cut_25.01.1.xml"
 eicshell='/gpfs02/eic/anatochii/eic/eic-shell'
 eicconfig='/gpfs02/eic/anatochii/eic/epic/install/bin/thisepic.sh'
 
@@ -8,17 +9,15 @@ eicconfig='/gpfs02/eic/anatochii/eic/epic/install/bin/thisepic.sh'
 inputDir='/gpfs02/eic/anatochii/SynradG4_HepMC_Files_SR_on_IP6/data/synrad/dataprod_rel_1.0.0/18x275'
 fileName='dataprod_rel_1.0.0_synrad_18x275_run001'
 
-#outputDir='/gpfs02/eic/anatochii/MCsamplingPrep'
-#nInputFileRepeat=28
+#---- 5GeV
+#outputDir='/gpfs02/eic/anatochii/MCsamplingPrep_18GeV_scaled_to_5GeV'
+#PrimaryParticleEnergyCut_eV=30000 # [eV]
 
-outputDir='/gpfs02/eic/anatochii/MCsamplingPrep_2'
+#---- 10GeV
+outputDir='/gpfs02/eic/anatochii/MCsamplingPrep_18GeV_scaled_to_10GeV'
+PrimaryParticleEnergyCut_eV=200000 # [eV]
+
 nInputFileRepeat=10000
-
-#---- run003
-#inputDir='/gpfs02/eic/anatochii/SynradG4_HepMC_Files_SR_on_IP6/data/synrad/dataprod_rel_2.1.0/18x275'
-#outputDir='/gpfs02/eic/anatochii/MCsamplingPrep'
-#fileName='dataprod_rel_2.1.0_synrad_18x275_run003'
-#nInputFileRepeat=60
 
 echo "[INFO] inputDir = ${inputDir}"
 echo "[INFO] outputDir = ${outputDir}"
@@ -35,12 +34,12 @@ echo "iJob=\$1" >> exe.bash
 echo "${eicshell} << EOF" >> exe.bash
 echo "cd ${dir}" >> exe.bash
 echo "source ${eicconfig}" >> exe.bash 
-echo "export LD_LIBRARY_PATH=/eic/u/anatochii/MCsamplingPrep/SteppingPlugin/install/lib:\\\${LD_LIBRARY_PATH}" >> exe.bash
+echo "export LD_LIBRARY_PATH=${workDir}/SteppingPlugin/install/lib:\\\${LD_LIBRARY_PATH}" >> exe.bash
 echo "echo \"[INFO] LD_LIBRARY_PATH = \\\${LD_LIBRARY_PATH}\"" >> exe.bash
 echo "inputFile=\"${inputDir}/${fileName}.hepmc3.tree.root\"" >> exe.bash 
 echo "outputFile1=\"${outputDir}/${fileName}_\${iJob}.edm4hep.root\"" >> exe.bash 
 echo "outputFile2=\"${outputDir}/${fileName}_\${iJob}.preproc.hepmc3\"" >> exe.bash 
-echo "json_string=\"{\\\"name\\\":\\\"MySteppingAction\\\",\\\"parameter\\\":{\\\"OutputFileNameWithSteppingInfo\\\":\\\"\\\${outputFile2}\\\"}}\"" >> exe.bash 
+echo "json_string=\"{\\\"name\\\":\\\"MySteppingAction\\\",\\\"parameter\\\":{\\\"OutputFileNameWithSteppingInfo\\\":\\\"\\\${outputFile2}\\\",\\\"PrimaryParticleEnergyCut_eV\\\":${PrimaryParticleEnergyCut_eV}}}\"" >> exe.bash 
 echo "echo \"[INFO] inputFile = \\\${inputFile}\"" >> exe.bash 
 echo "echo \"[INFO] outputFile1 = \\\${outputFile1}\"" >> exe.bash 
 echo "echo \"[INFO] outputFile2 = \\\${outputFile2}\"">> exe.bash 
