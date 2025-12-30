@@ -1,6 +1,7 @@
 #!/bin/bash
 
 workDir=$PWD
+# check branch: epic_synrad_sampling_study_tag25.01.1 - 5 um of gold ; epic_synrad_sampling_study_tag25.01.1_10um - 10 um of gold 
 compactFile="${workDir}/epic_ip6_cut_25.01.1.xml"
 eicshell='/home/natochii/eic/eic-shell'
 eicconfig='/home/natochii/eic/epic_for_MCsamplingPrep/install/bin/thisepic.sh'
@@ -14,7 +15,7 @@ fileName='dataprod_rel_1.0.0_synrad_18x275_run001'
 #PrimaryParticleEnergyCut_eV=30000 # [eV]
 
 #---- 10GeV
-outputDir='/work/eic/users/anatochii/MCsamplingPrep_18GeV_scaled_to_10GeV'
+outputDir='/work/eic/users/anatochii/MCsamplingPrep_18GeV_scaled_to_10GeV_10um_EMZ'
 PrimaryParticleEnergyCut_eV=200000 # [eV]
 
 nJobs=1000

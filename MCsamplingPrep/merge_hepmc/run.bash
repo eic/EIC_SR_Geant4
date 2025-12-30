@@ -13,7 +13,7 @@ fileName='dataprod_rel_1.0.0_synrad_18x275_run001'
 #outFileName="dataprod_rel_1.0.0_synrad_5x100_run001.preproc_${nInputFileRepeat}repeats.hepmc3"
 
 #---- 10GeV
-outputDir='/work/eic/users/anatochii/MCsamplingPrep_18GeV_scaled_to_10GeV'
+outputDir='/work/eic/users/anatochii/MCsamplingPrep_18GeV_scaled_to_10GeV_10um_EMZ'
 outFileName="dataprod_rel_1.0.0_synrad_10x275_run001.preproc_${nInputFileRepeat}repeats.hepmc3"
 
 mkdir -pv ${outputDir}/buildMergeHepMC
